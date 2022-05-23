@@ -17,10 +17,7 @@ class SinodalController extends Controller
 
     public function create()
     {
-        $estados = SinodalService::getEstados();
-        return view('dashboard.sinodais.form', [
-            'estados' => $estados
-        ]);
+        return view('dashboard.sinodais.form');
     }
 
     public function store(Request $request)

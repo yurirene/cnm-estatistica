@@ -13,8 +13,24 @@ class Federacao extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
 
+    public function regiao()
+    {
+        return $this->belongsTo(Regiao::class);
+    }
+
+    public function sinodal()
+    {
+        return $this->belongsTo(Sinodal::class);
+    }
+
+
     public function locais()
     {
         return $this->hasMany(Local::class);
+    }
+    
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
     }
 }

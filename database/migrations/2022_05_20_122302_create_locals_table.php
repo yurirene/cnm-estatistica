@@ -16,7 +16,6 @@ class CreateLocalsTable extends Migration
         Schema::create('locais', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nome');
-            $table->string('sigla');
             $table->bigInteger('estado_id')->unsigned();
             $table->bigInteger('regiao_id')->unsigned();
             $table->uuid('federacao_id');

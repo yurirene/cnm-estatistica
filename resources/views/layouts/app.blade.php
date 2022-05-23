@@ -117,8 +117,9 @@
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
+    @auth()
     @include('layouts.navbars.sidebar')
-
+    @endauth
 
     <div class="main-content">
         @include('layouts.navbars.navbar')

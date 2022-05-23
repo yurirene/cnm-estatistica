@@ -4,12 +4,12 @@ namespace App\DataTables;
 
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
-use App\Models\Sinodal;
+use App\Models\Federacao;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class SinodalDataTable extends DataTable
+class FederacaoDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -23,7 +23,7 @@ class SinodalDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.sinodais',
+                    'route' => 'dashboard.federacoes',
                     'id' => $sql->id,
                     'show' => true
                 ]);
@@ -34,6 +34,12 @@ class SinodalDataTable extends DataTable
             ->editColumn('regiao_id', function($sql) {
                 return $sql->regiao->nome;
             })
+            ->editColumn('estado_id', function($sql) {
+                return $sql->estado->nome;
+            })
+            ->editColumn('sinodal_id', function($sql) {
+                return $sql->sinodal->sigla;
+            })
             ->rawColumns(['status']);
     }
 
@@ -43,7 +49,7 @@ class SinodalDataTable extends DataTable
      * @param \App\Models\AcessoExterno $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Sinodal $model)
+    public function query(Federacao $model)
     {
         return $model->newQuery();
     }
@@ -56,13 +62,13 @@ class SinodalDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('sinodais-table')
+                    ->setTableId('federacoes-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Federação')
                     )
                     ->parameters([
                         "language" => [
@@ -87,6 +93,8 @@ class SinodalDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sigla')->title('Sigla'),
+            Column::make('sinodal_id')->title('Sinodal'),
+            Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),
             Column::make('regiao_id')->title('Região'),
         ];
@@ -99,6 +107,6 @@ class SinodalDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Sinodais_' . date('YmdHis');
+        return 'Federacao_' . date('YmdHis');
     }
 }

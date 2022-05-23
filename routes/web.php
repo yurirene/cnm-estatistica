@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FederacaoController;
+use App\Http\Controllers\LocalController;
 use App\Http\Controllers\SinodalController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 
 Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
@@ -26,11 +28,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboar
     Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
     Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
     
-    Route::resource('federacoes', SinodalController::class)->names('federacoes')->except('delete');
-    Route::get('/federacoes/{federacao}/delete', [SinodalController::class, 'delete'])->name('federacoes.delete');
+    Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('delete');
+    Route::get('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])->name('federacoes.delete');
 
-    Route::resource('umps-locais', SinodalController::class)->names('locais')->except('show', 'delete');
-    Route::get('/umps-locais/{federacao}/delete', [SinodalController::class, 'delete'])->name('locais.delete');
+    Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
+    Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
 
 });
 

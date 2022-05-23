@@ -16,10 +16,10 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @if (!isset($sinodal))
-                    {!! Form::open(['url' => route('dashboard.sinodais.store'), 'method' => 'POST']) !!}
+                    @if (!isset($federacao))
+                    {!! Form::open(['url' => route('dashboard.federacoes.store'), 'method' => 'POST']) !!}
                     @else
-                    {!! Form::model($sinodal, ['url' => route('dashboard.sinodais.update', $sinodal->id), 'method' => 'PUT']) !!}
+                    {!! Form::model($federacao, ['url' => route('dashboard.federacoes.update', $federacao->id), 'method' => 'PUT']) !!}
                     @endif
                     <div class="row">
                         <div class="col-md-4">
@@ -37,28 +37,26 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('status', 'Situação') !!}
-                                {!! Form::select('status', ['A' => 'Ativa', 'I' => 'Inativa'],  isset($sinodal) ? ($sinodal->status == true ? ' A' : 'I') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::select('status', ['A' => 'Ativa', 'I' => 'Inativa'], isset($federacao) ? ($federacao->status == true ? ' A' : 'I') : null , ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        @if(count(auth()->user()->regioes) > 1)
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('regiao_id', 'Região') !!}
-                                {!! Form::select('regiao_id', auth()->user()->regioes->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('estado_id', 'Estado') !!}
+                                {!! Form::select('estado_id', $estados, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @else 
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::hidden('regiao_id', auth()->user()->regioes()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('sinodal_id', 'Sinodal') !!}
+                                {!! Form::select('sinodal_id', $sinodais, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @endif
                     </div>
-                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($sinodal) ? 'Atualizar' : 'Cadastrar')}}</button>
-                    <a href="{{ route('dashboard.sinodais.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($federacao) ? 'Atualizar' : 'Cadastrar')}}</button>
+                    <a href="{{ route('dashboard.federacoes.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                 </div>
             </div>

@@ -13,8 +13,25 @@ class Local extends Model
     protected $table = 'locais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function locais()
+
+    public function regiao()
     {
-        return $this->hasMany(Local::class);
+        return $this->belongsTo(Regiao::class);
     }
+
+    public function sinodal()
+    {
+        return $this->belongsTo(Sinodal::class);
+    }
+
+    public function federacao()
+    {
+        return $this->belongsTo(Federacao::class);
+    }
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
+    }
+
 }
