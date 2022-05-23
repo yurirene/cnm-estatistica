@@ -34,4 +34,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Regiao::class, 'usuario_regiao');
     }
+
+    public function atividades()
+    {
+        return $this->hasMany(Atividade::class);
+    }
 }

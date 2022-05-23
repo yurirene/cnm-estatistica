@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\LocalController;
@@ -33,6 +34,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboar
 
     Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
     Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
+
+    Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('delete');
+    Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])->name('atividades.delete');
+    Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])->name('atividades.calendario');
+
 
 });
 
