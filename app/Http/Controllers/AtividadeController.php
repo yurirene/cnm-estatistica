@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\AtividadesDataTable;
+use App\Models\Atividade;
 use App\Services\AtividadeService;
 use App\Services\CalendarioService;
 use Carbon\Carbon;
@@ -10,17 +12,15 @@ use Throwable;
 
 class AtividadeController extends Controller
 {
-    public function index()
+    public function index(AtividadesDataTable $dataTable)
     {
-        // return $dataTable->render('dashboard.locais.index');    
-        return view('dashboard.atividades.index');    
+        return $dataTable->render('dashboard.atividades.index');    
     }
 
     public function create()
     {
-        $federacoes = AtividadeService::getFederacao();
-        return view('dashboard.locais.form', [
-            'federacoes' => $federacoes
+        return view('dashboard.atividades.form', [
+            'tipos' => Atividade::TIPOS
         ]);
     }
 
@@ -28,7 +28,7 @@ class AtividadeController extends Controller
     {
         try {
             AtividadeService::store($request);
-            return redirect()->route('dashboard.locais.index')->with([
+            return redirect()->route('dashboard.atividades.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
@@ -45,27 +45,40 @@ class AtividadeController extends Controller
         }
     }
 
-    public function show(Local $local)
+    public function edit(Atividade $atividade)
     {
-        return view('dashboard.locais.show', [
-            'local' => $local,
+        return view('dashboard.atividades.form', [
+            'atividade' => $atividade,
+            'tipos' => Atividade::TIPOS
         ]);
     }
 
-    public function edit(Local $local)
-    {
-        $federacoes = AtividadeService::getFederacao();
-        return view('dashboard.locais.form', [
-            'federacoes' => $federacoes,
-            'local' => $local,
-        ]);
-    }
-
-    public function update(Local $local, Request $request)
+    public function confirmar(Atividade $atividade)
     {
         try {
-            AtividadeService::update($local, $request);
-            return redirect()->route('dashboard.locais.index')->with([
+            AtividadeService::confirmar($atividade);
+            return redirect()->route('dashboard.atividades.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+                ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function update(Atividade $atividade, Request $request)
+    {
+        try {
+            AtividadeService::update($atividade, $request);
+            return redirect()->route('dashboard.atividades.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
@@ -82,6 +95,26 @@ class AtividadeController extends Controller
         }
     }
 
+    public function delete(Atividade $atividade)
+    {
+        try {
+            AtividadeService::delete($atividade);
+            return redirect()->route('dashboard.atividades.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
     public function calendario(Request $request)
     {
         return response()->json(CalendarioService::getCalendario($request));

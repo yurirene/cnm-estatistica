@@ -7,6 +7,7 @@ use App\Models\Federacao;
 use App\Models\Atividade;
 use App\Models\Sinodal;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,14 +19,13 @@ class AtividadeService
     public static function store(Request $request)
     {
         try {
-            $federacao = Federacao::find($request->federacao_id);
             Atividade::create([
-                'nome' => $request->nome,
-                'estado_id' => $federacao->estado_id,
-                'federacao_id' => $federacao->id,
-                'sinodal_id' => $federacao->sinodal_id,
-                'regiao_id' => $federacao->regiao_id,
-                'status' => $request->status == 'A' ? true : false
+                'titulo' => $request->titulo,
+                'observacoes' => $request->observacoes,
+                'tipo' => $request->tipo,
+                'start' => Carbon::createFromFormat('d/m/Y', $request->start)->format('Y-m-d'),
+                'status' => $request->status == 'A' ? true : false,
+                'user_id' => Auth::id()
             ]);
         } catch (\Throwable $th) {
             Log::error([
@@ -38,18 +38,15 @@ class AtividadeService
         }
     }
 
-    public static function update(Atividade $sinodal, Request $request)
+    public static function update(Atividade $atividade, Request $request)
     {
         try {
-            $regiao = Estado::find($request->estado_id)->regiao_id;
-            $sinodal->update([
-                'nome' => $request->nome,
-                'sigla' => $request->sigla,
-                'estado_id' => $request->estado_id,
-                'federacao_id' => $request->federacao_id,
-                'sinodal_id' => $request->sinodal_id,
-                'regiao_id' => $regiao,
-                'status' => $request->status == 'A' ? true : false
+            $atividade->update([
+                'titulo' => $request->titulo,
+                'observacoes' => $request->observacoes,
+                'tipo' => $request->tipo,
+                'start' => Carbon::createFromFormat('d/m/Y', $request->start)->format('Y-m-d'),
+                'status' => $request->status == 'A' ? true : false,
             ]);
         } catch (\Throwable $th) {
             Log::error([
@@ -62,13 +59,35 @@ class AtividadeService
         }
     }
 
-    public static function getFederacao()
+    public static function confirmar(Atividade $atividade)
     {
-        $usuario = User::find(Auth::id());
-        $regioes = Federacao::whereIn('regiao_id', $usuario->regioes->pluck('id'))
-            ->get()
-            ->pluck('sigla', 'id');
-        return $regioes;
+        try {
+            $atividade->update([
+                'status' => true,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error([
+                'erro' => $th->getMessage(),
+                'arquivo' => $th->getFile(),
+                'linha' => $th->getLine()
+            ]);
+            throw new Exception("Erro ao Atualizar");
+            
+        }
     }
 
+    public static function delete(Atividade $atividade)
+    {
+        try {
+            $atividade->delete();
+        } catch (\Throwable $th) {
+            Log::error([
+                'erro' => $th->getMessage(),
+                'arquivo' => $th->getFile(),
+                'linha' => $th->getLine()
+            ]);
+            throw new Exception("Erro ao Atualizar");
+            
+        }
+    }
 }

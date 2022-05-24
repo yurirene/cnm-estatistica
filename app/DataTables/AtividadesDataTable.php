@@ -4,12 +4,12 @@ namespace App\DataTables;
 
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
-use App\Models\Local;
+use App\Models\Atividade;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class AtividadeDataTable extends DataTable
+class AtividadesDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -23,25 +23,19 @@ class AtividadeDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.locais',
+                    'route' => 'dashboard.atividades',
                     'id' => $sql->id,
-                    'show' => true
+                    'confirmar' => true
                 ]);
             })
             ->editColumn('status', function($sql) {
-                return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
+                return FormHelper::statusFormatado($sql->status, 'Presente', 'Pendente');
             })
-            ->editColumn('regiao_id', function($sql) {
-                return $sql->regiao->nome;
+            ->editColumn('observacao', function($sql) {
+                return $sql->observacao;
             })
-            ->editColumn('estado_id', function($sql) {
-                return $sql->estado->nome;
-            })
-            ->editColumn('sinodal_id', function($sql) {
-                return $sql->sinodal->sigla;
-            })
-            ->editColumn('federacao_id', function($sql) {
-                return $sql->federacao->sigla;
+            ->editColumn('start', function($sql) {
+                return $sql->start->format('d/m/Y');
             })
             ->rawColumns(['status']);
     }
@@ -49,10 +43,10 @@ class AtividadeDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\Atividade $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Local $model)
+    public function query(Atividade $model)
     {
         return $model->newQuery();
     }
@@ -65,13 +59,13 @@ class AtividadeDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('ump-local-table')
+                    ->setTableId('atividade-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(2)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova UMP')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Atividade')
                     )
                     ->parameters([
                         "language" => [
@@ -94,12 +88,10 @@ class AtividadeDataTable extends DataTable
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('nome')->title('Nome'),
-            Column::make('federacao_id')->title('Federação'),
-            Column::make('sinodal_id')->title('Sinodal'),
-            Column::make('estado_id')->title('Estado'),
+            Column::make('titulo')->title('Título'),
+            Column::make('start')->title('Data'),
+            Column::make('observacao')->title('Observação'),
             Column::make('status')->title('Status'),
-            Column::make('regiao_id')->title('Região'),
         ];
     }
 

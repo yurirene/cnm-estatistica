@@ -36,79 +36,73 @@
                                 type="button" 
                                 role="tab" 
                                 aria-controls="segundo" 
-                                aria-selected="false">Atividades Realizadas
+                                aria-selected="false">Atividades
                             </button>
                         </li>
-                
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="primeiro" role="tabpanel" aria-labelledby="primeiro-tab">
                             <div class="row mt-3">
-                                <div class="col-md-8 mt-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div id="app_calendar"></div>
-                                            </div>
+                                <div class="col-md-7 mt-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div id="app_calendar"></div>
                                         </div>
+                                    </div>
                                 </div>
 
-                                <div class="col-md-4 mt-3">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                Eventos
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table align-items-center table-flush">
-                                                        <thead class="thead-dark">
-                                                            <tr>
-                                                                <th scope="col" class="sort" data-sort="name">Data</th>
-                                                                <th scope="col" class="sort" data-sort="budget">Evento</th>
-                                                                <th scope="col" class="sort" data-sort="status">Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="list">
-                                                            <tr>
-                                                                <td class="budget">
-                                                                    $2500 USD
-                                                                </td>
-                                                            
-                                                                <td class="text-right">
-                                                                    $2500 USD
-                                                                </td>
-
-                                                                <td>
-                                                                    <span class="badge badge-dot mr-4">
-                                                                        <span class="badge badge-warning">Pendente</span>
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                <div class="col-md-5 mt-3">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            Atividades
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive mt-4" style="min-height: 150px;">
+                                                <table class="table align-items-center table-flush">
+                                                    <thead class="thead-dark text-center">
+                                                        <tr>
+                                                            <th scope="col" class="sort">Data</th>
+                                                            <th scope="col" class="sort">Evento</th>
+                                                            <th scope="col" class="sort">Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="list" id="tabela-eventos">
+                                                        
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="segundo" role="tabpanel" aria-labelledby="segundo-tab">
-                                bbb
-                            </div>
-                        
+                        </div>
+                        <div class="tab-pane fade" id="segundo" role="tabpanel" aria-labelledby="segundo-tab">
+                            <div class="row mt-3">
+                                <div class="col-md-12 mt-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive"> 
+                                                {!! $dataTable->table(['class' => 'table w-100']) !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
                         </div>
                     </div>
+                </div>
             </div>
         </div>
-
     </div>
-</div>
+</div>  
 @endsection
 
 @push('js')
+{!! $dataTable->scripts() !!}
 <script>
 
+$(document).ready(function() {
 
-document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('app_calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -122,11 +116,31 @@ document.addEventListener('DOMContentLoaded', function() {
             prevYear: 'arrow-left-circle', 
             nextYear: 'arrow-right-circle' 
         },
-        events: '{{route("dashboard.atividades.calendario")}}'
+        events: '{{route("dashboard.atividades.calendario")}}',
+        eventSourceSuccess: function(content, xhr) {
+            var html = '';
+            content.forEach((item) => {
+                let status = item.status == 0 ? '<span class="badge badge-danger">Pendente</span>' : '<span class="badge badge-success">Presente</span>';
+                html += `<tr>
+                            <td class="text-center">
+                                ${item.dt}
+                            </td>                        
+                            <td class="text-left">
+                                ${item.title}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-dot mr-4">
+                                    ${status}
+                                </span>
+                            </td>
+                        </tr>`
+            });
+            $('#tabela-eventos').html(html);
+        }
     });
     calendar.setOption('locale', 'pt-br');
     calendar.render();
-    
 });
+
 </script>
 @endpush

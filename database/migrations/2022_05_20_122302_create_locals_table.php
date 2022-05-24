@@ -21,6 +21,7 @@ class CreateLocalsTable extends Migration
             $table->uuid('federacao_id');
             $table->uuid('sinodal_id');
             $table->boolean('status')->default(true);
+            $table->boolean('outro_modelo')->default(false);
             $table->timestamps();
 
             $table->foreign('estado_id')->references('id')->on('estados');

@@ -31,7 +31,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
@@ -181,7 +181,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-      
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     @stack('js')
 
     <script>
@@ -240,13 +242,6 @@
                 orientation: "bottom auto"
             });
 
-            $('.isMounth').datepicker({
-                format: "mm/yyyy",
-                language: "pt-BR",
-                minViewMode: 1,
-                todayHighlight: true,
-                orientation: "bottom auto"
-            });
             $('.isDateRange').daterangepicker({
                 autoUpdateInput: false,
                 "locale": {
@@ -292,61 +287,12 @@
                 $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
                     'DD/MM/YYYY'));
             });
-            $('.isDateRange').on('cancel.daterangepicker', function(ev, picker) {
-                $(this).val('');
-            });
 
-            $('#contas-status').select2();
-
-            $('#auto-status').select2();
-
-            $(".isNumber").keydown(function(e) {
-                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
-                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    (e.keyCode >= 35 && e.keyCode <= 40)) {
-                    return;
-                }
-                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode >
-                        105)) {
-                    e.preventDefault();
-                }
-            });
 
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
-            $('.isDateTime').attr('autocomplete', 'off');
-            $('.isDateTime').mask('00/00/0000 00:00:00');
-            $('.isTime').mask('00:00:00');
 
-            $('.isDateMonth').mask('00/0000');
-            $('.isCPF').mask('000.000.000-00');
-            $('.isCNPJ').mask('00.000.000/0000-00');
-            $('.isCNS').mask('000.0000.0000.0000');
-            $('.isMoney').mask('###.###.###.#00,00', {
-                reverse: true
-            });
-            $('.isDecimal').mask('#####,000', {
-                reverse: true
-            });
-
-            $('.isPeso').mask('#00,000', {
-                reverse: true
-            });
-            $('.isAltura').mask('000');
-            $('.isTemperatura').mask('00,000');
-
-            /* Início - Máscara para telefone com e sem o 9 */
-            var SPMaskBehavior = function(val) {
-                    return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-                },
-                spOptions = {
-                    onKeyPress: function(val, e, field, options) {
-                        field.mask(SPMaskBehavior.apply({}, arguments), options);
-                    }
-                };
-            $('.isTelefone').mask(SPMaskBehavior, spOptions);
-            /* Fim - Máscara para telefone com e sem o 9 */
-
+            
             $("#hide-sidebar").click(function() {
                 $("#sidenav-main").toggle();
                 $(".main-content").toggleClass("hideme");
@@ -381,6 +327,24 @@
                 }, 200);
             }
         };
+
+        function deleteRegistro(url) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja apagar o registro?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            })
+        }
+
     </script>
 
     <!-- Argon JS -->
