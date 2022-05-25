@@ -62,9 +62,9 @@ class StoreFormularioLocalRequest extends FormRequest
             'perfil.ativo' => 'Ativos',
             'perfil.cooperadores' => 'Cooperadores',
             'perfil.menor19' => 'menores de 19 anos',
-            'perfil.19a23' => 'entre 19-23 anos',
-            'perfil.24a29' => 'entre 24-29 anos',
-            'perfil.30a35' => 'entre 30-35 anos',
+            'perfil.de19a23' => 'entre 19-23 anos',
+            'perfil.de24a29' => 'entre 24-29 anos',
+            'perfil.de30a35' => 'entre 30-35 anos',
             'perfil.homens' => '- Homens',
             'perfil.mulheres' => '- Mulheres',
 
