@@ -2,7 +2,9 @@
 
 @section('content')
 
-@include('dashboard.partes.head')
+@include('dashboard.partes.head', [
+    'titulo' => 'Atividades',
+])
     
 <div class="container-fluid mt--7">
     <div class="row mt-5">

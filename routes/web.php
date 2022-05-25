@@ -3,6 +3,7 @@
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FederacaoController;
+use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\SinodalController;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,7 @@ Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
+    Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])->name('trocar-senha');
 
     Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
     Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
@@ -40,6 +42,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboar
     Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])->name('atividades.calendario');
     Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])->name('atividades.confirmar');
 
+    Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
+    Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
 
 });
 

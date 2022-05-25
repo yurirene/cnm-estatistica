@@ -6,7 +6,7 @@
         </button>
         <!-- Brand -->
         <a class="navbar-brand pt-0" href="{{ route('home') }}">
-            <img src="{{ asset('argon') }}/img/brand/blue.png" class="navbar-brand-img" alt="...">
+            <img src="/img/logo.png" class="navbar-brand-img" alt="..." style="max-height: 60px;">
         </a>
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
@@ -55,17 +55,17 @@
             <!-- Navigation -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}">
-                        <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
+                    <a class="nav-link" href="{{ route('dashboard.home') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
-                        <i class="fab fa-laravel" ></i>
+                    <a class="nav-link pai" href="#cadastros" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="cadastros">
+                        <i class="fas fa-user-plus" ></i>
                         <span class="nav-link-text" > Cadastros</span>
                     </a>
 
-                    <div class="collapse" id="navbar-examples">
+                    <div class="collapse" id="cadastros">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
@@ -90,32 +90,18 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
-                        <i class="ni ni-tv-2 text-primary"></i> Atividades
+                        <i class="fas fa-calendar"></i> Atividades
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                        <i class="fas fa-file"></i> Formulário
                     </a>
                 </li>
             </ul>
-            <!-- Divider -->
             <hr class="my-3">
-            <!-- Heading -->
-            <h6 class="navbar-heading text-muted">Documentation</h6>
-            <!-- Navigation -->
-            <ul class="navbar-nav mb-md-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="https://argon-dashboard-laravel.creative-tim.com/docs/getting-started/overview.html">
-                        <i class="ni ni-spaceship"></i> Getting started
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://argon-dashboard-laravel.creative-tim.com/docs/foundation/colors.html">
-                        <i class="ni ni-palette"></i> Foundation
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://argon-dashboard-laravel.creative-tim.com/docs/components/alerts.html">
-                        <i class="ni ni-ui-04"></i> Components
-                    </a>
-                </li>
-            </ul>
+
+            {{-- <h6 class="navbar-heading text-muted">Formulário</h6> --}}
         </div>
     </div>
 </nav>

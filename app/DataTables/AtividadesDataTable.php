@@ -25,7 +25,7 @@ class AtividadesDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.atividades',
                     'id' => $sql->id,
-                    'confirmar' => true
+                    'confirmar' => !$sql->status
                 ]);
             })
             ->editColumn('status', function($sql) {

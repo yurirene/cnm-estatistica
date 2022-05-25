@@ -147,6 +147,34 @@
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+
+
+    <script>
+        $(function(){
+
+            var url = window.location.pathname, 
+                urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
+                // now grab every link from the navigation
+                $('.navbar-nav a').each(function(){
+                    // and test its normalized href against the url pathname regexp
+                    if(urlRegExp.test(this.href.replace(/\/$/,''))){
+                        $(this).addClass('active');
+                        if ($(this).find('i').length > 0) {
+                            $(this).find('i').addClass('text-primary');
+                        } else {
+                            $(this).addClass('text-primary');
+                        }
+                        
+                        if ($(this).parents().closest('.nav-item').length > 1) {
+                            console.log($(this).parents().closest('.nav-item'));
+                            $(this).parents().closest('.nav-item').first().find('a').first().addClass('active text-primary');
+                        }
+                    }
+                });
+
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
@@ -291,7 +319,7 @@
 
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
-
+            $('.isMoney').mask("#.##0,00", {reverse: true});
             
             $("#hide-sidebar").click(function() {
                 $("#sidenav-main").toggle();
