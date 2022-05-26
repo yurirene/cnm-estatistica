@@ -61,6 +61,15 @@
             float: right;
         }
 
+        .bg-active {
+            background: #5e72e4;
+            color: white !important;
+            border-radius: 0 2em 2em 0;
+        }
+        .bg-active i {
+            color: white !important;
+        }
+
         .paginate_button.page-item.previous a,
         .paginate_button.page-item.next a {
             width: 100px;
@@ -98,27 +107,19 @@
         .accordion-item {
             border: 1px solid rgba(0, 0, 0, .05) !important;
         }
+        .select2-container--default .select2-selection--multiple {
+
+            min-height: calc(2.60rem + 2px);
+            border-color: #9ba4d6;
+        }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             background-color: #5e72e4;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
+            line-height: 2rem;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: white;
-        }
-
-        @media screen and (min-width: 1024px) {
-            .modal-area-orcamentaria {
-                max-width: 1000px;
-                margin: auto;
-            }
-        }
-
-        @media screen and (min-width: 1920px) {
-            .modal-area-orcamentaria {
-                max-width: 1850px;
-                margin: auto;
-            }
         }
 
     </style>
@@ -158,7 +159,7 @@
                 $('.navbar-nav a').each(function(){
                     // and test its normalized href against the url pathname regexp
                     if(urlRegExp.test(this.href.replace(/\/$/,''))){
-                        $(this).addClass('active');
+                        $(this).addClass('active bg-active');
                         if ($(this).find('i').length > 0) {
                             $(this).find('i').addClass('text-primary');
                         } else {
@@ -316,6 +317,7 @@
                     'DD/MM/YYYY'));
             });
 
+            $('.isSelect2').select2();
 
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');

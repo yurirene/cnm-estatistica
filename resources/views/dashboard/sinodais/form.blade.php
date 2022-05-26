@@ -44,6 +44,27 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
+                                {!! Form::text('email_usuario', isset($sinodal) ? $sinodal->usuario->first()->email : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
+                                {!! Form::text('nome_usuario', isset($sinodal) ? $sinodal->usuario->first()->name : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mt-5">
+                                <div class="checkbox{{ $errors->has('resetar_senha') ? ' has-error' : '' }}">
+                                    <label for="resetar_senha">
+                                    {!! Form::checkbox('resetar_senha', '1', null, ['id' => 'resetar_senha']) !!} Resetar Senha
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         @if(count(auth()->user()->regioes) > 1)
                         <div class="col-md-4">
                             <div class="form-group">

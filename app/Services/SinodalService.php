@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SinodalService
@@ -15,14 +16,23 @@ class SinodalService
 
     public static function store(Request $request)
     {
+        DB::beginTransaction();
         try {
-            Sinodal::create([
+            $sinodal = Sinodal::create([
                 'nome' => $request->nome,
                 'sigla' => $request->sigla,
                 'regiao_id' => $request->regiao_id,
                 'status' => $request->status == 'A' ? true : false
             ]);
+            
+            $usuario = UserService::usuarioVinculado($request, $sinodal->id, 'sinodal');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
+            }
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th->getMessage());
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -35,15 +45,21 @@ class SinodalService
 
     public static function update(Sinodal $sinodal, Request $request)
     {
+        DB::beginTransaction();
         try {
-            $regiao = Estado::find($request->estado_id)->regiao_id;
             $sinodal->update([
                 'nome' => $request->nome,
                 'sigla' => $request->sigla,
-                'regiao_id' => $regiao,
+                'regiao_id' => $request->regiao_id,
                 'status' => $request->status == 'A' ? true : false
             ]);
+            $usuario = UserService::usuarioVinculado($request, $sinodal->id, 'sinodal');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
+            }
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),

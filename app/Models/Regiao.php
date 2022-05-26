@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Regiao extends Model
 {       
@@ -29,4 +30,5 @@ class Regiao extends Model
     {
         return $this->hasMany(Local::class);
     }
+
 }

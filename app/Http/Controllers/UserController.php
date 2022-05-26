@@ -2,36 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\SinodalDataTable;
-use App\Models\Sinodal;
-use App\Services\SinodalService;
+use App\DataTables\UserDataTable;
+use App\Models\Perfil;
+use App\Models\Regiao;
+use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Throwable;
 
-class SinodalController extends Controller
+class UserController extends Controller
 {
-    public function index(SinodalDataTable $dataTable)
+    public function index(UserDataTable $dataTable)
     {
-        return $dataTable->render('dashboard.sinodais.index');        
+        return $dataTable->render('dashboard.usuarios.index');
     }
 
     public function create()
     {
-        return view('dashboard.sinodais.form');
+        return view('dashboard.usuarios.form',[
+            'regioes' => UserService::getRegioes()->pluck('nome', 'id'),
+            'perfis' => UserService::getPerfis()->pluck('descricao', 'id')
+        ]);
     }
 
     public function store(Request $request)
     {
         try {
-            SinodalService::store($request);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            UserService::store($request);
+            return redirect()->route('dashboard.usuarios.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
                 ]
-                ]);
+            ]);
         } catch (Throwable $th) {
-            dd($th->getMessage());
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -42,27 +46,21 @@ class SinodalController extends Controller
         }
     }
 
-    public function show(Sinodal $sinodal)
+
+    public function edit(User $usuario)
     {
-        return view('dashboard.sinodais.show', [
-            'sinodal' => $sinodal,
+        return view('dashboard.usuarios.form',[
+            'usuario' => $usuario,
+            'regioes' => UserService::getRegioes()->pluck('nome', 'id'),
+            'perfis' => UserService::getPerfis()->pluck('descricao', 'id')
         ]);
     }
 
-    public function edit(Sinodal $sinodal)
-    {
-        $estados = SinodalService::getEstados();
-        return view('dashboard.sinodais.form', [
-            'sinodal' => $sinodal,
-            'estados' => $estados
-        ]);
-    }
-
-    public function update(Sinodal $sinodal, Request $request)
+    public function update(User $usuario, Request $request)
     {
         try {
-            SinodalService::update($sinodal, $request);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            UserService::update($usuario, $request);
+            return redirect()->route('dashboard.usuarios.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'

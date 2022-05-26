@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Perfil;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RegiaoSeeder::class,
             EstadoSeeder::class,
-            UserSeeder::class
+            PerfilSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

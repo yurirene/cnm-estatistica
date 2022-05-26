@@ -3,13 +3,16 @@
 namespace App\DataTables;
 
 use App\Helpers\FormHelper;
-use App\Models\AcessoExterno;
-use App\Models\Sinodal;
+use App\Helpers\BoostrapHelper;
+use App\Helpers\BootstrapHelper;
+use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class SinodalDataTable extends DataTable
+class UserDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -23,27 +26,38 @@ class SinodalDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.sinodais',
+                    'route' => 'dashboard.usuarios',
                     'id' => $sql->id,
-                    'show' => true
+                    'delete' => false
                 ]);
             })
             ->editColumn('status', function($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
-            ->editColumn('regiao_id', function($sql) {
-                return $sql->regiao->nome;
+            ->addColumn('perfil', function($sql) {
+                $perfis = '';
+                foreach ($sql->perfis as $perfil) {
+                    $perfis .= BootstrapHelper::badge('primary', $perfil->descricao, true);
+                }
+                return $perfis;
             })
-            ->rawColumns(['status']);
+            ->addColumn('administrando', function($sql) {
+                $administrando = '';
+                foreach (UserService::getAdministrados($sql->id) as $adm) {
+                    $administrando .= BootstrapHelper::badge('primary', $adm['texto'], true);
+                }
+                return $administrando;
+            })
+            ->rawColumns(['status', 'perfil', 'administrando']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\User $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Sinodal $model)
+    public function query(User $model)
     {
         return $model->newQuery()->query();
     }
@@ -56,13 +70,13 @@ class SinodalDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('sinodais-table')
+                    ->setTableId('usuario-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(2)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Usuário')
                     )
                     ->parameters([
                         "language" => [
@@ -78,18 +92,20 @@ class SinodalDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
+        $colunas = [
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('nome')->title('Nome'),
-            Column::make('sigla')->title('Sigla'),
+            Column::make('name')->title('Nome'),
+            Column::make('email')->title('E-mail'),
+            Column::make('perfil')->title('Perfil'),
+            Column::make('administrando')->title('Administrando'),
             Column::make('status')->title('Status'),
-            Column::make('regiao_id')->title('Região'),
         ];
+        return $colunas;
     }
 
     /**
@@ -99,6 +115,6 @@ class SinodalDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Sinodais_' . date('YmdHis');
+        return 'USUARIOS_' . date('YmdHis');
     }
 }

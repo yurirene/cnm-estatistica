@@ -59,6 +59,38 @@
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
+                @can('permitido', ['cnm', 'sinodal', 'federacao'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.usuarios.index') }}">
+                        <i class="fas fa-users"></i> Usuários
+                    </a>
+                </li>
+                @endcan
+                @can('cnm')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
+                        <i class="fas fa-user-plus"></i> Sinodais
+                    </a>
+                </li>
+                @endcan
+                
+                @can('permitido', ['cnm', 'secretario'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
+                        <i class="fas fa-calendar"></i> Atividades
+                    </a>
+                </li>
+                @endcan
+
+                @can('local')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                        <i class="fas fa-file"></i> Formulário UMP Local
+                    </a>
+                </li>
+                @endcan
+
+                @can('isAdmin')
                 <li class="nav-item">
                     <a class="nav-link pai" href="#cadastros" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="cadastros">
                         <i class="fas fa-user-plus" ></i>
@@ -89,15 +121,36 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
-                        <i class="fas fa-calendar"></i> Atividades
+                    <a class="nav-link pai" href="#formularios" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="formularios">
+                        <i class="fas fa-file-alt" ></i>
+                        <span class="nav-link-text" > Formulários</span>
                     </a>
+
+                    <div class="collapse" id="formularios">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                                    Sinodais
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                                    Federações
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                                    UMPs Locais
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
-                        <i class="fas fa-file"></i> Formulário
-                    </a>
-                </li>
+                @endcan
+
             </ul>
             <hr class="my-3">
 

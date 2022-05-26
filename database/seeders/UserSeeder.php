@@ -17,12 +17,14 @@ class UserSeeder extends Seeder
     {
         try {
             $usuario = User::create([
-                'name' => 'Lilian',
-                'email' => 'teste@teste.com',
-                'password' => Hash::make('123')
+                'name' => 'Yuri',
+                'email' => 'yuri@ump.net.br',
+                'password' => Hash::make('123'),
+                'admin' => true
             ]);
 
             $usuario->regioes()->sync([1]);
+            $usuario->perfis()->sync([1]);
             
         } catch (\Throwable $th) {
             dd($th->getMessage());

@@ -6,6 +6,7 @@ use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\SinodalController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,8 @@ Auth::routes(['register' => false]);
 Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])->name('trocar-senha');
+
+    Route::resource('usuarios', UserController::class)->names('usuarios');
 
     Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
     Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
