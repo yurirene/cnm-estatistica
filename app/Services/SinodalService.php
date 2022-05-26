@@ -25,14 +25,13 @@ class SinodalService
                 'status' => $request->status == 'A' ? true : false
             ]);
             
-            $usuario = UserService::usuarioVinculado($request, $sinodal->id, 'sinodal');
+            $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -53,7 +52,7 @@ class SinodalService
                 'regiao_id' => $request->regiao_id,
                 'status' => $request->status == 'A' ? true : false
             ]);
-            $usuario = UserService::usuarioVinculado($request, $sinodal->id, 'sinodal');
+            $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }

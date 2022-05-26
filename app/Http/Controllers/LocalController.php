@@ -18,10 +18,7 @@ class LocalController extends Controller
 
     public function create()
     {
-        $federacoes = LocalService::getFederacao();
-        return view('dashboard.locais.form', [
-            'federacoes' => $federacoes
-        ]);
+        return view('dashboard.locais.form');
     }
 
     public function store(Request $request)
@@ -54,9 +51,7 @@ class LocalController extends Controller
 
     public function edit(Local $local)
     {
-        $federacoes = LocalService::getFederacao();
         return view('dashboard.locais.form', [
-            'federacoes' => $federacoes,
             'local' => $local,
         ]);
     }

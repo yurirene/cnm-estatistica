@@ -34,4 +34,10 @@ class Local extends Model
         return $this->belongsTo(Estado::class);
     }
 
+    public function usuario()
+    {
+        return $this->belongsToMany(User::class, 'usuario_local');
+
+    }
+
 }

@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <a class="btn btn-primary" href="{{route('dashboard.sinodais.index')}}"><i class="fas fa-arrow-left"></i> Voltar</a>
+                    <a class="btn btn-primary" href="{{route('dashboard.federacoes.index')}}"><i class="fas fa-arrow-left"></i> Voltar</a>
                     
                     <div class="row mt-3">
                         <div class="col">

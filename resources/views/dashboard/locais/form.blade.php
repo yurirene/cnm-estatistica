@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'UMPs Locais'
+    'titulo' => 'UMP Local'
 ])
     
 <div class="container-fluid mt--7">
@@ -36,12 +36,39 @@
                                 {!! Form::select('status', ['A' => 'Ativa', 'I' => 'Inativa'], isset($local) ? ($local->status == true ? ' A' : 'I') : null , ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
+                        @if(Auth::user()->federacoes->count()>1)
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('federacao_id', 'Federação') !!}
                                 {!! Form::select('federacao_id', $federacoes, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
+                        @else
+                            {!! Form::hidden('federacao_id', auth()->user()->federacoes->first()->id) !!}
+                        @endif
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
+                                {!! Form::text('email_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'email') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
+                                {!! Form::text('nome_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'name') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        @if(isset($local))
+                        <div class="col-md-4">
+                            <div class="form-group mt-5">
+                                <div class="checkbox{{ $errors->has('resetar_senha') ? ' has-error' : '' }}">
+                                    <label for="resetar_senha">
+                                    {!! Form::checkbox('resetar_senha', '1', null, ['id' => 'resetar_senha']) !!} Resetar Senha
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($local) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.locais.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>

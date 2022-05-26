@@ -73,6 +73,20 @@
                     </a>
                 </li>
                 @endcan
+                @can('sinodal')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.federacoes.index') }}">
+                        <i class="fas fa-user-plus"></i> Federação
+                    </a>
+                </li>
+                @endcan
+                @can('federacao')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
+                        <i class="fas fa-user-plus"></i> UMP Local
+                    </a>
+                </li>
+                @endcan
                 
                 @can('permitido', ['cnm', 'secretario'])
                 <li class="nav-item">

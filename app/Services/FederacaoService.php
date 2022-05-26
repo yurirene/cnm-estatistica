@@ -9,6 +9,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FederacaoService
@@ -16,9 +17,10 @@ class FederacaoService
 
     public static function store(Request $request)
     {
+        DB::beginTransaction();
         try {
             $regiao = Sinodal::find($request->sinodal_id)->regiao_id;
-            Federacao::create([
+            $federacao = Federacao::create([
                 'nome' => $request->nome,
                 'sigla' => $request->sigla,
                 'estado_id' => $request->estado_id,
@@ -26,7 +28,15 @@ class FederacaoService
                 'regiao_id' => $regiao,
                 'status' => $request->status == 'A' ? true : false
             ]);
+             
+            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
+            }
+
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -37,11 +47,12 @@ class FederacaoService
         }
     }
 
-    public static function update(Federacao $sinodal, Request $request)
+    public static function update(Federacao $federacao, Request $request)
     {
+        DB::beginTransaction();
         try {
             $regiao = Sinodal::find($request->sinodal_id)->regiao_id;
-            $sinodal->update([
+            $federacao->update([
                 'nome' => $request->nome,
                 'sigla' => $request->sigla,
                 'estado_id' => $request->estado_id,
@@ -49,7 +60,15 @@ class FederacaoService
                 'regiao_id' => $regiao,
                 'status' => $request->status == 'A' ? true : false
             ]);
+             
+            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
+            }
+
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -62,8 +81,12 @@ class FederacaoService
 
     public static function getEstados()
     {
-        $usuario = User::find(Auth::id());
-        $regioes = Estado::whereIn('regiao_id', $usuario->regioes->pluck('id'))
+        $sinodais = Auth::user()->sinodais;
+        $regioes = [];
+        foreach ($sinodais as $sinodal) {
+            $regioes[] = $sinodal->regiao_id;
+        }
+        $regioes = Estado::whereIn('regiao_id', $regioes)
             ->get()
             ->pluck('nome', 'id');
         return $regioes;

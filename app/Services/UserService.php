@@ -7,6 +7,7 @@ use App\Models\Perfil;
 use App\Models\Regiao;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class UserService
 {
 
     public const HIERARQUIA = [
-        1 => [3],
+        1 => [2],
         3 => [4],
         4 => [5]
     ];
@@ -55,7 +56,9 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            $usuario = User::create([
+            $usuario = User::updateOrCreate([
+                'email' => $request->email,
+            ],[
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make('123')
@@ -65,7 +68,7 @@ class UserService
             }
 
             if ($request->filled('perfil_id')) {
-                $usuario->perfis()->sync($request->perfil_id);
+                $usuario->perfis()->attach($request->perfil_id);
             }
 
             DB::commit();
@@ -94,7 +97,7 @@ class UserService
             }
 
             if ($request->filled('perfil_id')) {
-                $usuario->perfis()->sync($request->perfil_id);
+                $usuario->perfis()->attach($request->perfil_id);
             }
             return $usuario;
         } catch (\Throwable $th) {
@@ -134,14 +137,12 @@ class UserService
         return $administrando;
     }
 
-    public static function usuarioVinculado(Request $request, string $id, string $cod_instancia) : User
+    public static function usuarioVinculado(Request $request, Model $instancia, string $perfil, string $relacao) : User
     {
         try {
-            $class = self::INSTANCIAS[$cod_instancia];
-            $instancia = $class::where('id', $id)->first();
             $usuario = $instancia->usuario->first();
             
-            $perfil = Perfil::where('nome', $cod_instancia)->first();
+            $perfil = Perfil::where('nome', $perfil)->first();
 
             $new_request = (new Request([
                 'name' => $request->nome_usuario,
@@ -156,14 +157,15 @@ class UserService
                 $usuario = self::store($new_request);
             }
             
-            if (!in_array($id, $usuario->sinodais->pluck('id')->toArray())) {
-                $novo_vinculo = $usuario->sinodais->pluck('id')->toArray();
-                $novo_vinculo[] = $id;
-                $usuario->sinodais()->sync($novo_vinculo);
+            if (!in_array($instancia->id, $usuario->$relacao->pluck('id')->toArray())) {
+                $novo_vinculo = $usuario->$relacao->pluck('id')->toArray();
+                $novo_vinculo[] = $instancia->id;
+                $usuario->$relacao()->sync($novo_vinculo);
             }
             return $usuario;
 
         } catch (\Throwable $th) {
+            dd($th->getMessage());
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),

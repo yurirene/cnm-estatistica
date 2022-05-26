@@ -47,13 +47,13 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
-                                {!! Form::text('email_usuario', isset($sinodal) ? $sinodal->usuario->first()->email : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('email_usuario', isset($sinodal) ? FormHelper::getUsarioInstancia($sinodal, 'email') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
-                                {!! Form::text('nome_usuario', isset($sinodal) ? $sinodal->usuario->first()->name : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('nome_usuario', isset($sinodal) ? FormHelper::getUsarioInstancia($sinodal, 'name') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">

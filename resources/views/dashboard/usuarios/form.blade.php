@@ -44,13 +44,14 @@
                         </div>
                     </div>
                     <div class="row">
-
+                        @can('isAdmin')
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('regiao_id[]', 'Região') !!}
                                 {!! Form::select('regiao_id[]', $regioes, isset($usuario) ? $usuario->regioes->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
                             </div>
                         </div>
+                        @endcan
                         @if(isset($usuario))
                         <div class="col-md-4">
                             <div class="form-group">

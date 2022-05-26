@@ -56,7 +56,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Federacao::class, 'usuario_federacao');
     }
 
-    public function local()
+    public function locais()
     {
         return $this->belongsToMany(Local::class, 'usuario_local');
     }
@@ -66,6 +66,26 @@ class User extends Authenticatable
         if (Auth::user()->admin) {
             return $query;
         }
-        return $query;
+        return $query->whereDoesntHave('perfis', function($sql) {
+            return $sql->whereIn('nome', ['cnm']);
+        })
+        ->when(in_array('cnm', Auth::user()->perfis->pluck('nome')->toArray()), function($sql) {
+            return $sql->whereHas('sinodais', function ($q) {
+                return $q->whereIn('regiao_id', Auth::user()->regioes->pluck('id')->toArray());
+            })->orWhereHas('perfis', function ($q) {
+                return $q->where('nome', 'secretario');
+            });
+        })
+        ->when(in_array('sinodal', Auth::user()->perfis->pluck('nome')->toArray()), function($sql) {
+            return $sql->whereHas('federacoes', function ($q) {
+                return $q->whereIn('sinodal_id', Auth::user()->sinodais->pluck('id')->toArray());
+            });
+        })
+        ->when(in_array('federacao', Auth::user()->perfis->pluck('nome')->toArray()), function($sql) {
+            return $sql->whereHas('locais', function ($q) {
+                return $q->whereIn('federacao_id', Auth::user()->federacoes->pluck('id')->toArray());
+            });
+        });
+        
     }
 }

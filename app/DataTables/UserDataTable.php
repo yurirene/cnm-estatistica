@@ -76,7 +76,7 @@ class UserDataTable extends DataTable
                     ->dom('Bfrtip')
                     ->orderBy(2)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Usuário')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Usuário')->enabled(Auth::user()->perfis()->where('nome','cnm')->get()->isNotEmpty())
                     )
                     ->parameters([
                         "language" => [
