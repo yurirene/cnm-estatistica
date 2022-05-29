@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
+use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Federacao extends Model
 {
-    use Uuid;
+    use GenericTrait;
     
     protected $table = 'federacoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];

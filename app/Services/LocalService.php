@@ -25,7 +25,8 @@ class LocalService
                 'federacao_id' => $federacao->id,
                 'sinodal_id' => $federacao->sinodal_id,
                 'regiao_id' => $federacao->regiao_id,
-                'status' => $request->status == 'A' ? true : false
+                'status' => $request->status == 'A' ? true : false ,
+                'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
              
             $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
@@ -49,18 +50,18 @@ class LocalService
     {
         DB::beginTransaction();
         try {
-            $regiao = Estado::find($request->estado_id)->regiao_id;
+            $federacao = Federacao::find($request->federacao_id);
             $local->update([
                 'nome' => $request->nome,
-                'sigla' => $request->sigla,
-                'estado_id' => $request->estado_id,
-                'federacao_id' => $request->federacao_id,
-                'sinodal_id' => $request->sinodal_id,
-                'regiao_id' => $regiao,
-                'status' => $request->status == 'A' ? true : false
+                'estado_id' => $federacao->estado_id,
+                'federacao_id' => $federacao->id,
+                'sinodal_id' => $federacao->sinodal_id,
+                'regiao_id' => $federacao->regiao_id,
+                'status' => $request->status == 'A' ? true : false ,
+                'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
              
-            $usuario = UserService::usuarioVinculado($request, $local->id, 'local', 'locais');
+            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }

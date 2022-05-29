@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
-use Database\Seeders\RegiaoSeeder;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
 
-    use Uuid;
+    use GenericTrait;
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
@@ -58,7 +56,7 @@ class User extends Authenticatable
 
     public function locais()
     {
-        return $this->belongsToMany(Local::class, 'usuario_local');
+        return $this->belongsToMany(Local::class, 'usuario_local', 'user_id', 'local_id', 'id', 'id');
     }
 
     public function scopeQuery($query)
@@ -66,24 +64,27 @@ class User extends Authenticatable
         if (Auth::user()->admin) {
             return $query;
         }
+
+        $perfil_usuario =  Auth::user()->perfis->pluck('nome')->toArray();
+        $param_busca = count($perfil_usuario) > 1 ? 'orWhereHas' : 'whereHas'; 
         return $query->whereDoesntHave('perfis', function($sql) {
             return $sql->whereIn('nome', ['cnm']);
         })
-        ->when(in_array('cnm', Auth::user()->perfis->pluck('nome')->toArray()), function($sql) {
+        ->when(in_array('cnm',$perfil_usuario), function($sql) {
             return $sql->whereHas('sinodais', function ($q) {
-                return $q->whereIn('regiao_id', Auth::user()->regioes->pluck('id')->toArray());
+                return $q->whereIn('sinodais.regiao_id', Auth::user()->regioes->pluck('id')->toArray());
             })->orWhereHas('perfis', function ($q) {
                 return $q->where('nome', 'secretario');
             });
         })
-        ->when(in_array('sinodal', Auth::user()->perfis->pluck('nome')->toArray()), function($sql) {
-            return $sql->whereHas('federacoes', function ($q) {
-                return $q->whereIn('sinodal_id', Auth::user()->sinodais->pluck('id')->toArray());
+        ->when(in_array('sinodal',$perfil_usuario), function($sql) use ($param_busca) {
+            return $sql->$param_busca('federacoes', function ($q) {
+                return $q->whereIn('federacoes.sinodal_id', Auth::user()->sinodais->pluck('id')->toArray());
             });
         })
-        ->when(in_array('federacao', Auth::user()->perfis->pluck('nome')->toArray()), function($sql) {
-            return $sql->whereHas('locais', function ($q) {
-                return $q->whereIn('federacao_id', Auth::user()->federacoes->pluck('id')->toArray());
+        ->when(in_array('federacao',$perfil_usuario), function($sql) use ($param_busca) {
+            return $sql->$param_busca('locais', function ($q) {
+                return $q->whereIn('locais.federacao_id', Auth::user()->federacoes->pluck('id')->toArray());
             });
         });
         

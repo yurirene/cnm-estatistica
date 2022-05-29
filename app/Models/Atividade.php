@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
+use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Atividade extends Model
 {
-    
-    use Uuid;
+    use GenericTrait;
     
     protected $table = 'atividades';
     protected $guarded = ['id', 'created_at', 'updated_at'];

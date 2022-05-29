@@ -97,10 +97,17 @@ class UserService
             }
 
             if ($request->filled('perfil_id')) {
-                $usuario->perfis()->attach($request->perfil_id);
+                $perfis = $usuario->perfis->pluck('id')->toArray();
+                $perfil_id = $request->perfil_id;
+
+                if (!in_array($perfil_id, $perfis)) {
+                    array_push($perfis, $perfil_id);
+                    $usuario->perfis()->sync(array_unique($perfil_id));
+                }
             }
             return $usuario;
         } catch (\Throwable $th) {
+            dd($th->getMessage(), $th->getLine(), $th->getFile());
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -128,7 +135,7 @@ class UserService
                 'cor' => 'primary'
             ];
         }
-        foreach ($usuario->local as $local) {
+        foreach ($usuario->locais as $local) {
             $administrando[] = [
                 'texto' => $local->nome,
                 'cor' => 'info'
@@ -165,7 +172,6 @@ class UserService
             return $usuario;
 
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),

@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Services\UserService;
+use App\Traits\Auditable;
+use App\Traits\GenericTrait;
 use App\Traits\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Sinodal extends Model
 {
-    use Uuid;
+    use GenericTrait;
     
     protected $table = 'sinodais';
     protected $guarded = ['id', 'created_at', 'updated_at'];

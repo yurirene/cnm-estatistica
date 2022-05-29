@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
+use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Local extends Model
 {
-    use Uuid;
+    use GenericTrait;
     
     protected $table = 'locais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
@@ -37,7 +37,6 @@ class Local extends Model
     public function usuario()
     {
         return $this->belongsToMany(User::class, 'usuario_local');
-
     }
 
 }

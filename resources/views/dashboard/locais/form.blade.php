@@ -49,7 +49,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
-                                {!! Form::text('email_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'email') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::email('email_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'email') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -69,6 +69,12 @@
                             </div>
                         </div>
                         @endif
+                        <div class="col-md-4">
+                            <div class="form-group mt-5">
+                                <label for="resetar_senha">
+                                {!! Form::checkbox('outro_modelo', '1', null, ['id' => 'outro_modelo']) !!} Não trabalha com modelo UMP
+                            </div>
+                        </div>
                     </div>
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($local) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.locais.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>

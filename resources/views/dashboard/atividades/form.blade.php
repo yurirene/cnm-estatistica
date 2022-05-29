@@ -39,7 +39,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 {!! Form::label('status', 'Status') !!}
-                                {!! Form::select('status', ['I' => 'Pendente', 'A' => 'Presente'], isset($atividade) ? ($atividade->status == true ? ' A' : 'I') : null , ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::select('status', ['I' => 'Pendente', 'A' => 'Presente'], isset($atividade) ? ($atividade->status == true ? 'A' : 'I') : null , ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         <div class="col-md-3">
