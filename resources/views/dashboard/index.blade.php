@@ -51,7 +51,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div id="mapa-brazil" style="margin: 0 auto; width: 460px"></div>
+                        <div class="table-responsive">
+                            <div id="mapa-brazil" style="margin: 0 auto; width: 460px"></div>
+                        </div>
                     </div>
                 </div>
             </div>
