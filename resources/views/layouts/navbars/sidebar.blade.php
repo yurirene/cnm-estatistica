@@ -59,13 +59,13 @@
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
-                @can('permitido', ['cnm', 'sinodal', 'federacao'])
+                @canAtLeast(['dashboard.usuarios.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.usuarios.index') }}">
                         <i class="fas fa-users"></i> Usuários
                     </a>
                 </li>
-                @endcan
+                @endCanAtLeast
                 @can('cnm')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">

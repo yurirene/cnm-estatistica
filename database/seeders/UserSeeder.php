@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             ]);
 
             $usuario->regioes()->sync([1]);
-            $usuario->perfis()->sync([1]);
+            $usuario->roles()->sync([1]);
             
         } catch (\Throwable $th) {
             dd($th->getMessage());

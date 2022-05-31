@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             RegiaoSeeder::class,
             EstadoSeeder::class,
             PerfilSeeder::class,
+            RolesSeeder::class,
+            PermissionsSeeder::class,
+            PermissionRoleSeeder::class,
             UserSeeder::class,
         ]);
     }

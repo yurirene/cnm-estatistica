@@ -9,13 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Yajra\Acl\Traits\HasRoleAndPermission;
+use Yajra\Acl\Traits\InteractsWithRole;
 
 class User extends Authenticatable
 {
 
     use GenericTrait;
     use HasApiTokens, HasFactory, Notifiable;
-    use HasRoleAndPermission;
+    use HasRoleAndPermission, InteractsWithRole;
 
     protected $fillable = [
         'name',
