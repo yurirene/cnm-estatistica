@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         return view('dashboard.usuarios.form',[
             'regioes' => UserService::getRegioes()->pluck('nome', 'id'),
-            'perfis' => UserService::getPerfis()->pluck('descricao', 'id')
+            'perfis' => UserService::getRoles()->pluck('description', 'id')
         ]);
     }
 
@@ -52,7 +52,7 @@ class UserController extends Controller
         return view('dashboard.usuarios.form',[
             'usuario' => $usuario,
             'regioes' => UserService::getRegioes()->pluck('nome', 'id'),
-            'perfis' => UserService::getPerfis()->pluck('descricao', 'id')
+            'perfis' => UserService::getRoles()->pluck('description', 'id')
         ]);
     }
 

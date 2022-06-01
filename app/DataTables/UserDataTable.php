@@ -35,11 +35,11 @@ class UserDataTable extends DataTable
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
             ->addColumn('perfil', function($sql) {
-                $perfis = '';
-                foreach ($sql->perfis as $perfil) {
-                    $perfis .= BootstrapHelper::badge('primary', $perfil->descricao, true);
+                $roles = '';
+                foreach ($sql->roles as $role) {
+                    $roles .= BootstrapHelper::badge('primary', $role->description, true);
                 }
-                return $perfis;
+                return $roles;
             })
             ->addColumn('administrando', function($sql) {
                 $administrando = '';
@@ -76,7 +76,7 @@ class UserDataTable extends DataTable
                     ->dom('Bfrtip')
                     ->orderBy(2)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Usuário')->enabled(Auth::user()->perfis()->where('nome','cnm')->get()->isNotEmpty())
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Usuário')->enabled(auth()->user()->canAtLeast(['dashboard.usuarios.create']))
                     )
                     ->parameters([
                         "language" => [

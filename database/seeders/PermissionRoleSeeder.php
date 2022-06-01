@@ -44,7 +44,7 @@ class PermissionRoleSeeder extends Seeder
             ],
             5 => [
                 'resources' => [
-                    'locais'
+                    'umps_locais'
                 ],
                 'permissions' => [
                     1, 4, 5
@@ -57,15 +57,16 @@ class PermissionRoleSeeder extends Seeder
             ]
         ];
         DB::beginTransaction();
+        DB::table('permission_role')->truncate();
         try {
                 
             foreach ($roles_permissions as $role_id => $permissions_array) {
                 $role = Role::find($role_id);
-                $permissions = Permission::whereIn('resource', $permissions_array['resources'])->get()->pluck('id');
-                $role->syncPermissions($permissions);
+                $permissions = Permission::whereIn('resource', $permissions_array['resources'])->get()->pluck('id')->toArray();
                 if (isset($permissions_array['permissions'])) {
-                    $role->syncPermissions($permissions_array['permissions']);
+                    array_push($permissions, ...$permissions_array['permissions']);
                 }
+                $role->syncPermissions($permissions);
             }
             DB::commit();
         } catch (\Throwable $th) {

@@ -68,12 +68,12 @@ class User extends Authenticatable
             return $query;
         }
 
-        $perfil_usuario =  Auth::user()->perfis->pluck('nome')->toArray();
+        $perfil_usuario =  Auth::user()->roles->pluck('name')->toArray();
         $param_busca = count($perfil_usuario) > 1 ? 'orWhereHas' : 'whereHas'; 
-        return $query->whereDoesntHave('perfis', function($sql) {
-            return $sql->whereIn('nome', ['cnm']);
+        return $query->whereDoesntHave('roles', function($sql) {
+            return $sql->whereIn('name', ['diretoria']);
         })
-        ->when(in_array('cnm',$perfil_usuario), function($sql) {
+        ->when(in_array('diretoria',$perfil_usuario), function($sql) {
             return $sql->whereHas('sinodais', function ($q) {
                 return $q->whereIn('sinodais.regiao_id', Auth::user()->regioes->pluck('id')->toArray());
             })->orWhereHas('perfis', function ($q) {

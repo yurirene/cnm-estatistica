@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\AtividadesDataTable;
+use App\Helpers\AuthHelper;
 use App\Models\Atividade;
 use App\Services\AtividadeService;
 use App\Services\CalendarioService;

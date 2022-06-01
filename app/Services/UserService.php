@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Estado;
-use App\Models\Perfil;
+use Yajra\Acl\Models\Role;
 use App\Models\Regiao;
 use App\Models\User;
 use Exception;
@@ -13,15 +12,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 
 class UserService
 {
 
     public const HIERARQUIA = [
-        1 => [2],
-        3 => [4],
-        4 => [5]
+        1 => [2, 3],
+        2 => [4],
+        4 => [5],
+        5 => [6]
     ];
 
     public const INSTANCIAS = [
@@ -30,18 +29,18 @@ class UserService
         'local' => 'App\Models\Local',
     ];
 
-    public static function getPerfis()
+    public static function getRoles()
     {
         if (Auth::user()->admin) {
-            return Perfil::all();
+            return Role::all();
         }
-        $perfis = array();
+        $roles = array();
 
-        foreach (Auth::user()->perfis as $perfil) {
-            $perfis[] = self::HIERARQUIA[$perfil->id];
+        foreach (Auth::user()->roles as $role) {
+            $roles[] = self::HIERARQUIA[$role->id];
         }
         
-        return Perfil::whereIn('id', $perfis)->get();
+        return Role::whereIn('id', $roles)->get();
     }
 
     public static function getRegioes()
@@ -68,7 +67,13 @@ class UserService
             }
 
             if ($request->filled('perfil_id')) {
-                $usuario->perfis()->attach($request->perfil_id);
+                $roles = $usuario->roles->pluck('id')->toArray();
+                $perfil_id = $request->perfil_id;
+
+                if (!in_array($perfil_id, $roles)) {
+                    array_push($roles, $perfil_id);
+                    $usuario->syncRoles(array_unique($perfil_id));
+                }
             }
 
             DB::commit();
@@ -97,17 +102,16 @@ class UserService
             }
 
             if ($request->filled('perfil_id')) {
-                $perfis = $usuario->perfis->pluck('id')->toArray();
+                $roles = $usuario->roles->pluck('id')->toArray();
                 $perfil_id = $request->perfil_id;
 
-                if (!in_array($perfil_id, $perfis)) {
-                    array_push($perfis, $perfil_id);
-                    $usuario->perfis()->sync(array_unique($perfil_id));
+                if (!in_array($perfil_id, $roles)) {
+                    $perfis = array_merge($roles, $perfil_id);
+                    $usuario->syncRoles(array_unique($perfis));
                 }
             }
             return $usuario;
         } catch (\Throwable $th) {
-            dd($th->getMessage(), $th->getLine(), $th->getFile());
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -149,7 +153,7 @@ class UserService
         try {
             $usuario = $instancia->usuario->first();
             
-            $perfil = Perfil::where('nome', $perfil)->first();
+            $perfil = Role::where('name', $perfil)->first();
 
             $new_request = (new Request([
                 'name' => $request->nome_usuario,

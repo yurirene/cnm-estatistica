@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes(['register' => false]);
 
 
-Route::group(['middleware' => 'auth', 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])->name('trocar-senha');
 

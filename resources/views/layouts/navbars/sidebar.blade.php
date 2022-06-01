@@ -66,45 +66,42 @@
                     </a>
                 </li>
                 @endCanAtLeast
-                @can('cnm')
+                @canAtLeast(['dashboard.sinodais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
                         <i class="fas fa-user-plus"></i> Sinodais
                     </a>
                 </li>
-                @endcan
-                @can('sinodal')
+                @endCanAtLeast
+                @canAtLeast(['dashboard.federacoes.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.federacoes.index') }}">
                         <i class="fas fa-user-plus"></i> Federação
                     </a>
                 </li>
-                @endcan
-                @can('federacao')
+                @endCanAtLeast
+                @canAtLeast(['dashboard.locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
                         <i class="fas fa-user-plus"></i> UMP Local
                     </a>
                 </li>
-                @endcan
-                
-                @can('permitido', ['cnm', 'secretario'])
+                @endCanAtLeast
+                @canAtLeast(['dashboard.atividades.index'])                
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
                         <i class="fas fa-calendar"></i> Atividades
                     </a>
                 </li>
-                @endcan
-
-                @can('local')
+                @endCanAtLeast
+                @canAtLeast(['dashboard.formularios-locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
                         <i class="fas fa-file"></i> Formulário UMP Local
                     </a>
                 </li>
-                @endcan
-
-                @can('isAdmin')
+                @endCanAtLeast
+                @canAtLeast(['administrador'])
                 <li class="nav-item">
                     <a class="nav-link pai" href="#cadastros" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="cadastros">
                         <i class="fas fa-user-plus" ></i>
@@ -163,7 +160,7 @@
                         </ul>
                     </div>
                 </li>
-                @endcan
+                @endCanAtLeast
 
             </ul>
             <hr class="my-3">

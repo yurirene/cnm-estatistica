@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'canAtLeast' => \Yajra\Acl\Middleware\CanAtLeastMiddleware::class,
         'permission' => \Yajra\Acl\Middleware\PermissionMiddleware::class,
         'role' => \Yajra\Acl\Middleware\RoleMiddleware::class,
+        'auth-sistema' => \App\Http\Middleware\AuthSistema::class,
     ];
 }
