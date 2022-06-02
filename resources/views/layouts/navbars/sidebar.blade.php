@@ -101,6 +101,19 @@
                     </a>
                 </li>
                 @endCanAtLeast
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-sinodais.index') }}">
+                        <i class="fas fa-file"></i> Formulário Sinodal
+                    </a>
+                </li>
+
+
+
+
+
+
                 @canAtLeast(['administrador'])
                 <li class="nav-item">
                     <a class="nav-link pai" href="#cadastros" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="cadastros">

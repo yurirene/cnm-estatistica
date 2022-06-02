@@ -165,16 +165,16 @@ return [
         /*
          * Package Service Providers...
          */
-
+        
         /*
-         * Application Service Providers...
-         */
+        * Application Service Providers...
+        */
+        Yajra\Acl\AclServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Yajra\Acl\AclServiceProvider::class,
 
     ],
 

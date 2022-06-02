@@ -4,6 +4,7 @@ use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
+use App\Http\Controllers\FormularioSinodalController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\SinodalController;
 use App\Http\Controllers\UserController;
@@ -47,6 +48,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
     Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
+    
+    Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])->name('formularios-sinodais.index');
+    Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
 
 });
 
