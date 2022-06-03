@@ -212,30 +212,47 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.formularios-locais.index',
                 'resource' => 'formularios_ump',
             ],
-           
-
             [
                 'name' => 'Salvar Formulário UMP Local',
                 'slug' => 'dashboard.formularios-locais.store',
                 'resource' => 'formularios_ump',
             ],
-
             [
                 'name' => 'Ver Formulário UMP Local',
                 'slug' => 'dashboard.formularios-locais.view',
                 'resource' => 'formularios_ump',
             ],
+
+
+            [
+                'name' => 'Visualizar Formulário Federação',
+                'slug' => 'dashboard.formularios-federacoes.index',
+                'resource' => 'formularios_fed',
+            ],           
+
+            [
+                'name' => 'Salvar Formulário Federação',
+                'slug' => 'dashboard.formularios-federacoes.store',
+                'resource' => 'formularios_fed',
+            ],
+            [
+                'name' => 'Ver Formulário Federação',
+                'slug' => 'dashboard.formularios-federacoes.view',
+                'resource' => 'formularios_fed',
+            ],
+            [
+                'name' => 'Resumo Totalizador Formulário Federação',
+                'slug' => 'dashboard.formularios-federacoes.resumo',
+                'resource' => 'formularios_fed',
+            ],
            
         ];
 
-        DB::beginTransaction();
         try {
             foreach ($permissions as $role) {
                 Permission::create($role);
             }
-            DB::commit();
         } catch (\Throwable $th) {
-            DB::rollBack();
             dd($th->getMessage());
         }
     }

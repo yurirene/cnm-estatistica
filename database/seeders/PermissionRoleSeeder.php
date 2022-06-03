@@ -36,7 +36,7 @@ class PermissionRoleSeeder extends Seeder
             ],
             4 => [
                 'resources' => [
-                    'federacoes'
+                    'federacoes',
                 ],
                 'permissions' => [
                     1, 4, 5
@@ -44,7 +44,8 @@ class PermissionRoleSeeder extends Seeder
             ],
             5 => [
                 'resources' => [
-                    'umps_locais'
+                    'umps_locais',
+                    'formularios_fed'
                 ],
                 'permissions' => [
                     1, 4, 5
