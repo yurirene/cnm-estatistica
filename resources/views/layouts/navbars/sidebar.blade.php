@@ -110,6 +110,12 @@
                 </li>
 
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
+                        <i class="fas fa-file"></i> Formulário Federação
+                    </a>
+                </li>
+
 
 
 

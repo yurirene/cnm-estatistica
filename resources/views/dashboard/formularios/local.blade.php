@@ -13,6 +13,37 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
+                            <h3 class="mb-0">Painel Estatístico</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-inline">
+                                <div class="form-group mb-2">
+                                    {!! Form::label('Ano') !!}
+                                    {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
+                                </div>
+                                <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
+                                @if($coleta)
+                                    <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @include('dashboard.formularios.local.respostas')
+    @if($coleta)
+    <div class="row mt-5" id="formulario_ump" style="display: none;">
+        <div class="col-xl-12 mb-5 mb-xl-0">
+            <div class="card shadow p-3">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
                             <h3 class="mb-0">Formulário Estatístico</h3>
                         </div>
                     </div>
@@ -47,6 +78,20 @@
                     <h3>ACI</h3>
                     @include('dashboard.formularios.local.aci')
 
+                    @if(count(auth()->user()->locais) > 1)
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('local_id', 'UMP Local') !!}
+                                {!! Form::select('local_id', auth()->user()->locais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        @else 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::hidden('local_id', auth()->user()->locais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
@@ -56,15 +101,12 @@
             </div>
         </div>
     </div>
+    @endif
 </div>  
 @endsection
 
 @push('js')
-<script>
 
-$(document).ready(function() {
+@include('dashboard.formularios.local.js.script')
 
-});
-
-</script>
 @endpush

@@ -38,10 +38,10 @@
         </div>
     </div>
     <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[de30-35]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[de30-35]', 'Sócios entre de30-35') !!}
-        {!! Form::number('perfil[de30-35]', 0, ['class' => 'form-control', 'required' => 'required']) !!}
-        <small class="text-danger">{{ $errors->first('perfil[de30-35]') }}</small>
+        <div class="form-group{{ $errors->has('perfil[de30a35]') ? ' has-error' : '' }}">
+        {!! Form::label('perfil[de30a35]', 'Sócios entre de30a35') !!}
+        {!! Form::number('perfil[de30a35]', 0, ['class' => 'form-control', 'required' => 'required']) !!}
+        <small class="text-danger">{{ $errors->first('perfil[de30a35]') }}</small>
         </div>
     </div>
     <div class="col-md-3 col-sm-6 mt-3">

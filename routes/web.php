@@ -48,10 +48,13 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
     Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
+    Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
     
     Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])->name('formularios-sinodais.index');
     Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
 
+    Route::get('/formularios-federacoes', [FormularioSinodalController::class, 'index'])->name('formularios-federacoes.index');
+    Route::post('/formularios-federacoes', [FormularioSinodalController::class, 'store'])->name('formularios-federacoes.store');
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -219,6 +219,12 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.formularios-locais.store',
                 'resource' => 'formularios_ump',
             ],
+
+            [
+                'name' => 'Ver Formulário UMP Local',
+                'slug' => 'dashboard.formularios-locais.view',
+                'resource' => 'formularios_ump',
+            ],
            
         ];
 
