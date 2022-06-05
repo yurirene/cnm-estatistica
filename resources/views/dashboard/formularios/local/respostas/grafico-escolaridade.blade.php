@@ -24,13 +24,17 @@
                                 return context.label + ': ' + context.parsed + '%'
                             }
                         }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
                     }
                 }
             }
         };
         const escolaridadeChart = new Chart(
-            document.getElementById('escolaridade'),
-            config_grafico_escolaridade
+        document.getElementById('escolaridade'),
+        config_grafico_escolaridade
         );
     }
     

@@ -56,7 +56,7 @@
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.home') }}">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                        <i class="fas fa-home"></i> Início
                     </a>
                 </li>
                 @canAtLeast(['dashboard.usuarios.index'])

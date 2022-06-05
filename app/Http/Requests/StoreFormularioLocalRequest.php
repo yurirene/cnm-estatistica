@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\Formularios\ValidarFormularioService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFormularioLocalRequest extends FormRequest
@@ -14,6 +15,88 @@ class StoreFormularioLocalRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'total' => intval($this->perfil['ativos']) + intval($this->perfil['cooperadores']),
+        ]);
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $response  = $this->somatorio();
+            if (!$response['status']) {
+                $validator->errors()->add('somatorio', $response['text']);
+            }
+        });
+    }
+
+    public function somatorio()
+    {
+
+        $response = [
+            'status' => true,
+            'text' => ''
+        ];
+
+        $validacoes = [];
+        $erros = [];
+        
+        $validacoes['Sexo'] = ValidarFormularioService::somatorio(
+            $this->total, 
+            $this->perfil['homens'], 
+            $this->perfil['mulheres']
+        );
+        $validacoes['Idade'] = ValidarFormularioService::somatorio(
+            $this->total, 
+            $this->perfil['menor19'], 
+            $this->perfil['de19a23'],
+            $this->perfil['de24a29'],
+            $this->perfil['de30a35']
+        );
+        $validacoes['Escolaridade'] = ValidarFormularioService::somatorio(
+            $this->total, 
+            $this->escolaridade['fundamental'], 
+            $this->escolaridade['medio'],
+            $this->escolaridade['tecnico'],
+            $this->escolaridade['superior'],
+            $this->escolaridade['pos']
+        );
+        
+        $validacoes['Estado Civil'] = ValidarFormularioService::somatorio(
+            $this->total, 
+            $this->estado_civil['solteiros'], 
+            $this->estado_civil['casados'],
+            $this->estado_civil['divorciados'],
+            $this->estado_civil['viuvos']
+        );
+
+        
+        $validacoes['Sócios com Filhos'] = ValidarFormularioService::limite(
+            $this->total, 
+            $this->estado_civil['filhos']
+        );    
+        
+        $validacoes['Desempregados'] = ValidarFormularioService::limite(
+            $this->total, 
+            $this->escolaridade['desempregado']
+        );
+
+        foreach ($validacoes as $campo => $v) {
+            if (!$v) {
+                $response['status'] = false;
+                $erros[] = $campo;
+            }
+        }
+        if (!$response['status']) {
+            $texto = count($erros) > 1 ? 'Os campos [ :campo ] não totalizam :total sócios' : 'O campo :campo não totaliza :total sócios';
+            $response['text'] = str_replace([':campo', ':total'], [implode(', ', $erros), $this->total], $texto);
+        }
+
+        return $response;
+
     }
 
     /**
@@ -29,7 +112,13 @@ class StoreFormularioLocalRequest extends FormRequest
             'estado_civil' => ['array', 'required', 'min:5'],
             'deficiencia' => ['array', 'required', 'min:9'],
             'programacoes' => ['array', 'required', 'min:5'],
-            'aci' => ['array', 'required', 'min:2']
+            'aci' => ['array', 'required', 'min:2'],
+            'perfil.*' => ['min:0'],
+            'escolaridade.*' => ['min:0'],
+            'estado_civil.*' => ['min:0'],
+            'deficiencia.*' => ['min:0'],
+            'programacoes.*' => ['min:0'],
+            
         ];
     }
 

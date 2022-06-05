@@ -55,7 +55,8 @@
                             legendItem.datasetIndex
                             ).hidden = legend.chart.isDatasetVisible(legendItem.datasetIndex);
                             legend.chart.update();
-                        }
+                        },
+                        position: 'bottom'
                     },
                     tooltip: {
                         callbacks: {

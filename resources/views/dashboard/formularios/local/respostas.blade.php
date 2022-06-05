@@ -12,13 +12,13 @@
             <div class="card-body">
                 @include('dashboard.formularios.local.respostas.resumo')
                 <div class="row mt-3">
-                    <div class="col-md-4 mt-3">
+                    <div class="col-md-6 mt-3">
                         @include('dashboard.formularios.local.respostas.grafico-perfil')
                     </div>
-                    <div class="col-md-4 mt-3">
+                    <div class="col-md-6 mt-3">
                         @include('dashboard.formularios.local.respostas.grafico-escolaridade')
                     </div>
-                    <div class="col-md-4 mt-3">
+                    <div class="col-md-6 mt-3">
                         @include('dashboard.formularios.local.respostas.grafico-programacao')
                     </div>
                 </div>

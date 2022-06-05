@@ -21,6 +21,10 @@
                                 return context.label + ': ' + context.parsed.r + '%'
                             }
                         }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
                     }
                 }
             }
