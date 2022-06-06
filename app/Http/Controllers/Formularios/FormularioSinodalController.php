@@ -59,4 +59,13 @@ class FormularioSinodalController extends Controller
             return response()->json(['erro' => $th->getMessage()]);
         }
     }
+
+    public function importar(Request $request)
+    {
+        try {
+            FormularioSinodalService::importar($request);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
+    }
 }

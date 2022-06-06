@@ -30,6 +30,7 @@
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
+                                    <button type="button" id="importar" class="btn btn-primary mb-2 ml-1">Importar Excel</button>
                                 @endif
                             </div>
                         </div>
@@ -105,6 +106,37 @@
                             </div>
                         </div>
                     @endif
+
+                    <div class="btn-group pull-right">
+                    {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
+                    </div>
+                    {!! Form::close() !!}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5" id="formulario_importar" style="{{ $errors->has('somatorio') ? ' ' : 'display: none;' }}">
+        <div class="col-xl-12 mb-5 mb-xl-0">
+            <div class="card shadow p-3">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">Importar Formulário Formulário Estatístico</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-sinodais.importar', 'class' => 'form-horizontal', 'files' => true]) !!}
+                    <div class="form-group{{ $errors->has('planilha') ? ' has-error' : '' }}">
+                    {!! Form::label('planilha', 'Planilha') !!}
+                    {!! Form::file('planilha', ['required' => 'required', 'class' => 'form-control']) !!}
+                    <p class="help-block">Selecione o arquivo</p>
+                    <small class="text-danger">{{ $errors->first('planilha') }}</small>
+                    </div>
+
+                    <h2>Informações Complementares</h2>
+                    <h3>Programações</h3>
+                    @include('dashboard.formularios.local.programacoes')
 
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}

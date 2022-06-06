@@ -2,6 +2,7 @@
 
 namespace App\Services\Formularios;
 
+use App\Imports\FormularioSinodalImport;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
@@ -13,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FormularioSinodalService
 {
@@ -231,6 +233,15 @@ class FormularioSinodalService
         } catch (\Throwable $th) {
             throw new Exception("Erro no Totalizador", 1);
             
+        }
+    }
+
+    public static function importar(Request $request)
+    {
+        try {
+            Excel::import(new FormularioSinodalImport, request()->file('planilha'));
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 

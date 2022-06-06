@@ -2,6 +2,11 @@
     $('#responder').on('click', function() {
         $('#formulario_ump').show();
     });
+
+    $('#importar').on('click', function() {
+        $('#formulario_importar').show();
+    });
+    
     $('#visualizar').on('click', function() {
         $.ajax({
             type: "POST",
