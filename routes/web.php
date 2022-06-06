@@ -5,7 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
-use App\Http\Controllers\FormularioSinodalController;
+use App\Http\Controllers\Formularios\FormularioSinodalController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\SinodalController;
 use App\Http\Controllers\UserController;
@@ -53,6 +53,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     
     Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])->name('formularios-sinodais.index');
     Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
+    Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
+    Route::post('/formularios-sinodais-resumo', [FormularioSinodalController::class, 'resumoTotalizador'])->name('formularios-sinodais.resumo');
 
     Route::get('/formularios-federacoes', [FormularioFederacaoController::class, 'index'])->name('formularios-federacoes.index');
     Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');

@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Formulários - UMP Local'
+    'titulo' => 'Formulários - Sinodal'
 ])
 
 <div class="container-fluid mt--7">
@@ -38,11 +38,9 @@
             </div>
         </div>
     </div>
-    @if(count($anos) > 0)
-        @include('dashboard.formularios.federacao.respostas')
-    @endif
+    @include('dashboard.formularios.sinodal.respostas')
     @if($coleta)
-    <div class="row mt-5" id="formulario_ump" style="display: none;">
+    <div class="row mt-5" id="formulario_ump" style="{{ $errors->has('somatorio') ? ' ' : 'display: none;' }}">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
                 <div class="card-header border-0">
@@ -53,33 +51,57 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-federacoes.store', 'class' => 'form-horizontal']) !!}
+                    @error('somatorio')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
 
-                    <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>
-                    @include('dashboard.formularios.federacao.totalizador')
+
+                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-sinodais.store', 'class' => 'form-horizontal']) !!}
+
+                    <h3>Estrutura</h3>
+                    @include('dashboard.formularios.sinodal.federacoes-umps')
 
                     <hr class="my-3">
                     
-                    <h3>Programações</h3>
-                    @include('dashboard.formularios.federacao.programacoes')
+                    <h3>Perfil do Sócio</h3>
+                    @include('dashboard.formularios.sinodal.perfil')
+                    
+                    <hr class="my-3">
 
+                    <h3>Estado Civil</h3>
+                    @include('dashboard.formularios.sinodal.estado_civil')
+
+                    <hr class="my-3">
+
+                    <h3>Escolaridade</h3>
+                    @include('dashboard.formularios.sinodal.escolaridade')
+
+                    <hr class="my-3">
+
+                    <h3>Deficiência</h3>
+                    @include('dashboard.formularios.sinodal.deficiencia')
+
+                    <hr class="my-3">
+
+                    <h3>Programações</h3>
+                    @include('dashboard.formularios.sinodal.programacoes')
 
                     <hr class="my-3">
 
                     <h3>ACI</h3>
-                    @include('dashboard.formularios.federacao.aci')
+                    @include('dashboard.formularios.sinodal.aci')
 
-                    @if(count(auth()->user()->federacoes) > 1)
+                    @if(count(auth()->user()->sinodais) > 1)
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('federacao_id', 'Federação') !!}
-                                {!! Form::select('federacao_id', auth()->user()->federacoes->pluck('sigla', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('sinodal_id', 'Sinodal') !!}
+                                {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         @else 
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::hidden('federacao_id', auth()->user()->federacoes()->first()->id ,['id' => 'federacao_id', 'class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     @endif
@@ -98,6 +120,6 @@
 
 @push('js')
 
-@include('dashboard.formularios.federacao.js.script')
+@include('dashboard.formularios.sinodal.js.script')
 
 @endpush

@@ -37,6 +37,7 @@ class PermissionRoleSeeder extends Seeder
             4 => [
                 'resources' => [
                     'federacoes',
+                    'formularios_sin'
                 ],
                 'permissions' => [
                     1, 4, 5

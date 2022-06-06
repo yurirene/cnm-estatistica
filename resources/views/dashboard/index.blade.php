@@ -10,4 +10,9 @@
 @include('dashboard.index.federacao.index')
 @endRole
 
+@role('sinodal')
+@include('dashboard.index.sinodal.index')
+@endRole
+
+
 @endsection

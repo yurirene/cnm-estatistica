@@ -245,6 +245,29 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.formularios-federacoes.resumo',
                 'resource' => 'formularios_fed',
             ],
+
+
+            [
+                'name' => 'Visualizar Formulário Sinodal',
+                'slug' => 'dashboard.formularios-sinodais.index',
+                'resource' => 'formularios_sin',
+            ],           
+
+            [
+                'name' => 'Salvar Formulário Sinodal',
+                'slug' => 'dashboard.formularios-sinodais.store',
+                'resource' => 'formularios_sin',
+            ],
+            [
+                'name' => 'Ver Formulário Sinodal',
+                'slug' => 'dashboard.formularios-sinodais.view',
+                'resource' => 'formularios_sin',
+            ],
+            [
+                'name' => 'Resumo Totalizador Formulário Sinodal',
+                'slug' => 'dashboard.formularios-sinodais.resumo',
+                'resource' => 'formularios_sin',
+            ],
            
         ];
 

@@ -13,13 +13,13 @@
                 @include('dashboard.formularios.local.respostas.resumo')
                 <div class="row mt-3">
                     <div class="col-md-6 mt-3">
-                        @include('dashboard.formularios.local.respostas.grafico-perfil')
+                        @include('dashboard.formularios.graficos.grafico-perfil')
                     </div>
                     <div class="col-md-6 mt-3">
-                        @include('dashboard.formularios.local.respostas.grafico-escolaridade')
+                        @include('dashboard.formularios.graficos.grafico-escolaridade')
                     </div>
                     <div class="col-md-6 mt-3">
-                        @include('dashboard.formularios.local.respostas.grafico-programacao')
+                        @include('dashboard.formularios.graficos.grafico-programacao')
                     </div>
                 </div>
             </div>

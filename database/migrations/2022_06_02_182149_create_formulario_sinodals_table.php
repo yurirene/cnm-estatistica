@@ -13,9 +13,24 @@ class CreateFormularioSinodalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('formulario_sinodals', function (Blueprint $table) {
+        Schema::create('formularios_sinodal_v1', function (Blueprint $table) {
             $table->id();
+            $table->year('ano_referencia');
+            $table->json('aci')->nullable();
+            $table->json('perfil')->nullable();
+            $table->json('deficiencias')->nullable();
+            $table->json('estado_civil')->nullable();
+            $table->json('escolaridade')->nullable();
+            $table->json('programacoes_locais')->nullable();
+            $table->json('programacoes_federacoes')->nullable();
+            $table->json('programacoes')->nullable();
+            $table->json('estrutura')->nullable();
+            $table->uuid('sinodal_id');
+
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('sinodal_id')->references('id')->on('sinodais');
         });
     }
 

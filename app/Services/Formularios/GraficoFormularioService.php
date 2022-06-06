@@ -9,9 +9,8 @@ class GraficoFormularioService
 
     public static function formatarResumo($dados)
     {
-        return [
+        $retorno = [
             'ano_referencia' => $dados->ano_referencia,
-            'aci' => ($dados->aci['repasse'] == 'S' ? 'Repassado ' . $dados->aci['valor'] : 'Não repassado' ),
             'ativos' => $dados->perfil['ativos'] ?? 0,
             'cooperadores' => $dados->perfil['cooperadores'] ?? 0,
             'homens' => $dados->perfil['homens'] ?? 0,
@@ -39,12 +38,17 @@ class GraficoFormularioService
             'fisica_superior' => $dados->deficiencias['fisica_superior'] ?? 0,
             'neurologico' => $dados->deficiencias['neurologico'] ?? 0,
             'intelectual' => $dados->deficiencias['intelectual'] ?? 0,
-            'social' => $dados->programacoes['social'] ?? 0,
-            'evangelistico' => $dados->programacoes['evangelistico'] ?? 0,
-            'espiritual' => $dados->programacoes['espiritual'] ?? 0,
-            'recreativo' => $dados->programacoes['recreativo'] ?? 0,
-            'oracao' => $dados->programacoes['oracao'] ?? 0,
         ];
+        if (isset($dados->programacoes)) {
+            $retorno[] = [
+                'social' => $dados->programacoes['social'] ?? 0,
+                'evangelistico' => $dados->programacoes['evangelistico'] ?? 0,
+                'espiritual' => $dados->programacoes['espiritual'] ?? 0,
+                'recreativo' => $dados->programacoes['recreativo'] ?? 0,
+                'oracao' => $dados->programacoes['oracao'] ?? 0,
+            ];
+        }
+        return $retorno;
     }
 
     public static function formatarGrafico($dados)

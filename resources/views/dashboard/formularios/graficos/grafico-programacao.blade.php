@@ -21,8 +21,23 @@
                                 return context.label + ': ' + context.parsed.r + '%'
                             }
                         }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom'
                     }
-                }
+                },
+                scales: {
+                    r: {
+                        pointLabels: {
+                            display: true,
+                            centerPointLabels: true,
+                            font: {
+                                size: 18
+                            }
+                        }
+                    }
+                },
             }
         };
         const programcaoChart = new Chart(

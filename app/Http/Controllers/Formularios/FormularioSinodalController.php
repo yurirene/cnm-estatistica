@@ -3,20 +3,27 @@
 namespace App\Http\Controllers\Formularios;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreFormularioLocalRequest;
+use App\Services\Formularios\FormularioSinodalService;
 use Illuminate\Http\Request;
+use Throwable;
 
 class FormularioSinodalController extends Controller
 {
     public function index()
     {
-        return view('dashboard.formularios.sinodal');
+        $formulario_respondido_ano = FormularioSinodalService::getAnosFormulariosRespondidos();
+        return view('dashboard.formularios.sinodal', [
+            'coleta' => FormularioSinodalService::verificarColeta(),
+            'anos' => $formulario_respondido_ano
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreFormularioLocalRequest $request)
     {
         try {
-            FormularioLocalService::store($request);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            FormularioSinodalService::store($request);
+            return redirect()->route('dashboard.formularios-sinodais.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
@@ -32,5 +39,24 @@ class FormularioSinodalController extends Controller
             ->withInput();
         }
     }
-}
+
+    public function view(Request $request)
+    {
+        try {
+            $response = FormularioSinodalService::showFormulario($request->id);
+            return response()->json(['data' => $response]);
+        } catch (\Throwable $th) {
+            return response()->json(['erro' => $th->getMessage()]);
+        }
+    }
+    
+    public function resumoTotalizador(Request $request)
+    {
+        try {
+            $response = FormularioSinodalService::totalizador($request->id);
+            return response()->json(['data' => $response]);
+        } catch (\Throwable $th) {
+            return response()->json(['erro' => $th->getMessage()]);
+        }
+    }
 }
