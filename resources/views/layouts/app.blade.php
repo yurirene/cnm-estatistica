@@ -122,6 +122,16 @@
             color: white;
         }
 
+        .select2-selection__rendered {
+            line-height: 41px !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 45px !important;
+        }
+        .select2-selection__arrow {
+            height: 44px !important;
+        }
+
     </style>
 </head>
 

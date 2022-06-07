@@ -273,6 +273,16 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.formularios-sinodais.importar',
                 'resource' => 'formularios_sin',
             ],
+            [
+                'name' => 'Validar Planilha Formulário Sinodal',
+                'slug' => 'dashboard.formularios-sinodais.importar-validar',
+                'resource' => 'formularios_sin',
+            ],
+            [
+                'name' => 'Listar Federações da Sinodal',
+                'slug' => 'dashboard.formularios-sinodais.get-federacoes',
+                'resource' => 'formularios_sin',
+            ],
            
         ];
 

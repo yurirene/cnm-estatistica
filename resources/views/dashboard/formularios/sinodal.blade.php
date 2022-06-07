@@ -134,11 +134,31 @@
                     <small class="text-danger">{{ $errors->first('planilha') }}</small>
                     </div>
 
+                    <div id="campos-federacoes"></div>
+
                     <h2>Informações Complementares</h2>
                     <h3>Programações</h3>
                     @include('dashboard.formularios.local.programacoes')
 
+                    @if(count(auth()->user()->sinodais) > 1)
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('sinodal_id', 'Sinodal') !!}
+                                {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        @else 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                    @endif
+
+
                     <div class="btn-group pull-right">
+                        
+                    {!! Form::button('Importar', ['class' => 'btn btn-success', 'id' => 'botao-validar']) !!}
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
                     </div>
                     {!! Form::close() !!}

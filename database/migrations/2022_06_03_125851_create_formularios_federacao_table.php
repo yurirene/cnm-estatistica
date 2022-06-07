@@ -22,7 +22,8 @@ class CreateFormulariosFederacaoTable extends Migration
             $table->json('estado_civil')->nullable();
             $table->json('escolaridade')->nullable();
             $table->json('programacoes_locais')->nullable();
-            $table->json('programacoes_federacao')->nullable();
+            $table->json('programacoes')->nullable();
+            $table->json('estrutura')->nullable();
             $table->uuid('federacao_id');
 
             $table->softDeletes();

@@ -6,6 +6,52 @@
     $('#importar').on('click', function() {
         $('#formulario_importar').show();
     });
+
+    $('#botao-validar').on('click', function() {
+        var formData = new FormData(); 
+        let token = '{{ csrf_token() }}';
+
+        formData.append("planilha", planilha.files[0]);
+        formData.append("_token", token);
+        $.ajax({
+            type: "POST",
+            url: '{{ route("dashboard.formularios-sinodais.importar-validar") }}',
+            data: formData,
+            contentType : false,
+            processData : false
+        }).done(function(response){
+            var html = '';
+            response.forEach((item) => {
+                html += `<div class="form-row align-items-center">
+                            <div class="col-md-3 my-1">
+                            <label class="mr-sm-2" for="federacoes[${item.id_planilha}][federacao_id]">Federação</label>
+                            <select class="isSelectFederacoes form-control mr-sm-2" id="federacoes[${item.id_planilha}][federacao_id]" name="federacoes[${item.id_planilha}][federacao_id]">
+                            </select>
+                            </div>
+                            <div class="col-md-3 my-1">
+                                <label for="federacoes[${item.id_planilha}][presbiterio]">Presbitério</label>
+                                <input type="text" class="form-control mr-sm-2" name="federacoes[${item.id_planilha}][presbiterio]" value="${item.presbiterio}" id="federacoes[${item.id_planilha}][presbiterio]" readonly>
+                            </div>
+                        </div>`;
+            });
+            $('#campos-federacoes').html(html);
+            inicializarSelect();
+        });
+    });
+
+    function inicializarSelect()
+    {
+        $('.isSelectFederacoes').select2({
+            ajax: {
+                url: '{{ route("dashboard.formularios-sinodais.get-federacoes") }}',
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+            }
+        });
+    }
     
     $('#visualizar').on('click', function() {
         $.ajax({

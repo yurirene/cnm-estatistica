@@ -60,12 +60,32 @@ class FormularioSinodalController extends Controller
         }
     }
 
+    public function validarImportacao(Request $request)
+    {
+        try {
+            $response = FormularioSinodalService::validarImportacao($request);
+            return response()->json($response, 200);
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage(), 400);
+        }
+    }
+
     public function importar(Request $request)
     {
         try {
             FormularioSinodalService::importar($request);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            return response()->json($th->getMessage(), 400);
         }
     }
+
+    public function getFederacoes()
+    {
+        try {
+            return response()->json(FormularioSinodalService::getFederacoes());
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage(), 400);
+        }
+    }
+
 }

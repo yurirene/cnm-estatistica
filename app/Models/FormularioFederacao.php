@@ -20,6 +20,8 @@ class FormularioFederacao extends Model
         'aci' => 'array',
         'escolaridade' => 'array',
         'estado_civil' => 'array',
+        'estrutura' => 'array',
+        'programacoes_locais' => 'array',
         'programacoes' => 'array',
     ];
 }

@@ -17,6 +17,7 @@ class CreateFederacaosTable extends Migration
             $table->uuid('id')->primary();
             $table->string('nome');
             $table->string('sigla');
+            $table->string('presbiterio')->nullable();
             $table->bigInteger('estado_id')->unsigned();
             $table->bigInteger('regiao_id')->unsigned();
             $table->uuid('sinodal_id');
