@@ -9,10 +9,10 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Total de Sócios</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{DashboardHelper::getTotalSocios()}}</span>
+                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores['total_socios'] }}</span>
                                 </div>
                                 <div class="col-auto">
-                                    <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                    <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
                                         <i class="fas fa-users"></i>
                                     </div>
                                 </div>
@@ -26,10 +26,10 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Total de UMPs</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{DashboardHelper::getTotalLocais()}}</span>
+                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores['total_umps'] }}</span>
                                 </div>
                                 <div class="col-auto">
-                                    <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                    <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
                                         <i class="fas fa-users"></i>
                                     </div>
                                 </div>

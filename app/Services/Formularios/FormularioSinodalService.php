@@ -25,7 +25,12 @@ class FormularioSinodalService
     public static function store(Request $request)
     {
         try {
-            FormularioSinodal::create([
+            FormularioSinodal::updateOrCreate(
+                [
+                    'ano_referencia' => date('Y'),
+                    'sinodal_id' => $request->sinodal_id
+                ],
+                [
                 'estrutura' => $request->federacao_ump,
                 'perfil' => $request->perfil,
                 'estado_civil' => $request->estado_civil,
@@ -99,11 +104,7 @@ class FormularioSinodalService
     {
         try {
             $parametro_ativo = Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
-            $existe_formulario = FormularioSinodal::where('sinodal_id', Auth::user()->sinodais->first()->id)
-                ->where('ano_referencia', date('Y'))
-                ->get()
-                ->isEmpty();
-            return $existe_formulario && $parametro_ativo;
+            return $parametro_ativo;
         } catch (\Throwable $th) {
             throw new Exception("Erro ao Verificar Coleta");
         }

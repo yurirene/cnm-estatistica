@@ -40,7 +40,7 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_sin'
                 ],
                 'permissions' => [
-                    1, 4, 5
+                    1, 4, 5, 50
                 ]
             ],
             5 => [
@@ -49,7 +49,7 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_fed'
                 ],
                 'permissions' => [
-                    1, 4, 5
+                    1, 4, 5, 51
                 ]
             ],
             6 => [

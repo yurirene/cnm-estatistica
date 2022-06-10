@@ -14,6 +14,7 @@ class Sinodal extends Model
     
     protected $table = 'sinodais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $dates = ['data_organizacao'];
 
     public function regiao()
     {

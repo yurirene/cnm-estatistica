@@ -18,6 +18,8 @@ class CreateFederacaosTable extends Migration
             $table->string('nome');
             $table->string('sigla');
             $table->string('presbiterio')->nullable();
+            $table->string('midias_sociais')->nullable();
+            $table->date('data_organizacao')->nullable();
             $table->bigInteger('estado_id')->unsigned();
             $table->bigInteger('regiao_id')->unsigned();
             $table->uuid('sinodal_id');

@@ -1,13 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-@include('dashboard.index.sinodal.cards')
+@include('dashboard.index.sinodal.cards',[
+    'totalizadores' => DashboardHelper::getTotalizadores()
+])
+
+@php $sinodal = DashboardHelper::getInfo(); @endphp
 
 <div class="container-fluid mt--7">
     
     <div class="row">
-        
-        <div class="col-xl-6">
+        <div class="col-xl-2">
+            <div class="card shadow h-100">
+                <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class=" mb-0">Ranking</h2>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="icon icon-shape bg-primary text-white rounded-circle shadow" style="height: 100px; width: 100px">
+                                <i class="fas fa-medal" style="font-size: 50px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h2 class="text-center"><span class="badge badge-primary h2" >X°</span></h2>
+                            <h5 class="text-center">Posição</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
             <div class="card shadow h-100">
                 <div class="card-header bg-transparent">
                     <div class="row align-items-center">
@@ -28,17 +58,20 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h3>Nome: </h3>
-                            <h3>Data de Organização: </h3>
-                            <h3>Redes Sociais: </h3>
+                            <h3><span class="badge badge-primary">Nome:</span> {{ $sinodal->nome }}</h3>
+                            <h3><span class="badge badge-primary">Sínodo:</span> {{ $sinodal->sinodo }}</h3>
+                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $sinodal->data_organizacao ? $sinodal->data_organizacao->format('d/m/Y') : 'Sem Informação' }}</h3>
+                            <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $sinodal->midias_sociais }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
         <div class="col-xl-6 mb-5 mb-xl-0">
             @include('dashboard.index.avisos')
         </div>
+       
     </div>
 </div>
 
@@ -52,13 +85,17 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {!! Form::open(['method' => 'POST', 'route' => 'dashboard.home']) !!}
+            {!! Form::model($sinodal, ['url' => route('dashboard.sinodais.update-info', $sinodal->id), 'method' => 'PUT']) !!}
             <div class="modal-body">
                 <div class="form-group{{ $errors->has('nome') ? ' has-error' : '' }}">
                 {!! Form::label('nome', 'Nome') !!}
                 {!! Form::text('nome', null, ['class' => 'form-control', 'required' => 'required']) !!}
                 <small class="text-danger">{{ $errors->first('nome') }}</small>
                 </div>
+                <div class="form-group{{ $errors->has('sinodo') ? ' has-error' : '' }}">
+                {!! Form::label('sinodo', 'Sínodo') !!}
+                {!! Form::text('sinodo', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                <small class="text-danger">{{ $errors->first('sinodo') }}</small>
                 <div class="form-group{{ $errors->has('data_organizacao') ? ' has-error' : '' }}">
                 {!! Form::label('data_organizacao', 'Data da Organização') !!}
                 {!! Form::text('data_organizacao', null, ['class' => 'form-control isDate', 'required' => 'required']) !!}

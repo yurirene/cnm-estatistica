@@ -79,6 +79,14 @@
                         <i class="fas fa-user-plus"></i> Federação
                     </a>
                 </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-sinodais.index') }}">
+                        <i class="fas fa-file"></i> Formulário Estatístico
+                    </a>
+                </li>
+
                 @endCanAtLeast
                 @canAtLeast(['dashboard.locais.index'])
                 <li class="nav-item">
@@ -86,6 +94,13 @@
                         <i class="fas fa-user-plus"></i> UMP Local
                     </a>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
+                        <i class="fas fa-file"></i> Formulário Estatístico
+                    </a>
+                </li>
+
                 @endCanAtLeast
                 @canAtLeast(['dashboard.atividades.index'])                
                 <li class="nav-item">
@@ -101,22 +116,6 @@
                     </a>
                 </li>
                 @endCanAtLeast
-
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.formularios-sinodais.index') }}">
-                        <i class="fas fa-file"></i> Formulário Sinodal
-                    </a>
-                </li>
-
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
-                        <i class="fas fa-file"></i> Formulário Federação
-                    </a>
-                </li>
-
-
 
 
 

@@ -10,18 +10,7 @@
         <div class="row">
             <div class="col">
                 <ul class="list-unstyled ">
-                    <li class="py-1">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <div class="badge badge-circle badge-info mr-3">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Nº UMPs: {{$numero_umps}}</h6>
-                            </div>
-                        </div>
-                    </li>
+                    
                     <li class="py-1">
                         <div class="d-flex align-items-center">
                             <div>
@@ -35,11 +24,6 @@
                         </div>
                     </li>
                 </ul>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col text-center">
-                <a href="#" class="btn btn-info btn-sm">Mais Informações</a>
             </div>
         </div>
     </div>

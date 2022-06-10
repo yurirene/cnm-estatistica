@@ -284,6 +284,18 @@ class PermissionsSeeder extends Seeder
                 'resource' => 'formularios_sin',
             ],
            
+
+            /** Sinodal - informação */
+            [
+                'name' => 'Atualizar Informações Sinodais',
+                'slug' => 'dashboard.sinodais.update-info',
+                'resource' => 'sinodais',
+            ],
+            [
+                'name' => 'Atualizar Informações Federação',
+                'slug' => 'dashboard.federacoes.update-info',
+                'resource' => 'federacoes',
+            ],
         ];
 
         try {

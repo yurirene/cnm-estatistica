@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Estado;
+use App\Models\FormularioSinodal;
 use App\Models\Sinodal;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,6 +71,29 @@ class SinodalService
         }
     }
 
+
+    public static function updateInfo(Sinodal $sinodal, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $sinodal->update([
+                'nome' => $request->nome,
+                'sinodo' => $request->sinodo,
+                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'midias_sociais' => $request->midias_sociais
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error([
+                'erro' => $th->getMessage(),
+                'arquivo' => $th->getFile(),
+                'linha' => $th->getLine()
+            ]);
+            throw new Exception("Erro ao Atualizar");
+            
+        }
+    }
     public static function getEstados()
     {
         $usuario = User::find(Auth::id());
@@ -76,6 +101,36 @@ class SinodalService
             ->get()
             ->pluck('nome', 'id');
         return $regioes;
+    }
+
+    public static function getTotalizadores()
+    {
+        try {
+            $formulario = FormularioSinodal::where('sinodal_id', Auth::user()->sinodais->first()->id)->where('ano_referencia', date('Y'))->first();
+            if (!$formulario) {
+                return [
+                    'total_umps' => 0,
+                    'total_federacoes' => 0,
+                    'total_socios' => 0,
+                ];
+            }
+            return [
+                'total_umps' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'total_federacoes' => $formulario->estrutura['federacao_organizada'] ?? 0,
+                'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getInfo()
+    {
+        try {
+            return Auth::user()->sinodais->first();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
 }

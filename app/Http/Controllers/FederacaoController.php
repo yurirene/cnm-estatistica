@@ -85,4 +85,26 @@ class FederacaoController extends Controller
             ->withInput();
         }
     }
+
+
+    public function updateInfo(Federacao $federacao, Request $request)
+    {
+        try {
+            FederacaoService::updateInfo($federacao, $request);
+            return redirect()->route('dashboard.home')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
 }

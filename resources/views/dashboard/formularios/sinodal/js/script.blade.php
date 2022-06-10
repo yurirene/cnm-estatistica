@@ -1,10 +1,14 @@
 <script>
     $('#responder').on('click', function() {
         $('#formulario_ump').show();
+        $('#formulario_importar').hide();
+
     });
 
     $('#importar').on('click', function() {
         $('#formulario_importar').show();
+        $('#formulario_ump').hide();
+
     });
 
     $('#botao-validar').on('click', function() {
@@ -25,7 +29,7 @@
                 html += `<div class="form-row align-items-center">
                             <div class="col-md-3 my-1">
                             <label class="mr-sm-2" for="federacoes[${item.id_planilha}][federacao_id]">Federação</label>
-                            <select class="isSelectFederacoes form-control mr-sm-2" id="federacoes[${item.id_planilha}][federacao_id]" name="federacoes[${item.id_planilha}][federacao_id]">
+                            <select class="isSelectFederacoes form-control mr-sm-2" id="federacoes[${item.id_planilha}][federacao_id]" required name="federacoes[${item.id_planilha}][federacao_id]">
                             </select>
                             </div>
                             <div class="col-md-3 my-1">
@@ -37,6 +41,8 @@
             $('#campos-federacoes').html(html);
             inicializarSelect();
         });
+        $('#botao-validar').hide();
+        $('#botao-importar-enviar').show();
     });
 
     function inicializarSelect()

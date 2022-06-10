@@ -25,7 +25,7 @@ class LocalDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.locais',
                     'id' => $sql->id,
-                    'show' => true
+                    'show' => false
                 ]);
             })
             ->editColumn('status', function($sql) {

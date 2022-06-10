@@ -94,13 +94,12 @@
                 </div>
                 <div class="card-body">
                     <div class="row mt-3">
-                        @if($federacao->locais->count())
-                        @foreach($federacao->locais as $federacao)
+                        @if($federacao->locais->count() > 0)
+                        @foreach($federacao->locais as $local)
                         <div class="col-md-4 mt-3">
-                            @include('dashboard.sinodais.partes.cards', [
-                            'nome' => $federacao->nome,
-                            'sigla' => $federacao->sigla,
-                            'numero_umps' => $federacao->locais->count(),
+                            @include('dashboard.federacoes.partes.cards', [
+                            'nome' => $local->nome,
+                            'sigla' => $local->sigla,
                             'formularios_preenchidos' => 'SEM INFO'
                             ])
                         </div>

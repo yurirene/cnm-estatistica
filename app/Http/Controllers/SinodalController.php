@@ -77,4 +77,25 @@ class SinodalController extends Controller
             ->withInput();
         }
     }
+
+    public function updateInfo(Sinodal $sinodal, Request $request)
+    {
+        try {
+            SinodalService::updateInfo($sinodal, $request);
+            return redirect()->route('dashboard.home')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
 }

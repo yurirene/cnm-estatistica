@@ -159,7 +159,7 @@
                     <div class="btn-group pull-right">
                         
                     {!! Form::button('Importar', ['class' => 'btn btn-success', 'id' => 'botao-validar']) !!}
-                    {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
+                    <button class="btn btn-success" id="botao-importar-enviar" style="display: none;">Enviar</button>
                     </div>
                     {!! Form::close() !!}
                 </div>

@@ -74,6 +74,12 @@ class FormularioSinodalController extends Controller
     {
         try {
             FormularioSinodalService::importar($request);
+            return redirect()->route('dashboard.formularios-sinodais.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 400);
         }

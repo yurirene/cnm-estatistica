@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Estado;
 use App\Models\Federacao;
+use App\Models\FormularioFederacao;
 use App\Models\Sinodal;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -101,4 +103,56 @@ class FederacaoService
         return $regioes;
     }
 
+   
+    public static function updateInfo(Federacao $federacao, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $federacao->update([
+                'nome' => $request->nome,
+                'presbiterio' => $request->presbiterio,
+                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'midias_sociais' => $request->midias_sociais
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error([
+                'erro' => $th->getMessage(),
+                'arquivo' => $th->getFile(),
+                'linha' => $th->getLine()
+            ]);
+            throw new Exception("Erro ao Atualizar");
+            
+        }
+    }
+
+    public static function getInfo()
+    {
+        try {
+            return Auth::user()->federacoes->first();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+    public static function getTotalizadores()
+    {
+        try {
+            $formulario = FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)->where('ano_referencia', date('Y'))->first();
+            if (!$formulario) {
+                return [
+                    'total_umps' => 0,
+                    'total_socios' => 0,
+                ];
+            }
+            return [
+                'total_umps' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }
