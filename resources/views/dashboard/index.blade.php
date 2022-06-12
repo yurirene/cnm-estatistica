@@ -14,5 +14,9 @@
 @include('dashboard.index.sinodal.index')
 @endRole
 
+@role('diretoria')
+@include('dashboard.index.diretoria.index')
+@endRole
+
 
 @endsection

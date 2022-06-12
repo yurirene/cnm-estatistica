@@ -14,6 +14,7 @@ use App\Models\Sinodal;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -144,6 +145,20 @@ class FormularioSinodalService
         try {
             $classe_importacao = new FormularioSinodalImport();
             Excel::import($classe_importacao, request()->file('planilha'));
+            $dados_invalidos = [
+                'status' => false,
+                'text' => ''
+            ];
+            foreach ($classe_importacao->data as $relatorio) {
+                $response = self::validarDadosImportacao($relatorio);
+                if (!$response['status']) {
+                    $dados_invalidos['status'] = true;
+                    $dados_invalidos['text'] .= $relatorio['info_federacao']['presbiterio'] . ': ' . $response['text'] . ';';
+                }
+            }
+            if ($dados_invalidos['status']) {
+                throw new Exception($dados_invalidos['text']);
+            }
             $collection = collect($classe_importacao->data)->where('ano_referencia', date('Y'))->map(function($item) {
                 return [
                     'id_planilha' => $item['info_federacao']['id'],
@@ -152,10 +167,73 @@ class FormularioSinodalService
             });
             return $collection;
         } catch (\Throwable $th) {
-            dd($th->getMessage());
-            throw new Exception("Erro durante importação", 1);
-            
+            throw new Exception($th->getMessage());
         }
+    }
+
+    public static function validarDadosImportacao(array $dados): array
+    {
+        $response = [
+            'status' => true,
+            'text' => ''
+        ];
+        $total =  intval($dados['perfil']['ativos']) + intval($dados['perfil']['cooperadores']);
+
+        $validacoes = [];
+        $erros = [];
+        
+        $validacoes['Sexo'] = ValidarFormularioService::somatorio(
+            $total, 
+            $dados['perfil']['homens'], 
+            $dados['perfil']['mulheres']
+        );
+        $validacoes['Idade'] = ValidarFormularioService::somatorio(
+            $total, 
+            $dados['perfil']['menor19'], 
+            $dados['perfil']['de19a23'],
+            $dados['perfil']['de24a29'],
+            $dados['perfil']['de30a35']
+        );
+        $validacoes['Escolaridade'] = ValidarFormularioService::somatorio(
+            $total, 
+            $dados['escolaridade']['fundamental'], 
+            $dados['escolaridade']['medio'],
+            $dados['escolaridade']['tecnico'],
+            $dados['escolaridade']['superior'],
+            $dados['escolaridade']['pos']
+        );
+        
+        $validacoes['Estado Civil'] = ValidarFormularioService::somatorio(
+            $total, 
+            $dados['estado_civil']['solteiros'], 
+            $dados['estado_civil']['casados'],
+            $dados['estado_civil']['divorciados'],
+            $dados['estado_civil']['viuvos']
+        );
+
+        
+        $validacoes['Sócios com Filhos'] = ValidarFormularioService::limite(
+            $total, 
+            $dados['estado_civil']['filhos']
+        );    
+        
+        $validacoes['Desempregados'] = ValidarFormularioService::limite(
+            $total, 
+            $dados['escolaridade']['desempregado']
+        );
+
+        foreach ($validacoes as $campo => $v) {
+            if (!$v) {
+                $response['status'] = false;
+                $erros[] = $campo;
+            }
+        }
+        if (!$response['status']) {
+            $texto = count($erros) > 1 ? 'Os campos [ :campo ] não totalizam :total sócios' : 'O campo :campo não totaliza :total sócios';
+            $response['text'] = str_replace([':campo', ':total'], [implode(', ', $erros), $total], $texto);
+        }
+
+        return $response;
     }
 
     public static function importar(Request $request)
@@ -173,7 +251,8 @@ class FormularioSinodalService
 
 
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            throw new Exception("Erro ao Importar", 1);
+            
         }
     }
 

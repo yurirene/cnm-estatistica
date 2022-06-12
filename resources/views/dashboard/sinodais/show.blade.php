@@ -96,12 +96,12 @@
                     <div class="row mt-3">
                         @if($sinodal->federacoes->count())
                         @foreach($sinodal->federacoes as $federacao)
-                        <div class="col-md-4 mt-3">
+                        <div class="col-md-6 col-xl-4 mt-3">
                             @include('dashboard.sinodais.partes.cards', [
                             'nome' => $federacao->nome,
                             'sigla' => $federacao->sigla,
                             'numero_umps' => $federacao->locais->count(),
-                            'formularios_preenchidos' => 'SEM INFO'
+                            'numero_socios' => $federacao->locais->count(),
                             ])
                         </div>
                         @endforeach

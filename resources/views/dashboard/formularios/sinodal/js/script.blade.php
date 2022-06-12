@@ -2,12 +2,14 @@
     $('#responder').on('click', function() {
         $('#formulario_ump').show();
         $('#formulario_importar').hide();
-
+        $('#resumo-card').hide();
     });
 
     $('#importar').on('click', function() {
         $('#formulario_importar').show();
         $('#formulario_ump').hide();
+        $('#resumo-card').hide();
+        
 
     });
 
@@ -22,27 +24,46 @@
             url: '{{ route("dashboard.formularios-sinodais.importar-validar") }}',
             data: formData,
             contentType : false,
-            processData : false
-        }).done(function(response){
-            var html = '';
-            response.forEach((item) => {
-                html += `<div class="form-row align-items-center">
-                            <div class="col-md-3 my-1">
-                            <label class="mr-sm-2" for="federacoes[${item.id_planilha}][federacao_id]">Federação</label>
-                            <select class="isSelectFederacoes form-control mr-sm-2" id="federacoes[${item.id_planilha}][federacao_id]" required name="federacoes[${item.id_planilha}][federacao_id]">
-                            </select>
-                            </div>
-                            <div class="col-md-3 my-1">
-                                <label for="federacoes[${item.id_planilha}][presbiterio]">Presbitério</label>
-                                <input type="text" class="form-control mr-sm-2" name="federacoes[${item.id_planilha}][presbiterio]" value="${item.presbiterio}" id="federacoes[${item.id_planilha}][presbiterio]" readonly>
-                            </div>
-                        </div>`;
-            });
-            $('#campos-federacoes').html(html);
-            inicializarSelect();
+            processData : false,
+            success: function(response){
+                var html = '';
+                response.forEach((item) => {
+                    html += `<div class="form-row align-items-center">
+                                <div class="col-md-3 my-1">
+                                <label class="mr-sm-2" for="federacoes[${item.id_planilha}][federacao_id]">Federação</label>
+                                <select class="isSelectFederacoes form-control mr-sm-2" id="federacoes[${item.id_planilha}][federacao_id]" required name="federacoes[${item.id_planilha}][federacao_id]">
+                                </select>
+                                </div>
+                                <div class="col-md-3 my-1">
+                                    <label for="federacoes[${item.id_planilha}][presbiterio]">Presbitério</label>
+                                    <input type="text" class="form-control mr-sm-2" name="federacoes[${item.id_planilha}][presbiterio]" value="${item.presbiterio}" id="federacoes[${item.id_planilha}][presbiterio]" readonly>
+                                </div>
+                            </div>`;
+                });
+                $('#campos-federacoes').html(html);
+                inicializarSelect();
+                $('#botao-validar').hide();
+                $('#botao-importar-enviar').show();
+            },
+            error: function(error) {
+                console.log(error);
+                let erros = error.responseJSON.split(';');
+                erros.forEach((item) => {
+                    if (item.length > 0) {
+                        iziToast.error({
+                            title: 'Erro!',
+                            message: item,
+                            position: 'topRight',
+                            timeout: 7000
+                        });
+                    }
+                });
+            },
+            complete: function (data) {
+                console.log(data);
+            }
+            
         });
-        $('#botao-validar').hide();
-        $('#botao-importar-enviar').show();
     });
 
     function inicializarSelect()

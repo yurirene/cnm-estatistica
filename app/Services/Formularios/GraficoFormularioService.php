@@ -128,10 +128,14 @@ class GraficoFormularioService
             $retorno = [];
 
             foreach ($dados as $valor) {
+                if ($total == 0) {
+                    continue;
+                }
                 $retorno[] = floatval(number_format(($valor * 100 / $total), 2));
             }
             return $retorno;
         } catch (\Throwable $th) {
+            dd($th->getMessage());
             throw new Exception("Erro ao processar dados progração");
         }
     }

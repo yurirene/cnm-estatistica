@@ -26,11 +26,11 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <div class="badge badge-circle badge-success mr-3">
-                                    <i class="fas fa-file"></i>
+                                    <i class="fas fa-users"></i>
                                 </div>
                             </div>
                             <div>
-                                <h6 class="mb-1">Nº Formulários Preenchidos: {{$formularios_preenchidos}}</h6>
+                                <h6 class="mb-1">Nº Sócios: {{$numero_socios}}</h6>
                             </div>
                         </div>
                     </li>
@@ -39,7 +39,7 @@
         </div>
         <div class="row">
             <div class="col text-center">
-                <a href="#" class="btn btn-info btn-sm">Mais Informações</a>
+                <a href="#" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> Info</a>
             </div>
         </div>
     </div>

@@ -26,8 +26,3 @@
         </div>
     </div>
 </div>
-
-@push('script')
-
-
-@endpush
