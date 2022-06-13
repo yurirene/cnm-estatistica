@@ -28,10 +28,12 @@ class LocalService
                 'status' => $request->status == 'A' ? true : false ,
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
-             
-            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
-            if ($request->has('resetar_senha')) {
-                UserService::resetarSenha($usuario);
+            
+            if ($request->status == 'A' && $request->has('email_usuario')) {
+                $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+                if ($request->has('resetar_senha')) {
+                    UserService::resetarSenha($usuario);
+                }
             }
             DB::commit();
         } catch (\Throwable $th) {
@@ -61,9 +63,11 @@ class LocalService
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
              
-            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
-            if ($request->has('resetar_senha')) {
-                UserService::resetarSenha($usuario);
+            if ($request->status == 'A' && $request->has('email_usuario')) {
+                $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+                if ($request->has('resetar_senha')) {
+                    UserService::resetarSenha($usuario);
+                }
             }
             DB::commit();
         } catch (\Throwable $th) {
@@ -75,6 +79,20 @@ class LocalService
             ]);
             throw new Exception("Erro ao Atualizar");
             
+        }
+    }
+
+    public static function delete(Local $local)
+    {
+        try {
+            $local->delete();
+        } catch (\Throwable $th) {
+            Log::error([
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine()
+            ]);
+            throw $th;
         }
     }
 

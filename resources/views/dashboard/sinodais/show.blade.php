@@ -40,7 +40,7 @@
                             <div class="progress-wrapper">
                                 <div class="progress-info">
                                     <div class="progress-label">
-                                        <span>Task completed</span>
+                                        <span>Informação</span>
                                     </div>
                                     <div class="progress-percentage">
                                         <span>60%</span>
@@ -54,7 +54,7 @@
                             <div class="progress-wrapper">
                                 <div class="progress-info">
                                     <div class="progress-label">
-                                        <span>Task completed</span>
+                                        <span>Informação</span>
                                     </div>
                                     <div class="progress-percentage">
                                         <span>60%</span>
@@ -68,7 +68,7 @@
                             <div class="progress-wrapper">
                                 <div class="progress-info">
                                     <div class="progress-label">
-                                        <span>Task completed</span>
+                                        <span>Informação</span>
                                     </div>
                                     <div class="progress-percentage">
                                         <span>60%</span>

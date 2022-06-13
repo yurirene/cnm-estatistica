@@ -51,7 +51,7 @@ class FederacaoDataTable extends DataTable
      */
     public function query(Federacao $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->minhaSinodal();
     }
 
     /**

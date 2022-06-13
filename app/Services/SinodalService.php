@@ -26,11 +26,15 @@ class SinodalService
                 'regiao_id' => $request->regiao_id,
                 'status' => $request->status == 'A' ? true : false
             ]);
-            
-            $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
-            if ($request->has('resetar_senha')) {
-                UserService::resetarSenha($usuario);
+
+
+            if ($request->status == 'A' && $request->has('email_usuario')) {
+                $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
+                if ($request->has('resetar_senha')) {
+                    UserService::resetarSenha($usuario);
+                }
             }
+            
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -54,10 +58,14 @@ class SinodalService
                 'regiao_id' => $request->regiao_id,
                 'status' => $request->status == 'A' ? true : false
             ]);
-            $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
-            if ($request->has('resetar_senha')) {
-                UserService::resetarSenha($usuario);
+
+            if ($request->status == 'A' && $request->has('email_usuario')) {
+                $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
+                if ($request->has('resetar_senha')) {
+                    UserService::resetarSenha($usuario);
+                }
             }
+            
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -129,6 +137,20 @@ class SinodalService
         try {
             return Auth::user()->sinodais->first();
         } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function delete(Sinodal $sinodal)
+    {
+        try {
+            $sinodal->delete();
+        } catch (\Throwable $th) {
+            Log::error([
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine()
+            ]);
             throw $th;
         }
     }

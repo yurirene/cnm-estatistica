@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Federacao extends Model
 {
-    use GenericTrait;
+    use GenericTrait, SoftDeletes;
     
     protected $table = 'federacoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
@@ -37,5 +39,10 @@ class Federacao extends Model
     public function usuario()
     {
         return $this->belongsToMany(User::class, 'usuario_federacao');
+    }
+
+    public function scopeMinhaSinodal($query)
+    {
+        return $query->whereIn('sinodal_id', Auth::user()->sinodais->pluck('id'));
     }
 }

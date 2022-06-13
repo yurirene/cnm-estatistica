@@ -23,8 +23,10 @@ class CreateSinodalsTable extends Migration
             $table->bigInteger('regiao_id')->unsigned();
             $table->boolean('status')->default(true);
             $table->timestamps();
-
+            $table->softDeletes();
+            
             $table->foreign('regiao_id')->references('id')->on('regioes');
+            
         });
     }
 

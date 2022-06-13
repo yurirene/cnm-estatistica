@@ -25,6 +25,7 @@ class CreateLocalsTable extends Migration
             $table->boolean('status')->default(true);
             $table->boolean('outro_modelo')->default(false);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('estado_id')->references('id')->on('estados');
             $table->foreign('regiao_id')->references('id')->on('regioes');

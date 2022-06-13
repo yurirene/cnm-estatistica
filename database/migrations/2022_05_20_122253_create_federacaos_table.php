@@ -25,6 +25,7 @@ class CreateFederacaosTable extends Migration
             $table->uuid('sinodal_id');
             $table->boolean('status')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('estado_id')->references('id')->on('estados');
             $table->foreign('regiao_id')->references('id')->on('regioes');

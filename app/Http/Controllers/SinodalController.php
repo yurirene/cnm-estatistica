@@ -98,4 +98,25 @@ class SinodalController extends Controller
             ->withInput();
         }
     }
+
+    public function delete(Sinodal $sinodal)
+    {
+        try {
+            SinodalService::delete($sinodal);
+            return redirect()->route('dashboard.sinodais.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
 }

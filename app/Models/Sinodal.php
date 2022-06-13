@@ -6,11 +6,12 @@ use App\Traits\Auditable;
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Sinodal extends Model
 {
-    use GenericTrait;
+    use GenericTrait, SoftDeletes;
     
     protected $table = 'sinodais';
     protected $guarded = ['id', 'created_at', 'updated_at'];

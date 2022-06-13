@@ -54,7 +54,7 @@ class LocalDataTable extends DataTable
      */
     public function query(Local $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->minhaFederacao();
     }
 
     /**

@@ -30,12 +30,14 @@ class FederacaoService
                 'regiao_id' => $regiao,
                 'status' => $request->status == 'A' ? true : false
             ]);
-             
-            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
-            if ($request->has('resetar_senha')) {
-                UserService::resetarSenha($usuario);
-            }
+            
 
+            if ($request->status == 'A' && $request->has('email_usuario')) {
+                $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+                if ($request->has('resetar_senha')) {
+                    UserService::resetarSenha($usuario);
+                }
+            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -63,9 +65,11 @@ class FederacaoService
                 'status' => $request->status == 'A' ? true : false
             ]);
              
-            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
-            if ($request->has('resetar_senha')) {
-                UserService::resetarSenha($usuario);
+            if ($request->status == 'A' && $request->has('email_usuario')) {
+                $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+                if ($request->has('resetar_senha')) {
+                    UserService::resetarSenha($usuario);
+                }
             }
 
             DB::commit();
@@ -152,6 +156,20 @@ class FederacaoService
                 'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
             ];
         } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function delete(Federacao $federacao)
+    {
+        try {
+            $federacao->delete();
+        } catch (\Throwable $th) {
+            Log::error([
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine()
+            ]);
             throw $th;
         }
     }
