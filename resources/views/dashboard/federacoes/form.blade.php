@@ -96,3 +96,21 @@
     </div>
 </div>
 @endsection
+
+@push('js')
+
+<script>
+
+$('#status').on('change', function() {
+    if ($(this).val() == 'I') {
+        $('#email_usuario').prop('required', false);
+        $('#nome_usuario').prop('required', false);
+    } else {
+        $('#email_usuario').prop('required', true);
+        $('#nome_usuario').prop('required', true);
+    }
+})
+
+</script>
+
+@endpush
