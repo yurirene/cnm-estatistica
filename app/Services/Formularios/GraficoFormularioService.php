@@ -135,8 +135,7 @@ class GraficoFormularioService
             }
             return $retorno;
         } catch (\Throwable $th) {
-            dd($th->getMessage());
-            throw new Exception("Erro ao processar dados progração");
+            throw new Exception("Erro ao processar dados porcentagem");
         }
     }
 

@@ -21,7 +21,6 @@ class LoginService
                 'login_at' => Carbon::now(),
             ]);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             throw new Exception("Error Processing Request", 1);
         }
     }
