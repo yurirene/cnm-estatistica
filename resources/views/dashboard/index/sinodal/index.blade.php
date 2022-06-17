@@ -10,7 +10,7 @@
 <div class="container-fluid mt--7">
     
     <div class="row">
-        <div class="col-xl-2">
+        <div class="col-xl-3 mt-3">
             <div class="card shadow h-100">
                 <div class="card-header bg-transparent">
                     <div class="row align-items-center">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4">
+        <div class="col-xl-4 mt-3">
             <div class="card shadow h-100">
                 <div class="card-header bg-transparent">
                     <div class="row align-items-center">
@@ -68,7 +68,7 @@
             </div>
         </div>
         
-        <div class="col-xl-6 mb-5 mb-xl-0">
+        <div class="col-xl-5 mt-3 mb-5 mb-xl-0">
             @include('dashboard.index.avisos')
         </div>
        

@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Helpers\FormHelper;
 use App\Models\Atividade;
 use App\Models\Estado;
+use App\Models\Federacao;
 use App\Models\FormularioSinodal;
+use App\Models\Local;
 use App\Models\Sinodal;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -66,5 +68,38 @@ class DiretoriaService
             ];
         }
         return $retorno;
+    }
+
+    
+    public static function getTotalizadores()
+    {
+        try {
+            $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get()->pluck('id');
+            $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get();
+            $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
+            $formularios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->where('ano_referencia', date('Y'))->get();
+            if (!$formularios) {
+                return [
+                    'total_sinodais' => $sinodais->count(),
+                    'total_federacoes' => $federacoes->count(),
+                    'total_umps' => $umps->count(),
+                    'total_socios' => 0,
+                ];
+            }
+            $total_socios = 0;
+            $total_umps = 0;
+            foreach ($formularios as $formulario) {
+                $total_umps += intval($formulario->estrutura['ump_organizada']);
+                $total_socios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
+            }
+            return [
+                'total_sinodais' => $sinodais->count(),
+                'total_federacoes' => $federacoes->count(),
+                'total_umps' => $total_umps,
+                'total_socios' => $total_socios
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

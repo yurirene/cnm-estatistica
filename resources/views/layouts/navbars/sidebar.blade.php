@@ -19,7 +19,16 @@
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
-                   
+                    <a href="#"  data-toggle="modal" data-target="#trocar-senha" class="dropdown-item">
+                        <i class="ni ni-settings-gear-65"></i>
+                        <span>Trocar Senha</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">
+                        <i class="ni ni-user-run"></i>
+                        <span>{{ __('Logout') }}</span>
+                    </a>
                 </div>
             </li>
         </ul>
@@ -30,7 +39,7 @@
                 <div class="row">
                     <div class="col-6 collapse-brand">
                         <a href="{{ route('home') }}">
-                            <img src="{{ asset('argon') }}/img/brand/blue.png">
+                            <img src="/img/logo.png" class="navbar-brand-img" alt="..." style="max-height: 60px;">
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
