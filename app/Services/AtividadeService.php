@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AtividadeService
@@ -18,8 +19,9 @@ class AtividadeService
 
     public static function store(Request $request)
     {
+        DB::beginTransaction();
         try {
-            Atividade::create([
+            $atividade = Atividade::create([
                 'titulo' => $request->titulo,
                 'observacoes' => $request->observacoes,
                 'tipo' => $request->tipo,
@@ -27,7 +29,15 @@ class AtividadeService
                 'status' => $request->status == 'A' ? true : false,
                 'user_id' => Auth::id()
             ]);
+            if ($request->has('imagem')) {
+                $path = $request->file('imagem')->store('public/atividades');
+                $atividade->update([
+                    'imagem' => '/' . str_replace('public', 'storage', $path)
+                ]);
+            }
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             Log::error([
                 'erro' => $th->getMessage(),
                 'arquivo' => $th->getFile(),
@@ -48,6 +58,12 @@ class AtividadeService
                 'start' => Carbon::createFromFormat('d/m/Y', $request->start)->format('Y-m-d'),
                 'status' => $request->status == 'A' ? true : false,
             ]);
+            if ($request->has('imagem')) {
+                $path = $request->file('imagem')->store('public/atividades');
+                $atividade->update([
+                    'imagem' => '/' . str_replace('public', 'storage', $path)
+                ]);
+            }
         } catch (\Throwable $th) {
             Log::error([
                 'erro' => $th->getMessage(),

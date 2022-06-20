@@ -27,7 +27,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('nome', 'Nome') !!}
-                                {!! Form::text('nome', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('nome', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'placeholder' => 'UMP Igreja']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -49,7 +49,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
-                                {!! Form::email('email_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'email') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::email('email_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'email') : null, ['class' => 'form-control', 'required'=>true, 'readonly' => true]) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -100,6 +100,14 @@ $('#status').on('change', function() {
         $('#nome_usuario').prop('required', true);
     }
 })
+
+const federacao = '{{ auth()->user()->federacoes->first()->sigla }}'
+
+$('#nome').on('keyup', function() {
+    let user = $(this).val().normalize("NFD").replace(/\p{Diacritic}/gu, "").split(' ').join('').toLowerCase();
+    let email = user + '.' + federacao.toLowerCase() + '@ump.com';
+    $('#email_usuario').val(email);
+});
 
 </script>
 

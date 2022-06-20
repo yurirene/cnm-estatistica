@@ -47,6 +47,9 @@ class DiretoriaService
 
     public static function porcentagem(int $total, int $valor) : float
     {
+        if ($total == 0) {
+            return  0;
+        }
         return round(($valor * 100) / $total, 2);
     }
 

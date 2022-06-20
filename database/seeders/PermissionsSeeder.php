@@ -296,6 +296,115 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.federacoes.update-info',
                 'resource' => 'federacoes',
             ],
+            
+            /**
+             * Controle de ACI da Tesouraria
+             */
+
+            [
+                'name' => 'Listar ACI',
+                'slug' => 'dashboard.tesouraria.aci.index',
+                'resource' => 'tesouraria',
+            ],
+
+            [
+                'name' => 'Status da ACI',
+                'slug' => 'dashboard.tesouraria.aci.status',
+                'resource' => 'tesouraria',
+            ],
+
+            [
+                'name' => 'Visualizar ACI',
+                'slug' => 'dashboard.tesouraria.aci.show',
+                'resource' => 'tesouraria',
+            ],
+
+            /**
+             * Secretaria de Eventos
+             */
+
+            [
+                'name' => 'Listar Eventos',
+                'slug' => 'dashboard.eventos.index',
+                'resource' => 'eventos',
+            ],
+
+            [
+                'name' => 'Visualizar Evento',
+                'slug' => 'dashboard.eventos.show',
+                'resource' => 'eventos',
+            ],
+
+            [
+                'name' => 'Salvar Eventos',
+                'slug' => 'dashboard.eventos.store',
+                'resource' => 'eventos',
+            ],
+            [
+                'name' => 'Criar Eventos',
+                'slug' => 'dashboard.eventos.create',
+                'resource' => 'eventos',
+            ],
+            [
+                'name' => 'Editar Eventos',
+                'slug' => 'dashboard.eventos.edit',
+                'resource' => 'eventos',
+            ],
+            [
+                'name' => 'Atualizar Eventos',
+                'slug' => 'dashboard.eventos.update',
+                'resource' => 'eventos',
+            ],
+            [
+                'name' => 'Deletar Eventos',
+                'slug' => 'dashboard.eventos.delete',
+                'resource' => 'eventos',
+            ],
+
+
+
+            /**
+             * Formulário Secretarias
+             */
+
+            [
+                'name' => 'Listar Formularios',
+                'slug' => 'dashboard.formulario-secretaria.index',
+                'resource' => 'formulario-sec',
+            ],
+
+            [
+                'name' => 'Visualizar Evento',
+                'slug' => 'dashboard.formulario-sec.show',
+                'resource' => 'formulario-sec',
+            ],
+
+            [
+                'name' => 'Salvar Formulario',
+                'slug' => 'dashboard.formulario-sec.store',
+                'resource' => 'formulario-sec',
+            ],
+            [
+                'name' => 'Criar Formulario',
+                'slug' => 'dashboard.formulario-sec.create',
+                'resource' => 'formulario-sec',
+            ],
+            [
+                'name' => 'Editar Formulario',
+                'slug' => 'dashboard.formulario-sec.edit',
+                'resource' => 'formulario-sec',
+            ],
+            [
+                'name' => 'Atualizar Formulario',
+                'slug' => 'dashboard.formulario-sec.update',
+                'resource' => 'formulario-sec',
+            ],
+            [
+                'name' => 'Deletar Formulario',
+                'slug' => 'dashboard.formulario-sec.delete',
+                'resource' => 'formulario-sec',
+            ],
+
         ];
 
         try {

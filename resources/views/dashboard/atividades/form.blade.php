@@ -19,9 +19,9 @@
                 </div>
                 <div class="card-body">
                     @if (!isset($atividade))
-                    {!! Form::open(['url' => route('dashboard.atividades.store'), 'method' => 'POST']) !!}
+                    {!! Form::open(['url' => route('dashboard.atividades.store'), 'method' => 'POST', 'files' => true]) !!}
                     @else
-                    {!! Form::model($atividade, ['url' => route('dashboard.atividades.update', $atividade->id), 'method' => 'PUT']) !!}
+                    {!! Form::model($atividade, ['url' => route('dashboard.atividades.update', $atividade->id), 'method' => 'PUT', 'files' => true]) !!}
                     @endif
                     <div class="row">
                         <div class="col-md-3">
@@ -54,6 +54,19 @@
                             <div class="form-group">
                                 {!! Form::label('observacoes', 'Observações') !!}
                                 {!! Form::textarea('observacoes', null, ['class' => 'form-control', 'required'=>false, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="form-group">
+                                    {!! Form::label('imagem', 'Imagem') !!}
+                                    {!! Form::file('imagem', ['class' => 'form-control']) !!}
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if(isset($atividade) && !is_null($atividade->imagem))
+                                <a href="{{ $atividade->imagem }}" class="link"><i class="fas fa-eye mr-2"></i> Visualizar Imagem</a>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -18,6 +18,7 @@ class CreateAtividadesTable extends Migration
             $table->string('titulo');
             $table->date('start');
             $table->text('observacao')->nullable();
+            $table->string('imagem')->nullable();
             $table->boolean('status')->default(false);
             $table->tinyInteger('tipo')->default(1);
             $table->uuid('user_id');

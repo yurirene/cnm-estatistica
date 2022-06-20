@@ -6,6 +6,7 @@ use App\DataTables\SinodalDataTable;
 use App\Models\Sinodal;
 use App\Services\SinodalService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class SinodalController extends Controller
@@ -17,7 +18,9 @@ class SinodalController extends Controller
 
     public function create()
     {
-        return view('dashboard.sinodais.form');
+        return view('dashboard.sinodais.form', [
+            'regiao' => strtolower(Auth::user()->regioes->first()->nome)
+        ]);
     }
 
     public function store(Request $request)
@@ -53,7 +56,8 @@ class SinodalController extends Controller
         $estados = SinodalService::getEstados();
         return view('dashboard.sinodais.form', [
             'sinodal' => $sinodal,
-            'estados' => $estados
+            'estados' => $estados,
+            'regiao' => strtolower(Auth::user()->regioes->first()->nome)
         ]);
     }
 

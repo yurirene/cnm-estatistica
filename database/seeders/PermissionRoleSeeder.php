@@ -12,7 +12,7 @@ class PermissionRoleSeeder extends Seeder
     public function run()
     {
         $roles_permissions = [
-            1 => [
+            'administrador' => [
                 'resources' => [
                     'usuario',
                     'sinodais',
@@ -22,57 +22,74 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_umps'
                 ]
             ],
-            2 => [
+            'diretoria' => [
                 'resources' => [
                     'usuario',
                     'sinodais',
                     'atividades'
                 ],
             ],
-            3 => [
-                'resources' => [
-                    'atividades'
-                ],
-            ],
-            4 => [
+            'sinodal' => [
                 'resources' => [
                     'federacoes',
                     'formularios_sin'
                 ],
                 'permissions' => [
-                    1, 4, 5, 50
+                    'dashboard.usuarios.index',
+                    'dashboard.usuarios.edit',
+                    'dashboard.usuarios.update',
+                    'dashboard.sinodais.update-info'
                 ]
             ],
-            5 => [
+            'federacao' => [
                 'resources' => [
                     'umps_locais',
                     'formularios_fed'
                 ],
                 'permissions' => [
-                    1, 4, 5, 51
+                    'dashboard.usuarios.index',
+                    'dashboard.usuarios.edit',
+                    'dashboard.usuarios.update',
+                    'dashboard.federacoes.update-info'
                 ]
             ],
-            6 => [
+            'local' => [
                 'resources' => [
                     'formularios_ump'
                 ],
-            ]
+            ],
+            'tesouraria' => [
+                'resources' => [
+                    'controle-aci'
+                ]
+            ],
+            'secretaria_eventos' => [
+                'resources' => [
+                    'atividades',
+                    'eventos',
+                    'formulario-sec'
+                ],
+            ],
+            'secretaria_evangelismo' => [
+                'resources' => [
+                    'atividades',
+                    'formulario-sec'
+                ],
+            ],
         ];
-        DB::beginTransaction();
         DB::table('permission_role')->truncate();
         try {
                 
-            foreach ($roles_permissions as $role_id => $permissions_array) {
-                $role = Role::find($role_id);
+            foreach ($roles_permissions as $role_slug => $permissions_array) {
+                $role = Role::where('slug', $role_slug)->first();
                 $permissions = Permission::whereIn('resource', $permissions_array['resources'])->get()->pluck('id')->toArray();
                 if (isset($permissions_array['permissions'])) {
-                    array_push($permissions, ...$permissions_array['permissions']);
+                    $array_permission = Permission::whereIn('slug', $permissions_array['permissions'])->get()->pluck('id')->toArray();
+                    array_push($permissions, ...$array_permission);
                 }
                 $role->syncPermissions($permissions);
             }
-            DB::commit();
         } catch (\Throwable $th) {
-            DB::rollBack();
             dd($th->getMessage());
         }
     }

@@ -55,9 +55,7 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            $usuario = User::updateOrCreate([
-                'email' => $request->email,
-            ],[
+            $usuario = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make('123')

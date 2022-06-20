@@ -53,7 +53,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
-                                {!! Form::email('email_usuario', isset($federacao) ? FormHelper::getUsarioInstancia($federacao, 'email') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::email('email_usuario', isset($federacao) ? FormHelper::getUsarioInstancia($federacao, 'email') : null, ['class' => 'form-control', 'required'=>true, 'readonly' => true]) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -101,6 +101,8 @@
 
 <script>
 
+const sinodal = '{{ auth()->user()->sinodais()->first()->sigla }}'
+
 $('#status').on('change', function() {
     if ($(this).val() == 'I') {
         $('#email_usuario').prop('required', false);
@@ -110,6 +112,12 @@ $('#status').on('change', function() {
         $('#nome_usuario').prop('required', true);
     }
 })
+
+$('#sigla').on('keyup', function() {
+    let user = $(this).val().toLowerCase();
+    let email = user + '.' + sinodal.toLowerCase() + '@ump.com';
+    $('#email_usuario').val(email);
+});
 
 </script>
 
