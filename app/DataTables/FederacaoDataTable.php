@@ -25,7 +25,9 @@ class FederacaoDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.federacoes',
                     'id' => $sql->id,
-                    'show' => true
+                    'show' => true,
+                    'show' => false,
+                    'delete' => $sql->locais->count() > 0 ? false : true
                 ]);
             })
             ->editColumn('status', function($sql) {

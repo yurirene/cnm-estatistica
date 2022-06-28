@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AtividadeController;
+use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
@@ -65,6 +66,11 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');
     Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
     Route::post('/formularios-federacoes-resumo', [FormularioFederacaoController::class, 'resumoTotalizador'])->name('formularios-federacoes.resumo');
+
+    Route::get('/comprovante-aci', [ComprovanteACIController::class, 'index'])->name('comprovante-aci.index');
+    Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
+
+
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

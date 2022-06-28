@@ -4,12 +4,12 @@ namespace App\DataTables;
 
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
-use App\Models\Sinodal;
+use App\Models\ComprovanteACI;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class SinodalDataTable extends DataTable
+class ComprovanteAciDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -23,17 +23,19 @@ class SinodalDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.sinodais',
+                    'route' => 'dashboard.atividades',
                     'id' => $sql->id,
-                    'show' => false,
-                    'delete' => $sql->federacoes->count() > 0 ? false : true
+                    'confirmar' => !$sql->status
                 ]);
             })
             ->editColumn('status', function($sql) {
-                return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
+                return FormHelper::statusFormatado($sql->status, 'Presente', 'Pendente');
             })
-            ->editColumn('regiao_id', function($sql) {
-                return $sql->regiao->nome;
+            ->editColumn('observacao', function($sql) {
+                return $sql->observacao;
+            })
+            ->editColumn('start', function($sql) {
+                return $sql->start->format('d/m/Y');
             })
             ->rawColumns(['status']);
     }
@@ -41,12 +43,12 @@ class SinodalDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\ComprovanteACI $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Sinodal $model)
+    public function query(ComprovanteACI $model)
     {
-        return $model->newQuery()->query();
+        return $model->newQuery();
     }
 
     /**
@@ -57,18 +59,16 @@ class SinodalDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('sinodais-table')
+                    ->setTableId('comprovantes-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
-                    )
+                    ->orderBy(2)
                     ->parameters([
                         "language" => [
                             "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
-                        ]
+                        ],
+                        'buttons' => []
                     ]);
     }
 
@@ -86,10 +86,10 @@ class SinodalDataTable extends DataTable
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('nome')->title('Nome'),
-            Column::make('sigla')->title('Sigla'),
+            Column::make('titulo')->title('Título'),
+            Column::make('start')->title('Data'),
+            Column::make('observacao')->title('Observação'),
             Column::make('status')->title('Status'),
-            Column::make('regiao_id')->title('Região'),
         ];
     }
 
@@ -100,6 +100,6 @@ class SinodalDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Sinodais_' . date('YmdHis');
+        return 'Comprovante_ACI_' . date('YmdHis');
     }
 }

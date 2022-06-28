@@ -38,7 +38,9 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.usuarios.index',
                     'dashboard.usuarios.edit',
                     'dashboard.usuarios.update',
-                    'dashboard.sinodais.update-info'
+                    'dashboard.sinodais.update-info',
+                    'dashboard.comprovante-aci.index',
+                    'dashboard.comprovante-aci.store'
                 ]
             ],
             'federacao' => [
@@ -60,7 +62,7 @@ class PermissionRoleSeeder extends Seeder
             ],
             'tesouraria' => [
                 'resources' => [
-                    'controle-aci'
+                    'comprovante-aci'
                 ]
             ],
             'secretaria_eventos' => [

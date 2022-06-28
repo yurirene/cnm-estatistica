@@ -30,7 +30,6 @@
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
-                                    <button type="button" id="importar" class="btn btn-primary mb-2 ml-1">Importar Excel</button>
                                 @endif
                             </div>
                         </div>

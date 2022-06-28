@@ -27,7 +27,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('nome', 'Nome') !!}
-                                {!! Form::text('nome', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('nome', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'placeholder' => 'Federação']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">

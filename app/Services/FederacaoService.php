@@ -32,12 +32,11 @@ class FederacaoService
             ]);
             
 
-            if ($request->status == 'A' && $request->has('email_usuario')) {
-                $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
-                if ($request->has('resetar_senha')) {
-                    UserService::resetarSenha($usuario);
-                }
+            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -64,14 +63,12 @@ class FederacaoService
                 'regiao_id' => $regiao,
                 'status' => $request->status == 'A' ? true : false
             ]);
-             
-            if ($request->status == 'A' && $request->has('email_usuario')) {
-                $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
-                if ($request->has('resetar_senha')) {
-                    UserService::resetarSenha($usuario);
-                }
-            }
 
+            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
+            }
+            
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

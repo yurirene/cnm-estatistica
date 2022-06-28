@@ -43,6 +43,12 @@ class RolesSeeder extends Seeder
             ],
 
             [
+                'name'                 => 'secreatria_produtos',
+                'slug'                 => 'secreatria_produtos',
+                'description'          => 'Secretaria de Produtos' 
+            ],
+
+            [
                 'name'                 => 'secretaria_evangelismo',
                 'slug'                 => 'secretaria_evangelismo',
                 'description'          => 'Secretaria de Evangelismo/Missões' 
@@ -53,8 +59,6 @@ class RolesSeeder extends Seeder
                 'slug'                 => 'secretaria_responsabilidade',
                 'description'          => 'Secretaria de Responsabilidade Social' 
             ],
-
-
 
             
             [
