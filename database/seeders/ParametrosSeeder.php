@@ -20,12 +20,17 @@ class ParametrosSeeder extends Seeder
                 'nome' => 'coleta_dados',
                 'descricao' => 'Coleta de Dados',
                 'valor' => 'SIM'
+            ],
+            [
+                'nome' => 'valor_aci',
+                'descricao' => 'Valor ACI',
+                'valor' => '24,00'
             ]
         ];
         DB::beginTransaction();
         try {
             foreach ($parametros as $parametro) {
-                Parametro::create($parametro);
+                Parametro::updateOrCreate($parametro);
             }
             DB::commit();
         } catch (\Throwable $th) {

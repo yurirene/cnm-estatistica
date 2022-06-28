@@ -170,12 +170,12 @@
 
     $('#tabela-formulario').dataTable();
 
-    $('.btn-info-sinodal').on('click', function() {
-        let rota = '{{ route("dashboard.") }}';
-        $.ajax({
-            url: rota
-        });
-    })
+    // $('.btn-info-sinodal').on('click', function() {
+    //     let rota = '{{ route("dashboard.usuarios.index") }}';
+    //     $.ajax({
+    //         url: rota
+    //     });
+    // })
 
 
 </script>

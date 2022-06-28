@@ -304,19 +304,19 @@ class PermissionsSeeder extends Seeder
             [
                 'name' => 'Listar ACI',
                 'slug' => 'dashboard.comprovante-aci.index',
-                'resource' => 'tesouraria',
+                'resource' => 'comprovante-aci',
             ],
 
             [
                 'name' => 'Status da ACI',
                 'slug' => 'dashboard.comprovante-aci.status',
-                'resource' => 'tesouraria',
+                'resource' => 'comprovante-aci',
             ],
 
             [
                 'name' => 'Visualizar ACI',
                 'slug' => 'dashboard.comprovante-aci.store',
-                'resource' => 'tesouraria',
+                'resource' => 'comprovante-aci',
             ],
 
             /**

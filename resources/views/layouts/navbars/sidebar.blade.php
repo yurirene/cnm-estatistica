@@ -95,14 +95,17 @@
                         <i class="fas fa-file"></i> Formulário Estatístico
                     </a>
                 </li>
-                
+                @endCanAtLeast
+
+
+                @canAtLeast(['dashboard.comprovante-aci.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.comprovante-aci.index') }}">
                         <i class="fas fa-file"></i> Comprovante de ACI
                     </a>
                 </li>
-
                 @endCanAtLeast
+
                 @canAtLeast(['dashboard.locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
@@ -135,64 +138,8 @@
 
 
                 @canAtLeast(['administrador'])
-                <li class="nav-item">
-                    <a class="nav-link pai" href="#cadastros" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="cadastros">
-                        <i class="fas fa-user-plus" ></i>
-                        <span class="nav-link-text" > Cadastros</span>
-                    </a>
-
-                    <div class="collapse" id="cadastros">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
-                                    Sinodais
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard.federacoes.index') }}">
-                                    Federações
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
-                                    UMPs Locais
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link pai" href="#formularios" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="formularios">
-                        <i class="fas fa-file-alt" ></i>
-                        <span class="nav-link-text" > Formulários</span>
-                    </a>
-
-                    <div class="collapse" id="formularios">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
-                                    Sinodais
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
-                                    Federações
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
-                                    UMPs Locais
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                </li>
+                
+               
                 @endCanAtLeast
 
             </ul>

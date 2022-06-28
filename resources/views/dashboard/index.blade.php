@@ -18,5 +18,9 @@
 @include('dashboard.index.diretoria.index')
 @endRole
 
+@role('tesouraria')
+@include('dashboard.index.tesouraria.index')
+@endRole
+
 
 @endsection
