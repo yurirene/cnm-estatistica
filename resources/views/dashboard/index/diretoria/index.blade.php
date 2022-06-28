@@ -8,7 +8,7 @@
     <div class="container-fluid mt--7">
 
         <div class="row">
-            <div class="col-xl-6 mb-5 mb-xl-0">
+            <div class="col-xl-5 mb-5 mb-xl-0">
                 <div class="card bg-gradient-default shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
@@ -19,15 +19,15 @@
                     </div>
                     <div class="card-body">
                         <!-- Chart -->
-                        <div class="chart">
+                        <div class="">
                             <!-- Chart wrapper -->
                             <canvas id="atividades"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-6">
-                <div class="card shadow">
+            <div class="col-xl-7">
+                <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
@@ -53,30 +53,39 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <!-- Projects table -->
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">Sinodal</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse(DashboardHelper::getFormularioEntregue() as $formulario)
-                                <tr>
-                                    <th scope="row"> {{$formulario['sinodal']}} </th>
-                                    <td> {!! $formulario['status'] !!} </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <th scope="row" colspan="2">
-                                        Sem Sinodais Cadastradas
-                                    </th>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <!-- Projects table -->
+                            <table class="table align-items-center table-flush" id="tabela-formulario">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Ação</th>
+                                        <th scope="col">Sinodal</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse(DashboardHelper::getFormularioEntregue() as $formulario)
+                                    <tr>
+                                        <td scope="row"> 
+                                            <button class="btn btn-primary btn-sm btn-info-sinodal" 
+                                                data-sinodal='{{ $formulario['id'] }}'>
+                                                    <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                        <th scope="row"> {{$formulario['sinodal']}} </th>
+                                        <td> {!! $formulario['status'] !!} </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <th scope="row" colspan="2">
+                                            Sem Sinodais Cadastradas
+                                        </th>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -154,9 +163,20 @@
                 }
             },
         };
-        const atividadeChart = new Chart(
-            document.getElementById('atividades'),
-            config_grafico_atividade
-        );
+    const atividadeChart = new Chart(
+        document.getElementById('atividades'),
+        config_grafico_atividade
+    );
+
+    $('#tabela-formulario').dataTable();
+
+    $('.btn-info-sinodal').on('click', function() {
+        let rota = '{{ route("dashboard.") }}';
+        $.ajax({
+            url: rota
+        });
+    })
+
+
 </script>
 @endpush

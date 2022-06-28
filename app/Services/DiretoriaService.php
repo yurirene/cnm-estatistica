@@ -66,6 +66,7 @@ class DiretoriaService
                 $status = false;
             }
             $retorno[] = [
+                'id' => $sinodal->id,
                 'sinodal' => $sinodal->nome,
                 'status' => FormHelper::statusFormatado($status, 'Entregue', 'Pendente')
             ];
