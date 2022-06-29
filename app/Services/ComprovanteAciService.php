@@ -12,15 +12,22 @@ class ComprovanteAciService
     public static function store(Request $request) : ComprovanteACI
     {
         try {
-            $comprovante = ComprovanteACI::create([
+            $comprovante = ComprovanteACI::updateOrCreate([
+                'sinodal_id' => Auth::user()->sinodais->first()->id,
+                'ano' => date('Y')
+            ], [
                 'sinodal_id' => Auth::user()->sinodais->first()->id,
                 'ano' => date('Y')
             ]);
 
-            if ($request->has('comprovante_aci')) {
-                $path = $request->file('comprovante_aci')->store('public/atividades');
+            if (!is_null($comprovante->path)) {
+                unlink(storage_path('public/comprovante_aci/'.$comprovante->path));
+            }
+
+            if ($request->has('arquivo')) {
+                $path = $request->file('arquivo')->store('public/comprovante_aci');
                 $comprovante->update([
-                    'comprovante_aci' => '/' . str_replace('public', 'storage', $path)
+                    'path' => '/' . str_replace('public', 'storage', $path)
                 ]);
             }
 

@@ -9,4 +9,9 @@ class ComprovanteACI extends Model
 {
     protected $table = 'comprovantes_aci';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function sinodal()
+    {
+        return $this->belongsTo(Sinodal::class, 'sinodal_id');
+    }
 }

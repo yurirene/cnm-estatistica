@@ -5,7 +5,8 @@
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         @if(isset($show) && $show == true)
         <a class="dropdown-item" href="{{ route($route.'.show', $id) }}">Informações</a>
-        @endif @if(isset($confirmar) && $confirmar == true)
+        @endif 
+        @if(isset($confirmar) && $confirmar == true)
         <a class="dropdown-item" href="{{ route($route.'.confirmar', $id) }}">Confirmar</a>
         @endif
         @if(!isset($edit) || (isset($edit) && $edit == true))
@@ -14,5 +15,9 @@
         @if(!isset($delete) || (isset($delete) && $delete == true))
         <button class="dropdown-item" href="#" onclick="deleteRegistro('{{ route($route.'.delete', $id) }}')">Apagar</button>
         @endif
+        @if(isset($abrir))
+        <a class="dropdown-item" target="_blank" href="{{ $abrir }}">Abrir</a>
+        @endif
+        
     </div>
 </div>

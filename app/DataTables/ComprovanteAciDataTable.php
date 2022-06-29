@@ -23,21 +23,26 @@ class ComprovanteAciDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.atividades',
+                    'route' => 'dashboard.comprovante_aci',
                     'id' => $sql->id,
-                    'confirmar' => !$sql->status
+                    'confirmar' => auth()->user()->roles->pluck('name') == 'tesouraria',
+                    'edit' => false,
+                    'delete' => false,
+                    'abrir' => $this->getPath($sql->path)
                 ]);
             })
             ->editColumn('status', function($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Presente', 'Pendente');
             })
-            ->editColumn('observacao', function($sql) {
-                return $sql->observacao;
-            })
-            ->editColumn('start', function($sql) {
-                return $sql->start->format('d/m/Y');
+            ->editColumn('sinodal_id', function($sql) {
+                return $sql->sinodal->sigla;
             })
             ->rawColumns(['status']);
+    }
+
+    public function getPath(string $path)
+    {
+        return $path;
     }
 
     /**
@@ -86,9 +91,8 @@ class ComprovanteAciDataTable extends DataTable
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('titulo')->title('Título'),
-            Column::make('start')->title('Data'),
-            Column::make('observacao')->title('Observação'),
+            Column::make('sinodal_id')->title('Sinodal'),
+            Column::make('ano')->title('ano'),
             Column::make('status')->title('Status'),
         ];
     }
