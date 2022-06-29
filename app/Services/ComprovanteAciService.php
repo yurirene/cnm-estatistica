@@ -17,11 +17,14 @@ class ComprovanteAciService
                 'ano' => date('Y')
             ], [
                 'sinodal_id' => Auth::user()->sinodais->first()->id,
-                'ano' => date('Y')
+                'ano' => date('Y'),
+                'status' => false
             ]);
 
             if (!is_null($comprovante->path)) {
-                unlink(storage_path('public/comprovante_aci/'.$comprovante->path));
+                $real_path = __DIR__ . '/../../storage/app/public';
+                $complete_path = str_replace('/storage', $real_path ,$comprovante->path);
+                unlink($complete_path);
             }
 
             if ($request->has('arquivo')) {

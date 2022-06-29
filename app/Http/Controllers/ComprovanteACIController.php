@@ -18,7 +18,7 @@ class ComprovanteACIController extends Controller
     {
         try {
             ComprovanteAciService::store($request);
-            return redirect()->route('dashboard.atividades.index')->with([
+            return redirect()->route('dashboard.comprovante-aci.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
