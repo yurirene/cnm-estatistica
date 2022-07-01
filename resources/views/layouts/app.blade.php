@@ -10,7 +10,7 @@
 
     <title>@yield('title', 'CNM')</title>
     <!-- Favicon -->
-    <link href="{{ asset('argon') }}/img/brand/favicon.png" rel="icon" type="image/png">
+    <link href="{{ asset('argon') }}/img/favicon.ico" rel="icon" type="image/png">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <!-- Extra details for Live View on GitHub Pages -->
@@ -31,16 +31,43 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    
     <style>
+        @media (max-width: 767.98px) {
+            .fc .fc-toolbar.fc-header-toolbar {
+                font-size: 10px;
+                display: block;
+                text-align: center;
+            }
+
+            .fc-header-toolbar .fc-toolbar-chunk {
+                display: block;
+            }
+            .fc-today-button, .fc-prev-button, .fc-next-button {
+                padding: 5px;
+            }
+            .fc-col-header-cell-cushion  {
+                font-size: 10px;
+            }
+        }
         .dataTables_filter {
             float: right;
+        }
+
+        .bg-active {
+            background: #5e72e4;
+            color: white !important;
+            border-radius: 0 2em 2em 0;
+        }
+        .bg-active i {
+            color: white !important;
         }
 
         .paginate_button.page-item.previous a,
@@ -80,29 +107,30 @@
         .accordion-item {
             border: 1px solid rgba(0, 0, 0, .05) !important;
         }
+        .select2-container--default .select2-selection--multiple {
+
+            min-height: calc(2.60rem + 2px);
+            border-color: #9ba4d6;
+        }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             background-color: #5e72e4;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
+            line-height: 2rem;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: white;
         }
 
-        @media screen and (min-width: 1024px) {
-            .modal-area-orcamentaria {
-                max-width: 1000px;
-                margin: auto;
-            }
+        .select2-selection__rendered {
+            line-height: 41px !important;
         }
-
-        @media screen and (min-width: 1920px) {
-            .modal-area-orcamentaria {
-                max-width: 1850px;
-                margin: auto;
-            }
+        .select2-container .select2-selection--single {
+            height: 45px !important;
         }
-
+        .select2-selection__arrow {
+            height: 44px !important;
+        }
     </style>
 </head>
 
@@ -117,8 +145,9 @@
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
+    @auth()
     @include('layouts.navbars.sidebar')
-
+    @endauth
 
     <div class="main-content">
         @include('layouts.navbars.navbar')
@@ -128,13 +157,40 @@
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+
+
+    <script>
+        $(function(){
+
+            var url = window.location.pathname, 
+                urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
+                // now grab every link from the navigation
+                $('.navbar-nav a').each(function(){
+                    // and test its normalized href against the url pathname regexp
+                    if(urlRegExp.test(this.href.replace(/\/$/,''))){
+                        $(this).addClass('active bg-active');
+                        if ($(this).find('i').length > 0) {
+                            $(this).find('i').addClass('text-primary');
+                        } else {
+                            $(this).addClass('text-primary');
+                        }
+                        
+                        if ($(this).parents().closest('.nav-item').length > 1) {
+                            console.log($(this).parents().closest('.nav-item'));
+                            $(this).parents().closest('.nav-item').first().find('a').first().addClass('active text-primary');
+                        }
+                    }
+                });
+
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
 
     <script src="/datatables/datatables.min.js"></script>
-    {{-- <script src="/datatables/dataTables.buttons.min.js"></script> --}}
-    {{-- <script src="/datatables/buttons.dataTables.min.js"></script> --}}
+
     <script src="/js/jquery.mask.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
         integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
@@ -147,8 +203,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css"
         integrity="sha512-O03ntXoVqaGUTAeAmvQ2YSzkCvclZEcPQu1eqloPaHfJ5RuNGiS4l+3duaidD801P50J28EHyonCV06CUlTSag=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -158,6 +214,13 @@
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/br/br-all.js"></script>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     @stack('js')
 
@@ -217,13 +280,6 @@
                 orientation: "bottom auto"
             });
 
-            $('.isMounth').datepicker({
-                format: "mm/yyyy",
-                language: "pt-BR",
-                minViewMode: 1,
-                todayHighlight: true,
-                orientation: "bottom auto"
-            });
             $('.isDateRange').daterangepicker({
                 autoUpdateInput: false,
                 "locale": {
@@ -269,61 +325,13 @@
                 $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
                     'DD/MM/YYYY'));
             });
-            $('.isDateRange').on('cancel.daterangepicker', function(ev, picker) {
-                $(this).val('');
-            });
 
-            $('#contas-status').select2();
-
-            $('#auto-status').select2();
-
-            $(".isNumber").keydown(function(e) {
-                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
-                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-                    (e.keyCode >= 35 && e.keyCode <= 40)) {
-                    return;
-                }
-                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode >
-                        105)) {
-                    e.preventDefault();
-                }
-            });
+            $('.isSelect2').select2();
 
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
-            $('.isDateTime').attr('autocomplete', 'off');
-            $('.isDateTime').mask('00/00/0000 00:00:00');
-            $('.isTime').mask('00:00:00');
-
-            $('.isDateMonth').mask('00/0000');
-            $('.isCPF').mask('000.000.000-00');
-            $('.isCNPJ').mask('00.000.000/0000-00');
-            $('.isCNS').mask('000.0000.0000.0000');
-            $('.isMoney').mask('###.###.###.#00,00', {
-                reverse: true
-            });
-            $('.isDecimal').mask('#####,000', {
-                reverse: true
-            });
-
-            $('.isPeso').mask('#00,000', {
-                reverse: true
-            });
-            $('.isAltura').mask('000');
-            $('.isTemperatura').mask('00,000');
-
-            /* Início - Máscara para telefone com e sem o 9 */
-            var SPMaskBehavior = function(val) {
-                    return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-                },
-                spOptions = {
-                    onKeyPress: function(val, e, field, options) {
-                        field.mask(SPMaskBehavior.apply({}, arguments), options);
-                    }
-                };
-            $('.isTelefone').mask(SPMaskBehavior, spOptions);
-            /* Fim - Máscara para telefone com e sem o 9 */
-
+            $('.isMoney').mask("#.##0,00", {reverse: true});
+            
             $("#hide-sidebar").click(function() {
                 $("#sidenav-main").toggle();
                 $(".main-content").toggleClass("hideme");
@@ -358,6 +366,24 @@
                 }, 200);
             }
         };
+
+        function deleteRegistro(url) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja apagar o registro?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            })
+        }
+
     </script>
 
     <!-- Argon JS -->
@@ -384,7 +410,31 @@
         });
     </script>
     @endif
+
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+        <script>
+            iziToast.show({
+                title: 'Erro!',
+                message: '{{$error}}',
+                position: 'topRight',
+            });
+        </script>
+        @endforeach
+    @endif
+    <script>
+        $('.table-responsive').on('show.bs.dropdown', function () {
+            $('.table-responsive').css( "overflow", "inherit" );
+        });
+
+        $('.table-responsive').on('hide.bs.dropdown', function () {
+            $('.table-responsive').css( "overflow", "auto" );
+        })
+    </script>
         
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @stack('script')
+
 </body>
 
 </html>

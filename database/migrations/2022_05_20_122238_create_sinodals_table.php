@@ -17,13 +17,16 @@ class CreateSinodalsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('nome');
             $table->string('sigla');
-            $table->bigInteger('estado_id')->unsigned();
+            $table->date('data_organizacao')->nullable();
+            $table->string('sinodo')->nullable();
+            $table->string('midias_sociais')->nullable();
             $table->bigInteger('regiao_id')->unsigned();
             $table->boolean('status')->default(true);
             $table->timestamps();
-
-            $table->foreign('estado_id')->references('id')->on('estados');
+            $table->softDeletes();
+            
             $table->foreign('regiao_id')->references('id')->on('regioes');
+            
         });
     }
 

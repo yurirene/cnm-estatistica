@@ -2,7 +2,9 @@
 
 @section('content')
 
-@include('dashboard.partes.head')
+@include('dashboard.partes.head', [
+    'titulo' => 'Sinodais'
+])
     
 <div class="container-fluid mt--7">
     <div class="row mt-5">
@@ -25,23 +27,44 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('nome', 'Nome') !!}
-                                {!! Form::text('nome', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('nome', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'placeholder' => 'Confederação Sinodal de Mocidades']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('sigla', 'Sigla') !!}
-                                {!! Form::text('sigla', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('sigla', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'placeholder' => 'CSM']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('status', 'Situação') !!}
-                                {!! Form::select('status', ['A' => 'Ativa', 'I' => 'Inativa'], null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::select('status', ['A' => 'Ativa', 'I' => 'Inativa'],  isset($sinodal) ? ($sinodal->status == true ? ' A' : 'I') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('email_usuario', 'E-mail do Usuário') !!}
+                                {!! Form::email('email_usuario', isset($sinodal) ? FormHelper::getUsarioInstancia($sinodal, 'email') : null, ['class' => 'form-control', 'required'=>true, 'readonly' => true]) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
+                                {!! Form::text('nome_usuario', isset($sinodal) ? FormHelper::getUsarioInstancia($sinodal, 'name') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mt-5">
+                                <div class="checkbox{{ $errors->has('resetar_senha') ? ' has-error' : '' }}">
+                                    <label for="resetar_senha">
+                                    {!! Form::checkbox('resetar_senha', '1', null, ['id' => 'resetar_senha']) !!} Resetar Senha
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         @if(count(auth()->user()->regioes) > 1)
                         <div class="col-md-4">
                             <div class="form-group">
@@ -67,3 +90,31 @@
     </div>
 </div>
 @endsection
+
+@push('js')
+
+<script>
+
+const regiao = '{{$regiao}}'
+
+
+$('#status').on('change', function() {
+    if ($(this).val() == 'I') {
+        $('#email_usuario').prop('required', false);
+        $('#nome_usuario').prop('required', false);
+    } else {
+        $('#email_usuario').prop('required', true);
+        $('#nome_usuario').prop('required', true);
+    }
+});
+
+$('#sigla').on('keyup', function() {
+    let user = $(this).val().toLowerCase();
+    let email = user + '.' + regiao + '@ump.com';
+    $('#email_usuario').val(email);
+});
+
+
+</script>
+
+@endpush

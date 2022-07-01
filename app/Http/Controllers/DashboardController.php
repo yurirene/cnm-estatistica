@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Services\MapaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -14,5 +17,38 @@ class DashboardController extends Controller
         return view('dashboard.index', [
             'dataMapaBrazil' => $dataMapaBrazil
         ]);
+    }
+
+    public function trocarSenha(Request $request)
+    {
+        $usuario = Auth::user();
+        if (!Hash::check($request->antiga_senha, $usuario->password)) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Senha Antiga Inválida!'
+                ]
+            ]);
+        }
+        try {
+            $request->user()->fill([
+                'password' => Hash::make($request->nova_senha)
+            ])->save();
+            
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());          
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
     }
 }

@@ -13,4 +13,13 @@ class FormHelper
         return  '<span class="badge badge-danger">' . $inativo .'</span>';
     }
 
+    public static function getUsarioInstancia($instancia, $campo)
+    {
+        $usuario = $instancia->usuario->first();
+        if (!is_null($usuario)) {
+            return $usuario->$campo;
+        }
+        return null;
+    }
+
 }

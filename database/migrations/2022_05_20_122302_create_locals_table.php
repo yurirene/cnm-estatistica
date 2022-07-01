@@ -16,13 +16,16 @@ class CreateLocalsTable extends Migration
         Schema::create('locais', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('nome');
-            $table->string('sigla');
+            $table->date('data_organizacao')->nullable();
+            $table->string('midias_sociais')->nullable();
             $table->bigInteger('estado_id')->unsigned();
             $table->bigInteger('regiao_id')->unsigned();
             $table->uuid('federacao_id');
             $table->uuid('sinodal_id');
             $table->boolean('status')->default(true);
+            $table->boolean('outro_modelo')->default(false);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('estado_id')->references('id')->on('estados');
             $table->foreign('regiao_id')->references('id')->on('regioes');

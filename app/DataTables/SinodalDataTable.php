@@ -25,7 +25,8 @@ class SinodalDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.sinodais',
                     'id' => $sql->id,
-                    'show' => true
+                    'show' => false,
+                    'delete' => $sql->federacoes->count() > 0 ? false : true
                 ]);
             })
             ->editColumn('status', function($sql) {
@@ -45,7 +46,7 @@ class SinodalDataTable extends DataTable
      */
     public function query(Sinodal $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->query();
     }
 
     /**
@@ -56,7 +57,7 @@ class SinodalDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('acesso-externo-table')
+                    ->setTableId('sinodais-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
@@ -83,7 +84,8 @@ class SinodalDataTable extends DataTable
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
-                  ->addClass('text-center'),
+                  ->addClass('text-center')
+                  ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sigla')->title('Sigla'),
             Column::make('status')->title('Status'),
@@ -98,6 +100,6 @@ class SinodalDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'AcessoExternos_' . date('YmdHis');
+        return 'Sinodais_' . date('YmdHis');
     }
 }
