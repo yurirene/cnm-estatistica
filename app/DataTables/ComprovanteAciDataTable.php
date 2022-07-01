@@ -89,19 +89,19 @@ class ComprovanteAciDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('comprovantes-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(2)
-                    ->parameters([
-                        "language" => [
-                            "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
-                        ],
-                        'buttons' => [],
-                        'responsive' => true
+            ->setTableId('comprovantes-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(2)
+            ->parameters([
+                "language" => [
+                    "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                ],
+                'buttons' => [],
+                'responsive' => true
 
-                    ]);
+            ]);
     }
 
     /**

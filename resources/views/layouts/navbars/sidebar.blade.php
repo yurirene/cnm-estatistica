@@ -14,7 +14,7 @@
                 <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
-                        <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/team-1-800x800.jpg">
+                        <img src="/img/azul.jpg">
                         </span>
                     </div>
                 </a>
@@ -50,17 +50,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Form -->
-            <form class="mt-4 mb-3 d-md-none">
-                <div class="input-group input-group-rounded input-group-merge">
-                    <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="{{ __('Search') }}" aria-label="Search">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">
-                            <span class="fa fa-search"></span>
-                        </div>
-                    </div>
-                </div>
-            </form>
+
             <!-- Navigation -->
             <ul class="navbar-nav">
                 <li class="nav-item">
