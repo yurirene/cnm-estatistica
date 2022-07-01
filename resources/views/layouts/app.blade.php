@@ -131,7 +131,6 @@
         .select2-selection__arrow {
             height: 44px !important;
         }
-        
     </style>
 </head>
 
@@ -410,6 +409,18 @@
             position: 'topRight',
         });
     </script>
+    @endif
+
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+        <script>
+            iziToast.show({
+                title: 'Erro!',
+                message: '{{$error}}',
+                position: 'topRight',
+            });
+        </script>
+        @endforeach
     @endif
     <script>
         $('.table-responsive').on('show.bs.dropdown', function () {

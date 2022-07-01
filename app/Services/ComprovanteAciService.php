@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ComprovanteACI;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class ComprovanteAciService
@@ -38,5 +39,22 @@ class ComprovanteAciService
         } catch (Throwable $th) {
             throw $th;
         }
+    }
+
+    public static function alterarStatus(ComprovanteACI $comprovante) : void
+    {
+        try {
+            $comprovante->update([
+                'status' => !$comprovante->status
+            ]);
+        } catch (Throwable $th) {
+            Log::error([
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine()
+            ]);
+            throw $th;
+        }
+
     }
 }

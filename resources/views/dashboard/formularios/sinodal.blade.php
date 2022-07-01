@@ -55,8 +55,11 @@
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
 
-
+                    @if(!is_null($formulario))
+                    {!! Form::model($formulario, ['route' => ['dashboard.formularios-sinodais.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                    @else
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-sinodais.store', 'class' => 'form-horizontal']) !!}
+                    @endif
 
                     <h3>Estrutura</h3>
                     @include('dashboard.formularios.sinodal.federacoes-umps')

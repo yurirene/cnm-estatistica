@@ -18,6 +18,9 @@
         @if(isset($abrir))
         <a class="dropdown-item" target="_blank" href="{{ $abrir }}">Abrir</a>
         @endif
+        @if(isset($status) && $status == true)
+        <a class="dropdown-item" href="{{ route($route.'.status', $id) }}">Alterar Status</a>
+        @endif
         
     </div>
 </div>

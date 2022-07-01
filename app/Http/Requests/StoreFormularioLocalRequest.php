@@ -108,15 +108,16 @@ class StoreFormularioLocalRequest extends FormRequest
     {
         return [
             'perfil' => ['array', 'required', 'min:8'],
+            'estrutura' => ['array', 'required'],
             'escolaridade' => ['array', 'required', 'min:6'],
             'estado_civil' => ['array', 'required', 'min:5'],
-            'deficiencia' => ['array', 'required', 'min:9'],
+            'deficiencias' => ['array', 'required', 'min:9'],
             'programacoes' => ['array', 'required', 'min:5'],
             'aci' => ['array', 'required', 'min:2'],
             'perfil.*' => ['min:0'],
             'escolaridade.*' => ['min:0'],
             'estado_civil.*' => ['min:0'],
-            'deficiencia.*' => ['min:0'],
+            'deficiencias.*' => ['min:0'],
             'programacoes.*' => ['min:0'],
             
         ];

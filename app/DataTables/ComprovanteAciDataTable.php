@@ -5,6 +5,8 @@ namespace App\DataTables;
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
 use App\Models\ComprovanteACI;
+use App\Models\FormularioSinodal;
+use App\Models\Parametro;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -23,26 +25,49 @@ class ComprovanteAciDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.comprovante_aci',
+                    'route' => 'dashboard.comprovante-aci',
                     'id' => $sql->id,
-                    'confirmar' => auth()->user()->roles->pluck('name') == 'tesouraria',
+                    'status' => auth()->user()->roles->first()->name == 'tesouraria',
                     'edit' => false,
                     'delete' => false,
-                    'abrir' => $this->getPath($sql->path)
+                    'abrir' => $sql->path
                 ]);
             })
             ->editColumn('status', function($sql) {
-                return FormHelper::statusFormatado($sql->status, 'Presente', 'Pendente');
+                return FormHelper::statusFormatado($sql->status, 'Confirmado', 'Pendente');
             })
             ->editColumn('sinodal_id', function($sql) {
                 return $sql->sinodal->sigla;
             })
+            ->addColumn('valor_informado', function($sql) {
+                return $this->valorInformado($sql);
+            })
+            ->addColumn('valor_previsto', function($sql) {
+                return $this->valorPrevisto($sql);
+            })
             ->rawColumns(['status']);
     }
-
-    public function getPath(string $path)
+    
+    public function valorInformado($sql) 
     {
-        return $path;
+        $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
+            ->where('ano_referencia', $sql->ano)->first();
+        if (is_null($formulario)) {
+            return 'Formulário não respondido';
+        }
+        return isset($formulario['aci']['valor_repassado']) ? 'R$' .$formulario['aci']['valor_repassado'] : 'Não Informado' ;
+    }
+
+    public function valorPrevisto($sql) 
+    {
+        $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
+            ->where('ano_referencia', $sql->ano)->first();
+        if (is_null($formulario)) {
+            return 'Formulário não respondido';
+        }
+        $total_de_socios = intval($formulario['perfil']['ativos']) + intval($formulario['perfil']['cooperadores']);
+        $param_valor_aci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+        return 'R$' . $total_de_socios * $param_valor_aci;
     }
 
     /**
@@ -53,7 +78,7 @@ class ComprovanteAciDataTable extends DataTable
      */
     public function query(ComprovanteACI $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->meusComprovantes();
     }
 
     /**
@@ -73,7 +98,9 @@ class ComprovanteAciDataTable extends DataTable
                         "language" => [
                             "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
                         ],
-                        'buttons' => []
+                        'buttons' => [],
+                        'responsive' => true
+
                     ]);
     }
 
@@ -92,7 +119,9 @@ class ComprovanteAciDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('sinodal_id')->title('Sinodal'),
-            Column::make('ano')->title('ano'),
+            Column::make('ano')->title('Ano Referência'),
+            Column::make('valor_informado')->title('Valor Informado'),
+            Column::make('valor_previsto')->title('Valor Previsto'),
             Column::make('status')->title('Status'),
         ];
     }

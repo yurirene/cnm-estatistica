@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     Route::get('/comprovante-aci', [ComprovanteACIController::class, 'index'])->name('comprovante-aci.index');
     Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
+    Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
 
 
 });

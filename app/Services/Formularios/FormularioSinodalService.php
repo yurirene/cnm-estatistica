@@ -32,14 +32,14 @@ class FormularioSinodalService
                     'sinodal_id' => $request->sinodal_id
                 ],
                 [
-                'estrutura' => $request->federacao_ump,
+                'estrutura' => $request->estrutura,
                 'perfil' => $request->perfil,
                 'estado_civil' => $request->estado_civil,
                 'escolaridade' => $request->escolaridade,
-                'deficiencias' => $request->deficiencia,
+                'deficiencias' => $request->deficiencias,
                 'programacoes_federacoes' => $request->programacoes_federacoes,
                 'programacoes_locais' => $request->programacoes_locais,
-                'programacoes_sinodal' => $request->programacoes,
+                'programacoes' => $request->programacoes,
                 'aci' => $request->aci,
                 'ano_referencia' => date('Y'),
                 'sinodal_id' => $request->sinodal_id
@@ -111,6 +111,12 @@ class FormularioSinodalService
         }
     }
 
+    public static function getFormularioAnoCorrente()
+    {
+        return FormularioSinodal::where('sinodal_id', Auth::user()->sinodais->first()->id)
+            ->first();
+    }
+
     public static function showFormulario($id)
     {
         try {
@@ -122,7 +128,6 @@ class FormularioSinodalService
                 'grafico' => $grafico
             ];
         } catch (\Throwable $th) {
-            dd($th->getMessage(), $th->getFile(), $th->getLine());
             return $th->getMessage();
         }
     }

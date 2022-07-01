@@ -1,30 +1,30 @@
 <div class="row">
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('federacao_ump[ump_organizada]') ? ' has-error' : '' }}">
-        {!! Form::label('federacao_ump[ump_organizada]', 'Quantidade de UMPs organizadas na Confederação Sinodal') !!}
-        {!! Form::number('federacao_ump[ump_organizada]',0, ['id' => 'federacao_ump[ump_organizada]', 'class' => 'form-control', 'required' => 'required']) !!}
-        <small class="text-danger">{{ $errors->first('federacao_ump[ump_organizada]') }}</small>
+    <div class="col-md-3 col-sm-6 mt-3 d-flex flex-column justify-content-end form-group">
+        <div class="form-group{{ $errors->has('estrutura[ump_organizada]') ? ' has-error' : '' }}">
+        {!! Form::label('estrutura[ump_organizada]', 'Quantidade de UMPs organizadas na Confederação Sinodal') !!}
+        {!! Form::number('estrutura[ump_organizada]',isset($formulario) ? null : 0, ['id' => 'estrutura[ump_organizada]', 'class' => 'form-control', 'required' => 'required']) !!}
+        <small class="text-danger">{{ $errors->first('estrutura[ump_organizada]') }}</small>
         </div>
     </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('federacao_ump[ump_nao_organizada]') ? ' has-error' : '' }}">
-        {!! Form::label('federacao_ump[ump_nao_organizada]', 'Quantidade de igrejas sem UMPs organizadas') !!}
-        {!! Form::number('federacao_ump[ump_nao_organizada]', 0, ['class' => 'form-control isMoney', 'required' => 'required']) !!}
-        <small class="text-danger">{{ $errors->first('federacao_ump[ump_nao_organizada]') }}</small>
+    <div class="col-md-3 col-sm-6 mt-3 d-flex flex-column justify-content-end form-group">
+        <div class="form-group{{ $errors->has('estrutura[ump_nao_organizada]') ? ' has-error' : '' }}">
+        {!! Form::label('estrutura[ump_nao_organizada]', 'Quantidade de igrejas sem UMPs organizadas') !!}
+        {!! Form::number('estrutura[ump_nao_organizada]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
+        <small class="text-danger">{{ $errors->first('estrutura[ump_nao_organizada]') }}</small>
         </div>  
     </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('federacao_ump[federacao_organizada]') ? ' has-error' : '' }}">
-        {!! Form::label('federacao_ump[federacao_organizada]', 'Quantidade de Federações organizadas na Confederação Sinodal') !!}
-        {!! Form::number('federacao_ump[federacao_organizada]',0, ['id' => 'federacao_ump[federacao_organizada]', 'class' => 'form-control', 'required' => 'required']) !!}
-        <small class="text-danger">{{ $errors->first('federacao_ump[federacao_organizada]') }}</small>
+    <div class="col-md-3 col-sm-6 mt-3 d-flex flex-column justify-content-end form-group">
+        <div class="form-group{{ $errors->has('estrutura[federacao_organizada]') ? ' has-error' : '' }}">
+        {!! Form::label('estrutura[federacao_organizada]', 'Quantidade de Federações organizadas na Confederação Sinodal') !!}
+        {!! Form::number('estrutura[federacao_organizada]',isset($formulario) ? null : 0, ['id' => 'estrutura[federacao_organizada]', 'class' => 'form-control', 'required' => 'required']) !!}
+        <small class="text-danger">{{ $errors->first('estrutura[federacao_organizada]') }}</small>
         </div>
     </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('federacao_ump[federacao_nao_organizada]') ? ' has-error' : '' }}">
-        {!! Form::label('federacao_ump[federacao_nao_organizada]', 'Quantidade de Presbitérios sem Federações organizadas') !!}
-        {!! Form::number('federacao_ump[federacao_nao_organizada]', 0, ['class' => 'form-control isMoney', 'required' => 'required']) !!}
-        <small class="text-danger">{{ $errors->first('federacao_ump[federacao_nao_organizada]') }}</small>
+    <div class="col-md-3 col-sm-6 mt-3 d-flex flex-column justify-content-end form-group">
+        <div class="form-group{{ $errors->has('estrutura[federacao_nao_organizada]') ? ' has-error' : '' }}">
+        {!! Form::label('estrutura[federacao_nao_organizada]', 'Quantidade de Presbitérios sem Federações organizadas') !!}
+        {!! Form::number('estrutura[federacao_nao_organizada]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
+        <small class="text-danger">{{ $errors->first('estrutura[federacao_nao_organizada]') }}</small>
         </div>  
     </div>
 </div>

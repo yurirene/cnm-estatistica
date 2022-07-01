@@ -113,11 +113,11 @@
                     </a>
                 </li>
                 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
                         <i class="fas fa-file"></i> Formulário Estatístico
                     </a>
-                </li>
+                </li> --}}
 
                 @endCanAtLeast
                 @canAtLeast(['dashboard.atividades.index'])                

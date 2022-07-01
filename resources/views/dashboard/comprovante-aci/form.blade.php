@@ -8,11 +8,10 @@
             {!! Form::text('ano', date('Y'), ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'readonly' => true]) !!}
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-5">
         <div class="form-group{{ $errors->has('arquivo') ? ' has-error' : '' }}">
             {!! Form::label('arquivo', 'Comprovante') !!}
             {!! Form::file('arquivo', ['required' => 'required', 'class' => 'form-control']) !!}
-            <p class="help-block">Selecione o arquivo</p>
             <small class="text-danger">{{ $errors->first('arquivo') }}</small>
         </div>
     </div>

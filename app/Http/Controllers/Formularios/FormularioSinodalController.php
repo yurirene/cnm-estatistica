@@ -13,9 +13,11 @@ class FormularioSinodalController extends Controller
     public function index()
     {
         $formulario_respondido_ano = FormularioSinodalService::getAnosFormulariosRespondidos();
+        $formulario_esse_ano = FormularioSinodalService::getFormularioAnoCorrente();
         return view('dashboard.formularios.sinodal', [
             'coleta' => FormularioSinodalService::verificarColeta(),
-            'anos' => $formulario_respondido_ano
+            'anos' => $formulario_respondido_ano,
+            'formulario' => $formulario_esse_ano
         ]);
     }
 

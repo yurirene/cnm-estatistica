@@ -39,7 +39,7 @@
                             </div>
                             <div class="col">
                                 <h4 class="card-title text-uppercase text-muted mb-0">Atenção</h4>
-                                <span class="h5 font-weight-bold mb-0">Seu acesso ao SISVOTO será cancelado</span>
+                                <span class="h5 font-weight-bold mb-0">Anexe seu comprovante de ACI</span>
                             </div>
                             
                         </div>
