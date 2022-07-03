@@ -19,7 +19,8 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'umps_locais',
                     'atividades',
-                    'formularios_umps'
+                    'formularios_umps',
+                    'pesquisas'
                 ]
             ],
             'diretoria' => [
@@ -69,13 +70,25 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'atividades',
                     'eventos',
-                    'formulario-sec'
+                    'pesquisas'
                 ],
             ],
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
-                    'formulario-sec'
+                    'pesquisas'
+                ],
+            ],
+            'secreatria_produtos' => [
+                'resources' => [
+                    'atividades',
+                    'pesquisas'
+                ],
+            ],
+            'secretaria_responsabilidade' => [
+                'resources' => [
+                    'atividades',
+                    'pesquisas'
                 ],
             ],
         ];

@@ -369,40 +369,40 @@ class PermissionsSeeder extends Seeder
 
             [
                 'name' => 'Listar Formularios',
-                'slug' => 'dashboard.formulario-secretaria.index',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.index',
+                'resource' => 'pesquisas',
             ],
 
             [
                 'name' => 'Visualizar Evento',
-                'slug' => 'dashboard.formulario-sec.show',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.show',
+                'resource' => 'pesquisas',
             ],
 
             [
                 'name' => 'Salvar Formulario',
-                'slug' => 'dashboard.formulario-sec.store',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.store',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Criar Formulario',
-                'slug' => 'dashboard.formulario-sec.create',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.create',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Editar Formulario',
-                'slug' => 'dashboard.formulario-sec.edit',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.edit',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Atualizar Formulario',
-                'slug' => 'dashboard.formulario-sec.update',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.update',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Deletar Formulario',
-                'slug' => 'dashboard.formulario-sec.delete',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.delete',
+                'resource' => 'pesquisas',
             ],
 
         ];

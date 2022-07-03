@@ -222,6 +222,11 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="/js/form-builder.min.js"></script>
+    <script src="/js/form-render.min.js"></script>
+
     @stack('js')
 
     <script>

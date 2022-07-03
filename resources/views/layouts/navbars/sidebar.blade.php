@@ -106,6 +106,14 @@
                 </li>
                 @endCanAtLeast
 
+                @canAtLeast(['dashboard.pesquisas.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.pesquisas.index') }}">
+                        <i class="fas fa-file"></i> Pesquisa
+                    </a>
+                </li>
+                @endCanAtLeast
+
                 @canAtLeast(['dashboard.locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
