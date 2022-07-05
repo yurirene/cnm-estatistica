@@ -4,7 +4,7 @@
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         @if(isset($show) && $show == true)
-        <a class="dropdown-item" href="{{ route($route.'.show', $id) }}">Informações</a>
+        <a class="dropdown-item" href="{{ route($route.'.show', $id) }}">Visualizar</a>
         @endif 
         @if(isset($confirmar) && $confirmar == true)
         <a class="dropdown-item" href="{{ route($route.'.confirmar', $id) }}">Confirmar</a>

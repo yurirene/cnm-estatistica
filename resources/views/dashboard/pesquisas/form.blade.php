@@ -18,14 +18,20 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.pesquisas.store']) !!}
+                    <div class="form-group{{ $errors->has('nome') ? ' has-error' : '' }}">
+                        {!! Form::label('nome', 'Titulo do Formulário') !!}
+                        {!! Form::text('nome', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                        <small class="text-danger">{{ $errors->first('nome') }}</small>
+                    </div>
                     <div id="fb-editor"></div>
                     <div id="fb-rendered-form" style="display: none;">
-                        {!! Form::open(['method' => 'POST', 'route' => 'dashboard.pesquisas.store']) !!}
+                        
                         {!! Form::hidden('formulario') !!}
                         <button class="btn btn-default edit-form">Edit</button>
                         <button class="btn btn-success" type="submit">Enviar</button>
-                        {!! Form::close() !!}
                     </div>
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>

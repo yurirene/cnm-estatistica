@@ -29,6 +29,7 @@ class PesquisaDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.pesquisas',
                     'id' => $sql->id,
+                    'show' => true,
                     'delete' => false
                 ]);
             })

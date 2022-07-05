@@ -404,6 +404,11 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.delete',
                 'resource' => 'pesquisas',
             ],
+            [
+                'name' => 'Responder Formulario',
+                'slug' => 'dashboard.pesquisas.responder',
+                'resource' => 'pesquisas',
+            ],
 
         ];
 

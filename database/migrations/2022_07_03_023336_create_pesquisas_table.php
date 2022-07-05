@@ -17,7 +17,7 @@ class CreatePesquisasTable extends Migration
             $table->id();
             $table->string('nome');
             $table->longText('formulario');
-            $table->boolean('status');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

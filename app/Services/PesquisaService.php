@@ -13,11 +13,17 @@ class PesquisaService
     {
         try {
             Pesquisa::create([
-                
+                'nome' => $request->nome,
+                'formulario' => $request->formulario
             ]);
         } catch (\Throwable $th) {
             throw new Exception("Error Processing Request", 1);
         }
+    }
+
+    public static function responder(Request $request)
+    {
+        dd('fim');
     }
 
 }
