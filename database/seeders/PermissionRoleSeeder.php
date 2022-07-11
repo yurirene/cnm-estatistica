@@ -24,7 +24,6 @@ class PermissionRoleSeeder extends Seeder
             ],
             'diretoria' => [
                 'resources' => [
-                    'usuario',
                     'sinodais',
                     'atividades'
                 ],
@@ -35,9 +34,6 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_sin'
                 ],
                 'permissions' => [
-                    'dashboard.usuarios.index',
-                    'dashboard.usuarios.edit',
-                    'dashboard.usuarios.update',
                     'dashboard.sinodais.update-info',
                     'dashboard.comprovante-aci.index',
                     'dashboard.comprovante-aci.store'
@@ -49,9 +45,6 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_fed'
                 ],
                 'permissions' => [
-                    'dashboard.usuarios.index',
-                    'dashboard.usuarios.edit',
-                    'dashboard.usuarios.update',
                     'dashboard.federacoes.update-info'
                 ]
             ],

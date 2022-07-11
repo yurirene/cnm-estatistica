@@ -33,7 +33,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('email', 'Email') !!}
-                                {!! Form::email('email', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::email('email', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'readonly' => true]) !!}
                             </div>
                         </div>
                         <div class="col-md-4">
