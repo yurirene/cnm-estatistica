@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-    <div class="row mt-5" id="formulario_importar" style="{{ $errors->has('somatorio') ? ' ' : 'display: none;' }}">
+    {{-- <div class="row mt-5" id="formulario_importar" style="{{ $errors->has('somatorio') ? ' ' : 'display: none;' }}">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
                 <div class="card-header border-0">
@@ -167,7 +167,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     @endif
 </div>  
 @endsection
