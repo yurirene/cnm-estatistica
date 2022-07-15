@@ -409,6 +409,17 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.responder',
                 'resource' => 'pesquisas',
             ],
+            [
+                'name' => 'Alterar Status do Formulario',
+                'slug' => 'dashboard.pesquisas.status',
+                'resource' => 'pesquisas',
+            ],
+            
+            [
+                'name' => 'Ver Respostas do Formulario',
+                'slug' => 'dashboard.pesquisas.respostas',
+                'resource' => 'pesquisas',
+            ],
 
         ];
 

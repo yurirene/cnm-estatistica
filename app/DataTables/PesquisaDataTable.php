@@ -30,11 +30,17 @@ class PesquisaDataTable extends DataTable
                     'route' => 'dashboard.pesquisas',
                     'id' => $sql->id,
                     'show' => true,
-                    'delete' => false
+                    'delete' => false,
+                    'status' => true,
+                    'respostas' => true
                 ]);
             })
-           
-           
+            ->editColumn('status', function($sql) {
+                return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
+            })
+            ->addColumn('respostas', function($sql) {
+                return $sql->respostas->count();
+            })
             ->rawColumns(['status']);
     }
 
@@ -88,6 +94,8 @@ class PesquisaDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
+            Column::make('status')->title('Status'),
+            Column::make('respostas')->title('Respostas'),
         ];
         return $colunas;
     }

@@ -77,6 +77,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
 
     Route::resource('/pesquisas', PesquisaController::class)->names('pesquisas');
+    Route::get('/pesquisas/{pesquisa}/status', [PesquisaController::class, 'status'])->name('pesquisas.status');
+    Route::get('/pesquisas/{pesquisa}/respostas', [PesquisaController::class, 'respostas'])->name('pesquisas.respostas');
     Route::post('/pesquisas-responder', [PesquisaController::class, 'responder'])->name('pesquisas.responder');
 
 

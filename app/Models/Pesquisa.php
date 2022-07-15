@@ -14,4 +14,9 @@ class Pesquisa extends Model
 
     protected $casts = ['referencias' => 'array'];
 
+    public function respostas()
+    {
+        return $this->hasMany(PesquisaResposta::class);
+    }
+
 }

@@ -79,4 +79,43 @@ class PesquisaController extends Controller
         }
     }
 
+    public function respostas(Pesquisa $pesquisa) 
+    {
+        try {
+            PesquisaService::getDadosRepostas($pesquisa);
+            return view('dashboard.pesquisas.respostas', [
+                'pesquisa' => $pesquisa
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function status(Pesquisa $pesquisa) 
+    {
+        try {
+            PesquisaService::status($pesquisa);
+            return redirect()->route('dashboard.pesquisas.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
 }
