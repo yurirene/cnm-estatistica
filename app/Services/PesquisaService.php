@@ -6,6 +6,7 @@ use App\Models\Pesquisa;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PesquisaService
 {
@@ -23,7 +24,14 @@ class PesquisaService
 
     public static function responder(Request $request)
     {
-        dd('fim');
+        try {
+            $pesquisa = Pesquisa::findOrFail($request->pesquisa_id);
+            
+            dd($request->all());
+
+        } catch (Throwable $th) {
+            throw new Exception('Erro ao Responder');
+        }
     }
 
 }

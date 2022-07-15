@@ -61,7 +61,6 @@ class PesquisaController extends Controller
     public function responder(Request $request)
     {
         try {
-            dd($request->all());
             PesquisaService::responder($request);
             return redirect()->route('dashboard.pesquisas.index')->with([
                 'mensagem' => [
