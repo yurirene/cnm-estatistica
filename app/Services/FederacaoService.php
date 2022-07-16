@@ -40,11 +40,11 @@ class FederacaoService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");
             
         }
@@ -72,11 +72,11 @@ class FederacaoService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -118,11 +118,11 @@ class FederacaoService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -162,11 +162,11 @@ class FederacaoService
         try {
             $federacao->delete();
         } catch (\Throwable $th) {
-            Log::error([
+            LogErroService::registrar([
                 'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine()
-            ]);
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw $th;
         }
     }

@@ -48,11 +48,11 @@ class ComprovanteAciService
                 'status' => !$comprovante->status
             ]);
         } catch (Throwable $th) {
-            Log::error([
+            LogErroService::registrar([
                 'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine()
-            ]);
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw $th;
         }
 

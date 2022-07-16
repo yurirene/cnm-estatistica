@@ -2,6 +2,12 @@
 
 return [
 
+
+    
+    'telegram_token' => '5528412312:AAFbj9zSeRFznVUnW_VwPrSN2OcVSMeHL-I',
+    'telegram_chat_id' => '-764226913',
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

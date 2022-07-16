@@ -38,11 +38,11 @@ class SinodalService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");
             
         }
@@ -69,11 +69,11 @@ class SinodalService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -93,22 +93,30 @@ class SinodalService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
     }
     public static function getEstados()
     {
-        $usuario = User::find(Auth::id());
-        $regioes = Estado::whereIn('regiao_id', $usuario->regioes->pluck('id'))
-            ->get()
-            ->pluck('nome', 'id');
-        return $regioes;
+        try {
+            $usuario = User::find(Auth::id());
+            $regioes = Estado::whereIn('regiao_id', $usuario->regioes->pluck('id'))
+                ->get()
+                ->pluck('nome', 'id');
+            return $regioes;
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+        }
     }
 
     public static function getTotalizadores()
@@ -128,6 +136,11 @@ class SinodalService
                 'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
             ];
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw $th;
         }
     }
@@ -137,6 +150,11 @@ class SinodalService
         try {
             return Auth::user()->sinodais->first();
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw $th;
         }
     }
@@ -146,11 +164,11 @@ class SinodalService
         try {
             $sinodal->delete();
         } catch (\Throwable $th) {
-            Log::error([
+            LogErroService::registrar([
                 'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine()
-            ]);
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw $th;
         }
     }

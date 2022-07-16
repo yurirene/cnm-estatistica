@@ -38,11 +38,11 @@ class AtividadeService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");
             
         }
@@ -65,11 +65,11 @@ class AtividadeService
                 ]);
             }
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -82,11 +82,11 @@ class AtividadeService
                 'status' => true,
             ]);
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -97,11 +97,11 @@ class AtividadeService
         try {
             $atividade->delete();
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }

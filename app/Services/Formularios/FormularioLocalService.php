@@ -8,6 +8,7 @@ use App\Models\FormularioLocal;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -31,11 +32,11 @@ class FormularioLocalService
                 'local_id' => $request->local_id
             ]);
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");           
         }
     }
@@ -45,11 +46,11 @@ class FormularioLocalService
         try {
             $formulario->delete();
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
