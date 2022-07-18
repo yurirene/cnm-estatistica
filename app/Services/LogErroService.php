@@ -13,12 +13,16 @@ class LogErroService
     public static function registrar(array $informacoes) 
     {
         try {
+            Log::error($informacoes);
+            
+            if (env('APP_ENV') == 'local') {
+                return;
+            }
             LogErro::create([
                 'user_id' => Auth::id(),
                 'log' => $informacoes
             ]);
             
-            Log::error($informacoes);
 
             self::sendTelegram($informacoes);
 

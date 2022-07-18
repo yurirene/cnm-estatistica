@@ -22,5 +22,9 @@
 @include('dashboard.index.tesouraria.index')
 @endRole
 
+@role('administrador')
+@include('dashboard.index.admin.index')
+@endRole
+
 
 @endsection
