@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Models\BotCliente;
+use Illuminate\Support\Facades\Log;
 
 class IClaudiaService
 {
 
     public static function processar(array $request)
     {
-        dd($request);
+        Log::info($request);
         $message = $request['message'];
         $nome = $request['chat']['first_name'];
         $chat_id = $message['chat']['id'];
