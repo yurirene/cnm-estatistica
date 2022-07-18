@@ -4,8 +4,8 @@ return [
 
 
     
-    'telegram_token' => '5528412312:AAFbj9zSeRFznVUnW_VwPrSN2OcVSMeHL-I',
-    'telegram_chat_id' => '-764226913',
+    'telegram_token' => env('TELEGRAM_BOT_API_TOKEN'),
+    'telegram_chat_id' => env('TELEGRAM_BOT_API_CHAT_ID'),
 
 
     /*

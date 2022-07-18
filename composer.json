@@ -15,6 +15,7 @@
         "laravel/ui": "^3.4",
         "laravelcollective/html": "^6.3",
         "maatwebsite/excel": "^3.1",
+        "telegram-bot/api": "^2.3",
         "yajra/laravel-acl": "^6.1",
         "yajra/laravel-datatables": "^1.5",
         "yajra/laravel-datatables-oracle": "~9.0"
