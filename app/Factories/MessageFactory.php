@@ -2,11 +2,12 @@
 
 namespace App\Http\Factories;
 
+use App\Interfaces\ChatBotStrategy;
 use Exception;
 
 class MessageFactory
 {
-    final public function makeMessage(string $className)
+    final public function makeMessage(string $className) : ChatBotStrategy
     {
         $classe = $this->getClasse($className);
         self::validaClasse($classe);

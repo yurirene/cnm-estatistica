@@ -13,8 +13,8 @@ class BoasVindasStrategy implements ChatBotStrategy
     public static function process(BotCliente $cliente, string $mensagem)
     {
         $message = BotMessage::whereName('boas_vindas')->first();
-        $mensagem = str_replace('{nome}', $cliente->nome, $message);
-        IClaudiaService::sendMessage($cliente, $message);
+        $message_server = str_replace('{nome}', $cliente->nome, $message);
+        IClaudiaService::sendMessage($cliente, $message_server);
     }
 
 }

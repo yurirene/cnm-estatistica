@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Http\Factories\MessageFactory;
 use App\Models\BotCliente;
+use App\Models\BotEnvios;
 use Illuminate\Support\Facades\Log;
 
 class IClaudiaService
@@ -22,23 +24,36 @@ class IClaudiaService
         $cliente = BotCliente::firstOrCreate([
             'chat_id' => $chat_id,
             'nome' => $nome
-        ]);
+        ]);       
 
-        
-
-        $text = IClaudiaService::decode($message);
-
-        $parameters = [
-            'chat_id' => $chat_id, 
-            "text" => $text
-        ];
-
-        IClaudiaService::sendMessage($parameters);
-
+        IClaudiaService::decode($cliente, $message['text']);
     }
 
-    public static function sendMessage($parameters) 
+    public static function decode(BotCliente $cliente, string $message)
     {
+
+        BotEnvios::create([
+            'bot_cliente_id' => $cliente->id,
+            'mensagem_cliente' => $message
+        ]);
+        $ultima_mensagem_do_servidor = BotEnvios::where('bot_cliente_id', $cliente->id)->whereNotNull('mensagem_servidor')->last();
+        if (!$ultima_mensagem_do_servidor) {
+            app()->make(MessageFactory::class)->makeMessage('BoasVindas')->process($cliente, $message);
+        }
+    }
+
+    public static function sendMessage(BotCliente $cliente, string $messagem_servidor) 
+    {
+        BotEnvios::create([
+            'bot_cliente_id' => $cliente->id,
+            'mensagem_servidor' => $messagem_servidor,
+        ]);
+
+        $parameters = [
+            'chat_id' => $cliente->chat_id, 
+            "text" => $messagem_servidor
+        ];
+
         $options = array(
             'http' => array(
             'method'  => 'POST',
@@ -53,14 +68,7 @@ class IClaudiaService
         
     }
 
-    public static function decode($message)
-    {
-        return 'comando';
-        $functions = [
-            '/' => 'comando'
-        ];
-        return self::$$functions[$message];
-    }
+   
 
     public static function comando()
     {
