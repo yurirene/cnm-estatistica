@@ -17,8 +17,8 @@ class CreateBotClientesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('nome');
             $table->string('chat_id');
-            $table->string('email');
-            $table->uuid('user_id');
+            $table->string('email')->nullable();
+            $table->uuid('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
