@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class BotEnvios extends Model
 {
-    use HasFactory;
+    use GenericTrait;
+
+    protected $table = 'bot_envios';
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 }
