@@ -67,7 +67,7 @@ class IClaudiaService
         );
         
         $context  = stream_context_create( $options );
-        file_get_contents('https://api.telegram.org/bot'. config('app.iclaudia_telegram_token')  .'/sendMessage', false, $context );
+        file_get_contents('https://api.telegram.org/bot'. config('app.iclaudia_telegram_token')  .'/sendMessage?' . http_build_query($parameters), false, $context );
         
     }
 
