@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Factories\MessageFactory;
 use App\Models\BotCliente;
 use App\Models\BotEnvios;
+use App\Models\BotMessage;
 use Illuminate\Support\Facades\Log;
 
 class IClaudiaService
@@ -42,16 +43,18 @@ class IClaudiaService
         }
     }
 
-    public static function sendMessage(BotCliente $cliente, string $messagem_servidor) 
+    public static function sendMessage(BotCliente $cliente, BotMessage $messagem_servidor, array $params) 
     {
         BotEnvios::create([
             'bot_cliente_id' => $cliente->id,
-            'mensagem_servidor' => $messagem_servidor,
+            'mensagem_servidor' => $messagem_servidor->id,
         ]);
+
+        
 
         $parameters = [
             'chat_id' => $cliente->chat_id, 
-            "text" => $messagem_servidor
+            "text" => str_replace($params['params'], $params['propriedades'], $messagem_servidor)
         ];
 
         $options = array(
