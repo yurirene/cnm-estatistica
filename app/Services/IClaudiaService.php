@@ -2,8 +2,39 @@
 
 namespace App\Services;
 
+use App\Models\BotCliente;
+
 class IClaudiaService
 {
+
+    public static function processar(array $request)
+    {
+        $message = $request['message'];
+        $nome = $request['chat']['first_name'];
+        $chat_id = $message['chat']['id'];
+
+        if (!isset($message['text'])) {
+            return;
+        }
+
+        $cliente = BotCliente::firstOrCreate([
+            'chat_id' => $chat_id,
+            'nome' => $nome
+        ]);
+
+        
+
+        $text = IClaudiaService::decode($message);
+
+        $parameters = [
+            'chat_id' => $chat_id, 
+            "text" => $text
+        ];
+
+        IClaudiaService::sendMessage($parameters);
+
+    }
+
     public static function sendMessage($parameters) 
     {
         $options = array(
@@ -33,4 +64,6 @@ class IClaudiaService
     {
         return 'Executou um comando';
     }
+
+    
 }
