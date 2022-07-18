@@ -10,6 +10,10 @@ class LogErro extends Model
     protected $table = 'log_erros';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    protected $casts = [
+        'log' => 'array'
+    ];
+
     public function usuario()
     {
         return $this->hasOne(User::class);

@@ -40,7 +40,7 @@ class LogErroService
             $mensagem .= date('d/m/y h:i:s') . PHP_EOL;
             $mensagem .= 'Usuário: ' . Auth::user()->name . PHP_EOL;
             foreach ($informacoes as $campo => $info) {
-                $mensagem .= ucfirst($campo) . ': ' . $info;
+                $mensagem .= ucfirst($campo) . ': ' . $info . PHP_EOL;
             }
             
             TelegramService::sendMessage($mensagem);
