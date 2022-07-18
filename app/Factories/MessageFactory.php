@@ -17,7 +17,7 @@ class MessageFactory
 
     private function getClasse(string $className): string
     {
-        return "\App\Http\Strategies\\{$className}Strategy";
+        return "\App\Strategies\\{$className}Strategy";
     }
 
     private static function validaClasse(string $pathClasse): void
