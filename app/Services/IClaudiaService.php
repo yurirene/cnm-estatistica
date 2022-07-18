@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Factories\MessageFactory;
+use App\Factories\MessageFactory;
 use App\Models\BotCliente;
 use App\Models\BotEnvios;
 use Illuminate\Support\Facades\Log;
