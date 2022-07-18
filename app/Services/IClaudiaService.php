@@ -12,7 +12,7 @@ class IClaudiaService
     {
         Log::info($request);
         $message = $request['message'];
-        $nome = $request['chat']['first_name'];
+        $nome = $message['chat']['first_name'];
         $chat_id = $message['chat']['id'];
 
         if (!isset($message['text'])) {
