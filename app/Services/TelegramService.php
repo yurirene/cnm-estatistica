@@ -19,7 +19,6 @@ class TelegramService
             $obBotApi = new BotApi(config('app.telegram_token'));
             return $obBotApi->sendMessage(config('app.telegram_chat_id'), $message);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
         }
     }
     
