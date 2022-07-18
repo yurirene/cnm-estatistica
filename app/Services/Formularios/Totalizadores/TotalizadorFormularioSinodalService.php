@@ -142,7 +142,6 @@ class TotalizadorFormularioSinodalService
 
             return $totalizador;
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             throw new Exception("Erro no Totalizador", 1);
             
         }
