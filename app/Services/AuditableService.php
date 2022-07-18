@@ -22,7 +22,11 @@ class AuditableService
             $registros = self::formatarRegistros($model, $usuario, $acao);
             return !empty($registros) ? Auditable::create($registros) : false;
         } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
+            LogErroService::registrar([
+                'message' => $exception->getMessage(),
+                'line' => $exception->getLine(),
+                'file' => $exception->getFile()
+            ]); 
             return false;
         }
     }
@@ -53,7 +57,11 @@ class AuditableService
             }
             return [];
         } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
+            LogErroService::registrar([
+                'message' => $exception->getMessage(),
+                'line' => $exception->getLine(),
+                'file' => $exception->getFile()
+            ]); 
             return [];
         }
     }
@@ -90,7 +98,11 @@ class AuditableService
                 'coluna_nova' => $acao != 'deleting' ? $novos : null,
             ];
         } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
+            LogErroService::registrar([
+                'message' => $exception->getMessage(),
+                'line' => $exception->getLine(),
+                'file' => $exception->getFile()
+            ]); 
             return [];
         }
     }

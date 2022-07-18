@@ -12,6 +12,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
+use App\Services\LogErroService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -45,11 +46,11 @@ class FormularioSinodalService
                 'sinodal_id' => $request->sinodal_id
             ]);
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");           
         }
     }
@@ -77,11 +78,11 @@ class FormularioSinodalService
                 'sinodal_id' => $request->sinodal_id
             ]);
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");           
         }
     }
@@ -91,11 +92,11 @@ class FormularioSinodalService
         try {
             $formulario->delete();
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -284,11 +285,11 @@ class FormularioSinodalService
                 ]
             );
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");           
         }
     }

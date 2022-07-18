@@ -78,11 +78,11 @@ class UserService
             return $usuario;
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");
             
         }
@@ -110,11 +110,11 @@ class UserService
             }
             return $usuario;
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -174,11 +174,11 @@ class UserService
             return $usuario;
 
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao processar usuário vinculado");
             
         }
@@ -191,11 +191,11 @@ class UserService
                 'password' => Hash::make('123')
             ]);
         } catch (\Throwable $th) {
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao resetar senha");
             
         }
