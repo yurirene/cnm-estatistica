@@ -15,7 +15,7 @@ class BoasVindasStrategy implements ChatBotStrategy
         $message = BotMessage::whereIdentificador('boas_vindas')->first();
         $params = [
             'params' => ['{nome}'],
-            'propriedade' => [$cliente->nome]
+            'propriedades' => [$cliente->nome]
         ];
         IClaudiaService::sendMessage($cliente, $message, $params);
     }
