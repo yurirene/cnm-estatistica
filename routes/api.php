@@ -23,6 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::any('/iClaudia', function() {
     $update_response = file_get_contents("php://input");
     $request = json_decode($update_response, true);
-
+    
     IClaudiaController::process($request);
 });

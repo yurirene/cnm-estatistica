@@ -16,23 +16,7 @@ class IClaudiaController extends Controller
             return;
         }
 
-        $message = $request['message'];
-        $message_id = $message['message_id'];
-        $chat_id = $message['chat']['id'];
-
-        if (!isset($message['text'])) {
-            return;
-        }
-
-        $text = IClaudiaService::decode($message);
-
-        $parameters = [
-            'chat_id' => $chat_id, 
-            "text" => $text
-        ];
-
-        IClaudiaService::sendMessage($parameters);
-
+        IClaudiaService::processar($request);
     }
 
    
