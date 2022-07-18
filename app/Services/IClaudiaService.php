@@ -9,6 +9,7 @@ class IClaudiaService
 
     public static function processar(array $request)
     {
+        dd($request);
         $message = $request['message'];
         $nome = $request['chat']['first_name'];
         $chat_id = $message['chat']['id'];
