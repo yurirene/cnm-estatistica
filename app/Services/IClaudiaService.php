@@ -36,7 +36,7 @@ class IClaudiaService
             'bot_cliente_id' => $cliente->id,
             'mensagem_cliente' => $message
         ]);
-        $ultima_mensagem_do_servidor = BotEnvios::where('bot_cliente_id', $cliente->id)->whereNotNull('mensagem_servidor')->last();
+        $ultima_mensagem_do_servidor = BotEnvios::where('bot_cliente_id', $cliente->id)->whereNotNull('mensagem_servidor')->get()->last();
         if (!$ultima_mensagem_do_servidor) {
             app()->make(MessageFactory::class)->makeMessage('BoasVindas')->process($cliente, $message);
         }
