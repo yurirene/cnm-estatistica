@@ -42,6 +42,8 @@ class ListaOpcoesStrategy implements ChatBotStrategy
             return 'Federações';
         } else if ($cliente->usuario->hasRole('federacao')) {
             return 'UMPs Locais';
+        } else {
+            return '-';
         }
     }
 
