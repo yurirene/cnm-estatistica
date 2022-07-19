@@ -74,7 +74,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
             ->get();
         $texto = '';
         foreach ($sinodais as $sinodal) {
-            $texto .= '#' . $sinodal->nome . PHP_EOL;
+            $texto .= '# ' . $sinodal->nome . PHP_EOL;
         }
         return $texto;
     }
@@ -89,7 +89,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
 
         $texto = '';
         foreach ($federacoes as $federacao) {
-            $texto .= '#' . $federacao->nome . PHP_EOL;
+            $texto .= '# ' . $federacao->nome . PHP_EOL;
         }
         return $texto;
     }
@@ -102,7 +102,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
             ->get();
         $texto = '';
         foreach ($locais as $local) {
-            $texto .= '#' . $local->nome . PHP_EOL;
+            $texto .= '# ' . $local->nome . PHP_EOL;
         }
         return $texto;
     }
