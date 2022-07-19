@@ -37,6 +37,13 @@ class PesquisaController extends Controller
         }
     }
 
+    public function edit(Pesquisa $pesquisa)
+    {
+        return view('dashboard.pesquisas.form', [
+            'pesquisa' => $pesquisa
+        ]);
+    }
+
     public function store(Request $request)
     {
         try {
