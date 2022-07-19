@@ -11,4 +11,9 @@ class BotMessage extends Model
 
     protected $table = 'bot_messages';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function mensagem()
+    {
+        return $this->belongsTo(BotMessage::class, 'resposta_de');
+    }
 }
