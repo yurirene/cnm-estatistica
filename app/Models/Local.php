@@ -46,4 +46,8 @@ class Local extends Model
         return $query->whereIn('federacao_id', Auth::user()->federacoes->pluck('id'));
     }
 
+    public function relatorios()
+    {
+        return $this->hasMany(FormularioLocal::class, 'local_id');
+    }
 }

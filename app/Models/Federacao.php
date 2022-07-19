@@ -45,4 +45,9 @@ class Federacao extends Model
     {
         return $query->whereIn('sinodal_id', Auth::user()->sinodais->pluck('id'));
     }
+
+    public function relatorios()
+    {
+        return $this->hasMany(FormularioFederacao::class, 'federacao_id');
+    }
 }

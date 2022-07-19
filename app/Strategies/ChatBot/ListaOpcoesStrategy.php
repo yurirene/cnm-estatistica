@@ -24,12 +24,13 @@ class ListaOpcoesStrategy implements ChatBotStrategy
 
     public static function processReply(BotCliente $cliente, string $mensagem)
     {
-        $message = BotMessage::whereIdentificador('boas_vindas')->first();
-        $params = [
-            'params' => ['{nome}'],
-            'propriedades' => [$cliente->nome]
-        ];
-        IClaudiaService::sendMessage($cliente, $message, $params);
+        $message = BotMessage::whereIdentificador('lista_opcoes')->first();
+        $resposta = BotMessage::where('resposta_de', $message->id)->where('keywords', $mensagem)->first(); 
+        if (!$resposta) {
+            app()->make(MessageFactory::class)->makeMessage('Erro')->process($cliente, $message);
+        }
+        $classe = str_replace('_', '', ucwords($resposta->identificador, '_'));
+        app()->make(MessageFactory::class)->makeMessage($classe)->process($cliente, $message);
     }
 
     public static function getInstancia(BotCliente $cliente) : string

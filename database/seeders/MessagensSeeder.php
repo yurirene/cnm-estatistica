@@ -65,7 +65,7 @@ class MessagensSeeder extends Seeder
 
             [
                 'identificador' => 'quantidade_instancias_cadastradas',
-                'mensagem' => '',
+                'mensagem' => '{texto}',
                 'keywords' => '1',
                 'resposta_de' => 'lista_opcoes',
             ],

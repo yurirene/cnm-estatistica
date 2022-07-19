@@ -32,6 +32,11 @@ class Sinodal extends Model
         return $this->belongsToMany(User::class, 'usuario_sinodal');
     }
 
+    public function relatorios()
+    {
+        return $this->hasMany(FormularioSinodal::class, 'sinodal_id');
+    }
+
     public function scopeQuery($query)
     {
         if (Auth::user()->admin == true) {
