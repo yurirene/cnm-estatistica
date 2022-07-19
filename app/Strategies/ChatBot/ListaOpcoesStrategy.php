@@ -6,31 +6,49 @@ use App\Interfaces\ChatBotStrategy;
 use App\Models\BotCliente;
 use App\Models\BotMessage;
 use App\Services\IClaudiaService;
+use Illuminate\Support\Facades\Log;
 
 class ListaOpcoesStrategy implements ChatBotStrategy
 {
 
     public static function process(BotCliente $cliente, string $mensagem)
     {
-        $message = BotMessage::whereIdentificador('lista_opcoes')->first();
-        $instancia = self::getInstancia($cliente);
-        $params = [
-            'params' => ['{instancia}'],
-            'propriedades' => [$instancia]
-        ];
-        IClaudiaService::sendMessage($cliente, $message, $params);
+        try {
+            $message = BotMessage::whereIdentificador('lista_opcoes')->first();
+            $instancia = self::getInstancia($cliente);
+            $params = [
+                'params' => ['{instancia}'],
+                'propriedades' => [$instancia]
+            ];
+            IClaudiaService::sendMessage($cliente, $message, $params);
+        } catch (\Throwable $th) {
+            Log::erro([
+                'message' => $th->getMessage(), 
+                'linha' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+        }
     }
 
 
     public static function processReply(BotCliente $cliente, string $mensagem)
     {
-        $message = BotMessage::whereIdentificador('lista_opcoes')->first();
-        $resposta = BotMessage::where('resposta_de', $message->id)->where('keywords', $mensagem)->first(); 
-        if (!$resposta) {
-            app()->make(MessageFactory::class)->makeMessage('Erro')->process($cliente, $message);
+        try {    
+            $message = BotMessage::whereIdentificador('lista_opcoes')->first();
+            $resposta = BotMessage::where('resposta_de', $message->id)->where('keywords', $mensagem)->first(); 
+            Log::info($resposta);
+            if (!$resposta) {
+                app()->make(MessageFactory::class)->makeMessage('Erro')->process($cliente, $message);
+            }
+            $classe = str_replace('_', '', ucwords($resposta->identificador, '_'));
+            app()->make(MessageFactory::class)->makeMessage($classe)->process($cliente, $message);
+        } catch (\Throwable $th) {
+            Log::erro([
+                'message' => $th->getMessage(), 
+                'linha' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
         }
-        $classe = str_replace('_', '', ucwords($resposta->identificador, '_'));
-        app()->make(MessageFactory::class)->makeMessage($classe)->process($cliente, $message);
     }
 
     public static function getInstancia(BotCliente $cliente) : string

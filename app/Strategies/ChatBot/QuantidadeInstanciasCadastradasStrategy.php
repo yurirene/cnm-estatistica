@@ -18,14 +18,22 @@ class QuantidadeInstanciasCadastradasStrategy implements ChatBotStrategy
 
     public static function process(BotCliente $cliente, string $mensagem)
     {
-        $message = BotMessage::whereIdentificador('quantidade_instancias_cadastradas')->first();
-        $dados = self::getTotalizador($cliente);
-        $params = [
-            'params' => ['{texto}'],
-            'propriedades' => [$dados]
-        ];
-        IClaudiaService::sendMessage($cliente, $message, $params);
-        app()->make(MessageFactory::class)->makeMessage('ListaOpcoes')->process($cliente, $mensagem);
+        try {    
+            $message = BotMessage::whereIdentificador('quantidade_instancias_cadastradas')->first();
+            $dados = self::getTotalizador($cliente);
+            $params = [
+                'params' => ['{texto}'],
+                'propriedades' => [$dados]
+            ];
+            IClaudiaService::sendMessage($cliente, $message, $params);
+            app()->make(MessageFactory::class)->makeMessage('ListaOpcoes')->process($cliente, $mensagem);
+        }  catch (\Throwable $th) {
+            Log::erro([
+                'message' => $th->getMessage(), 
+                'linha' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+        }
     }
 
     public static function getTotalizador(BotCliente $cliente)
@@ -50,9 +58,13 @@ class QuantidadeInstanciasCadastradasStrategy implements ChatBotStrategy
                 $texto .= self::getTotalizadorLocais($usuario->federacoes->pluck('id')) . PHP_EOL;
             }
             return $texto;
-       } catch (\Throwable $th) {
-           Log::error([$th->getMessage(), $th->getLine()]);
-       }
+       }  catch (\Throwable $th) {
+            Log::erro([
+                'message' => $th->getMessage(), 
+                'linha' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+        }
     }
 
     public static function getTotalizadorSinodais(User $user)
