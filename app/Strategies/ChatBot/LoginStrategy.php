@@ -25,7 +25,7 @@ class LoginStrategy implements ChatBotStrategy
         $partes = explode(' ', $mensagem);
         $email = null;
         foreach ($partes as $parte) {
-            if (filter_var($mensagem,FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($parte,FILTER_VALIDATE_EMAIL)) {
                 $email = $parte;
             }
         }
