@@ -73,8 +73,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
 
     public static function getTotalizadorSinodais(User $user)
     {
-        $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'));
-        $relatorios = FormularioSinodal::whereIn('sinodal_id', $sinodais)
+        $relatorios = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))
             ->whereDoesntHave('relatorios', function($sql) {
                 return $sql->where('ano_referencia', date('Y'));
             })
@@ -85,8 +84,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
 
     public static function getTotalizadorFederacoes(array $sinodais)
     {
-        $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get()->pluck('id');
-        $relatorios = FormularioFederacao::whereIn('federacao_id', $federacoes)
+        $relatorios = Federacao::whereIn('sinodal_id', $sinodais)
             ->whereDoesntHave('relatorios', function($sql) {
                 return $sql->where('ano_referencia', date('Y'));
             })
@@ -96,8 +94,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     }
     public static function getTotalizadorLocais(array $federacoes)
     {
-        $locais = Local::whereIn('federacao_id', $federacoes)->get()->pluck('id');
-        $relatorios = FormularioLocal::whereIn('local_id', $locais)
+        $relatorios = Local::whereIn('federacao_id', $federacoes)
             ->whereDoesntHave('relatorios', function($sql) {
                 return $sql->where('ano_referencia', date('Y'));
             })
