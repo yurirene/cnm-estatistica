@@ -45,8 +45,8 @@ class MessagensSeeder extends Seeder
 
             [
                 'identificador' => 'informacoes_usuario',
-                'mensagem' => 'Usuário: {usuario}' . PHP_EOL
-                            . 'UMP: {ump}' . PHP_EOL,
+                'mensagem' => '<b>Usuário</b>: {usuario}' . PHP_EOL
+                            . '<b>UMP</b>: {ump}' . PHP_EOL,
                 
                 'keywords' => null,
                 'resposta_de' => null

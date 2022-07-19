@@ -62,6 +62,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Local::class, 'usuario_local', 'user_id', 'local_id', 'id', 'id');
     }
 
+    public function instancia()
+    {
+        if ($this->hasRole('sinodal')) {
+            return $this->sinodais()->first();
+        } else if ($this->hasRole('federacao')) {
+            return $this->federacoes()->first();
+        } else if ($this->hasRole('local')) {
+            return $this->locais()->first();
+        }
+    }
+
     public function scopeQuery($query)
     {
         if (Auth::user()->admin) {

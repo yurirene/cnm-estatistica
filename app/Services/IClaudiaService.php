@@ -88,13 +88,6 @@ class IClaudiaService
             'mensagem_cliente' => $mensagem
         ]);
     }
-
-   
-
-    public static function comando()
-    {
-        return 'Executou um comando';
-    }
-
+    
     
 }
