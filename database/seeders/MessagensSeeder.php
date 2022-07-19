@@ -67,21 +67,21 @@ class MessagensSeeder extends Seeder
                 'identificador' => 'quantidade_instancias_cadastradas',
                 'mensagem' => '',
                 'keywords' => '1',
-                'resposta_de' => BotMessage::where('identificador', 'lista_opcoes')->first()->id
+                'resposta_de' => 'lista_opcoes',
             ],
 
             [
                 'identificador' => 'quantidade_relatorios_entregues',
                 'mensagem' => '{texto}',
                 'keywords' => '2',
-                'resposta_de' => BotMessage::where('identificador', 'lista_opcoes')->first()->id
+                'resposta_de' => 'lista_opcoes',
             ],
 
             [
                 'identificador' => 'quantidade_relatorios_faltantes',
                 'mensagem' => '{texto}',
                 'keywords' => '3',
-                'resposta_de' => BotMessage::where('identificador', 'lista_opcoes')->first()->id
+                'resposta_de' => 'lista_opcoes',
             ],
 
             [
@@ -94,13 +94,17 @@ class MessagensSeeder extends Seeder
             
         ];
         foreach ($mensagens as $msg) {
+            $resposta = null;
+            if (!is_null($msg['resposta_de'])) {
+                $resposta = BotMessage::where('identificador', $msg['resposta_de'])->first()->id;
+            }
             BotMessage::updateOrCreate([
                 'identificador' => $msg['identificador']
             ], [
                 'identificador' => $msg['identificador'],
                 'mensagem' => $msg['mensagem'],
                 'keywords' => $msg['keywords'],
-                'resposta_de' => $msg['resposta_de']
+                'resposta_de' => $resposta
             ]);
         }
             
