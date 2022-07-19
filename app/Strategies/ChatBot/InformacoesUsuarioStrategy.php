@@ -23,7 +23,7 @@ class InformacoesUsuarioStrategy implements ChatBotStrategy
         IClaudiaService::sendMessage($cliente, $message, $params);
     }
 
-    public static function getInstancia(BotCliente $cliente) : array
+    public static function getInstancia(BotCliente $cliente) : string
     {
         if ($cliente->usuario->hasRole('administrador')) {
             return 'Admin';
