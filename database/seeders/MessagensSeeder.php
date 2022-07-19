@@ -57,7 +57,9 @@ class MessagensSeeder extends Seeder
                 'mensagem' => 'Escolha uma das opções:' . PHP_EOL
                             . '<b>[1]</b> - Totalizadores de Cadastros' . PHP_EOL
                             . '<b>[2]</b> - Quantidade de Relatórios Estatísticos de {instancia} Entregues' . PHP_EOL
-                            . '<b>[3]</b> - Quantidade de Relatórios Estatísticos de {instancia} Faltantes' . PHP_EOL,
+                            . '<b>[3]</b> - Quantidade de Relatórios Estatísticos de {instancia} Faltantes' . PHP_EOL
+                            . '<b>[4]</b> - Lista de {instancia} que Não Entregaram o Relatório Estatístico' . PHP_EOL
+                            . '<b>[0]</b> - Trocar de Usuário' . PHP_EOL,
                 
                 'keywords' => null,
                 'resposta_de' => null
@@ -84,6 +86,21 @@ class MessagensSeeder extends Seeder
                 'resposta_de' => 'lista_opcoes',
             ],
 
+            [
+                'identificador' => 'lista_faltante',
+                'mensagem' => 'Lista de {instancia} que <b>não entregaram</b> o relatório:' . PHP_EOL . '{lista}',
+                'keywords' => '4',
+                'resposta_de' => 'lista_opcoes',
+            ],
+
+
+            [
+                'identificador' => 'trocar_usuario',
+                'mensagem' => 'Prontinho... Usuário desvinculado!',
+                'keywords' => '0',
+                'resposta_de' => 'lista_opcoes',
+            ],
+            
             [
                 'identificador' => 'erro',
                 'mensagem' => 'Desculpe, não encontrei nada sobre {mensagem}! Mais tarde peço para o criador me ensinar. Enquanto isso vamos recomeçar...',

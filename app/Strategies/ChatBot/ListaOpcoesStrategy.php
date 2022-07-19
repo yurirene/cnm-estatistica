@@ -37,7 +37,7 @@ class ListaOpcoesStrategy implements ChatBotStrategy
         try {    
             $message = BotMessage::whereIdentificador('lista_opcoes')->first();
             $resposta = BotMessage::where('resposta_de', $message->id)->where('keywords', $mensagem)->first(); 
-            if (!$resposta) {
+            if (is_null($resposta)) {
                 app()->make(MessageFactory::class)->makeMessage('Erro')->process($cliente, $message);
             }
             $classe = str_replace('_', '', ucwords($resposta->identificador, '_'));
