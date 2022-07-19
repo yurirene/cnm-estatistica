@@ -30,7 +30,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             IClaudiaService::sendMessage($cliente, $message, $params);
             app()->make(MessageFactory::class)->makeMessage('ListaOpcoes')->process($cliente, $mensagem);
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
@@ -62,7 +62,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             }
             return $texto;
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()

@@ -22,7 +22,7 @@ class ListaOpcoesStrategy implements ChatBotStrategy
             ];
             IClaudiaService::sendMessage($cliente, $message, $params);
         } catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
@@ -42,7 +42,7 @@ class ListaOpcoesStrategy implements ChatBotStrategy
             $classe = str_replace('_', '', ucwords($resposta->identificador, '_'));
             app()->make(MessageFactory::class)->makeMessage($classe)->process($cliente, $message);
         } catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()

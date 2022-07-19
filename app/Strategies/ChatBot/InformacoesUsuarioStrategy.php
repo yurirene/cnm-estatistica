@@ -25,7 +25,7 @@ class InformacoesUsuarioStrategy implements ChatBotStrategy
         ];
         IClaudiaService::sendMessage($cliente, $message, $params);
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
@@ -50,7 +50,7 @@ class InformacoesUsuarioStrategy implements ChatBotStrategy
                 return 'Não Identificado';
             }
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()

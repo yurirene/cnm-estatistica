@@ -19,7 +19,7 @@ class LoginStrategy implements ChatBotStrategy
             $message = BotMessage::whereIdentificador('login')->first();
             IClaudiaService::sendMessage($cliente, $message);
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
@@ -59,7 +59,7 @@ class LoginStrategy implements ChatBotStrategy
             app()->make(MessageFactory::class)->makeMessage('ListaOpcoes')->process($cliente, $mensagem);
 
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()

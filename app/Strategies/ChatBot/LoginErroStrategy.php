@@ -18,7 +18,7 @@ class LoginErroStrategy implements ChatBotStrategy
             $message = BotMessage::whereIdentificador('login_erro')->first();
             IClaudiaService::sendMessage($cliente, $message);
         }  catch (\Throwable $th) {
-            Log::erro([
+            Log::error([
                 'message' => $th->getMessage(), 
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
