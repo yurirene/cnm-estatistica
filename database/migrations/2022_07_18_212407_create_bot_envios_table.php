@@ -14,7 +14,7 @@ class CreateBotEnviosTable extends Migration
     public function up()
     {
         Schema::create('bot_envios', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->uuid('bot_cliente_id');
             $table->uuid('mensagem_servidor')->nullable();
             $table->string('mensagem_cliente')->nullable();

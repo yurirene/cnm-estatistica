@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BotEnvios extends Model
 {
-    use GenericTrait;
-
     protected $table = 'bot_envios';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
