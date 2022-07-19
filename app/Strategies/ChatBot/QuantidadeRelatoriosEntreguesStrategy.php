@@ -2,6 +2,7 @@
 
 namespace App\Strategies\ChatBot;
 
+use App\Factories\MessageFactory;
 use App\Interfaces\ChatBotStrategy;
 use App\Models\BotCliente;
 use App\Models\BotMessage;
