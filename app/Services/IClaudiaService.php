@@ -37,34 +37,20 @@ class IClaudiaService
         $ultima_mensagem_do_servidor = BotEnvios::where('bot_cliente_id', $cliente->id)->whereNotNull('mensagem_servidor')->get()->last();
         if (!$ultima_mensagem_do_servidor) {
             app()->make(MessageFactory::class)->makeMessage('BoasVindas')->process($cliente, $message);
+            app()->make(MessageFactory::class)->makeMessage('Login')->process($cliente, $message);
         } else {
             self::getResposta($cliente, $message);
-            self::sendMessage($cliente, BotMessage::first(), []);
         }
     }
 
     public static function getResposta(BotCliente $cliente, string $mensagem)
     {
-        $lastMessage = $cliente->envios()->whereNotNull('mensagem_servidor')->get()->last()->mensagem->identificador;
-        $mensagem = BotMessage::where(function ($q) use ($lastMessage, $mensagem) {
-                $q->where('keywords', 'like', '%'.$mensagem . '%')
-                ->whereHas('mensagem', function($q) use ($lastMessage) {
-                    $q->whereIdentificador($lastMessage);
-                });
-            })
-            ->orWhere(function ($q) use ($lastMessage) {
-                $q->whereHas('mensagem', function($q) use ($lastMessage) {
-                    $q->whereIdentificador($lastMessage);
-                })->whereNull('keywords');
-            })->first();
-        Log::info([$mensagem]);
-        // return [
-        //     'className' => str_replace('_', '', ucwords($lastMessage, '_')),
-        //     'name' => $mensagem
-        // ];
+        $ultima_mensagem_do_servidor = $cliente->envios()->whereNotNull('mensagem_servidor')->get()->last()->mensagem->identificador;
+        $classe = str_replace('_', '', ucwords($ultima_mensagem_do_servidor, '_'));
+        app()->make(MessageFactory::class)->makeMessage($classe)->processReply($cliente, $mensagem);
     }
 
-    public static function sendMessage(BotCliente $cliente, BotMessage $mensagem_servidor, array $params) 
+    public static function sendMessage(BotCliente $cliente, BotMessage $mensagem_servidor, array $params = []) 
     {
         BotEnvios::create([
             'bot_cliente_id' => $cliente->id,
@@ -73,8 +59,7 @@ class IClaudiaService
         $texto = $mensagem_servidor->mensagem;
         if (count($params)) {
             $texto = str_replace($params['params'], $params['propriedades'], $texto);
-        }
-        $texto = str_replace('\\n', PHP_EOL, $texto);        
+        }       
 
         $parameters = [
             'chat_id' => $cliente->chat_id, 
