@@ -79,7 +79,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             })
             ->get()
             ->count();
-        return '<b>Total de Relatórios Faltantes (Sinodais)</b>: ' . $relatorios;
+        return '<b>Faltam (Sinodais)</b>: ' . $relatorios;
     }
 
     public static function getTotalizadorFederacoes(array $sinodais)
@@ -90,7 +90,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             })
             ->get()
             ->count();
-        return '<b>Total de Relatórios Faltantes (Federações)</b>: ' . $relatorios;
+        return '<b>Faltam (Federações)</b>: ' . $relatorios;
     }
     public static function getTotalizadorLocais(array $federacoes)
     {
@@ -100,7 +100,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             })
             ->get()
             ->count();
-        return '<b>Total de Relatórios Faltantes (UMPs Locais)</b>: ' . $relatorios;
+        return '<b>Faltam (UMPs Locais)</b>: ' . $relatorios;
     }
 
 }
