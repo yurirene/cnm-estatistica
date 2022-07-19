@@ -44,7 +44,7 @@ class IClaudiaService
 
     public static function getResposta(BotCliente $cliente, string $mensagem)
     {
-        $lastMessage = $cliente->envios->whereNotNull('mensagem_server')->get()->last()->mensagem->name;
+        $lastMessage = $cliente->envios->whereNotNull('mensagem_server')->last()->mensagem->name;
         $mensagem = BotMessage::where(function ($q) use ($lastMessage, $mensagem) {
                 $q->whereLike('keywords', $mensagem)
                 ->whereHas('mensagem', function($q) use ($lastMessage) {
