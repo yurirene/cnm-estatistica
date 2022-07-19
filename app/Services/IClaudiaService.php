@@ -49,11 +49,12 @@ class IClaudiaService
             'mensagem_servidor' => $messagem_servidor->id,
         ]);
 
-        
+        $texto = str_replace($params['params'], $params['propriedades'], $messagem_servidor->mensagem);
+        $texto = str_replace('\\n', PHP_EOL, $texto);        
 
         $parameters = [
             'chat_id' => $cliente->chat_id, 
-            "text" => str_replace($params['params'], $params['propriedades'], $messagem_servidor->mensagem)
+            "text" => $texto
         ];
 
         $options = array(
