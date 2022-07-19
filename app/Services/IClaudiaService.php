@@ -39,14 +39,15 @@ class IClaudiaService
             app()->make(MessageFactory::class)->makeMessage('BoasVindas')->process($cliente, $message);
         } else {
             self::getResposta($cliente, $message);
+            self::sendMessage($cliente, BotMessage::first(), []);
         }
     }
 
     public static function getResposta(BotCliente $cliente, string $mensagem)
     {
-        $lastMessage = $cliente->envios->whereNotNull('mensagem_server')->last()->mensagem->identificador;
+        $lastMessage = $cliente->envios()->whereNotNull('mensagem_servidor')->get()->last()->mensagem->identificador;
         $mensagem = BotMessage::where(function ($q) use ($lastMessage, $mensagem) {
-                $q->whereLike('keywords', $mensagem)
+                $q->where('keywords', 'like', '%'.$mensagem . '%')
                 ->whereHas('mensagem', function($q) use ($lastMessage) {
                     $q->whereIdentificador($lastMessage);
                 });
@@ -56,7 +57,7 @@ class IClaudiaService
                     $q->whereIdentificador($lastMessage);
                 })->whereNull('keywords');
             })->first();
-        Log::info($mensagem);
+        Log::info([$mensagem]);
         // return [
         //     'className' => str_replace('_', '', ucwords($lastMessage, '_')),
         //     'name' => $mensagem
@@ -69,8 +70,10 @@ class IClaudiaService
             'bot_cliente_id' => $cliente->id,
             'mensagem_servidor' => $mensagem_servidor->id,
         ]);
-
-        $texto = str_replace($params['params'], $params['propriedades'], $mensagem_servidor->mensagem);
+        $texto = $mensagem_servidor->mensagem;
+        if (count($params)) {
+            $texto = str_replace($params['params'], $params['propriedades'], $texto);
+        }
         $texto = str_replace('\\n', PHP_EOL, $texto);        
 
         $parameters = [
