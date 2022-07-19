@@ -38,7 +38,7 @@ class IClaudiaService
         if (!$ultima_mensagem_do_servidor) {
             app()->make(MessageFactory::class)->makeMessage('BoasVindas')->process($cliente, $message);
         } else {
-
+            self::getResposta($cliente, $message);
         }
     }
 
@@ -63,14 +63,14 @@ class IClaudiaService
         // ];
     }
 
-    public static function sendMessage(BotCliente $cliente, BotMessage $mensagemm_servidor, array $params) 
+    public static function sendMessage(BotCliente $cliente, BotMessage $mensagem_servidor, array $params) 
     {
         BotEnvios::create([
             'bot_cliente_id' => $cliente->id,
-            'mensagem_servidor' => $messagem_servidor->id,
+            'mensagem_servidor' => $mensagem_servidor->id,
         ]);
 
-        $texto = str_replace($params['params'], $params['propriedades'], $messagem_servidor->mensagem);
+        $texto = str_replace($params['params'], $params['propriedades'], $mensagem_servidor->mensagem);
         $texto = str_replace('\\n', PHP_EOL, $texto);        
 
         $parameters = [
