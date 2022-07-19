@@ -16,7 +16,7 @@ class CreateBotMessagesTable extends Migration
         Schema::create('bot_messages', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('identificador')->nullable();
-            $table->string('mensagem');
+            $table->text('mensagem');
             $table->string('keywords')->nullable();
             $table->uuid('resposta_de')->nullable();
             $table->timestamps();
