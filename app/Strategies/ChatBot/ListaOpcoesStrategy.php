@@ -16,7 +16,7 @@ class ListaOpcoesStrategy implements ChatBotStrategy
         $instancia = self::getInstancia($cliente);
         $params = [
             'params' => ['{instancia}'],
-            'propriedades' => [$cliente->usuario->instancia]
+            'propriedades' => [$instancia]
         ];
         IClaudiaService::sendMessage($cliente, $message, $params);
     }
