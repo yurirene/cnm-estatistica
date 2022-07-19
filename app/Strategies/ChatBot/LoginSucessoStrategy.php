@@ -12,7 +12,7 @@ class LoginSucessoStrategy implements ChatBotStrategy
 
     public static function process(BotCliente $cliente, string $mensagem)
     {
-        $message = BotMessage::whereIdentificador('login_successo')->first();
+        $message = BotMessage::whereIdentificador('login_sucesso')->first();
         IClaudiaService::sendMessage($cliente, $message);
     }
 
