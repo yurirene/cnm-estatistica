@@ -13,7 +13,6 @@ class IClaudiaService
 
     public static function processar(array $request)
     {
-        Log::info($request);
         $message = $request['message'];
         $nome = $message['chat']['first_name'];
         $chat_id = $message['chat']['id'];
