@@ -63,7 +63,8 @@ class IClaudiaService
 
         $parameters = [
             'chat_id' => $cliente->chat_id, 
-            "text" => $texto
+            "text" => $texto,
+            "parse_mode" => "html"
         ];
 
         $options = array(
