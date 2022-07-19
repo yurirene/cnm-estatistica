@@ -47,19 +47,19 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             $texto = '';
             if ($usuario->hasRole('diretoria')) {
                 $texto .= self::getTotalizadorSinodais($usuario) . PHP_EOL;
-                $sinodais = Sinodal::whereIn('regiao_id', $usuario->regioes->pluck('id'))->get()->pluck('id');
+                $sinodais = Sinodal::whereIn('regiao_id', $usuario->regioes->pluck('id'))->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorFederacoes($sinodais) . PHP_EOL;
-                $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get()->pluck('id');
+                $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
             if ($usuario->hasRole('sinodal')) {
 
-                $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')) . PHP_EOL;
-                $federacoes = Federacao::whereIn('sinodal_id', $usuario->sinodais->pluck('id'))->get()->pluck('id');
+                $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')->toArray()) . PHP_EOL;
+                $federacoes = Federacao::whereIn('sinodal_id', $usuario->sinodais->pluck('id'))->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
             if ($usuario->hasRole('federacao')) {
-                $texto .= self::getTotalizadorLocais($usuario->federacoes->pluck('id')) . PHP_EOL;
+                $texto .= self::getTotalizadorLocais($usuario->federacoes->pluck('id')->toArray()) . PHP_EOL;
             }
             return $texto;
         }  catch (\Throwable $th) {
