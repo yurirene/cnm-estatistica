@@ -32,17 +32,38 @@ class IClaudiaService
     public static function decode(BotCliente $cliente, string $message)
     {
 
-        BotEnvios::create([
-            'bot_cliente_id' => $cliente->id,
-            'mensagem_cliente' => $message
-        ]);
+        self::salvarMensagemCliente($cliente, $message);
+
         $ultima_mensagem_do_servidor = BotEnvios::where('bot_cliente_id', $cliente->id)->whereNotNull('mensagem_servidor')->get()->last();
         if (!$ultima_mensagem_do_servidor) {
             app()->make(MessageFactory::class)->makeMessage('BoasVindas')->process($cliente, $message);
+        } else {
+
         }
     }
 
-    public static function sendMessage(BotCliente $cliente, BotMessage $messagem_servidor, array $params) 
+    public static function getResposta(BotCliente $cliente, string $mensagem)
+    {
+        $lastMessage = $cliente->envios->whereNotNull('mensagem_server')->get()->last()->mensagem->name;
+        $mensagem = BotMessage::where(function ($q) use ($lastMessage, $mensagem) {
+                $q->whereLike('keywords', $mensagem)
+                ->whereHas('mensagem', function($q) use ($lastMessage) {
+                    $q->whereIdentificador($lastMessage);
+                });
+            })
+            ->orWhere(function ($q) use ($lastMessage) {
+                $q->whereHas('mensagem', function($q) use ($lastMessage) {
+                    $q->whereIdentificador($lastMessage);
+                })->whereNull('keywords');
+            })->first();
+        Log::info($mensagem);
+        // return [
+        //     'className' => str_replace('_', '', ucwords($lastMessage, '_')),
+        //     'name' => $mensagem
+        // ];
+    }
+
+    public static function sendMessage(BotCliente $cliente, BotMessage $mensagemm_servidor, array $params) 
     {
         BotEnvios::create([
             'bot_cliente_id' => $cliente->id,
@@ -69,6 +90,14 @@ class IClaudiaService
         $context  = stream_context_create( $options );
         file_get_contents('https://api.telegram.org/bot'. config('app.iclaudia_telegram_token')  .'/sendMessage', false, $context );
         
+    }
+
+    public static function salvarMensagemCliente(BotCliente $cliente, string $mensagem) 
+    {
+        BotEnvios::create([
+            'bot_cliente_id' => $cliente->id,
+            'mensagem_cliente' => $mensagem
+        ]);
     }
 
    

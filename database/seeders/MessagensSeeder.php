@@ -17,7 +17,7 @@ class MessagensSeeder extends Seeder
         $mensagens = [
             [
                 'identificador' => 'boas_vindas',
-                'mensagem' => 'Olá, {nome}! É bom ter você por aqui. \n Para ter acesso as informações da plataforma, informe seu login.',
+                'mensagem' => 'Olá, {nome}! É bom ter você por aqui. \nPara ter acesso as informações da plataforma, informe seu usuário.',
                 'keywords' => null,
                 'resposta_de' => null
             ]

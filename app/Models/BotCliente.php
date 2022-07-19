@@ -11,4 +11,16 @@ class BotCliente extends Model
 
     protected $table = 'bot_clientes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function envios()
+    {
+        return $this->hasMany(BotEnvios::class, 'bot_cliente_id');
+    }
+
+    
 }
