@@ -72,7 +72,7 @@ class QuantidadeRelatoriosEntreguesStrategy implements ChatBotStrategy
 
     public static function getTotalizadorSinodais(User $user)
     {
-        $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'));
+        $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))->get()->pluck('id');
         $relatorios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->get()->count();
         return '<b>Total de Relatórios de Sinodais</b>: ' . $relatorios;
     }
