@@ -161,9 +161,18 @@ class SinodalService
 
     public static function delete(Sinodal $sinodal)
     {
+        DB::beginTransaction();
         try {
+            $sinodal->usuario->first()->update([
+                'email' => 'apagadoComASinodalEm'.date('dmyhms').'@apagado.com'
+            ]);
+            $usuario = $sinodal->usuario->first();
+            $sinodal->usuario()->sync([]);
+            $usuario->delete();
             $sinodal->delete();
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),

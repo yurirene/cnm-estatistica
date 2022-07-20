@@ -19,7 +19,8 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'umps_locais',
                     'atividades',
-                    'formularios_umps'
+                    'formularios_umps',
+                    'datatables-ajax'
                 ]
             ],
             'diretoria' => [

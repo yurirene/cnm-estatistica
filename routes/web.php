@@ -3,6 +3,7 @@
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
@@ -75,6 +76,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
     Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
 
+    Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
 
 });
 

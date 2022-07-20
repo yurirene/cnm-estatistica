@@ -405,6 +405,13 @@ class PermissionsSeeder extends Seeder
                 'resource' => 'formulario-sec',
             ],
 
+            [
+                'name' => 'Datatable Log Erros',
+                'slug' => 'dashboard.datatables.log-erros',
+                'resource' => 'datatables-ajax',
+            ],
+            
+
         ];
 
         try {
