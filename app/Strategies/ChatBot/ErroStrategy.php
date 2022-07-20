@@ -14,10 +14,6 @@ class ErroStrategy implements ChatBotStrategy
     public static function process(BotCliente $cliente, string $mensagem)
     {
         $message = BotMessage::whereIdentificador('erro')->first();
-        Log::info([
-            'message_erro' => $message,
-            'mensagem_usuario' => $mensagem 
-        ]);
         $params = [
             'params' => ['{mensagem}'],
             'propriedades' => [$mensagem]
