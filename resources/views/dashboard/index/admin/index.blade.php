@@ -13,7 +13,7 @@
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-light ls-1 mb-1">Perfil de Atividades</h6>
+                                <h6 class="text-uppercase text-light ls-1 mb-1">Acesso na Plataforma</h6>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,41 @@
 
 @push('script')
 <script>
-    
+    const config_grafico_acesso = {
+            type: 'line',
+            data: @json(DashboardHelper::getTotalizadores()['grafico_acesso_trinta_dias']),
+            options: {
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                responsive: true,
+                    plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Gráfico de Acessos'
+                    }
+                }
+            },
+        };
+    const atividadeChart = new Chart(
+        document.getElementById('atividades'),
+        config_grafico_acesso
+    );
+
+    // $('#tabela-formulario').dataTable();
+
+    // $('.btn-info-sinodal').on('click', function() {
+    //     let rota = '{{ route("dashboard.usuarios.index") }}';
+    //     $.ajax({
+    //         url: rota
+    //     });
+    // })
+
 
 </script>
 @endpush
