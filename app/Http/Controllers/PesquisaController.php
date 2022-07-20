@@ -64,6 +64,27 @@ class PesquisaController extends Controller
             ->withInput();
         }
     }
+    
+    public function update(Pesquisa $pesquisa, Request $request)
+    {
+        try {
+            PesquisaService::update($pesquisa, $request);
+            return redirect()->route('dashboard.pesquisas.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
 
     public function responder(Request $request)
     {

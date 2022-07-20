@@ -33,6 +33,25 @@ class PesquisaService
         }
     }
 
+    public static function update(Pesquisa $pesquisa, Request $request)
+    {
+        try {
+            $referencias = self::referenciaCamposFormulario($request->formulario);
+            $pesquisa->update([
+                'nome' => $request->nome,
+                'formulario' => $request->formulario,
+                'referencias' => $referencias,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error([
+                'mensagem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao salvar o formulário", 1);
+        }
+    }
+
     public static function referenciaCamposFormulario(string $formulario)
     {
         $json_formulario = json_decode($formulario, true);

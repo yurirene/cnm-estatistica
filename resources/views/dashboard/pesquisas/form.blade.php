@@ -18,7 +18,11 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    @if(isset($pesquisa))
+                    {!! Form::model($pesquisa, ['route' => ['dashboard.pesquisas.update', $pesquisa->id], 'method' => 'PUT']) !!}
+                    @else
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.pesquisas.store']) !!}
+                    @endif
                     <div class="form-group{{ $errors->has('nome') ? ' has-error' : '' }}">
                         {!! Form::label('nome', 'Titulo do Formulário') !!}
                         {!! Form::text('nome', null, ['class' => 'form-control', 'required' => 'required']) !!}
@@ -42,9 +46,22 @@
 @push('js')
 
 @include('dashboard.pesquisas.js.options')
+
+@if(isset($pesquisa))
 <script>
-    jQuery(function($) {
+    $(document).ready(function() {
+        var formDataEdit = JSON.parse(@json($pesquisa->formulario));
+        formBuilder = $(document.getElementById('fb-editor')).formBuilder(options).promise.then(formBuilder => {
+            formBuilder.actions.setData(formDataEdit);// after the builder loads, do you stuff here
+        });
+        
+    })
+</script>
+@else
+<script>
+    $(function($) {
         formBuilder = $(document.getElementById('fb-editor')).formBuilder(options);
     });
 </script>
+@endif
 @endpush
