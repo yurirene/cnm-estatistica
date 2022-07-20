@@ -15,11 +15,6 @@ class DashboardController extends Controller
     {
 
         $dataMapaBrazil = MapaService::getDefaultMap();
-        LogErroService::registrar([
-            'message' =>'TESTE',
-            'line' =>'TESTE L(INHA',
-            'file' =>'TESTE FILE'
-        ]);    
         return view('dashboard.index', [
             'dataMapaBrazil' => $dataMapaBrazil
         ]);
