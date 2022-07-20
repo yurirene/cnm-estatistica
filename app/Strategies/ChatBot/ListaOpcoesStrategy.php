@@ -37,6 +37,10 @@ class ListaOpcoesStrategy implements ChatBotStrategy
         try {    
             $message = BotMessage::whereIdentificador('lista_opcoes')->first();
             $resposta = BotMessage::where('resposta_de', $message->id)->where('keywords', $mensagem)->first(); 
+            Log::info([
+                'resposta' => $resposta,
+                'message' => $message->id
+            ]);
             if (is_null($resposta)) {
                 app()->make(MessageFactory::class)->makeMessage('Erro')->process($cliente, $message);
             }
