@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     Route::resource('/pesquisas', PesquisaController::class)->names('pesquisas');
     Route::post('/pesquisas-responder', [PesquisaController::class, 'responder'])->name('pesquisas.responder');
+    Route::get('/pesquisas/{pesquisa}/configuracoes', [PesquisaController::class, 'configuracoes'])->name('pesquisas.configuracoes');
 
 
 });

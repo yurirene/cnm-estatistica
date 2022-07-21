@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Helpers\FormHelper;
 use App\Models\Pesquisa;
+use App\Models\PesquisaResposta;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,12 +19,13 @@ class PesquisaService
     {
         try {
             $referencias = self::referenciaCamposFormulario($request->formulario);
-            Pesquisa::create([
+            $pesquisa = Pesquisa::create([
                 'nome' => $request->nome,
                 'formulario' => $request->formulario,
                 'referencias' => $referencias,
                 'user_id' => Auth::id()
             ]);
+            $pesquisa->usuarios()->sync($request->secretarios);
         } catch (\Throwable $th) {
             Log::error([
                 'mensagem' => $th->getMessage(),
@@ -42,6 +45,7 @@ class PesquisaService
                 'formulario' => $request->formulario,
                 'referencias' => $referencias,
             ]);
+            $pesquisa->usuarios()->sync($request->secretarios);
         } catch (\Throwable $th) {
             Log::error([
                 'mensagem' => $th->getMessage(),
@@ -63,7 +67,8 @@ class PesquisaService
             }
             $referencias[$key] = [
                 $campo['name'] => [
-                    'campo' => isset($campo['label']) ? Str::snake($campo['label']) : '',
+                    'label' => $campo['label'],
+                    'campo' => isset($campo['label']) ? Str::snake(FormHelper::removerAcentos($campo['label'])) : '',
                     'required' => $campo['required'] ?? false,
                 ]
             ]; 
@@ -71,7 +76,10 @@ class PesquisaService
                 continue;
             }
             foreach ($campo['values'] as $opcao) {
-                $referencias[$key][$campo['name']]['valores'][] = $opcao['value'];       
+                $referencias[$key][$campo['name']]['valores'][] = [
+                    'value' => $opcao['value'],
+                    'label' => $opcao['label']
+                ];       
             }
         }
         return $referencias;
@@ -81,8 +89,27 @@ class PesquisaService
     {
         try {
             $pesquisa = Pesquisa::findOrFail($request->pesquisa_id);
-            
-            dd($request->all());
+            $resposta = [];
+            foreach ($pesquisa->referencias as $parametros) {
+                foreach ($parametros as $campo => $opcoes) {
+                    if ($request->has($campo)) {
+                        $resposta[$opcoes['campo']] = $request->$campo;
+                    } else {
+                        $resposta[$opcoes['campo']] = null;
+                    }
+                }
+            }
+            PesquisaResposta::updateOrCreate(
+                [
+                    'pesquisa_id' => $pesquisa->id,
+                    'user_id' => Auth::id(),    
+                ],
+                [
+                    'pesquisa_id' => $pesquisa->id,
+                    'user_id' => Auth::id(),
+                    'resposta' => $resposta
+                ]
+            );
 
         } catch (Throwable $th) {
             throw new Exception('Erro ao Responder');

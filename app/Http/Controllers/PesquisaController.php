@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\PesquisaDataTable;
 use App\Models\Pesquisa;
+use App\Models\User;
 use App\Services\PesquisaService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -17,7 +18,11 @@ class PesquisaController extends Controller
 
     public function create()
     {
-        return view('dashboard.pesquisas.form', []);
+        return view('dashboard.pesquisas.form', [
+            'secretarios' => User::whereHas('roles', function($sql) {
+                return $sql->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
+            })->get()->pluck('name', 'id')
+        ]);
     }
 
     public function show(Pesquisa $pesquisa)
@@ -40,7 +45,10 @@ class PesquisaController extends Controller
     public function edit(Pesquisa $pesquisa)
     {
         return view('dashboard.pesquisas.form', [
-            'pesquisa' => $pesquisa
+            'pesquisa' => $pesquisa,
+            'secretarios' => User::whereHas('roles', function($sql) {
+                return $sql->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
+            })->get()->pluck('name', 'id')
         ]);
     }
 

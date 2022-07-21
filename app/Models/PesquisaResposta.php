@@ -11,5 +11,7 @@ class PesquisaResposta extends Model
 
     protected $table = 'pesquisa_respostas';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    
+    protected $casts = [
+        'resposta' => 'array'
+    ];
 }

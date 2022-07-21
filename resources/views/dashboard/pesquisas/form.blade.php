@@ -28,11 +28,17 @@
                         {!! Form::text('nome', null, ['class' => 'form-control', 'required' => 'required']) !!}
                         <small class="text-danger">{{ $errors->first('nome') }}</small>
                     </div>
-                    <div id="fb-editor"></div>
+                    <div class="form-group{{ $errors->has('secretarios') ? ' has-error' : '' }}">
+                        {!! Form::label('secretarios', 'Secretários com acesso ao formulário') !!}
+                        {!! Form::select('secretarios', $secretarios, isset($pesquisa) ? $pesquisa->usuarios->pluck('id') : null, ['class' => 'form-control isSelect2', 'required' => 'required', 'multiple' => 'true']) !!}
+                        <small class="text-danger">{{ $errors->first('secretarios') }}</small>
+                    </div>
+                    <h2>Formulário da Pesquisa</h2>
+
+                    <div id="fb-editor" class="mt-5"></div>
                     <div id="fb-rendered-form" style="display: none;">
                         
                         {!! Form::hidden('formulario') !!}
-                        <button class="btn btn-default edit-form">Edit</button>
                         <button class="btn btn-success" type="submit">Enviar</button>
                     </div>
                     {!! Form::close() !!}

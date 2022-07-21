@@ -409,6 +409,11 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.responder',
                 'resource' => 'pesquisas',
             ],
+            [
+                'name' => 'Configurar Pesquisa',
+                'slug' => 'dashboard.pesquisas.configuracoes',
+                'resource' => 'pesquisas',
+            ],
 
         ];
 

@@ -14,4 +14,13 @@ class Pesquisa extends Model
 
     protected $casts = ['referencias' => 'array'];
 
+    public function usuarios()
+    {
+        return $this->belongsToMany(User::class, 'pesquisa_visualizacao_usuario');
+    }
+
+    public function respostas()
+    {
+        return $this->hasMany(PesquisaResposta::class);
+    }
 }
