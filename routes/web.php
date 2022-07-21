@@ -34,6 +34,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])->name('trocar-senha');
 
     Route::resource('usuarios', UserController::class)->names('usuarios');
+    Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])->name('usuarios.reset-senha');
+
 
     Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
     Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
@@ -77,6 +79,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
 
     Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
+    Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');
 
 });
 

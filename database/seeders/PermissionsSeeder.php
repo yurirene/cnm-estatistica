@@ -46,6 +46,12 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.usuarios.delete',
                 'resource' => 'usuario',
             ],
+
+            [
+                'name' => 'Resetar Senha Usuário',
+                'slug' => 'dashboard.usuarios.reset-senha',
+                'resource' => 'usuario',
+            ],
            
             [
                 'name' => 'Listar Sinodais',
@@ -408,6 +414,12 @@ class PermissionsSeeder extends Seeder
             [
                 'name' => 'Datatable Log Erros',
                 'slug' => 'dashboard.datatables.log-erros',
+                'resource' => 'datatables-ajax',
+            ],
+
+            [
+                'name' => 'Datatable Informação Federações (UMPs)',
+                'slug' => 'dashboard.datatables.informacao-federacoes',
                 'resource' => 'datatables-ajax',
             ],
             

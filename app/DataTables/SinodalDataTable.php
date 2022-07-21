@@ -25,7 +25,7 @@ class SinodalDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.sinodais',
                     'id' => $sql->id,
-                    'show' => false,
+                    'show' => true,
                     'delete' => $sql->federacoes->count() > 0 ? false : true
                 ]);
             })
@@ -34,6 +34,12 @@ class SinodalDataTable extends DataTable
             })
             ->editColumn('regiao_id', function($sql) {
                 return $sql->regiao->nome;
+            })
+            ->addColumn('nro_federacoes', function($sql) {
+                return $sql->federacoes->count();
+            })
+            ->addColumn('nro_locais', function($sql) {
+                return $sql->locais->count();
             })
             ->rawColumns(['status']);
     }
@@ -88,6 +94,8 @@ class SinodalDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sigla')->title('Sigla'),
+            Column::make('nro_federacoes')->title('Nº Federações')->orderable(false),
+            Column::make('nro_locais')->title('Nº UMPs Locais')->orderable(false),
             Column::make('status')->title('Status'),
             Column::make('regiao_id')->title('Região'),
         ];
