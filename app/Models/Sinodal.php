@@ -27,6 +27,11 @@ class Sinodal extends Model
         return $this->hasMany(Federacao::class);
     }
 
+    public function locais()
+    {
+        return $this->hasMany(Local::class);
+    }
+
     public function usuario()
     {
         return $this->belongsToMany(User::class, 'usuario_sinodal');

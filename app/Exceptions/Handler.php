@@ -44,11 +44,13 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         try {
-            LogErroService::sendTelegram([
-                'message' =>$exception->getMessage(),
-                'line' =>$exception->getLine(),
-                'file' => $exception->getFile(),
-            ]);
+            if (!env('APP_ENV') == 'local') {
+                LogErroService::sendTelegram([
+                    'message' =>$exception->getMessage(),
+                    'line' =>$exception->getLine(),
+                    'file' => $exception->getFile(),
+                ]);
+            }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());

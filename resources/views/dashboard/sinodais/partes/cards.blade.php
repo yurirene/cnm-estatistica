@@ -14,7 +14,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <div class="badge badge-circle badge-info mr-3">
-                                    <i class="fas fa-users"></i>
+                                    <i class="fas fa-church"></i>
                                 </div>
                             </div>
                             <div>
@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                             <div>
-                                <h6 class="mb-1">Nº Sócios: {{$numero_socios}}</h6>
+                                <h6 class="mb-1">Nº Sócios: {{$numero_socios}} </h6>
                             </div>
                         </div>
                     </li>
@@ -39,7 +39,9 @@
         </div>
         <div class="row">
             <div class="col text-center">
-                <a href="#" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> Info</a>
+                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_informacoes_federacoes" data-nome="{{$nome}}" data-id="{{ $id }}">
+                    <i class="fas fa-plus"></i> Info
+                  </button>
             </div>
         </div>
     </div>

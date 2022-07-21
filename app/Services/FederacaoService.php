@@ -177,4 +177,19 @@ class FederacaoService
             throw $th;
         }
     }
+
+    public static function getTotalUmpsOrganizadas(Federacao $federacao, FormularioFederacao $formulario = null) : array
+    {
+        if (!is_null($formulario)) {
+            $total = ($formulario->estrutura['ump_organizada'] ?? 0) + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
+            return [
+                'total' => $total,
+                'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0
+            ];
+        }
+        return [
+            'total' => $federacao->locais->count(),
+            'organizadas' => $federacao->locais->where('status', true)->count()
+        ]; 
+    }
 }
