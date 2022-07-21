@@ -76,7 +76,27 @@ class LocalController extends Controller
             ->withInput();
         }
     }
-
+    
+    public function updateInfo(Local $local, Request $request)
+    {
+        try {
+            LocalService::updateInfo($local, $request);
+            return redirect()->route('dashboard.home')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
 
     public function delete(Local $federacao)
     {

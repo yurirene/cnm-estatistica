@@ -75,7 +75,7 @@
                 @canAtLeast(['dashboard.federacoes.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.federacoes.index') }}">
-                        <i class="fas fa-layer-group"></i> Federação
+                        <i class="fas fa-layer-group"></i> Federações
                     </a>
                 </li>
 

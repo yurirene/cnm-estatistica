@@ -14,6 +14,7 @@ class Federacao extends Model
     protected $table = 'federacoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    protected $dates = ['data_organizacao'];
 
     public function regiao()
     {
@@ -49,5 +50,10 @@ class Federacao extends Model
     public function relatorios()
     {
         return $this->hasMany(FormularioFederacao::class, 'federacao_id');
+    }
+
+    public function getDataOrganizacaoFormatadaAttribute()
+    {
+        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
     }
 }

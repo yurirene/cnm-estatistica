@@ -166,6 +166,12 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.locais.delete',
                 'resource' => 'umps_locais',
             ],
+
+            [
+                'name' => 'Atualizar Informações das UMPs Locais',
+                'slug' => 'dashboard.locais.update-info',
+                'resource' => 'umps_locais',
+            ],
            
            
             [

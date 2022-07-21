@@ -26,7 +26,6 @@ class FederacaoDataTable extends DataTable
                     'route' => 'dashboard.federacoes',
                     'id' => $sql->id,
                     'show' => true,
-                    'show' => false,
                     'delete' => $sql->locais->count() > 0 ? false : true
                 ]);
             })
@@ -41,6 +40,9 @@ class FederacaoDataTable extends DataTable
             })
             ->editColumn('sinodal_id', function($sql) {
                 return $sql->sinodal->sigla;
+            })
+            ->addColumn('nro_umps', function($sql) {
+                return $sql->locais->count();
             })
             ->rawColumns(['status']);
     }
@@ -95,6 +97,7 @@ class FederacaoDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sigla')->title('Sigla'),
+            Column::make('nro_umps')->title('Nº UMPs')->orderable(false),
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),

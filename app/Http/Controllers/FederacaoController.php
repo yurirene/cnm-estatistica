@@ -50,6 +50,8 @@ class FederacaoController extends Controller
     public function show(Federacao $federacao)
     {
         return view('dashboard.federacoes.show', [
+            'umps' => FederacaoService::getInformacoesLocaisShow($federacao),
+            'informacoes' => FederacaoService::getInformacoesFederacaoOrganizacao($federacao),
             'federacao' => $federacao,
         ]);
     }

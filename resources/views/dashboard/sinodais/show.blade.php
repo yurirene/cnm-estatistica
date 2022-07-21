@@ -25,7 +25,7 @@
                         <div class="col">
                             <h3><span class="badge badge-primary">Nome:</span> {{ $sinodal->nome }}</h3>
                             <h3><span class="badge badge-primary">Sínodo:</span> {{ $sinodal->sinodo }}</h3>
-                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $sinodal->data_organizacao ? $sinodal->data_organizacao->format('d/m/Y') : 'Sem Informação' }}</h3>
+                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $sinodal->data_organizacao_formatada }}</h3>
                             <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $sinodal->midias_sociais }}</h3>
                         </div>
                     </div>

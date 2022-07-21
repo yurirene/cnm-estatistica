@@ -10,7 +10,7 @@
 <div class="container-fluid mt--7">
     <div class="row mt-5">
         <div class="col-xl-5 mb-5 mb-xl-0">
-            <div class="card shadow p-3">
+            <div class="card shadow p-3 h-100">
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
@@ -23,16 +23,10 @@
                     
                     <div class="row mt-3">
                         <div class="col">
-                            <div id="donut-example" style="max-height: 200px;">
-                                
-                            </div>
-                            <h6 class="text-center">Representação das Federações</h6>
-                        </div>
-                        <div class="col">
-                            <div id="donut-example" style="max-height: 200px;">
-                                
-                            </div>
-                            <h6 class="text-center">Representação das Federações</h6>
+                            <h3><span class="badge badge-primary">Nome:</span> {{ $federacao->nome }}</h3>
+                            <h3><span class="badge badge-primary">Presbitério:</span> {{ $federacao->presbiterio }}</h3>
+                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $federacao->data_organizacao_formatada }}</h3>
+                            <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $federacao->midias_sociais }}</h3>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -40,42 +34,28 @@
                             <div class="progress-wrapper">
                                 <div class="progress-info">
                                     <div class="progress-label">
-                                        <span>Informação</span>
+                                        <span>UMPs Locais Organizadas</span>
                                     </div>
                                     <div class="progress-percentage">
-                                        <span>60%</span>
+                                        <span>{{ $informacoes['total_umps_organizada'] }}%</span>
                                     </div>
                                 </div>
                                 <div class="progress">
-                                    <div class="progress-bar bg-default" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                                    <div class="progress-bar bg-default" role="progressbar" aria-valuenow="{{ $informacoes['total_umps_organizada'] }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $informacoes['total_umps_organizada'] }}%;"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="progress-wrapper">
                                 <div class="progress-info">
                                     <div class="progress-label">
-                                        <span>Informação</span>
+                                        <span>Não adotam Sociedades Internas</span>
                                     </div>
                                     <div class="progress-percentage">
-                                        <span>60%</span>
+                                        <span>{{ $informacoes['total_igrejas_n_sociedades'] }}%</span>
                                     </div>
                                 </div>
                                 <div class="progress">
-                                    <div class="progress-bar bg-default" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="progress-wrapper">
-                                <div class="progress-info">
-                                    <div class="progress-label">
-                                        <span>Informação</span>
-                                    </div>
-                                    <div class="progress-percentage">
-                                        <span>60%</span>
-                                    </div>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar bg-default" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                                    <div class="progress-bar bg-default" role="progressbar" aria-valuenow="{{ $informacoes['total_igrejas_n_sociedades'] }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ $informacoes['total_igrejas_n_sociedades'] }}%;"></div>
                                 </div>
                             </div>
                         </div>
@@ -88,20 +68,16 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="mb-0">UMPs Jurisdicionadas</h3>
+                            <h3 class="mb-0">UMPs Cadastradas</h3>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row mt-3">
-                        @if($federacao->locais->count() > 0)
-                        @foreach($federacao->locais as $local)
-                        <div class="col-md-4 mt-3">
-                            @include('dashboard.federacoes.partes.cards', [
-                            'nome' => $local->nome,
-                            'sigla' => $local->sigla,
-                            'formularios_preenchidos' => 'SEM INFO'
-                            ])
+                        @if(count($umps))
+                        @foreach($umps as $ump)
+                        <div class="col-md-6 col-xl-4 mt-3">
+                            @include('dashboard.federacoes.partes.cards', $ump)
                         </div>
                         @endforeach
                         @endif
