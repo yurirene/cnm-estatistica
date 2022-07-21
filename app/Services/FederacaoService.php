@@ -159,7 +159,14 @@ class FederacaoService
 
     public static function delete(Federacao $federacao)
     {
+        DB::beginTransaction();
         try {
+            $federacao->usuario->first()->update([
+                'email' => 'apagadoFedEm'.date('dmyhms').'@apagado.com'
+            ]);
+            $usuario = $federacao->usuario->first();
+            $federacao->usuario()->sync([]);
+            $usuario->delete();
             $federacao->delete();
         } catch (\Throwable $th) {
             LogErroService::registrar([
