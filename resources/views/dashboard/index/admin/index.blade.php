@@ -58,7 +58,7 @@
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Estados do Usuário</h6>
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Gráfico de Entrega de Relatórios por Região</h6>
                             </div>
                         </div>
                     </div>
@@ -86,6 +86,27 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="log-erro-modal" tabindex="-1" role="dialog" aria-labelledby="log-erro-modalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="log-erro-modalLabel">Erro do Sistema</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Data: <span  id="dia_modal"></span></h4>
+                    <h5>Erro: <span  id="erro_modal"></span></h5>
+                    <h5>Linha: <span  id="linha_modal"></span></h5>
+                    <h5>Arquivo: <span  id="arquivo_modal"></span></h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+                </div>
+            </div>
+        </div>
         @include('layouts.footers.auth')
     </div>
 @endsection
@@ -105,7 +126,7 @@
             columns: [
                 {
                     render: function (data, type, result) {
-                        return `<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#log-erro-modal" data-idlog="${result.id}"><i class="fas fa-eye"></i></button>`;
+                        return `<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#log-erro-modal" data-dia="${result.dia}" data-informacoes="${result.erro_completo}"><i class="fas fa-eye"></i></button>`;
                     }
                 },
                 {data: 'dia'},
@@ -224,14 +245,17 @@
         config_grafico_acesso
     );
 
-    // $('#tabela-formulario').dataTable();
-
-    // $('.btn-info-sinodal').on('click', function() {
-    //     let rota = '{{ route("dashboard.usuarios.index") }}';
-    //     $.ajax({
-    //         url: rota
-    //     });
-    // })
+    $('#log-erro-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var informacoes = button.data('informacoes')
+        var dia = button.data('dia')
+        console.log(informacoes);
+        var modal = $(this)
+        modal.find('#dia_modal').text(dia);
+        modal.find('#erro_modal').text(informacoes.message);
+        modal.find('#linha_modal').text(informacoes.line);
+        modal.find('#arquivo_modal').text(informacoes.file);
+    })
 
 
 </script>

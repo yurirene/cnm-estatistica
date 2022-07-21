@@ -18,7 +18,8 @@ class DatatableAjaxController extends Controller
                     'id' => $item->id,
                     'dia' => Carbon::parse($item->created_at)->format('d/m/y H:i:s'),
                     'erro' => $item->log['message'],
-                    'usuario' => $item->name
+                    'usuario' => $item->name,
+                    'erro_completo' => $item->getRawOriginal('log')
                 ];
             });
 

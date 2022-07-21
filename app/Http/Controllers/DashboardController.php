@@ -14,12 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
 
-        $dataMapaBrazil = MapaService::getDefaultMap();
-        LogErroService::registrar([
-            'message' =>'TESTE',
-            'line' =>'TESTE L(INHA',
-            'file' =>'TESTE FILE'
-        ]);    
+        $dataMapaBrazil = MapaService::getDefaultMap();  
         return view('dashboard.index', [
             'dataMapaBrazil' => $dataMapaBrazil
         ]);
