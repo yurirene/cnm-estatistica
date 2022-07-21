@@ -33,7 +33,7 @@
                         <div class="col">
                             <h3><span class="badge badge-primary">Nome:</span> {{ $federacao->nome }}</h3>
                             <h3><span class="badge badge-primary">Presbitério:</span> {{ $federacao->presbiterio }}</h3>
-                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $federacao->data_organizacao ? $federacao->data_organizacao->format('d/m/Y') : 'Sem Informação' }}</h3>
+                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ !is_null($federacao->data_organizacao) ? $federacao->data_organizacao->format('d/m/Y') : 'Sem Informação' }}</h3>
                             <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $federacao->midias_sociais }}</h3>
                         </div>
                     </div>

@@ -13,6 +13,8 @@ class Federacao extends Model
     
     protected $table = 'federacoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+    
+    protected $dates = ['data_organizacao'];
 
 
     public function regiao()
