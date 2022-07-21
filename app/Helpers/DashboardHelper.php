@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Services\AdministradorService;
 use App\Services\DiretoriaService;
 use App\Services\FederacaoService;
+use App\Services\LocalService;
 use App\Services\SinodalService;
 
 class DashboardHelper
@@ -20,6 +21,8 @@ class DashboardHelper
             return app()->make(DiretoriaService::class);
         } else if (auth()->user()->hasRole(['administrador'])) {
             return app()->make(AdministradorService::class);
+        } else if (auth()->user()->hasRole(['local'])) {
+            return app()->make(LocalService::class);
         }
     }
     

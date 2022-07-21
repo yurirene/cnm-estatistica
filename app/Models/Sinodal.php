@@ -50,4 +50,8 @@ class Sinodal extends Model
         return $query->whereIn('regiao_id', Auth::user()->regioes->pluck('id')->toArray());
     }
 
+    public function getDataOrganizacaoFormatadaAttribute()
+    {
+        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+    }
 }

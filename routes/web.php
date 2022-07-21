@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
     Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
+    Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])->name('locais.update-info');
 
     Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('delete');
     Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])->name('atividades.delete');

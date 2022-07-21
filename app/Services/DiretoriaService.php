@@ -90,7 +90,7 @@ class DiretoriaService
                     'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
                     'total_sinodais' => $sinodais->where('status', true)->count(),
                     'total_federacoes' => $federacoes->where('status', true)->count(),
-                    'total_umps' => $umps->count(),
+                    'total_umps' => $umps->where('status', true)->count(),
                     'total_socios' => 0,
                 ];
             }

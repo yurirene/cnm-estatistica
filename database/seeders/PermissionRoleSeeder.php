@@ -56,6 +56,9 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'formularios_ump'
                 ],
+                'permissions' => [
+                    'dashboard.locais.update-info'
+                ]
             ],
             'tesouraria' => [
                 'resources' => [

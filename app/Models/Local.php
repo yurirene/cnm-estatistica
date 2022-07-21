@@ -15,6 +15,7 @@ class Local extends Model
     protected $table = 'locais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    protected $dates = ['data_organizacao'];
 
     public function regiao()
     {
@@ -49,5 +50,10 @@ class Local extends Model
     public function relatorios()
     {
         return $this->hasMany(FormularioLocal::class, 'local_id');
+    }
+    
+    public function getDataOrganizacaoFormatadaAttribute()
+    {
+        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
     }
 }

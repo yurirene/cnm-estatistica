@@ -27,6 +27,7 @@
                 </div>
             </div>
         </div>
+        @canAtLeast(['dashboard.federacoes.index'])
         <div class="row mt-3">
             <div class="col">
                 <div class="card card-stats mb-4 mb-xl-0">
@@ -47,5 +48,6 @@
                 </div>
             </div>
         </div>
+        @endCanAtLeast
     </div>
 </div>
