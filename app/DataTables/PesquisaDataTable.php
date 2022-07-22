@@ -31,7 +31,8 @@ class PesquisaDataTable extends DataTable
                     'id' => $sql->id,
                     'show' => true,
                     'delete' => false,
-                    'configuracoes' => true
+                    'configuracoes' => true,
+                    'relatorio' => true
                 ]);
             })
            ->addColumn('usuarios', function($sql) {

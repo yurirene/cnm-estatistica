@@ -23,4 +23,9 @@ class Pesquisa extends Model
     {
         return $this->hasMany(PesquisaResposta::class);
     }
+
+    public function configuracao()
+    {
+        return $this->hasOne(PesquisaConfiguracao::class);
+    }
 }

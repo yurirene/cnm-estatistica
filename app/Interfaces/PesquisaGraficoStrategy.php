@@ -1,0 +1,17 @@
+<?php 
+
+namespace App\Interfaces;
+
+use App\Models\Pesquisa;
+
+interface PesquisaGraficoStrategy 
+{
+
+    public function handle(Pesquisa $pesquisa, string $campo, string $chave) : array;
+
+    public static function getDados(Pesquisa $pesquisa, string $campo, string $chave) : array;
+
+    public static function formatarDados(array $dados, string $tipo_dado) : array;
+
+    public static function renderizarHtml(array $dados) : string;
+}

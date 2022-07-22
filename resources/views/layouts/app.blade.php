@@ -427,6 +427,38 @@
         </script>
         @endforeach
     @endif
+
+    <script>
+        function confirmar()
+        {
+            event.preventDefault();
+            var vm = $(this).attr('href');
+            iziToast.question({
+                timeout: 20000,
+                close: false,
+                overlay: true,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Hey',
+                message: 'Você tem certeza disso?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>Sim</b></button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        
+            
+                    }, true],
+                    ['<button>Cancelar</button>', function (instance, toast) {
+            
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            
+                    }],
+                ],
+            });
+
+        }
+    </script>
     <script>
         $('.table-responsive').on('show.bs.dropdown', function () {
             $('.table-responsive').css( "overflow", "inherit" );

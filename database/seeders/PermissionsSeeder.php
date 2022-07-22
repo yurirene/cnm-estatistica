@@ -409,12 +409,30 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.responder',
                 'resource' => 'pesquisas',
             ],
+            
             [
                 'name' => 'Configurar Pesquisa',
                 'slug' => 'dashboard.pesquisas.configuracoes',
                 'resource' => 'pesquisas',
             ],
 
+            [
+                'name' => 'Atualizar Configurações da Pesquisa',
+                'slug' => 'dashboard.pesquisas.configuracoes-update',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Relatório da Pesquisa',
+                'slug' => 'dashboard.pesquisas.relatorio',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Gerar Relatório Excel da Pesquisa',
+                'slug' => 'dashboard.pesquisas.relatorio.excel',
+                'resource' => 'pesquisas',
+            ],
         ];
 
         try {

@@ -24,5 +24,8 @@
         @if(isset($configuracoes) && $configuracoes == true)
         <a class="dropdown-item" href="{{ route($route.'.configuracoes', $id) }}">Configurações</a>
         @endif
+        @if(isset($relatorio) && $relatorio == true)
+        <a class="dropdown-item" href="{{ route($route.'.relatorio', $id) }}">Relatório</a>
+        @endif
     </div>
 </div>
