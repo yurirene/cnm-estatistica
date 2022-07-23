@@ -32,15 +32,17 @@ class PesquisaDataTable extends DataTable
                     'show' => true,
                     'delete' => false,
                     'status' => true,
-                    'respostas' => true
+                    'respostas' => true,
+                    'configuracoes' => true,
+                    'relatorio' => true
                 ]);
             })
-            ->editColumn('status', function($sql) {
-                return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
-            })
-            ->addColumn('respostas', function($sql) {
+           ->addColumn('usuarios', function($sql) {
+                return implode(', ',$sql->usuarios->pluck('name')->toArray());
+           })
+           ->addColumn('nro_respostas', function($sql) {
                 return $sql->respostas->count();
-            })
+           })
             ->rawColumns(['status']);
     }
 
@@ -95,7 +97,8 @@ class PesquisaDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('status')->title('Status'),
-            Column::make('respostas')->title('Respostas'),
+            Column::make('nro_respostas')->title('Nº de Respostas'),
+            Column::make('usuarios')->title('Usuários'),
         ];
         return $colunas;
     }

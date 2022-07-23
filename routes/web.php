@@ -80,6 +80,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::get('/pesquisas/{pesquisa}/status', [PesquisaController::class, 'status'])->name('pesquisas.status');
     Route::get('/pesquisas/{pesquisa}/respostas', [PesquisaController::class, 'respostas'])->name('pesquisas.respostas');
     Route::post('/pesquisas-responder', [PesquisaController::class, 'responder'])->name('pesquisas.responder');
+    Route::get('/pesquisas/{pesquisa}/configuracoes', [PesquisaController::class, 'configuracoes'])->name('pesquisas.configuracoes');
+    Route::get('/pesquisas/{pesquisa}/relatorio', [PesquisaController::class, 'relatorio'])->name('pesquisas.relatorio');
+    Route::put('/pesquisas-configuracoes/{pesquisa}/update', [PesquisaController::class, 'configuracoesUpdate'])->name('pesquisas.configuracoes-update');
+    Route::get('/pesquisas-configuracoes/{pesquisa}/export', [PesquisaController::class, 'exportExcel'])->name('pesquisas.relatorio.excel');
 
 
 });

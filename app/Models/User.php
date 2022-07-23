@@ -62,6 +62,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Local::class, 'usuario_local', 'user_id', 'local_id', 'id', 'id');
     }
 
+    public function pesquisas()
+    {
+        return $this->belongsToMany(Pesquisa::class, 'pesquisa_respostas');
+    }
+
     public function scopeQuery($query)
     {
         if (Auth::user()->admin) {

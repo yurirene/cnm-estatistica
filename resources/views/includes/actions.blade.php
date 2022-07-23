@@ -1,4 +1,4 @@
-<div class="dropdown">
+]<div class="dropdown">
     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
         Ações
     </button>
@@ -21,8 +21,11 @@
         @if(isset($status) && $status == true)
         <a class="dropdown-item" href="{{ route($route.'.status', $id) }}">Alterar Status</a>
         @endif
-        @if(isset($respostas) && $respostas == true)
-        <a class="dropdown-item" href="{{ route($route.'.respostas', $id) }}">Respostas</a>
-        @endif        
+        @if(isset($configuracoes) && $configuracoes == true)
+        <a class="dropdown-item" href="{{ route($route.'.configuracoes', $id) }}">Configurações</a>
+        @endif
+        @if(isset($relatorio) && $relatorio == true)
+        <a class="dropdown-item" href="{{ route($route.'.relatorio', $id) }}">Relatório</a>
+        @endif
     </div>
 </div>
