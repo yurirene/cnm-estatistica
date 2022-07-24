@@ -8,7 +8,9 @@ use App\Models\Pesquisa;
 use App\Models\PesquisaConfiguracao;
 use App\Models\User;
 use App\Services\PesquisaService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
@@ -22,6 +24,7 @@ class PesquisaController extends Controller
     public function create()
     {
         return view('dashboard.pesquisas.form', [
+            'instancias' => Pesquisa::INSTANCIAS,
             'secretarios' => User::whereHas('roles', function($sql) {
                 return $sql->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
             })->get()->pluck('name', 'id')
@@ -31,6 +34,11 @@ class PesquisaController extends Controller
     public function show(Pesquisa $pesquisa)
     {
         try {
+            if (in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS)) {
+                if (!in_array(Auth::user()->instancia_formatada, $pesquisa->instancias)) {
+                    throw new Exception("Sem Permissão para acessar formulário de pesquisa", 1);                    
+                }
+            }
             return view('dashboard.pesquisas.show', [
                 'pesquisa' => $pesquisa
             ]);
@@ -48,6 +56,7 @@ class PesquisaController extends Controller
     public function edit(Pesquisa $pesquisa)
     {
         return view('dashboard.pesquisas.form', [
+            'instancias' => Pesquisa::INSTANCIAS,
             'pesquisa' => $pesquisa,
             'secretarios' => User::whereHas('roles', function($sql) {
                 return $sql->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);

@@ -29,6 +29,10 @@ class PermissionRoleSeeder extends Seeder
                     'sinodais',
                     'atividades'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                ]
             ],
             'sinodal' => [
                 'resources' => [
@@ -41,7 +45,10 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.usuarios.update',
                     'dashboard.sinodais.update-info',
                     'dashboard.comprovante-aci.index',
-                    'dashboard.comprovante-aci.store'
+                    'dashboard.comprovante-aci.store',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
                 ]
             ],
             'federacao' => [
@@ -53,13 +60,21 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.usuarios.index',
                     'dashboard.usuarios.edit',
                     'dashboard.usuarios.update',
-                    'dashboard.federacoes.update-info'
+                    'dashboard.federacoes.update-info',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
                 ]
             ],
             'local' => [
                 'resources' => [
                     'formularios_ump'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
+                ]
             ],
             'tesouraria' => [
                 'resources' => [
@@ -70,26 +85,50 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'atividades',
                     'eventos',
-                    'pesquisas'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
-                    'pesquisas'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
             'secreatria_produtos' => [
                 'resources' => [
                     'atividades',
-                    'pesquisas'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
             'secretaria_responsabilidade' => [
                 'resources' => [
                     'atividades',
-                    'pesquisas'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
         ];
         DB::table('permission_role')->truncate();

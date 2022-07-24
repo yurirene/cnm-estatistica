@@ -374,7 +374,7 @@ class PermissionsSeeder extends Seeder
             ],
 
             [
-                'name' => 'Visualizar Evento',
+                'name' => 'Visualizar Formulario',
                 'slug' => 'dashboard.pesquisas.show',
                 'resource' => 'pesquisas',
             ],

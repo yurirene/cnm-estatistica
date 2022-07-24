@@ -31,10 +31,11 @@ class PesquisaDataTable extends DataTable
                     'id' => $sql->id,
                     'show' => true,
                     'delete' => false,
-                    'status' => true,
-                    'respostas' => true,
-                    'configuracoes' => true,
-                    'relatorio' => true
+                    'edit' => $this->verificarUsuariosPermitidosParaConfiguracoes($sql),
+                    'status' => $this->verificarUsuariosVinculados($sql),
+                    'respostas' => $this->verificarUsuariosVinculados($sql),
+                    'configuracoes' => $this->verificarUsuariosPermitidosParaConfiguracoes($sql),
+                    'relatorio' =>  $this->verificarUsuariosVinculados($sql)
                 ]);
             })
             ->addColumn('usuarios', function($sql) {
@@ -46,7 +47,32 @@ class PesquisaDataTable extends DataTable
             ->editColumn('status', function($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Aberto', 'Fechado');
             })
-            ->rawColumns(['status']);
+            ->addColumn('status_minha_resposta', function($sql) {
+                $resposta = $sql->respostas()->where('user_id', Auth::id())->count();
+                return FormHelper::statusFormatado($resposta, 'Respondido', 'Pendente');
+            })
+            ->rawColumns(['status', 'status_minha_resposta']);
+    }
+
+    public function verificarUsuariosVinculados(Pesquisa $pesquisa) : bool
+    {
+        $usuarios_vinculados = $pesquisa->whereHas('usuarios', function($sql) {
+            return $sql->where('users.id', Auth::id());
+         })->get()->isNotEmpty();
+        if ( $usuarios_vinculados || Auth::user()->admin == true) {
+            return true;
+        }
+        return false;
+    }
+
+    public function verificarPefilInstancia() : bool
+    {
+        return !in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS);
+    }
+
+    public function verificarUsuariosPermitidosParaConfiguracoes() : bool
+    {
+        return Auth::user()->admin == true;
     }
 
     /**
@@ -57,7 +83,15 @@ class PesquisaDataTable extends DataTable
      */
     public function query(Pesquisa $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->when(in_array(Auth::user()->roles->first()->name, User::ROLES_SECRETARIOS), function($sql) {
+            return $sql->whereHas('usuarios', function($q) {
+                return $q->where('users.id', Auth::id());
+            });
+        })
+        ->when(in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS), function($sql) {
+            return $sql->whereJsonContains('instancias', Auth::user()->instancia_formatada)
+                ->where('status', true);
+        });
     }
 
     /**
@@ -76,6 +110,7 @@ class PesquisaDataTable extends DataTable
                     ->buttons(
                         Button::make('create')->text('<i class="fas fa-plus"></i> Nova Pesquisa')
                             ->enabled(auth()->user()->canAtLeast(['dashboard.pesquisas.create']))
+                            ->addClass(!$this->verificarPefilInstancia() ? 'd-none' : null)
                     )
                     ->parameters([
                         "language" => [
@@ -99,9 +134,11 @@ class PesquisaDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
-            Column::make('status')->title('Status'),
-            Column::make('nro_respostas')->title('Nº de Respostas'),
-            Column::make('usuarios')->title('Usuários'),
+            Column::make('status')->title('Status')->visible($this->verificarPefilInstancia()),
+            Column::make('status_minha_resposta')->title('Status')->visible(!$this->verificarPefilInstancia()),
+            Column::make('nro_respostas')->title('Nº de Respostas')->visible($this->verificarPefilInstancia()),
+            Column::make('instancias')->title('Instâncias')->visible($this->verificarPefilInstancia()),
+            Column::make('usuarios')->title('Usuários')->visible($this->verificarPefilInstancia()),
         ];
         return $colunas;
     }

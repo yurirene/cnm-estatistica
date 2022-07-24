@@ -18,6 +18,7 @@ class CreatePesquisasTable extends Migration
             $table->string('nome');
             $table->longText('formulario');
             $table->json('referencias');
+            $table->json('instancias');
             $table->boolean('status')->default(true);
             $table->uuid('user_id');
             $table->timestamps();

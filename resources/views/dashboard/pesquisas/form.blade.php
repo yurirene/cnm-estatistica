@@ -29,9 +29,14 @@
                         <small class="text-danger">{{ $errors->first('nome') }}</small>
                     </div>
                     <div class="form-group{{ $errors->has('secretarios') ? ' has-error' : '' }}">
-                        {!! Form::label('secretarios', 'Secretários com acesso ao formulário') !!}
-                        {!! Form::select('secretarios', $secretarios, isset($pesquisa) ? $pesquisa->usuarios->pluck('id') : null, ['class' => 'form-control isSelect2', 'required' => 'required', 'multiple' => 'true']) !!}
+                        {!! Form::label('secretarios[]', 'Secretários com acesso ao formulário') !!}
+                        {!! Form::select('secretarios[]', $secretarios, isset($pesquisa) ? $pesquisa->usuarios->pluck('id') : null, ['class' => 'form-control isSelect2', 'required' => 'required', 'multiple' => 'true']) !!}
                         <small class="text-danger">{{ $errors->first('secretarios') }}</small>
+                    </div>
+                    <div class="form-group{{ $errors->has('instancias') ? ' has-error' : '' }}">
+                        {!! Form::label('instancias[]', 'Instâncias') !!}
+                        {!! Form::select('instancias[]', $instancias, isset($pesquisa) ? $pesquisa->instancias : null, ['class' => 'form-control isSelect2', 'required' => 'required', 'multiple' => 'true']) !!}
+                        <small class="text-danger">{{ $errors->first('instancias') }}</small>
                     </div>
                     <h2>Formulário da Pesquisa</h2>
 

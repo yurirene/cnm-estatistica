@@ -27,12 +27,14 @@ class PesquisaService
                 'nome' => $request->nome,
                 'formulario' => $request->formulario,
                 'referencias' => $referencias,
+                'instancias' => $request->instancias,
                 'user_id' => Auth::id()
             ]);
             $pesquisa->usuarios()->sync($request->secretarios);
             PesquisaConfiguracao::create(self::templateConfiguracao($pesquisa));
             DB::commit();
         } catch (\Throwable $th) {
+            dd($th->getMessage());
             DB::rollBack();
             Log::error([
                 'mensagem' => $th->getMessage(),
@@ -52,6 +54,7 @@ class PesquisaService
                 'nome' => $request->nome,
                 'formulario' => $request->formulario,
                 'referencias' => $referencias,
+                'instancias' => $request->instancias,
             ]);
             $pesquisa->usuarios()->sync($request->secretarios);
             PesquisaConfiguracao::updateOrCreate([

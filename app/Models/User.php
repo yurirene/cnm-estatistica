@@ -32,6 +32,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public const ROLES_SECRETARIOS = [
+        'secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade'
+    ];
+
+    public const ROLES_INSTANCIAS = [
+        'sinodal', 'federacao', 'local'
+    ];
+
     public function regioes()
     {
         return $this->belongsToMany(Regiao::class, 'usuario_regiao');
@@ -97,4 +105,20 @@ class User extends Authenticatable
         });
         
     }
+
+    public function getInstanciaFormatadaAttribute()
+    {
+        if ($this->roles->first()->name == 'administrador') {
+            return 'Administrador';
+        } else if ($this->roles->first()->name == 'diretoria') {
+            return 'Diretoria';
+        } else if ($this->roles->first()->name == 'sinodal') {
+            return 'Sinodal';
+        } else if ($this->roles->first()->name == 'federacao') {
+            return 'Federação';
+        } else if ($this->roles->first()->name == 'local') {
+            return 'Local';
+        } 
+    }
+
 }

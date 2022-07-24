@@ -12,8 +12,13 @@ class Pesquisa extends Model
     protected $table = 'pesquisas';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $casts = ['referencias' => 'array'];
+    protected $casts = ['referencias' => 'array', 'instancias' => 'array'];
 
+    public const INSTANCIAS = [
+        'Sinodal' => 'Sinodal', 
+        'Federação' => 'Federação', 
+        'Local' => 'Local'
+    ];
 
     public function usuarios()
     {
