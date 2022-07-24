@@ -42,25 +42,15 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="custom-control custom-control-alternative custom-checkbox">
-                                <input class="custom-control-input" name="remember" id="customCheckLogin" type="checkbox" {{ old('remember') ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="customCheckLogin">
-                                    <span class="text-muted">{{ __('Remember me') }}</span>
-                                </label>
-                            </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary my-4">{{ __('Sign in') }}</button>
+                                <button type="submit" class="btn btn-primary my-4">{{ __('Entrar') }}</button>
                             </div>
                         </form>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-6">
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-light">
-                                <small>{{ __('Esqueceu a Senha?') }}</small>
-                            </a>
-                        @endif
+                        <div class="row">
+                            <div class="col text-center">
+                                <h6>Versão {{ config('app.version') }}</h6>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
