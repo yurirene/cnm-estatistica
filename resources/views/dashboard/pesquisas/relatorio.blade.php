@@ -32,6 +32,9 @@
                             <a href="{{ route('dashboard.pesquisas.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                         </div>
                     </div>
+                    @include('dashboard.pesquisas.partes.alcance', [
+                        'alcance' => $alcance
+                    ])
                     <div class="row">
                         @include('dashboard.pesquisas.partes.totalizadores', [
                             'totalizadores' => $totalizadores
@@ -57,7 +60,5 @@
 {!! $grafico['grafico']['js'] !!}
 
 @endforeach
-<script>
-    
-</script>
+
 @endpush

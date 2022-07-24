@@ -39,7 +39,9 @@ class PesquisaDataTable extends DataTable
                 ]);
             })
             ->addColumn('usuarios', function($sql) {
-                return implode(', ',$sql->usuarios->pluck('name')->toArray());
+                return $sql->usuarios->pluck('name')->map(function($item) {
+                    return BootstrapHelper::badge('primary', $item, true);
+                })->implode(' ');
             })
             ->addColumn('nro_respostas', function($sql) {
                 return $sql->respostas->count();
@@ -51,7 +53,12 @@ class PesquisaDataTable extends DataTable
                 $resposta = $sql->respostas()->where('user_id', Auth::id())->count();
                 return FormHelper::statusFormatado($resposta, 'Respondido', 'Pendente');
             })
-            ->rawColumns(['status', 'status_minha_resposta']);
+            ->editColumn('instancias', function($sql) {
+                return implode(' ', array_map(function($item) {
+                    return BootstrapHelper::badge('primary', $item, true);
+                }, $sql->instancias));
+            })
+            ->rawColumns(['status', 'status_minha_resposta', 'usuarios', 'instancias']);
     }
 
     public function verificarUsuariosVinculados(Pesquisa $pesquisa) : bool
