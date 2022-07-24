@@ -20,7 +20,7 @@
                         <div class="col">
                             <ul class="nav nav-pills justify-content-end">
                                 <li class="nav-item mr-2 mr-md-0">
-                                    <a href="{{ route('dashboard.pesquisas.index') }}" onclick="confirmar()" class="btn btn-danger py-2 px-3 active">
+                                    <a href="{{ route('dashboard.pesquisas.limpar-respostas', $pesquisa->id) }}" onclick="confirmar(this)" class="btn btn-danger py-2 px-3 active">
                                         <span class="d-none d-md-block"><i class="fas fa-exclamation-triangle"></i> Limpar Respostas</span>
                                     </a>
                                 </li>
@@ -29,11 +29,6 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <a href="{{ route('dashboard.pesquisas.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
-                        </div>
-                    </div>
                     @include('dashboard.pesquisas.partes.painel-de-configuracao', [
                         'configuracoes' => $configuracoes,
                         'pesquisa' => $pesquisa

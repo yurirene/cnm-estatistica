@@ -22,6 +22,7 @@
                     {!! Form::hidden('pesquisa_id', $pesquisa->id) !!}
                     <div id="formulario-renderizado"></div>
                     {!! Form::submit('Responder', ['class' => 'btn btn-success']) !!}
+                    <a href="{{ route('dashboard.pesquisas.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                 </div>
             </div>

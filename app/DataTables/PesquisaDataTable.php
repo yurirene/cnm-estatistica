@@ -37,12 +37,15 @@ class PesquisaDataTable extends DataTable
                     'relatorio' => true
                 ]);
             })
-           ->addColumn('usuarios', function($sql) {
+            ->addColumn('usuarios', function($sql) {
                 return implode(', ',$sql->usuarios->pluck('name')->toArray());
-           })
-           ->addColumn('nro_respostas', function($sql) {
+            })
+            ->addColumn('nro_respostas', function($sql) {
                 return $sql->respostas->count();
-           })
+            })
+            ->editColumn('status', function($sql) {
+                return FormHelper::statusFormatado($sql->status, 'Aberto', 'Fechado');
+            })
             ->rawColumns(['status']);
     }
 

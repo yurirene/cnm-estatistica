@@ -45,6 +45,7 @@ class PesquisaService
 
     public static function update(Pesquisa $pesquisa, Request $request)
     {
+        DB::beginTransaction();
         try {
             $referencias = self::referenciaCamposFormulario($request->formulario);
             $pesquisa->update([
@@ -53,7 +54,14 @@ class PesquisaService
                 'referencias' => $referencias,
             ]);
             $pesquisa->usuarios()->sync($request->secretarios);
+            PesquisaConfiguracao::updateOrCreate([
+                'pesquisa_id' => $pesquisa->id
+            ],
+            self::templateConfiguracao($pesquisa));
+            DB::commit();
         } catch (\Throwable $th) {
+            dd($th->getMessage());
+            DB::rollBack();
             Log::error([
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
@@ -66,28 +74,29 @@ class PesquisaService
     public static function referenciaCamposFormulario(string $formulario) : array
     {
         try {
-        $json_formulario = json_decode($formulario, true);
-        $array_formulario = json_decode($json_formulario, true);
-        $referencias = array();
-        foreach ($array_formulario as $key => $campo) {
-            if (in_array($campo['type'], ['button', 'paragraph','header'])) {
-                continue;
-            }
-            $referencias[$key] = [
-                $campo['name'] => [
-                    'label' => $campo['label'],
-                    'campo' => isset($campo['label']) ? Str::snake(FormHelper::removerAcentos($campo['label'])) : '',
-                    'required' => $campo['required'] ?? false,
-                ]
-            ];
-            if (!isset($campo['values'])) {
-                continue;
-            }
-            foreach ($campo['values'] as $opcao) {
-                $referencias[$key][$campo['name']]['valores'][] = [
-                    'value' => $opcao['value'],
-                    'label' => $opcao['label']
+            $json_formulario = json_decode($formulario, true);
+            $array_formulario = json_decode($json_formulario, true);
+            $referencias = array();
+            foreach ($array_formulario as $key => $campo) {
+                if (in_array($campo['type'], ['button', 'paragraph','header'])) {
+                    continue;
+                }
+                $referencias[$key] = [
+                    $campo['name'] => [
+                        'label' => $campo['label'],
+                        'campo' => isset($campo['label']) ? Str::snake(FormHelper::removerAcentos($campo['label'])) : '',
+                        'required' => $campo['required'] ?? false,
+                    ]
                 ];
+                if (!isset($campo['values'])) {
+                    continue;
+                }
+                foreach ($campo['values'] as $opcao) {
+                    $referencias[$key][$campo['name']]['valores'][] = [
+                        'value' => $opcao['value'],
+                        'label' => $opcao['label']
+                    ];
+                }
             }
             return $referencias;
         } catch (\Throwable $th) {
@@ -283,6 +292,21 @@ class PesquisaService
                 'arquivo' => $th->getFile()
             ]);
             throw new Exception("Erro ao processar configurações", 1);
+        }
+    }
+
+    public static function limparRespostas(Pesquisa $pesquisa)
+    {
+
+        try {
+            $pesquisa->respostas()->delete();
+        } catch (\Throwable $th) {
+            Log::error([
+                'mensagem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao limpar respostas", 1);
         }
     }
 

@@ -184,7 +184,48 @@ class PesquisaController extends Controller
         try {
             return Excel::download(new PesquisaExport($pesquisa), 'pesquisa_' . $pesquisa->nome . '.xlsx');
         } catch (Throwable $th) {
-            dd($th->getMessage());
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function limparRespostas(Pesquisa $pesquisa)
+    {
+        try {
+            PesquisaService::limparRespostas($pesquisa);
+            return redirect()->route('dashboard.pesquisas.configuracoes', $pesquisa->id)->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function status(Pesquisa $pesquisa)
+    {
+        try {
+            PesquisaService::status($pesquisa);
+            return redirect()->route('dashboard.pesquisas.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

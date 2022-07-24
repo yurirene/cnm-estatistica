@@ -435,6 +435,12 @@ class PermissionsSeeder extends Seeder
             ],
 
             [
+                'name' => 'Limpar Respostas da Pesquisa',
+                'slug' => 'dashboard.pesquisas.limpar-respostas',
+                'resource' => 'pesquisas',
+            ],
+
+            [
                 'name' => 'Gerar Relatório Excel da Pesquisa',
                 'slug' => 'dashboard.pesquisas.relatorio.excel',
                 'resource' => 'pesquisas',

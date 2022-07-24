@@ -19,7 +19,6 @@ class BarrasStrategy extends AbstractGrafico implements PesquisaGraficoStrategy
                 'js' => self::script($dados)
             ];
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             Log::error([
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),

@@ -1,4 +1,4 @@
-]<div class="dropdown">
+<div class="dropdown">
     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
         Ações
     </button>

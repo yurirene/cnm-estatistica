@@ -429,30 +429,27 @@
     @endif
 
     <script>
-        function confirmar()
+        function confirmar(input)
         {
             event.preventDefault();
-            var vm = $(this).attr('href');
-            iziToast.question({
+            var rota = $(input).attr('href');
+            iziToast.error({
                 timeout: 20000,
                 close: false,
                 overlay: true,
                 displayMode: 'once',
                 id: 'question',
                 zindex: 999,
-                title: 'Hey',
+                title: 'Atenção',
                 message: 'Você tem certeza disso?',
                 position: 'center',
                 buttons: [
                     ['<button><b>Sim</b></button>', function (instance, toast) {
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        
-            
+                        window.location.href = rota;            
                     }, true],
                     ['<button>Cancelar</button>', function (instance, toast) {
-            
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            
                     }],
                 ],
             });
