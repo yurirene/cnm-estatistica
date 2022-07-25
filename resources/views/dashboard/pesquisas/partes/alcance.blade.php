@@ -92,9 +92,9 @@
                         <label for="select_filtro">Filtrar por:</label>
                         <select class="form-control" id="select_filtro">
                             <option value="null" selected disabled>Sem filtro</option>
-                            <option value="sinodal">Sinodal</option>
-                            <option value="federacao">Federação</option>
-                            <option value="local">UMP Local</option>
+                            <option value="sinodais">Sinodal</option>
+                            <option value="federacoes">Federação</option>
+                            <option value="locais">UMP Local</option>
                         </select>
                     </div>
                     <div class="col">
@@ -109,6 +109,17 @@
 @push('script')
 
 <script>
+
+    $(document).ready(function() {
+
+        @if (isset($alcance['sinodal']))
+        $('#filtrar_sinodais').click();
+        @elseif (isset($alcance['sinodal']))
+        $('#filtrar_federacoes').click();
+        @else
+        $('#filtrar_locais').click();
+        @endif
+    });
     const url = "{{ route('dashboard.pesquisas.relatorio', $pesquisa->id) }}";
     $('#select_filtro').on('change', function() {
         if ($(this).val() == null) {

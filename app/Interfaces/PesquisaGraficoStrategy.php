@@ -13,5 +13,7 @@ interface PesquisaGraficoStrategy
 
     public static function formatarDados(array $dados, string $tipo_dado) : array;
 
-    public static function renderizarHtml(array $dados) : string;
+    public static function renderizarHtml(array $dados, string $tipo) : string;
+
+    public static function script(array $dados, string $tipo) : string;
 }

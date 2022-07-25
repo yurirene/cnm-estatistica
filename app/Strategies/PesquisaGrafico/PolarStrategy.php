@@ -14,46 +14,11 @@ class PolarStrategy extends AbstractGrafico implements PesquisaGraficoStrategy
     {
         try {
             $dados = self::getDados($pesquisa, $campo, $chave);
+            $dados_formatados = self::formatarDados($dados['dados'], $dados['tipo_dados']);
             return [
-                'html' => self::renderizarHtml($dados),
-                'js' => self::script($dados)
+                'html' => self::renderizarHtml($dados_formatados, 'polar'),
+                'js' => self::script($dados_formatados, 'polar')
             ];
-        } catch (\Throwable $th) {
-            Log::error([
-                'mensagem' => $th->getMessage(),
-                'linha' => $th->getLine(),
-                'arquivo' => $th->getFile()
-            ]);
-        }
-    }
-
-    public static function getDados(Pesquisa $pesquisa, string $campo, string $chave) : array
-    {
-        try {
-            $dados = array();
-            $configuracao = $pesquisa->configuracao->configuracao[$chave];
-            $dados['campo'] = $configuracao['label'];
-            $referencia = data_get($pesquisa->referencias, '*.'.$chave);
-            $valores = collect(data_get($referencia, '*.valores'))->whereNotNull()->first();
-            if (!$valores) {
-                $valores = collect($referencia)->whereNotNull()->first();
-                $resultados = $pesquisa->respostas()->whereNotNull('resposta->'.$campo)->get()->pluck('resposta.'.$campo)->countBy()->toArray();
-                foreach ($resultados as $resposta => $quantidade) {
-                    $dados['dados'][] = [
-                        'quantidade' => $quantidade,
-                        'label' => $resposta
-                    ];
-                }                
-            } else {
-                foreach ($valores as $valor) {
-                    $dados['dados'][] = [
-                        'quantidade' => $pesquisa->respostas()->whereJsonContains('resposta->'.$campo, $valor['value'])->count(),
-                        'label' => $valor['label']
-                    ];
-                }
-            }
-            $tipo_dado = $configuracao['tipo_dado'];
-            return self::formatarDados($dados, $tipo_dado);
         } catch (\Throwable $th) {
             Log::error([
                 'mensagem' => $th->getMessage(),
@@ -91,22 +56,6 @@ class PolarStrategy extends AbstractGrafico implements PesquisaGraficoStrategy
                 'arquivo' => $th->getFile()
             ]);
         }
-    }
-
-
-
-    public static function script(array $dados)
-    {
-        return view('dashboard.pesquisas.graficos.polar.js', [
-            'dados' => $dados
-        ])->render();
-    }
-
-    public static function renderizarHtml(array $dados) : string
-    {
-        return view('dashboard.pesquisas.graficos.polar.html', [
-            'dados' => $dados
-        ])->render();
     }
 
 }

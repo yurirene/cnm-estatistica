@@ -243,11 +243,27 @@ class PesquisaService
                 if (is_null($configuracao['tipo_dado'])) {
                     continue;
                 }
-                $valores_respostas =  $pesquisa->respostas->pluck('resposta.'.$configuracao['campo']);
+                $valores_respostas =  $pesquisa->respostas()
+                    ->get()
+                    ->pluck('resposta.'.$configuracao['campo']);
                 if (count($valores_respostas->toArray()) == count($valores_respostas->toArray(), COUNT_RECURSIVE)) {
-                    $valores = $pesquisa->respostas->pluck('resposta.'.$configuracao['campo'])->countBy();
+                    $valores = $pesquisa->respostas()
+                        ->when(request()->has('filtro'), function($query) {
+                            return $query->whereHas('usuario', function($sql) {
+                                return $sql->whereHas(request()->filtro);
+                            });
+                        })
+                        ->get()
+                        ->pluck('resposta.'.$configuracao['campo'])->countBy();
                 } else {
-                    $valores = $pesquisa->respostas->pluck('resposta.'.$configuracao['campo'])->collapse()->countBy();
+                    $valores = $pesquisa->respostas()
+                        ->when(request()->has('filtro'), function($query) {
+                            return $query->whereHas('usuario', function($sql) {
+                                return $sql->whereHas(request()->filtro);
+                            });
+                        })
+                        ->get()
+                        ->pluck('resposta.'.$configuracao['campo'])->collapse()->countBy();
                 }
                 $retorno[$i]['campo'] = $configuracao['label'];
                 foreach ($valores as $opcao => $valor) {
