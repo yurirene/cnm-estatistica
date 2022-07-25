@@ -4,9 +4,12 @@ namespace App\Services;
 
 use App\Helpers\FormHelper;
 use App\Factories\PesquisaGraficoFactory;
+use App\Models\Federacao;
+use App\Models\Local;
 use App\Models\Pesquisa;
 use App\Models\PesquisaConfiguracao;
 use App\Models\PesquisaResposta;
+use App\Models\Sinodal;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -309,6 +312,65 @@ class PesquisaService
             ]);
             throw new Exception("Erro ao limpar respostas", 1);
         }
+    }
+
+    public static function getAlcance(Pesquisa $pesquisa)
+    {
+
+        try {
+            $alcance = array();
+            
+            if (in_array('Sinodal', $pesquisa->instancias)) {
+                $alcance['sinodal'] = [
+                    'quantidade' => 0,
+                    'total' => Sinodal::where('status', true)->whereNull('deleted_at')->count()
+                ];
+            }
+
+            if (in_array('Federação', $pesquisa->instancias)) {
+                $alcance['federacao'] = [
+                    'quantidade' => 0,
+                    'total' => Federacao::where('status', true)->whereNull('deleted_at')->count()
+                ];
+            }
+            
+            if (in_array('Local', $pesquisa->instancias)) {
+                $alcance['local'] = [
+                    'quantidade' => 0,
+                    'total' => Local::where('status', true)->whereNull('deleted_at')->count()
+                ];
+            }
+            foreach ($pesquisa->respostas as $resposta) {
+                $instancia = $resposta->usuario->roles->first()->name;
+                $alcance[$instancia]['quantidade'] += 1;
+            }
+            return self::calcularPorcentagemAlcance($alcance);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            Log::error([
+                'mensagem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao buscar alcance", 1);
+        }
+
+    }
+
+    public static function calcularPorcentagemAlcance(array $alcance)
+    {
+        $retorno = array();
+
+        foreach ($alcance as $instancia => $info) {
+            $retorno[$instancia] = $info;
+            if ($info['total'] == 0) {
+                $retorno[$instancia]['porcentagem'] = 0;
+                continue;    
+            }
+            $retorno[$instancia]['porcentagem'] = round((($info['quantidade'] * 100) / $info['total']), 2);
+        }
+        return $retorno;
+         
     }
 
 }

@@ -50,11 +50,6 @@ class User extends Authenticatable
         return $this->hasMany(Atividade::class);
     }
 
-    public function perfis()
-    {
-        return $this->belongsToMany(Perfil::class, 'perfil_usuario');
-    }
-
     public function sinodais()
     {
         return $this->belongsToMany(Sinodal::class, 'usuario_sinodal');
@@ -73,6 +68,11 @@ class User extends Authenticatable
     public function pesquisas()
     {
         return $this->belongsToMany(Pesquisa::class, 'pesquisa_respostas');
+    }
+
+    public function perfil()
+    {
+        return $this->roles->first();
     }
 
     public function scopeQuery($query)

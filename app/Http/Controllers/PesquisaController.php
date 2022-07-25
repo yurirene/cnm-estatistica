@@ -172,7 +172,7 @@ class PesquisaController extends Controller
     {
         try {
             return view('dashboard.pesquisas.relatorio', [
-                'alcance' => '',
+                'alcance' => PesquisaService::getAlcance($pesquisa),
                 'pesquisa' => $pesquisa,
                 'configuracoes' => $pesquisa->configuracao,
                 'graficos' => PesquisaService::getGraficos($pesquisa),

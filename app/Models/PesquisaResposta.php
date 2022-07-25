@@ -14,4 +14,9 @@ class PesquisaResposta extends Model
     protected $casts = [
         'resposta' => 'array'
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -1,5 +1,6 @@
 <div class="row">
     <div class="col-md-6">
+        @if (isset($alcance['sinodal']))
         <div class="row">
             <div class="col-md-12 mt-3">
                 <div class="card card-stats shadow mb-4 mb-xl-0">
@@ -8,8 +9,8 @@
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Quantidade de Respostas de Sinodais</h5>
                                 <span class="h5 font-weight-bold mb-0">
-                                    Porcentagem: 0% <br>                                            
-                                    Quantidade: 0
+                                    Porcentagem: {{$alcance['sinodal']['porcentagem']}}% <br>                                            
+                                    Quantidade: {{$alcance['sinodal']['quantidade']}}
                                 </span>
                                 
                             </div>
@@ -24,6 +25,8 @@
                 </div>
             </div>
         </div>
+        @endif
+        @if(isset($alcance['federacao']))
         <div class="row">
             <div class="col-md-12 mt-3">
                 <div class="card card-stats shadow mb-4 mb-xl-0 h-100">
@@ -32,8 +35,8 @@
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Quantidade de Respostas de Federações</h5>
                                 <span class="h5 font-weight-bold mb-0">
-                                    Porcentagem: 0% <br>                                            
-                                    Quantidade: 0
+                                    Porcentagem: {{ $alcance['federacao']['porcentagem'] }}% <br>                                            
+                                    Quantidade: {{ $alcance['federacao']['quantidade'] }}
                                 </span>
                             </div>
                             <div class="col-auto">
@@ -47,6 +50,8 @@
                 </div>
             </div>
         </div>
+        @endif
+        @if(isset($alcance['local']))
         <div class="row">
             <div class="col-md-12 mt-3">
                 <div class="card card-stats shadow mb-4 mb-xl-0 h-100">
@@ -55,8 +60,8 @@
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Quantidade de Respostas de UMPs Locais</h5>
                                 <span class="h5 font-weight-bold mb-0">
-                                    Porcentagem: 0% <br>                                            
-                                    Quantidade: 0
+                                    Porcentagem: {{ $alcance['local']['porcentagem'] }}% <br>                                            
+                                    Quantidade: {{ $alcance['federacao']['quantidade'] }}
                                 </span>
                             </div>
                             <div class="col-auto">
@@ -70,6 +75,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
     <div class="col-md-6">
         <div id="mapa_formatado_sinodal" style="display: none;"></div>
