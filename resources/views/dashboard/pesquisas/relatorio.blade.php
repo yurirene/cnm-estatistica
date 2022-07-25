@@ -42,7 +42,7 @@
                     </div>
                     <div class="row">
                     @foreach ($graficos as $grafico)
-                        <div class="col-sm-6 col-xl-{{ $grafico['tamanho'] }}">
+                        <div class="col-sm-6 col-xl-{{ $grafico['tamanho'] }} mt-3">
                             {!! $grafico['grafico']['html'] !!}
                         </div>
                     @endforeach

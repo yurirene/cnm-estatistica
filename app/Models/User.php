@@ -89,8 +89,8 @@ class User extends Authenticatable
         ->when(in_array('diretoria',$perfil_usuario), function($sql) {
             return $sql->whereHas('sinodais', function ($q) {
                 return $q->whereIn('sinodais.regiao_id', Auth::user()->regioes->pluck('id')->toArray());
-            })->orWhereHas('perfis', function ($q) {
-                return $q->where('nome', 'secretario');
+            })->orWhereHas('roles', function ($q) {
+                return $q->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
             });
         })
         ->when(in_array('sinodal',$perfil_usuario), function($sql) use ($param_busca) {

@@ -212,7 +212,7 @@
 
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-    <!-- <script src="https://code.highcharts.com/mapdata/countries/br/br-all.js"></script> -->
+    <script src="/js/arquivo-mapa-regiao.js"></script>
 
 
 
@@ -468,8 +468,6 @@
     </script>
         
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.8.0/proj4.js"></script>
-    <script src="/js/arquivo-mapa-regiao.js"></script>
     @stack('script')
 
 </body>

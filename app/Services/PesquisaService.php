@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Helpers\FormHelper;
 use App\Factories\PesquisaGraficoFactory;
+use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\Pesquisa;
 use App\Models\PesquisaConfiguracao;
 use App\Models\PesquisaResposta;
+use App\Models\Regiao;
 use App\Models\Sinodal;
 use Carbon\Carbon;
 use Exception;
@@ -346,7 +348,6 @@ class PesquisaService
             }
             return self::calcularPorcentagemAlcance($alcance);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             Log::error([
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
@@ -371,6 +372,96 @@ class PesquisaService
         }
         return $retorno;
          
+    }
+
+    public static function getMapaAlcance(Pesquisa $pesquisa)
+    {
+
+        try {
+            if (in_array('Sinodal', $pesquisa->instancias)) {
+                $alcance['sinodal'] = self::getDadosAlcanceSinodal($pesquisa);
+            }
+            if (in_array('Federação', $pesquisa->instancias)) {
+                $alcance['federacao'] =  self::getDadosAlcanceFederacao($pesquisa);
+            }
+            if (in_array('Local', $pesquisa->instancias)) {
+                $alcance['local'] =  self::getDadosAlcanceLocal($pesquisa);
+            }
+            return $alcance;
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            Log::error([
+                'mensagem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao buscar alcance", 1);
+        }
+    }
+
+    public static function getDadosAlcanceSinodal(Pesquisa $pesquisa)
+    {
+        try {
+            $retorno = array();
+            foreach (Regiao::all() as $regiao) {
+                $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($regiao) {
+                    return $sql->whereHas('sinodais', function($q) use ($regiao) {
+                        return $q->where('regiao_id', $regiao->id);
+                    });
+                })->count();
+                $total_sinodais = Sinodal::where('status', true)->where('regiao_id', $regiao->id)->count();
+                $retorno[$regiao->nome] = round(($respostas * 100) / $total_sinodais, 2);
+            }
+            return $retorno;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getDadosAlcanceFederacao(Pesquisa $pesquisa)
+    {
+        try {
+            $retorno = array();
+            foreach (Estado::all() as $estado) {
+                $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($estado) {
+                    return $sql->whereHas('federacoes', function($q) use ($estado) {
+                        return $q->where('estado_id', $estado->id);
+                    });
+                })->count();
+                $total_federacoes = Federacao::where('status', true)->where('estado_id', $estado->id)->count();
+                if ($total_federacoes == 0) {
+                    $retorno[] = ['br-' . strtolower($estado->sigla),0];
+                    continue;
+                }
+                $retorno[]= ['br-' . strtolower($estado->sigla), round(($respostas * 100) / $total_federacoes, 2)];
+            }
+            return $retorno;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getDadosAlcanceLocal(Pesquisa $pesquisa)
+    {
+        try {
+            $retorno = array();
+            foreach (Estado::all() as $estado) {
+                $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($estado) {
+                    return $sql->whereHas('locais', function($q) use ($estado) {
+                        return $q->where('estado_id', $estado->id);
+                    });
+                })->count();
+                $total_locais = Local::where('status', true)->where('estado_id', $estado->id)->count();
+                if ($total_locais == 0) {
+                    $retorno[] = ['br-' . strtolower($estado->sigla) , 0];
+                    continue;
+                }
+                $retorno[] = ['br-' . strtolower($estado->sigla), round(($respostas * 100) / $total_locais, 2)];
+            }
+            return $retorno;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
 }

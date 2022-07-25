@@ -39,7 +39,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('perfil_id[]', 'Perfil') !!}
-                                {!! Form::select('perfil_id[]', $perfis, isset($usuario) ? $usuario->perfis->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
+                                {!! Form::select('perfil_id[]', $perfis, isset($usuario) ? $usuario->roles->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
                             </div>
                         </div>
                     </div>
