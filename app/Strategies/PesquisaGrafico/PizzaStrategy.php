@@ -35,11 +35,22 @@ class PizzaStrategy extends AbstractGrafico implements PesquisaGraficoStrategy
             $dados['campo'] = $configuracao['label'];
             $referencia = data_get($pesquisa->referencias, '*.'.$chave);
             $valores = collect(data_get($referencia, '*.valores'))->whereNotNull()->first();
-            foreach ($valores as $valor) {
-                $dados['dados'][] = [
-                    'quantidade' => $pesquisa->respostas()->whereJsonContains('resposta->'.$campo, $valor['value'])->count(),
-                    'label' => $valor['label']
-                ];
+            if (!$valores) {
+                $valores = collect($referencia)->whereNotNull()->first();
+                $resultados = $pesquisa->respostas()->whereNotNull('resposta->'.$campo)->get()->pluck('resposta.'.$campo)->countBy()->toArray();
+                foreach ($resultados as $resposta => $quantidade) {
+                    $dados['dados'][] = [
+                        'quantidade' => $quantidade,
+                        'label' => $resposta
+                    ];
+                }                
+            } else {
+                foreach ($valores as $valor) {
+                    $dados['dados'][] = [
+                        'quantidade' => $pesquisa->respostas()->whereJsonContains('resposta->'.$campo, $valor['value'])->count(),
+                        'label' => $valor['label']
+                    ];
+                }
             }
             $tipo_dado = $configuracao['tipo_dado'];
             return self::formatarDados($dados, $tipo_dado);

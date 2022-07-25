@@ -34,7 +34,6 @@ class PesquisaService
             PesquisaConfiguracao::create(self::templateConfiguracao($pesquisa));
             DB::commit();
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             DB::rollBack();
             Log::error([
                 'mensagem' => $th->getMessage(),
@@ -63,7 +62,6 @@ class PesquisaService
             self::templateConfiguracao($pesquisa));
             DB::commit();
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             DB::rollBack();
             Log::error([
                 'mensagem' => $th->getMessage(),
@@ -202,7 +200,7 @@ class PesquisaService
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
             ]);
-            throw new Exception("Erro ao processar configurações", 1);
+            throw new Exception("Erro ao processar configurações pesquisa", 1);
         }
     }
 
@@ -226,7 +224,7 @@ class PesquisaService
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
             ]);
-            throw new Exception("Erro ao processar configurações", 1);
+            throw new Exception("Erro ao processar get graficos", 1);
         }
 
     }
@@ -262,7 +260,7 @@ class PesquisaService
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
             ]);
-            throw new Exception("Erro ao processar configurações", 1);
+            throw new Exception("Erro ao processar get totalizadores", 1);
         }
     }
 
@@ -294,7 +292,7 @@ class PesquisaService
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
             ]);
-            throw new Exception("Erro ao processar configurações", 1);
+            throw new Exception("Erro ao processar get label pelo campo", 1);
         }
     }
 
