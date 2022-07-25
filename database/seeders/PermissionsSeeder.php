@@ -46,6 +46,12 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.usuarios.delete',
                 'resource' => 'usuario',
             ],
+
+            [
+                'name' => 'Resetar Senha Usuário',
+                'slug' => 'dashboard.usuarios.reset-senha',
+                'resource' => 'usuario',
+            ],
            
             [
                 'name' => 'Listar Sinodais',
@@ -158,6 +164,12 @@ class PermissionsSeeder extends Seeder
             [
                 'name' => 'Deletar UMPs Locais',
                 'slug' => 'dashboard.locais.delete',
+                'resource' => 'umps_locais',
+            ],
+
+            [
+                'name' => 'Atualizar Informações das UMPs Locais',
+                'slug' => 'dashboard.locais.update-info',
                 'resource' => 'umps_locais',
             ],
            
@@ -445,6 +457,19 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.relatorio.excel',
                 'resource' => 'pesquisas',
             ],
+            [
+                'name' => 'Datatable Log Erros',
+                'slug' => 'dashboard.datatables.log-erros',
+                'resource' => 'datatables-ajax',
+            ],
+
+            [
+                'name' => 'Datatable Informação Federações (UMPs)',
+                'slug' => 'dashboard.datatables.informacao-federacoes',
+                'resource' => 'datatables-ajax',
+            ],
+            
+
         ];
 
         try {

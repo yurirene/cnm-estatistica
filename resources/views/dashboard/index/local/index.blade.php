@@ -3,6 +3,8 @@
 @section('content')
 @include('dashboard.index.local.cards')
 
+@php $local = DashboardHelper::getInfo(); @endphp
+
 <div class="container-fluid mt--7">
     
     <div class="row">
@@ -26,7 +28,13 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    
+                    <div class="row">
+                        <div class="col">
+                            <h3><span class="badge badge-primary">Nome:</span> {{ $local->nome }}</h3>
+                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $local->data_organizacao_formatada }}</h3>
+                            <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $local->midias_sociais }}</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,7 +54,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {!! Form::open(['method' => 'POST', 'route' => 'dashboard.home']) !!}
+            {!! Form::model($local, ['url' => route('dashboard.locais.update-info', $local->id), 'method' => 'PUT']) !!}
             <div class="modal-body">
                 <div class="form-group{{ $errors->has('nome') ? ' has-error' : '' }}">
                 {!! Form::label('nome', 'Nome') !!}
@@ -60,7 +68,7 @@
                 </div>
                 <div class="form-group{{ $errors->has('midias_sociais') ? ' has-error' : '' }}">
                 {!! Form::label('midias_sociais', 'Mídias Sociais') !!}
-                {!! Form::text('midias_sociais', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                {!! Form::text('midias_sociais', null, ['class' => 'form-control']) !!}
                 <small class="text-danger">{{ $errors->first('midias_sociais') }}</small>
                 </div>
             </div>

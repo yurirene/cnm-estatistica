@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ class User extends Authenticatable
     use GenericTrait;
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoleAndPermission, InteractsWithRole;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -73,6 +75,17 @@ class User extends Authenticatable
     public function perfil()
     {
         return $this->roles->first();
+    }
+
+    public function instancia()
+    {
+        if ($this->hasRole('sinodal')) {
+            return $this->sinodais()->first();
+        } else if ($this->hasRole('federacao')) {
+            return $this->federacoes()->first();
+        } else if ($this->hasRole('local')) {
+            return $this->locais()->first();
+        }
     }
 
     public function scopeQuery($query)

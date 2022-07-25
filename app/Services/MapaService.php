@@ -25,6 +25,9 @@ class MapaService
 
     public static function getDefaultMap()
     {
+        if (Auth::user()->admin) {
+            return AdministradorService::getMapa();
+        }
         $estados = self::getEstadosUsuario();
         $data = array();
 

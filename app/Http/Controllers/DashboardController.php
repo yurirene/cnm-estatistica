@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LogErroService;
 use App\Services\MapaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +13,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $dataMapaBrazil = MapaService::getDefaultMap();
 
+        $dataMapaBrazil = MapaService::getDefaultMap();  
         return view('dashboard.index', [
             'dataMapaBrazil' => $dataMapaBrazil
         ]);
@@ -42,7 +43,11 @@ class DashboardController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());          
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);          
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

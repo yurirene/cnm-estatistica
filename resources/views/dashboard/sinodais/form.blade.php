@@ -109,7 +109,7 @@ $('#status').on('change', function() {
 });
 
 $('#sigla').on('keyup', function() {
-    let user = $(this).val().toLowerCase();
+    let user = $(this).val().toLowerCase().replaceAll(' ','');
     let email = user + '.' + regiao + '@ump.com';
     $('#email_usuario').val(email);
 });

@@ -12,7 +12,11 @@ class AuthSistema
     public function handle(Request $request, Closure $next)
     {
         $route = $request->route()->getName();
-        if ($route == 'dashboard.home') {
+        $excpetions = [
+            'dashboard.home',
+            'dashboard.trocar-senha'
+        ];
+        if (in_array($route, $excpetions)) {
             return $next($request);
         }
         if (!auth()->user()->canAtLeast([$route])) {

@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Estado;
 use App\Models\Federacao;
+use App\Models\FormularioLocal;
 use App\Models\Local;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,11 +40,11 @@ class LocalService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
-            ]);
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Salvar");
             
         }
@@ -72,11 +74,33 @@ class LocalService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
-                'erro' => $th->getMessage(),
-                'arquivo' => $th->getFile(),
-                'linha' => $th->getLine()
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+            throw new Exception("Erro ao Atualizar");
+            
+        }
+    }
+
+    public static function updateInfo(Local $local, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $local->update([
+                'nome' => $request->nome,
+                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'midias_sociais' => $request->midias_sociais
             ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw new Exception("Erro ao Atualizar");
             
         }
@@ -84,14 +108,56 @@ class LocalService
 
     public static function delete(Local $local)
     {
+
+
+        DB::beginTransaction();
         try {
+            $local->usuario->first()->update([
+                'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
+            ]);
+            $usuario = $local->usuario->first();
+            $local->usuario()->sync([]);
+            $usuario->delete();
             $local->delete();
         } catch (\Throwable $th) {
-            Log::error([
+            LogErroService::registrar([
                 'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine()
-            ]);
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+            throw $th;
+        }
+    }
+
+    public static function getTotalizadores()
+    {
+        try {
+            $local = Auth::user()->locais->first();
+            $formulario = $local->relatorios->last();
+            if (!$formulario) {
+                return [
+                    'total_socios' => 'Sem informação',
+                ];
+            }
+            $total_socios = intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
+            return [
+                'total_socios' => $total_socios . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getInfo()
+    {
+        try {
+            return Auth::user()->locais->first();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
             throw $th;
         }
     }
