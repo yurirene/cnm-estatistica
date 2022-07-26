@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ComprovanteACI extends Model
 {
+    use Auditable;
+    
     protected $table = 'comprovantes_aci';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

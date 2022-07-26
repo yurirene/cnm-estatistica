@@ -2,6 +2,8 @@
 
 return [
 
+    'version' => env('APP_VERSION', '1.0.0'),
+
 
     
     'telegram_token' => env('TELEGRAM_BOT_API_TOKEN'),

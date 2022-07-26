@@ -20,6 +20,7 @@ class PermissionRoleSeeder extends Seeder
                     'umps_locais',
                     'atividades',
                     'formularios_umps',
+                    'pesquisas',
                     'datatables-ajax'
                 ]
             ],
@@ -29,7 +30,13 @@ class PermissionRoleSeeder extends Seeder
                     'atividades'
                 ],
                 'permissions' => [
-                    'dashboard.datatables.informacao-federacoes'
+                    'dashboard.datatables.informacao-federacoes',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.datatables.pesquisas.sinodais',
+                    'dashboard.datatables.pesquisas.federacoes',
+                    'dashboard.datatables.pesquisas.locais',
+                    'dashboard.pesquisas.acompanhar'
                 ]
             ],
             'sinodal' => [
@@ -40,7 +47,10 @@ class PermissionRoleSeeder extends Seeder
                 'permissions' => [
                     'dashboard.sinodais.update-info',
                     'dashboard.comprovante-aci.index',
-                    'dashboard.comprovante-aci.store'
+                    'dashboard.comprovante-aci.store',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
                 ]
             ],
             'federacao' => [
@@ -49,7 +59,13 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_fed'
                 ],
                 'permissions' => [
-                    'dashboard.federacoes.update-info'
+                    'dashboard.usuarios.index',
+                    'dashboard.usuarios.edit',
+                    'dashboard.usuarios.update',
+                    'dashboard.federacoes.update-info',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
                 ]
             ],
             'local' => [
@@ -57,6 +73,9 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_ump'
                 ],
                 'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder',
                     'dashboard.locais.update-info'
                 ]
             ],
@@ -69,14 +88,50 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'atividades',
                     'eventos',
-                    'formulario-sec'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
-                    'formulario-sec'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
+            ],
+            'secreatria_produtos' => [
+                'resources' => [
+                    'atividades',
+                ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
+            ],
+            'secretaria_responsabilidade' => [
+                'resources' => [
+                    'atividades',
+                ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
         ];
         DB::table('permission_role')->truncate();

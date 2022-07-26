@@ -9,6 +9,7 @@ use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
 use App\Http\Controllers\LocalController;
+use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\SinodalController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -79,8 +80,23 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
     Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
 
+    Route::resource('/pesquisas', PesquisaController::class)->names('pesquisas');
+    Route::get('/pesquisas/{pesquisa}/status', [PesquisaController::class, 'status'])->name('pesquisas.status');
+    Route::get('/pesquisas/{pesquisa}/respostas', [PesquisaController::class, 'respostas'])->name('pesquisas.respostas');
+    Route::post('/pesquisas-responder', [PesquisaController::class, 'responder'])->name('pesquisas.responder');
+    Route::get('/pesquisas/{pesquisa}/configuracoes', [PesquisaController::class, 'configuracoes'])->name('pesquisas.configuracoes');
+    Route::get('/pesquisas/{pesquisa}/relatorio', [PesquisaController::class, 'relatorio'])->name('pesquisas.relatorio');
+    Route::get('/pesquisas/{pesquisa}/limpar-respostas', [PesquisaController::class, 'limparRespostas'])->name('pesquisas.limpar-respostas');
+    Route::put('/pesquisas-configuracoes/{pesquisa}/update', [PesquisaController::class, 'configuracoesUpdate'])->name('pesquisas.configuracoes-update');
+    Route::get('/pesquisas-configuracoes/{pesquisa}/export', [PesquisaController::class, 'exportExcel'])->name('pesquisas.relatorio.excel');
+    Route::get('/pesquisas-acompanhar/{pesquisa}', [PesquisaController::class, 'acompanhar'])->name('pesquisas.acompanhar');
+    
     Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
     Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');
+    Route::get('/datatables/pesquisas/{pesquisa}/sinodais', [DatatableAjaxController::class, 'acompanhamentoPesquisaSinodais'])->name('datatables.pesquisas.sinodais');
+    Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
+    Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
+
 
 });
 
