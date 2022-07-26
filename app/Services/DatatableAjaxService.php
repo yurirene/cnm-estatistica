@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Estado;
 use App\Models\Federacao;
+use App\Models\Local;
 use App\Models\LogErro;
 use App\Models\Pesquisa;
 use App\Models\Regiao;
@@ -73,18 +74,91 @@ class DatatableAjaxService
             if (!$pesquisa) {
                 return datatables()::of([])->make();
             }
-            $responderam = $pesquisa->respostas()->whereHas('usuario.sinodais')->get()->pluck('sinodais');
-            $sinodais = Sinodal::whereDoesntHave('') map(function($local) {
-                $ultimo_relatorio = $local->relatorios->last();
-                $total_socios = !is_null($ultimo_relatorio) ? $ultimo_relatorio->perfil['ativos'] + $ultimo_relatorio->perfil['cooperadores'] : 'Sem informação';
-                $relatorio_entregue = (!is_null($ultimo_relatorio) && $ultimo_relatorio->ano_referencia == date('Y')) ? 'Entregue' : 'Pendente';
-                return [
-                    'nome_ump' => $local->nome,
-                    'nro_socios' => $total_socios,
-                    'status_relatorio' => $relatorio_entregue
-                ];
-            });
-            return datatables()::of($sinodais)->make();
+            $responderam = $pesquisa->respostas()
+                ->whereHas('usuario.sinodais')
+                ->get()
+                ->pluck('usuario.sinodais')
+                ->collapse()
+                ->pluck('id');
+            $nao_responderam = Sinodal::whereNotIn('id', $responderam)
+                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'nome' => $item->nome,
+                        'sigla' => $item->sigla
+                    ];
+                });
+          
+            return datatables()::of($nao_responderam)->make();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+        }
+   }
+   
+
+   public static function acompanhamentoPesquisaFederacoes(Pesquisa $pesquisa)
+   {
+        try {
+            if (!$pesquisa) {
+                return datatables()::of([])->make();
+            }
+            $responderam = $pesquisa->respostas()
+                ->whereHas('usuario.federacoes')
+                ->get()
+                ->pluck('usuario.federacoes')
+                ->collapse()
+                ->pluck('id');
+            $nao_responderam = Federacao::whereNotIn('id', $responderam)
+                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'nome' => $item->nome,
+                        'sigla' => $item->sigla ?? '-',
+                        'sinodal' => $item->sinodal->sigla
+                    ];
+                });
+          
+            return datatables()::of($nao_responderam)->make();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+        }
+   }
+
+   public static function acompanhamentoPesquisaLocais(Pesquisa $pesquisa)
+   {
+        try {
+            if (!$pesquisa) {
+                return datatables()::of([])->make();
+            }
+            $responderam = $pesquisa->respostas()
+                ->whereHas('usuario.locais')
+                ->get()
+                ->pluck('usuario.locais')
+                ->collapse()
+                ->pluck('id');
+            $nao_responderam = Local::whereNotIn('id', $responderam)
+                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->get()
+                ->map(function($item) {
+                    return [
+                        'nome' => $item->nome,
+                        'federacao' => $item->federacao->sigla,
+                        'sinodal' => $item->sinodal->sigla
+                    ];
+                });
+
+          
+            return datatables()::of($nao_responderam)->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

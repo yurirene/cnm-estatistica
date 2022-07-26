@@ -29,13 +29,14 @@ class PesquisaDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.pesquisas',
                     'id' => $sql->id,
-                    'show' => true,
+                    'show' => !$this->verificarUsuariosDiretoria(),
                     'delete' => false,
                     'edit' => $this->verificarUsuariosPermitidosParaConfiguracoes($sql),
                     'status' => $this->verificarUsuariosVinculados($sql),
                     'respostas' => $this->verificarUsuariosVinculados($sql),
                     'configuracoes' => $this->verificarUsuariosPermitidosParaConfiguracoes($sql),
-                    'relatorio' =>  $this->verificarUsuariosVinculados($sql)
+                    'relatorio' =>  $this->verificarUsuariosVinculados($sql),
+                    'acompanhar' =>  $this->verificarUsuariosDiretoria()
                 ]);
             })
             ->addColumn('usuarios', function($sql) {
@@ -80,6 +81,11 @@ class PesquisaDataTable extends DataTable
     public function verificarUsuariosPermitidosParaConfiguracoes() : bool
     {
         return Auth::user()->admin == true;
+    }
+
+    public function verificarUsuariosDiretoria() : bool
+    {
+        return Auth::user()->roles->first()->name == 'diretoria';
     }
 
     /**

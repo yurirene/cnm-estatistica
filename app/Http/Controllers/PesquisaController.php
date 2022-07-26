@@ -247,4 +247,23 @@ class PesquisaController extends Controller
         }
     }
 
+    
+    public function acompanhar(Pesquisa $pesquisa)
+    {
+        try {
+            return view('dashboard.pesquisas.acompanhamento-diretoria', [
+                'pesquisa' => $pesquisa,
+                'respostas' => PesquisaService::acompanhamentoRegiao($pesquisa)
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
 }

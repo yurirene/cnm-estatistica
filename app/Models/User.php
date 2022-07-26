@@ -80,11 +80,11 @@ class User extends Authenticatable
     public function instancia()
     {
         if ($this->hasRole('sinodal')) {
-            return $this->sinodais()->first();
+            return $this->sinodais();
         } else if ($this->hasRole('federacao')) {
-            return $this->federacoes()->first();
+            return $this->federacoes();
         } else if ($this->hasRole('local')) {
-            return $this->locais()->first();
+            return $this->locais();
         }
     }
 

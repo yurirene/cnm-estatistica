@@ -287,9 +287,7 @@ class PesquisaService
 
     public static function getLabelPeloCampo(Pesquisa $pesquisa, string $campo, string $opcao) : string
     {
-
         try {
-            
             $referencias = $pesquisa->referencias;
             foreach ($referencias as $referencia) {
                 foreach ($referencia as $informacoes) {
@@ -478,6 +476,57 @@ class PesquisaService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public static function acompanhamentoRegiao(Pesquisa $pesquisa)
+    {
+
+        try {
+            $alcance = array();
+            $regiao = Auth::user()->regioes->first()->id;
+            if (in_array('Sinodal', $pesquisa->instancias)) {
+                $alcance['sinodal'] = [
+                    'quantidade' => 0,
+                    'total' => Sinodal::where('status', true)->where('regiao_id', $regiao)->whereNull('deleted_at')->count()
+                ];
+            }
+
+            if (in_array('Federação', $pesquisa->instancias)) {
+                $alcance['federacao'] = [
+                    'quantidade' => 0,
+                    'total' => Federacao::where('status', true)->where('regiao_id', $regiao)->whereNull('deleted_at')->count()
+                ];
+            }
+            
+            if (in_array('Local', $pesquisa->instancias)) {
+                $alcance['local'] = [
+                    'quantidade' => 0,
+                    'total' => Local::where('status', true)->where('regiao_id', $regiao)->whereNull('deleted_at')->count()
+                ];
+            }
+            $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($regiao) {
+                return $sql->whereHas('sinodais', function($q) use ($regiao) {
+                    return $q->where('regiao_id', $regiao);
+                })->orWhereHas('federacoes', function($q) use ($regiao) {
+                    return $q->where('regiao_id', $regiao);
+                })->orWhereHas('locais', function($q) use ($regiao) {
+                    return $q->where('regiao_id', $regiao);
+                });
+            })->get();
+            foreach ($respostas as $resposta) {
+                $instancia = $resposta->usuario->roles->first()->name;
+                $alcance[$instancia]['quantidade'] += 1;
+            }
+            return self::calcularPorcentagemAlcance($alcance);
+        } catch (\Throwable $th) {
+            Log::error([
+                'mensagem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao buscar alcance", 1);
+        }
+
     }
 
 }

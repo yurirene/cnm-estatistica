@@ -457,6 +457,13 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.relatorio.excel',
                 'resource' => 'pesquisas',
             ],
+
+            [
+                'name' => 'Acompanhamento de Preenchimento',
+                'slug' => 'dashboard.pesquisas.acompanhar',
+                'resource' => 'pesquisas',
+            ],
+
             [
                 'name' => 'Datatable Log Erros',
                 'slug' => 'dashboard.datatables.log-erros',
@@ -468,7 +475,24 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.datatables.informacao-federacoes',
                 'resource' => 'datatables-ajax',
             ],
+
+            [
+                'name' => 'Datatable Acompanhar Pesquisa Sinodal',
+                'slug' => 'dashboard.datatables.pesquisas.sinodais',
+                'resource' => 'datatables-ajax',
+            ],
+
+            [
+                'name' => 'Datatable Acompanhar Pesquisa Federação',
+                'slug' => 'dashboard.datatables.pesquisas.federacoes',
+                'resource' => 'datatables-ajax',
+            ],
             
+            [
+                'name' => 'Datatable Acompanhar Pesquisa UMP Local',
+                'slug' => 'dashboard.datatables.pesquisas.locais',
+                'resource' => 'datatables-ajax',
+            ],
 
         ];
 

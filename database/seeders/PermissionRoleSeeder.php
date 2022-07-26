@@ -33,6 +33,10 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.informacao-federacoes',
                     'dashboard.pesquisas.index',
                     'dashboard.pesquisas.show',
+                    'dashboard.datatables.pesquisas.sinodais',
+                    'dashboard.datatables.pesquisas.federacoes',
+                    'dashboard.datatables.pesquisas.locais',
+                    'dashboard.pesquisas.acompanhar'
                 ]
             ],
             'sinodal' => [
