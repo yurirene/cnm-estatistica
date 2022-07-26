@@ -12,7 +12,7 @@ class IClaudiaController extends Controller
     public static function process($request)
     {
 
-        if (!$request['message']) {
+        if (!isset($request['message'])) {
             return;
         }
 
