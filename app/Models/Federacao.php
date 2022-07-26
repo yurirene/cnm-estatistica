@@ -16,7 +16,6 @@ class Federacao extends Model
     
     protected $dates = ['data_organizacao'];
 
-    protected $dates = ['data_organizacao'];
 
     public function regiao()
     {
