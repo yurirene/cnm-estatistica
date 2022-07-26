@@ -75,7 +75,7 @@
                 @canAtLeast(['dashboard.federacoes.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.federacoes.index') }}">
-                        <i class="fas fa-layer-group"></i> Federação
+                        <i class="fas fa-layer-group"></i> Federações
                     </a>
                 </li>
 
@@ -96,10 +96,18 @@
                 </li>
                 @endCanAtLeast
 
+                @canAtLeast(['dashboard.pesquisas.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.pesquisas.index') }}">
+                        <i class="fas fa-question"></i> Formulário de Pesquisa
+                    </a>
+                </li>
+                @endCanAtLeast
+
                 @canAtLeast(['dashboard.locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
-                        <i class="fas fa-building"></i> UMP Local
+                        <i class="fas fa-church"></i> UMP Local
                     </a>
                 </li>
                 

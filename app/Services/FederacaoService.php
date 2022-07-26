@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
+use App\Models\FormularioLocal;
 use App\Models\Sinodal;
 use App\Models\User;
 use Carbon\Carbon;
@@ -140,12 +141,13 @@ class FederacaoService
 
     public static function getTotalizadores()
     {
+        $federacao = Auth::user()->federacoes->first();
         try {
-            $formulario = FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)->where('ano_referencia', date('Y'))->first();
+            $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', date('Y'))->first();
             if (!$formulario) {
                 return [
-                    'total_umps' => 0,
-                    'total_socios' => 0,
+                    'total_umps' => $federacao->locais->count(),
+                    'total_socios' => 'Em Breve',
                 ];
             }
             return [
@@ -159,8 +161,89 @@ class FederacaoService
 
     public static function delete(Federacao $federacao)
     {
+        DB::beginTransaction();
         try {
+            $federacao->usuario->first()->update([
+                'email' => 'apagadoFedEm'.date('dmyhms').'@apagado.com'
+            ]);
+            $usuario = $federacao->usuario->first();
+            $federacao->usuario()->sync([]);
+            $usuario->delete();
             $federacao->delete();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+            throw $th;
+        }
+    }
+
+    public static function getTotalUmpsOrganizadas(Federacao $federacao, FormularioFederacao $formulario = null) : array
+    {
+        if (!is_null($formulario)) {
+            $total = ($formulario->estrutura['ump_organizada'] ?? 0) + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
+            return [
+                'total' => $total,
+                'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0
+            ];
+        }
+        return [
+            'total' => $federacao->locais->count(),
+            'organizadas' => $federacao->locais->where('status', true)->count()
+        ]; 
+    }
+
+
+    public static function getInformacoesFederacaoOrganizacao(Federacao $federacao) : array
+    {
+        try {
+            $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', date('Y'))->first();
+
+            $total_umps_organizada = self::getTotalUmpsOrganizadas($federacao, $formulario);
+
+            $total_umps_organizada = SinodalService::getPorcentagem($total_umps_organizada['total'], $total_umps_organizada['organizadas']);
+            $total_igrejas_n_sociedades = SinodalService::getPorcentagem($federacao->locais->count(), $federacao->locais->where('outro_modelo', true)->count());
+            
+            return [
+                'total_umps_organizada' => $total_umps_organizada,
+                'total_igrejas_n_sociedades' => $total_igrejas_n_sociedades
+            ];
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]); 
+            throw $th;
+        }
+    }
+
+    public static function getInformacoesLocaisShow(Federacao $federacao) : array
+    {
+        try {
+        
+            $locais = $federacao->locais()->orderBy('status', 'desc')->get();
+            $info_local = [];
+            foreach ($locais as $local) {
+
+                $utlimo_formulario = $local->relatorios->last();
+
+                $total_socios = 0;
+                if (!is_null($utlimo_formulario)) {
+                    $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0); 
+                }
+
+                $info_local[] = [
+                    'id' => $local->id,
+                    'nome' => $local->nome,
+                    'status' => $local->status,
+                    'numero_socios' => $total_socios,
+                ];
+            }
+            return $info_local;
+
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

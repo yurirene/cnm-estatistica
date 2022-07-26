@@ -19,7 +19,9 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'umps_locais',
                     'atividades',
-                    'formularios_umps'
+                    'formularios_umps',
+                    'pesquisas',
+                    'datatables-ajax'
                 ]
             ],
             'diretoria' => [
@@ -27,6 +29,15 @@ class PermissionRoleSeeder extends Seeder
                     'sinodais',
                     'atividades'
                 ],
+                'permissions' => [
+                    'dashboard.datatables.informacao-federacoes',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.datatables.pesquisas.sinodais',
+                    'dashboard.datatables.pesquisas.federacoes',
+                    'dashboard.datatables.pesquisas.locais',
+                    'dashboard.pesquisas.acompanhar'
+                ]
             ],
             'sinodal' => [
                 'resources' => [
@@ -36,7 +47,10 @@ class PermissionRoleSeeder extends Seeder
                 'permissions' => [
                     'dashboard.sinodais.update-info',
                     'dashboard.comprovante-aci.index',
-                    'dashboard.comprovante-aci.store'
+                    'dashboard.comprovante-aci.store',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
                 ]
             ],
             'federacao' => [
@@ -45,13 +59,25 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_fed'
                 ],
                 'permissions' => [
-                    'dashboard.federacoes.update-info'
+                    'dashboard.usuarios.index',
+                    'dashboard.usuarios.edit',
+                    'dashboard.usuarios.update',
+                    'dashboard.federacoes.update-info',
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder'
                 ]
             ],
             'local' => [
                 'resources' => [
                     'formularios_ump'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.responder',
+                    'dashboard.locais.update-info'
+                ]
             ],
             'tesouraria' => [
                 'resources' => [
@@ -62,14 +88,50 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'atividades',
                     'eventos',
-                    'formulario-sec'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
-                    'formulario-sec'
                 ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
+            ],
+            'secreatria_produtos' => [
+                'resources' => [
+                    'atividades',
+                ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
+            ],
+            'secretaria_responsabilidade' => [
+                'resources' => [
+                    'atividades',
+                ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
+                ]
             ],
         ];
         DB::table('permission_role')->truncate();
@@ -89,55 +151,3 @@ class PermissionRoleSeeder extends Seeder
         }
     }
 }
-/*
-1	administrador
-2	diretoria
-3	secretarios
-4	sinodal
-5	federacao
-6	local
-
-
-1	Listar Usuário
-2	Salvar Usuário
-3	Criar Usuário
-4	Editar Usuário
-5	Atualizar Usuário
-6	Deletar Usuário
-
-7	Listar Sinodais
-8	Visualizar Sinodal
-9	Salvar Sinodais
-10	Criar Sinodais
-11	Editar Sinodais
-12	Atualizar Sinodais
-13	Deletar Sinodais
-
-14	Listar Federações
-15	Visualizar Federação
-16	Salvar Federações
-17	Criar Federações
-18	Editar Federações
-19	Atualizar Federações
-20	Deletar Federações
-
-21	Listar UMPs Locais
-22	Visualizar UMP Local
-23	Salvar UMPs Locais
-24	Criar UMPs Locais
-25	Editar UMPs Locais
-26	Atualizar UMPs Locais
-27	Deletar UMPs Locais
-
-28	Listar Atividades
-29	Calendário de Atividades
-30	Confirmar Participação na Atividades
-31	Salvar Atividades
-32	Criar Atividades
-33	Editar Atividades
-34	Atualizar Atividades
-35	Deletar Atividades
-
-36	Visualizar Formulário UMP Local
-37	Salvar Formulário UMP Local
-*/

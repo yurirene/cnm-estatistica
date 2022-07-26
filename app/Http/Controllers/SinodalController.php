@@ -47,6 +47,8 @@ class SinodalController extends Controller
     public function show(Sinodal $sinodal)
     {
         return view('dashboard.sinodais.show', [
+            'federacoes' => SinodalService::getInformacoesFederacoesShow($sinodal),
+            'informacoes' => SinodalService::getInformacoesOrganizacao($sinodal),
             'sinodal' => $sinodal,
         ]);
     }

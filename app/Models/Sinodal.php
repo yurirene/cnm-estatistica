@@ -27,9 +27,19 @@ class Sinodal extends Model
         return $this->hasMany(Federacao::class);
     }
 
+    public function locais()
+    {
+        return $this->hasMany(Local::class);
+    }
+
     public function usuario()
     {
         return $this->belongsToMany(User::class, 'usuario_sinodal');
+    }
+
+    public function relatorios()
+    {
+        return $this->hasMany(FormularioSinodal::class, 'sinodal_id');
     }
 
     public function scopeQuery($query)
@@ -40,4 +50,8 @@ class Sinodal extends Model
         return $query->whereIn('regiao_id', Auth::user()->regioes->pluck('id')->toArray());
     }
 
+    public function getDataOrganizacaoFormatadaAttribute()
+    {
+        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+    }
 }

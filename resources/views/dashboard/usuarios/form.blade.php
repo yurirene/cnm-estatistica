@@ -39,7 +39,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('perfil_id[]', 'Perfil') !!}
-                                {!! Form::select('perfil_id[]', $perfis, isset($usuario) ? $usuario->perfis->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
+                                {!! Form::select('perfil_id[]', $perfis, isset($usuario) ? $usuario->roles->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
                             </div>
                         </div>
                     </div>
@@ -64,6 +64,13 @@
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.usuarios.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
+                    @if (isset($usuario))
+                    {!! Form::open(['method' => 'POST', 'url' => route("dashboard.usuarios.reset-senha", $usuario->id), "class" => 'mt-5']) !!}
+                    <div class="btn-group pull-right">
+                    {!! Form::submit('Resetar Senha', ['class' => 'btn btn-warning']) !!}
+                    </div>
+                    {!! Form::close() !!}
+                    @endif
                 </div>
             </div>
         </div>

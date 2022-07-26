@@ -78,15 +78,19 @@ class DiretoriaService
     public static function getTotalizadores()
     {
         try {
-            $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get()->pluck('id');
-            $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get();
+            $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
+            $federacoes = Federacao::whereIn('sinodal_id', $sinodais->pluck('id'))->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
             $formularios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->where('ano_referencia', date('Y'))->get();
             if (!$formularios) {
                 return [
-                    'total_sinodais' => $sinodais->count(),
-                    'total_federacoes' => $federacoes->count(),
-                    'total_umps' => $umps->count(),
+                    'total_sinodos' => $sinodais->count(),
+                    'total_presbiterios' => $federacoes->count(),
+                    'total_igrejas' => $umps->count(),
+                    'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
+                    'total_sinodais' => $sinodais->where('status', true)->count(),
+                    'total_federacoes' => $federacoes->where('status', true)->count(),
+                    'total_umps' => $umps->where('status', true)->count(),
                     'total_socios' => 0,
                 ];
             }
@@ -97,10 +101,14 @@ class DiretoriaService
                 $total_socios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
             }
             return [
-                'total_sinodais' => $sinodais->count(),
-                'total_federacoes' => $federacoes->count(),
-                'total_umps' => $total_umps,
-                'total_socios' => $total_socios
+                'total_sinodos' => $sinodais->count(),
+                'total_presbiterios' => $federacoes->count(),
+                'total_igrejas' => $umps->count(),
+                'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
+                'total_sinodais' => $sinodais->where('status', true)->count(),
+                'total_federacoes' => $federacoes->where('status', true)->count(),
+                'total_umps' => ($total_umps == 0 && $umps->where('status', true)->count() > 0) ? $umps->where('status', true)->count() : $total_umps . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>',
+                'total_socios' => $total_socios . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
             ];
         } catch (\Throwable $th) {
             throw $th;

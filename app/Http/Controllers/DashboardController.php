@@ -13,8 +13,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
-        $dataMapaBrazil = MapaService::getDefaultMap();
+        $dataMapaBrazil = MapaService::getDefaultMap();  
         return view('dashboard.index', [
             'dataMapaBrazil' => $dataMapaBrazil
         ]);

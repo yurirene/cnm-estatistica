@@ -76,4 +76,25 @@ class UserController extends Controller
             ->withInput();
         }
     }
+
+    public function resetSenha(Request $request, User $usuario)
+    {
+        try {
+            UserService::resetarSenha($usuario);
+            return redirect()->route('dashboard.usuarios.edit', $usuario->id)->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
 }

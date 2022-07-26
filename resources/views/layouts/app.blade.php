@@ -212,7 +212,8 @@
 
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/mapdata/countries/br/br-all.js"></script>
+    <script src="/js/arquivo-mapa-regiao.js"></script>
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
@@ -222,6 +223,11 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="/js/form-builder.min.js"></script>
+    <script src="/js/form-render.min.js"></script>
+
     @stack('js')
 
     <script>
@@ -422,6 +428,35 @@
         </script>
         @endforeach
     @endif
+
+    <script>
+        function confirmar(input)
+        {
+            event.preventDefault();
+            var rota = $(input).attr('href');
+            iziToast.error({
+                timeout: 20000,
+                close: false,
+                overlay: true,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Atenção',
+                message: 'Você tem certeza disso?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>Sim</b></button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        window.location.href = rota;            
+                    }, true],
+                    ['<button>Cancelar</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ],
+            });
+
+        }
+    </script>
     <script>
         $('.table-responsive').on('show.bs.dropdown', function () {
             $('.table-responsive').css( "overflow", "inherit" );

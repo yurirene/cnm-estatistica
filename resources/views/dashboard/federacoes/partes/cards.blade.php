@@ -1,10 +1,11 @@
 
-<div class="card card-stats mb-4 mb-xl-0 shadow">
+<div class="card card-stats mb-4 mb-xl-0 shadow h-100">
     <div class="card-body">
         <div class="row">
             <div class="col text-center">
-                <h4 class="card-title text-uppercase text-muted mb-0">{{$sigla}}</h4>
                 <span class="h5 font-weight-bold mb-0">{{$nome}}</span>
+                <h6><small>* Informação obtida do Relatório Estatístico</small></h6>
+
             </div>
         </div>
         <div class="row">
@@ -14,12 +15,12 @@
                     <li class="py-1">
                         <div class="d-flex align-items-center">
                             <div>
-                                <div class="badge badge-circle badge-success mr-3">
-                                    <i class="fas fa-file"></i>
+                                <div class="badge badge-circle badge-{{$status == true ?  'success' : 'danger'}} mr-3">
+                                    <i class="fas fa-users"></i>
                                 </div>
                             </div>
                             <div>
-                                <h6 class="mb-1">Nº Formulários Preenchidos: {{$formularios_preenchidos}}</h6>
+                                <h6 class="mb-1">{{ $status == true ? 'Nº de Sócios: ' . $numero_socios : 'Inativa'}}</h6>
                             </div>
                         </div>
                     </li>

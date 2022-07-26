@@ -46,6 +46,12 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.usuarios.delete',
                 'resource' => 'usuario',
             ],
+
+            [
+                'name' => 'Resetar Senha Usuário',
+                'slug' => 'dashboard.usuarios.reset-senha',
+                'resource' => 'usuario',
+            ],
            
             [
                 'name' => 'Listar Sinodais',
@@ -158,6 +164,12 @@ class PermissionsSeeder extends Seeder
             [
                 'name' => 'Deletar UMPs Locais',
                 'slug' => 'dashboard.locais.delete',
+                'resource' => 'umps_locais',
+            ],
+
+            [
+                'name' => 'Atualizar Informações das UMPs Locais',
+                'slug' => 'dashboard.locais.update-info',
                 'resource' => 'umps_locais',
             ],
            
@@ -369,40 +381,117 @@ class PermissionsSeeder extends Seeder
 
             [
                 'name' => 'Listar Formularios',
-                'slug' => 'dashboard.formulario-secretaria.index',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.index',
+                'resource' => 'pesquisas',
             ],
 
             [
-                'name' => 'Visualizar Evento',
-                'slug' => 'dashboard.formulario-sec.show',
-                'resource' => 'formulario-sec',
+                'name' => 'Visualizar Formulario',
+                'slug' => 'dashboard.pesquisas.show',
+                'resource' => 'pesquisas',
             ],
 
             [
                 'name' => 'Salvar Formulario',
-                'slug' => 'dashboard.formulario-sec.store',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.store',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Criar Formulario',
-                'slug' => 'dashboard.formulario-sec.create',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.create',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Editar Formulario',
-                'slug' => 'dashboard.formulario-sec.edit',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.edit',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Atualizar Formulario',
-                'slug' => 'dashboard.formulario-sec.update',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.update',
+                'resource' => 'pesquisas',
             ],
             [
                 'name' => 'Deletar Formulario',
-                'slug' => 'dashboard.formulario-sec.delete',
-                'resource' => 'formulario-sec',
+                'slug' => 'dashboard.pesquisas.delete',
+                'resource' => 'pesquisas',
+            ],
+            [
+                'name' => 'Responder Formulario',
+                'slug' => 'dashboard.pesquisas.responder',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Alterar Status do Formulario',
+                'slug' => 'dashboard.pesquisas.status',
+                'resource' => 'pesquisas',
+            ],
+            
+            [
+                'name' => 'Configurar Pesquisa',
+                'slug' => 'dashboard.pesquisas.configuracoes',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Atualizar Configurações da Pesquisa',
+                'slug' => 'dashboard.pesquisas.configuracoes-update',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Relatório da Pesquisa',
+                'slug' => 'dashboard.pesquisas.relatorio',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Limpar Respostas da Pesquisa',
+                'slug' => 'dashboard.pesquisas.limpar-respostas',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Gerar Relatório Excel da Pesquisa',
+                'slug' => 'dashboard.pesquisas.relatorio.excel',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Acompanhamento de Preenchimento',
+                'slug' => 'dashboard.pesquisas.acompanhar',
+                'resource' => 'pesquisas',
+            ],
+
+            [
+                'name' => 'Datatable Log Erros',
+                'slug' => 'dashboard.datatables.log-erros',
+                'resource' => 'datatables-ajax',
+            ],
+
+            [
+                'name' => 'Datatable Informação Federações (UMPs)',
+                'slug' => 'dashboard.datatables.informacao-federacoes',
+                'resource' => 'datatables-ajax',
+            ],
+
+            [
+                'name' => 'Datatable Acompanhar Pesquisa Sinodal',
+                'slug' => 'dashboard.datatables.pesquisas.sinodais',
+                'resource' => 'datatables-ajax',
+            ],
+
+            [
+                'name' => 'Datatable Acompanhar Pesquisa Federação',
+                'slug' => 'dashboard.datatables.pesquisas.federacoes',
+                'resource' => 'datatables-ajax',
+            ],
+            
+            [
+                'name' => 'Datatable Acompanhar Pesquisa UMP Local',
+                'slug' => 'dashboard.datatables.pesquisas.locais',
+                'resource' => 'datatables-ajax',
             ],
 
         ];
