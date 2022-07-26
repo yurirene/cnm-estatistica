@@ -59,7 +59,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
-                                {!! Form::text('nome_usuario', isset($federacao) ? FormHelper::getUsarioInstancia($federacao, 'name') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('nome_usuario', isset($federacao) ? FormHelper::getUsarioInstancia($federacao, 'name') : '-', ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         <div class="col-md-4">

@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
 use App\Models\Local;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -54,6 +55,9 @@ class LocalDataTable extends DataTable
      */
     public function query(Local $model)
     {
+        if (Auth::user()->admin == true) {
+            return $model->newQuery();
+        }
         return $model->newQuery()->minhaFederacao();
     }
 

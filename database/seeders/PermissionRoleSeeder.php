@@ -59,9 +59,6 @@ class PermissionRoleSeeder extends Seeder
                     'formularios_fed'
                 ],
                 'permissions' => [
-                    'dashboard.usuarios.index',
-                    'dashboard.usuarios.edit',
-                    'dashboard.usuarios.update',
                     'dashboard.federacoes.update-info',
                     'dashboard.pesquisas.index',
                     'dashboard.pesquisas.show',

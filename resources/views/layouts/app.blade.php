@@ -222,11 +222,82 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        (function($) {  // important!!!
+            // in here it is safe to use $ for jQuery (nowhere else!)
+            $('.isDate:not([readonly])').datepicker({
+                format: "dd/mm/yyyy",
+                language: "pt-BR",
+                todayHighlight: true,
+                orientation: "bottom auto"
+            });
+            $('.isDate').attr('autocomplete', 'off');
+            $('.isDate').mask('00/00/0000');
+        })(jQuery)
+    </script>
+    <script>
+        $(document).ready(function() {
+           
+            $('.isDateRange').daterangepicker({
+                autoUpdateInput: false,
+                "locale": {
+                    "format": "DD/MM/YYYY",
+                    "separator": " - ",
+                    "applyLabel": "Aplicar",
+                    "cancelLabel": "Cancelar",
+                    "fromLabel": "De",
+                    "toLabel": "Até",
+                    "customRangeLabel": "Custom",
+                    "daysOfWeek": [
+                        "D",
+                        "S",
+                        "T",
+                        "Q",
+                        "Q",
+                        "S",
+                        "S"
+                    ],
+                    "monthNames": [
+                        "Janeiro",
+                        "Fevereiro",
+                        "Março",
+                        "Abril",
+                        "Maio",
+                        "Junho",
+                        "Julho",
+                        "Agosto",
+                        "Setembro",
+                        "Outubro",
+                        "Novembro",
+                        "Dezembro"
+                    ],
+                    "firstDay": 0
+                },
+                function(start_date, end_date) {
+                    this.element.val(start_date.format('DD/MM/YYYY') + ' - ' + end_date.format(
+                        'DD/MM/YYYY'));
+                }
+            })
+
+            $('.isDateRange').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
+                    'DD/MM/YYYY'));
+            });
+
+            $('.isSelect2').select2();
+
+            
+            $('.isMoney').mask("#.##0,00", {reverse: true});
+            
+            $("#hide-sidebar").click(function() {
+                $("#sidenav-main").toggle();
+                $(".main-content").toggleClass("hideme");
+            });
+        });
+
+    </script>
     
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    <script src="/js/form-builder.min.js"></script>
-    <script src="/js/form-render.min.js"></script>
+
 
     @stack('js')
 
@@ -277,120 +348,7 @@
         })(jQuery, jQuery.fn.dataTable);
     </script>
 
-    <script>
-        $(document).ready(function() {
-            $('.isDate:not([readonly])').datepicker({
-                format: "dd/mm/yyyy",
-                language: "pt-BR",
-                todayHighlight: true,
-                orientation: "bottom auto"
-            });
-
-            $('.isDateRange').daterangepicker({
-                autoUpdateInput: false,
-                "locale": {
-                    "format": "DD/MM/YYYY",
-                    "separator": " - ",
-                    "applyLabel": "Aplicar",
-                    "cancelLabel": "Cancelar",
-                    "fromLabel": "De",
-                    "toLabel": "Até",
-                    "customRangeLabel": "Custom",
-                    "daysOfWeek": [
-                        "D",
-                        "S",
-                        "T",
-                        "Q",
-                        "Q",
-                        "S",
-                        "S"
-                    ],
-                    "monthNames": [
-                        "Janeiro",
-                        "Fevereiro",
-                        "Março",
-                        "Abril",
-                        "Maio",
-                        "Junho",
-                        "Julho",
-                        "Agosto",
-                        "Setembro",
-                        "Outubro",
-                        "Novembro",
-                        "Dezembro"
-                    ],
-                    "firstDay": 0
-                },
-                function(start_date, end_date) {
-                    this.element.val(start_date.format('DD/MM/YYYY') + ' - ' + end_date.format(
-                        'DD/MM/YYYY'));
-                }
-            })
-
-            $('.isDateRange').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
-                    'DD/MM/YYYY'));
-            });
-
-            $('.isSelect2').select2();
-
-            $('.isDate').attr('autocomplete', 'off');
-            $('.isDate').mask('00/00/0000');
-            $('.isMoney').mask("#.##0,00", {reverse: true});
-            
-            $("#hide-sidebar").click(function() {
-                $("#sidenav-main").toggle();
-                $(".main-content").toggleClass("hideme");
-            });
-        });
-
-        // FUNÇÃO PARA ALTERAR A IMPRESSÃO DAS DATATABLES
-        var _buildUrl = function(dt, action) {
-            var url = dt.ajax.url() || '';
-            var params = dt.ajax.params();
-            params.action = action;
-
-            if (url.indexOf('?') > -1) {
-                return url + '&' + $.param(params);
-            }
-
-            return url + '?' + $.param(params);
-        };
-        DataTable.ext.buttons.print = {
-            className: 'buttons-print',
-
-            text: function(dt) {
-                return '<i class="fa fa-print"></i> ' + dt.i18n('buttons.print', 'Imprimir');
-            },
-
-            action: function(e, dt, button, config) {
-                var url = _buildUrl(dt, 'print');
-                var imprimir = window.open(url);
-                imprimir.print();
-                setTimeout(function() {
-                    imprimir.close();
-                }, 200);
-            }
-        };
-
-        function deleteRegistro(url) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: "Deseja apagar o registro?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            })
-        }
-
-    </script>
+    
 
     <!-- Argon JS -->
     <script src="{{ asset('argon') }}/js/argon.js?v=1.0.0"></script>
@@ -468,6 +426,11 @@
     </script>
         
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="/js/form-builder.min.js"></script>
+<script src="/js/form-render.min.js"></script>
     @stack('script')
 
 </body>

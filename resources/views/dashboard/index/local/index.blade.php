@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-group{{ $errors->has('midias_sociais') ? ' has-error' : '' }}">
                 {!! Form::label('midias_sociais', 'Mídias Sociais') !!}
-                {!! Form::text('midias_sociais', null, ['class' => 'form-control']) !!}
+                {!! Form::text('midias_sociais', null, ['class' => 'form-control', 'placeholder' => '@']) !!}
                 <small class="text-danger">{{ $errors->first('midias_sociais') }}</small>
                 </div>
             </div>

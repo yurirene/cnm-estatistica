@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
 use App\Models\Federacao;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -55,6 +56,9 @@ class FederacaoDataTable extends DataTable
      */
     public function query(Federacao $model)
     {
+        if (Auth::user()->admin == true) {
+            return $model->newQuery();
+        }
         return $model->newQuery()->minhaSinodal();
     }
 
