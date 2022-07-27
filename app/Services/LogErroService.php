@@ -19,7 +19,7 @@ class LogErroService
                 return;
             }
             LogErro::create([
-                'user_id' => Auth::id(),
+                'user_id' => Auth::user()->id ?? null,
                 'log' => $informacoes
             ]);
             
