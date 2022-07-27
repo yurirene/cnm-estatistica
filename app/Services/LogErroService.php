@@ -19,7 +19,7 @@ class LogErroService
                 return;
             }
             LogErro::create([
-                'user_id' => Auth::id(),
+                'user_id' => Auth::user()->id ?? null,
                 'log' => $informacoes
             ]);
             
@@ -42,7 +42,7 @@ class LogErroService
             $mensagem = '';
             $mensagem .= 'ERRO NO iCLAUDIA ' . PHP_EOL . PHP_EOL;
             $mensagem .= date('d/m/y h:i:s') . PHP_EOL;
-            $mensagem .= 'Usuário: ' . Auth::user()->name ?? 'Não encontrado' . PHP_EOL;
+            $mensagem .= 'Usuário: ' . (Auth::user()->name ?? 'Não encontrado') . PHP_EOL;
             foreach ($informacoes as $campo => $info) {
                 $mensagem .= ucfirst($campo) . ': ' . $info . PHP_EOL;
             }

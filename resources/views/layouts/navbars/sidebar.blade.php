@@ -125,13 +125,13 @@
                     </a>
                 </li>
                 @endCanAtLeast
-                @canAtLeast(['dashboard.formularios-locais.index'])
+                {{-- @canAtLeast(['dashboard.formularios-locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
                         <i class="fas fa-file"></i> Formulário UMP Local
                     </a>
                 </li>
-                @endCanAtLeast
+                @endCanAtLeast --}}
 
 
 
