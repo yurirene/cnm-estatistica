@@ -143,6 +143,8 @@ class StoreFormularioLocalRequest extends FormRequest
             'programacoes.*.required' => 'O :attribute é obrigatório',
 
             'aci.repasse.required' => 'O :attribute é obrigatório',
+
+            '*.required' => 'O campo :attribute é obrigatório'
         ];
     }
 

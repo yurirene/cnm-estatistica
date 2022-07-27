@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Services\LogErroService;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -14,8 +15,14 @@ class Handler extends ExceptionHandler
      *
      * @var array<int, class-string<Throwable>>
      */
+
     protected $dontReport = [
-        //
+        \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Illuminate\Validation\ValidationException::class,
+        \Illuminate\Session\TokenMismatchException::class,
+        \Illuminate\Validation\ValidationException::class,
+        NotFoundHttpException::class
     ];
 
     /**
@@ -44,13 +51,20 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         try {
-            if (!env('APP_ENV') == 'local') {
-                LogErroService::sendTelegram([
-                    'message' =>$exception->getMessage(),
-                    'line' =>$exception->getLine(),
-                    'file' => $exception->getFile(),
-                ]);
+            if (env('APP_ENV') == 'local') {
+                return parent::render($request, $exception);
             }
+            if (in_array(get_class($exception), $this->dontReport)) {
+                return parent::render($request, $exception);
+            }
+            LogErroService::registrar([
+                'message'    => $exception->getMessage(),
+                'line'       => $exception->getLine(),
+                'file'       => $exception->getFile(),
+                'metodo'     => $request->method(),
+                'tipo_erro'  => get_class($exception),
+                'uri'        => $request->fullUrl(),
+            ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
