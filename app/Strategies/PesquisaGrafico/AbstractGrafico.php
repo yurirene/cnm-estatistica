@@ -9,7 +9,22 @@ use Illuminate\Support\Facades\Log;
 abstract class AbstractGrafico
 {
     protected const PALETA = [
-        "#03071E", "#370617", "#6A040F", "#9D0208", "#D00000", "#DC2F02", "#E85D04", "#F48C06", "#FAA307", "#FFBA08"
+        "#001219", 
+        "#03071E", 
+        "#370617",
+        "#6A040F",
+        "#9D0208",
+        "#D00000",
+        "#DC2F02",
+        "#E85D04",
+        "#F48C06",
+        "#FAA307",
+        "#FFBA08",
+        "E9D8A6",
+        "#E9D8A6",
+        "#94D2BD",
+        "#0A9396",
+        "#005F73"
     ];
 
 
