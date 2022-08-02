@@ -118,7 +118,9 @@ class LocalService
                 $usuario->delete();
             }
             $local->delete();
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
