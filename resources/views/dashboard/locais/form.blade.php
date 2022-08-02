@@ -55,7 +55,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
-                                {!! Form::text('nome_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'name') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('nome_usuario', isset($local) ? FormHelper::getUsarioInstancia($local, 'name') : '-', ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         @if(isset($local))
