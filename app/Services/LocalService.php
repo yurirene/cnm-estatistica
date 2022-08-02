@@ -108,12 +108,15 @@ class LocalService
 
         DB::beginTransaction();
         try {
-            $local->usuario->first()->update([
-                'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
-            ]);
-            $usuario = $local->usuario->first();
-            $local->usuario()->sync([]);
-            $usuario->delete();
+            if ($local->usuario->first()) {
+
+                $local->usuario->first()->update([
+                    'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
+                ]);
+                $usuario = $local->usuario->first();
+                $local->usuario()->sync([]);
+                $usuario->delete();
+            }
             $local->delete();
         } catch (\Throwable $th) {
             LogErroService::registrar([
