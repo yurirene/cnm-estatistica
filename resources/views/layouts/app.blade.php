@@ -293,6 +293,9 @@
                 $("#sidenav-main").toggle();
                 $(".main-content").toggleClass("hideme");
             });
+
+
+            
         });
 
     </script>
@@ -432,6 +435,26 @@
 <script src="/js/form-builder.min.js"></script>
 <script src="/js/form-render.min.js"></script>
     @stack('script')
+
+
+    <script>
+        function deleteRegistro(url) {
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Deseja apagar o registro?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                })
+            }
+    </script>
 
 </body>
 
