@@ -62,12 +62,11 @@ class LocalService
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
              
-            if ($request->status == 'A' && $request->has('email_usuario')) {
-                $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
-                if ($request->has('resetar_senha')) {
-                    UserService::resetarSenha($usuario);
-                }
+            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
