@@ -5,7 +5,7 @@
     <div class="col-md-3">
         <div class="form-group">
             {!! Form::label('ano', 'Ano') !!}
-            {!! Form::text('ano', date('Y'), ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'readonly' => true]) !!}
+            {!! Form::text('ano', date('Y')-1, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'readonly' => true]) !!}
         </div>
     </div>
     <div class="col-md-5">
