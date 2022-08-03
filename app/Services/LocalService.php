@@ -30,12 +30,9 @@ class LocalService
                 'status' => $request->status == 'A' ? true : false ,
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
-            
-            if ($request->status == 'A' && $request->has('email_usuario')) {
-                $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
-                if ($request->has('resetar_senha')) {
-                    UserService::resetarSenha($usuario);
-                }
+            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
             }
             DB::commit();
         } catch (\Throwable $th) {
@@ -65,12 +62,11 @@ class LocalService
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
              
-            if ($request->status == 'A' && $request->has('email_usuario')) {
-                $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
-                if ($request->has('resetar_senha')) {
-                    UserService::resetarSenha($usuario);
-                }
+            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+            if ($request->has('resetar_senha')) {
+                UserService::resetarSenha($usuario);
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -112,14 +108,19 @@ class LocalService
 
         DB::beginTransaction();
         try {
-            $local->usuario->first()->update([
-                'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
-            ]);
-            $usuario = $local->usuario->first();
-            $local->usuario()->sync([]);
-            $usuario->delete();
+            if ($local->usuario->first()) {
+
+                $local->usuario->first()->update([
+                    'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
+                ]);
+                $usuario = $local->usuario->first();
+                $local->usuario()->sync([]);
+                $usuario->delete();
+            }
             $local->delete();
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),

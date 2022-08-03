@@ -163,12 +163,16 @@ class FederacaoService
     {
         DB::beginTransaction();
         try {
-            $federacao->usuario->first()->update([
-                'email' => 'apagadoFedEm'.date('dmyhms').'@apagado.com'
-            ]);
-            $usuario = $federacao->usuario->first();
-            $federacao->usuario()->sync([]);
-            $usuario->delete();
+            if ($federacao->usuario->first()) {
+                $federacao->usuario->first()->update([
+                    'email' => 'apagadoFedEm'.date('dmyhms').'@apagado.com'
+                ]);
+                $usuario = $federacao->usuario->first();
+                $federacao->usuario()->sync([]);
+                $usuario->delete();
+            }
+
+            
             $federacao->delete();
         } catch (\Throwable $th) {
             LogErroService::registrar([

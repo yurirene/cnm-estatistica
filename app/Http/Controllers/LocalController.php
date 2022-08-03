@@ -98,11 +98,11 @@ class LocalController extends Controller
         }
     }
 
-    public function delete(Local $federacao)
+    public function delete(Local $local)
     {
         try {
-            LocalService::delete($federacao);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            LocalService::delete($local);
+            return redirect()->route('dashboard.locais.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
