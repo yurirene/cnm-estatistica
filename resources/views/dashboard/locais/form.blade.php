@@ -105,7 +105,7 @@ const federacao = '{{ auth()->user()->federacoes->first()->sigla }}'
 
 $('#nome').on('keyup', function() {
     let user = $(this).val().normalize("NFD").replace(/\p{Diacritic}/gu, "").split(' ').join('').toLowerCase();
-    let email = user + '.' + federacao.toLowerCase() + '@ump.com';
+    let email = user + '.' + federacao.toLowerCase().replaceAll(' ','') + '@ump.com';
     $('#email_usuario').val(email);
 });
 
