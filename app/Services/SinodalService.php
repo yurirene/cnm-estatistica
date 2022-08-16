@@ -31,7 +31,7 @@ class SinodalService
             ]);
 
 
-            if ($request->status == 'A' && $request->has('email_usuario')) {
+            if ($request->has('email_usuario')) {
                 $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
                 if ($request->has('resetar_senha')) {
                     UserService::resetarSenha($usuario);
@@ -62,7 +62,7 @@ class SinodalService
                 'status' => $request->status == 'A' ? true : false
             ]);
 
-            if ($request->status == 'A' && $request->has('email_usuario')) {
+            if ($request->has('email_usuario')) {
                 $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
                 if ($request->has('resetar_senha')) {
                     UserService::resetarSenha($usuario);
