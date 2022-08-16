@@ -115,7 +115,7 @@ $('#status').on('change', function() {
 
 $('#sigla').on('keyup', function() {
     let user = $(this).val().toLowerCase().replaceAll(' ','');
-    let email = user + '.' + sinodal.toLowerCase() + '@ump.com';
+    let email = user + '.' + sinodal.toLowerCase().replaceAll(' ','') + '@ump.com';
     $('#email_usuario').val(email);
 });
 
