@@ -21,7 +21,8 @@ class PermissionRoleSeeder extends Seeder
                     'atividades',
                     'formularios_umps',
                     'pesquisas',
-                    'datatables-ajax'
+                    'datatables-ajax',
+                    'estatistica'
                 ]
             ],
             'diretoria' => [

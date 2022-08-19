@@ -4,6 +4,7 @@ use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
+use App\Http\Controllers\EstatisticaController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
@@ -91,11 +92,19 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::get('/pesquisas-configuracoes/{pesquisa}/export', [PesquisaController::class, 'exportExcel'])->name('pesquisas.relatorio.excel');
     Route::get('/pesquisas-acompanhar/{pesquisa}', [PesquisaController::class, 'acompanhar'])->name('pesquisas.acompanhar');
     
+
+    // PAINEL ESTATISTICA
+    Route::get('/estatistica', [EstatisticaController::class, 'index'])->name('estatistica.index');
+    Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])->name('estatistica.atualizarParametro');
+
+
+    // DATATABLES
     Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
     Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');
     Route::get('/datatables/pesquisas/{pesquisa}/sinodais', [DatatableAjaxController::class, 'acompanhamentoPesquisaSinodais'])->name('datatables.pesquisas.sinodais');
     Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
     Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
+    
 
 
 });

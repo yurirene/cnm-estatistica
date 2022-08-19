@@ -494,6 +494,21 @@ class PermissionsSeeder extends Seeder
                 'resource' => 'datatables-ajax',
             ],
 
+            // SECRETARIA DE ESTATISTICA
+
+            
+            
+            [
+                'name' => 'Configurações Estatística',
+                'slug' => 'dashboard.estatistica.index',
+                'resource' => 'estatistica',
+            ],
+            [
+                'name' => 'Salvar Parametros Estatística',
+                'slug' => 'dashboard.estatistica.atualizarParametro',
+                'resource' => 'estatistica',
+            ],
+
         ];
 
         try {
