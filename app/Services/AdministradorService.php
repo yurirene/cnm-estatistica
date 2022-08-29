@@ -53,6 +53,7 @@ class AdministradorService
         return Sinodal::whereDoesntHave('relatorios', function($sql) {
                 return $sql->where('ano_referencia', date('Y'));
             })
+            ->where('status', 1)
             ->get()
             ->count();
     
