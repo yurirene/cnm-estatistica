@@ -52,13 +52,13 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.usuarios.reset-senha',
                 'resource' => 'usuario',
             ],
-           
+
             [
                 'name' => 'Listar Sinodais',
                 'slug' => 'dashboard.sinodais.index',
                 'resource' => 'sinodais',
             ],
-           
+
             [
                 'name' => 'Visualizar Sinodal',
                 'slug' => 'dashboard.sinodais.show',
@@ -89,14 +89,14 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.sinodais.delete',
                 'resource' => 'sinodais',
             ],
-            
+
 
             [
                 'name' => 'Listar Federações',
                 'slug' => 'dashboard.federacoes.index',
                 'resource' => 'federacoes',
             ],
-           
+
             [
                 'name' => 'Visualizar Federação',
                 'slug' => 'dashboard.federacoes.show',
@@ -172,8 +172,8 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.locais.update-info',
                 'resource' => 'umps_locais',
             ],
-           
-           
+
+
             [
                 'name' => 'Listar Atividades',
                 'slug' => 'dashboard.atividades.index',
@@ -240,7 +240,7 @@ class PermissionsSeeder extends Seeder
                 'name' => 'Visualizar Formulário Federação',
                 'slug' => 'dashboard.formularios-federacoes.index',
                 'resource' => 'formularios_fed',
-            ],           
+            ],
 
             [
                 'name' => 'Salvar Formulário Federação',
@@ -263,7 +263,7 @@ class PermissionsSeeder extends Seeder
                 'name' => 'Visualizar Formulário Sinodal',
                 'slug' => 'dashboard.formularios-sinodais.index',
                 'resource' => 'formularios_sin',
-            ],           
+            ],
 
             [
                 'name' => 'Salvar Formulário Sinodal',
@@ -295,7 +295,7 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.formularios-sinodais.get-federacoes',
                 'resource' => 'formularios_sin',
             ],
-           
+
 
             /** Sinodal - informação */
             [
@@ -308,7 +308,7 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.federacoes.update-info',
                 'resource' => 'federacoes',
             ],
-            
+
             /**
              * Controle de ACI da Tesouraria
              */
@@ -427,7 +427,7 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.pesquisas.status',
                 'resource' => 'pesquisas',
             ],
-            
+
             [
                 'name' => 'Configurar Pesquisa',
                 'slug' => 'dashboard.pesquisas.configuracoes',
@@ -487,7 +487,7 @@ class PermissionsSeeder extends Seeder
                 'slug' => 'dashboard.datatables.pesquisas.federacoes',
                 'resource' => 'datatables-ajax',
             ],
-            
+
             [
                 'name' => 'Datatable Acompanhar Pesquisa UMP Local',
                 'slug' => 'dashboard.datatables.pesquisas.locais',
@@ -496,8 +496,8 @@ class PermissionsSeeder extends Seeder
 
             // SECRETARIA DE ESTATISTICA
 
-            
-            
+
+
             [
                 'name' => 'Configurações Estatística',
                 'slug' => 'dashboard.estatistica.index',
@@ -506,6 +506,11 @@ class PermissionsSeeder extends Seeder
             [
                 'name' => 'Salvar Parametros Estatística',
                 'slug' => 'dashboard.estatistica.atualizarParametro',
+                'resource' => 'estatistica',
+            ],
+            [
+                'name' => 'Exportar Dados Estatisticos',
+                'slug' => 'dashboard.estatistica.exportarExcel',
                 'resource' => 'estatistica',
             ],
 

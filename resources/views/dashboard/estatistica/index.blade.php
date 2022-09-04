@@ -20,24 +20,24 @@
                 <div class="card-body">
                     <ul class="nav nav-tabs" id="myTab" role="tablist" style="line-height: 40px;">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" 
-                                id="primeiro-tab" 
-                                data-bs-toggle="tab" 
-                                data-bs-target="#primeiro" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="primeiro" 
+                            <button class="nav-link active"
+                                id="primeiro-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#primeiro"
+                                type="button"
+                                role="tab"
+                                aria-controls="primeiro"
                                 aria-selected="true">Configurações
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" 
-                                id="segundo-tab" 
-                                data-bs-toggle="tab" 
-                                data-bs-target="#segundo" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="segundo" 
+                            <button class="nav-link"
+                                id="segundo-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#segundo"
+                                type="button"
+                                role="tab"
+                                aria-controls="segundo"
                                 aria-selected="false">Relatórios
                             </button>
                         </li>
@@ -47,8 +47,6 @@
                             <div class="row mt-3">
                                 <div class="col-md-12 mt-3">
                                     <div class="card">
-
-                                        {!! Form::open(['method' => 'POST', 'route' => 'dashboard.estatistica.atualizarParametro']) !!}
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col">
@@ -57,28 +55,11 @@
                                             </div>
                                             <div class="row">
                                                 @foreach($parametros as $parametro)
-                                                <div class="col-md-3">
-    
-                                                    <span>{{ $parametro['label'] }}</span><br>
-                                                    <input type="checkbox" 
-                                                        data-toggle="toggle" 
-                                                        data-onstyle="success" 
-                                                        data-on="Ativado" 
-                                                        data-off="Desativado" 
-                                                        name="{{ $parametro['nome']}}" 
-                                                        id="{{ $parametro['nome']}}" 
-                                                        {{$parametro['valor'] == 'SIM' ? 'checked' : ''}} >
-                                                </div>
+                                                    @include('parametros.view',$parametro)
                                                 @endforeach
-                                            </div>
-                                            <div class="row mt-5">
-                                                <div class="col">
-                                                    <button class="btn btn-success" type="submit">Salvar</button>
-                                                </div>
                                             </div>
                                         </div>
 
-                                        {!! Form::close() !!}
                                     </div>
                                 </div>
                             </div>
@@ -88,22 +69,95 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="table-responsive"> 
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="card shadow">
+                                                        <div class="card-header">
+                                                            Exportar Base de Dados Excel
+                                                        </div>
+                                                        <div class="card-body">
+                                                            {!! Form::open(['method' => 'POST', 'route' => 'dashboard.estatistica.exportarExcel', 'class' => 'form-horizontal']) !!}
+                                                            {!! Form::select('ano_referencia', $anos_referencias, null, ['class' => 'form-control']) !!}
+                                                            <button class="btn btn-primary mt-2">
+                                                                <i class="fas fa-file-excel"></i> Exportar
+                                                            </button>
+                                                            {!! Form::close() !!}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>    
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>  
+</div>
+<input type="hidden" id="token" value="{{ csrf_token() }}" />
 @endsection
 
 @push('js')
 <script>
+    $('.parametro').on('change', function() {
+        let valor = $(this).prop('checked');
+        let token = $('#token').val();
+        let id = $(this).data('id');
+        let route = "{{ route('dashboard.estatistica.atualizarParametro')}}";
+        $.ajax({
+            url: route,
+            type: 'POST',
+            data: {
+                _token: token,
+                id: id,
+                valor: valor
+            }
+        }).done((response) => {
+            iziToast.show({
+                title: 'Sucesso!',
+                message: response.mensagem,
+                position: 'topRight',
+            });
+        }).catch((error) => {
+            iziToast.error({
+                title: 'Erro!',
+                message: response.mensagem,
+                position: 'topRight',
+            });
+        });
+    });
+    $('.btn-parametro').on('click', function() {
+        let input = $(this).parents('.input-group').find('input');
+        let valor = input.val();
+        let token = $('#token').val();
+        let id = input.data('id');
+        let route = "{{ route('dashboard.estatistica.atualizarParametro')}}";
+        $.ajax({
+            url: route,
+            type: 'POST',
+            data: {
+                _token: token,
+                id: id,
+                valor: valor
+            }
+        }).done((response) => {
+            iziToast.show({
+                title: 'Sucesso!',
+                message: response.mensagem,
+                position: 'topRight',
+            });
+        }).catch((error) => {
+            iziToast.error({
+                title: 'Erro!',
+                message: response.mensagem,
+                position: 'topRight',
+            });
+        });
+    })
 </script>
 @endpush

@@ -108,7 +108,7 @@ class PesquisaService
         } catch (\Throwable $th) {
             Log::error([
                 'message' => $th->getMessage(),
-                'line' => $th->getLine(), 
+                'line' => $th->getLine(),
                 'file' => $th->getFile()
             ]);
             throw $th;
@@ -132,7 +132,7 @@ class PesquisaService
             PesquisaResposta::updateOrCreate(
                 [
                     'pesquisa_id' => $pesquisa->id,
-                    'user_id' => Auth::id(),    
+                    'user_id' => Auth::id(),
                 ],
                 [
                     'pesquisa_id' => $pesquisa->id,
@@ -160,14 +160,14 @@ class PesquisaService
         } catch (Throwable $th) {
             Log::error([
                 'message' => $th->getMessage(),
-                'line' => $th->getLine(), 
+                'line' => $th->getLine(),
                 'file' => $th->getFile()
             ]);
             throw new Exception('Erro ao Responder');
         }
     }
     public static function templateConfiguracao(Pesquisa $pesquisa) : array
-    {        
+    {
         $configuracoes = array();
         $configuracoes['pesquisa_id'] = $pesquisa->id;
         foreach ($pesquisa->referencias as $parametros) {
@@ -184,7 +184,7 @@ class PesquisaService
         return $configuracoes;
     }
 
-    public static function setConfiguracoesPesquisa(Pesquisa $pesquisa, Request $request) 
+    public static function setConfiguracoesPesquisa(Pesquisa $pesquisa, Request $request)
     {
         try {
             $configuracoes = $pesquisa->configuracao->configuracao;
@@ -212,7 +212,7 @@ class PesquisaService
     public static function getGraficos(Pesquisa $pesquisa)
     {
         try {
-            $graficos = array(); 
+            $graficos = array();
             foreach ($pesquisa->configuracao->configuracao as  $chave => $configuracao) {
                 if (is_null($configuracao['tipo_grafico'])) {
                     continue;
@@ -237,7 +237,7 @@ class PesquisaService
     public static function getTotalizadores(Pesquisa $pesquisa)
     {
         try {
-            $retorno = array(); 
+            $retorno = array();
             $i = 0;
             foreach ($pesquisa->configuracao->configuracao as $configuracao) {
                 if (is_null($configuracao['tipo_dado'])) {
@@ -335,7 +335,7 @@ class PesquisaService
 
         try {
             $alcance = array();
-            
+
             if (in_array('Sinodal', $pesquisa->instancias)) {
                 $alcance['sinodal'] = [
                     'quantidade' => 0,
@@ -349,7 +349,7 @@ class PesquisaService
                     'total' => Federacao::where('status', true)->whereNull('deleted_at')->count()
                 ];
             }
-            
+
             if (in_array('Local', $pesquisa->instancias)) {
                 $alcance['local'] = [
                     'quantidade' => 0,
@@ -380,12 +380,12 @@ class PesquisaService
             $retorno[$instancia] = $info;
             if ($info['total'] == 0) {
                 $retorno[$instancia]['porcentagem'] = 0;
-                continue;    
+                continue;
             }
             $retorno[$instancia]['porcentagem'] = round((($info['quantidade'] * 100) / $info['total']), 2);
         }
         return $retorno;
-         
+
     }
 
     public static function getMapaAlcance(Pesquisa $pesquisa)
@@ -403,7 +403,6 @@ class PesquisaService
             }
             return $alcance;
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             Log::error([
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
@@ -497,7 +496,7 @@ class PesquisaService
                     'total' => Federacao::where('status', true)->where('regiao_id', $regiao)->whereNull('deleted_at')->count()
                 ];
             }
-            
+
             if (in_array('Local', $pesquisa->instancias)) {
                 $alcance['local'] = [
                     'quantidade' => 0,
