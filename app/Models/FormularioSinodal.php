@@ -20,4 +20,9 @@ class FormularioSinodal extends Model
         'programacoes' => 'array',
         'estrutura' => 'array'
     ];
+
+    public function sinodal()
+    {
+        return $this->belongsTo(Sinodal::class, 'sinodal_id');
+    }
 }

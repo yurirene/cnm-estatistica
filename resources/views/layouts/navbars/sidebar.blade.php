@@ -110,7 +110,7 @@
                         <i class="fas fa-church"></i> UMP Local
                     </a>
                 </li>
-                
+
                 {{-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
                         <i class="fas fa-file"></i> Formulário Estatístico
@@ -118,10 +118,17 @@
                 </li> --}}
 
                 @endCanAtLeast
-                @canAtLeast(['dashboard.atividades.index'])                
+                @canAtLeast(['dashboard.atividades.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
                         <i class="fas fa-calendar"></i> Atividades
+                    </a>
+                </li>
+                @endCanAtLeast
+                @canAtLeast(['dashboard.estatistica.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.estatistica.index') }}">
+                        <i class="fas fa-calendar"></i> Estatística
                     </a>
                 </li>
                 @endCanAtLeast
@@ -133,12 +140,6 @@
                 </li>
                 @endCanAtLeast --}}
 
-
-
-                @canAtLeast(['administrador'])
-                
-               
-                @endCanAtLeast
 
             </ul>
             <hr class="my-3">
