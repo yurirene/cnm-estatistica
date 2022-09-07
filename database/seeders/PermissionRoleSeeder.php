@@ -17,12 +17,13 @@ class PermissionRoleSeeder extends Seeder
                     'usuario',
                     'sinodais',
                     'federacoes',
-                    'umps_locais',
+                    'umps-locais',
                     'atividades',
-                    'formularios_umps',
+                    'formularios-locais',
                     'pesquisas',
-                    'datatables-ajax',
-                    'estatistica'
+                    'datatables',
+                    'secretaria-estatistica',
+                    'secretaria-produtos'
                 ]
             ],
             'diretoria' => [
@@ -43,7 +44,7 @@ class PermissionRoleSeeder extends Seeder
             'sinodal' => [
                 'resources' => [
                     'federacoes',
-                    'formularios_sin'
+                    'formularios-sinodais'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.update-info',
@@ -56,8 +57,8 @@ class PermissionRoleSeeder extends Seeder
             ],
             'federacao' => [
                 'resources' => [
-                    'umps_locais',
-                    'formularios_fed'
+                    'umps-locais',
+                    'formularios-federacoes'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -68,7 +69,7 @@ class PermissionRoleSeeder extends Seeder
             ],
             'local' => [
                 'resources' => [
-                    'formularios_ump'
+                    'formularios-locais'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -110,6 +111,7 @@ class PermissionRoleSeeder extends Seeder
             'secreatria_produtos' => [
                 'resources' => [
                     'atividades',
+                    'secretaria-produtos'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -134,7 +136,7 @@ class PermissionRoleSeeder extends Seeder
         ];
         DB::table('permission_role')->truncate();
         try {
-                
+
             foreach ($roles_permissions as $role_slug => $permissions_array) {
                 $role = Role::where('slug', $role_slug)->first();
                 $permissions = Permission::whereIn('resource', $permissions_array['resources'])->get()->pluck('id')->toArray();

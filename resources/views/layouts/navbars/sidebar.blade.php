@@ -132,6 +132,14 @@
                     </a>
                 </li>
                 @endCanAtLeast
+
+                @canAtLeast(['dashboard.produtos.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.produtos.index') }}">
+                        <i class="fas fa-store"></i> Produtos
+                    </a>
+                </li>
+                @endCanAtLeast
                 {{-- @canAtLeast(['dashboard.formularios-locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
