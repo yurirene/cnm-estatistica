@@ -5,6 +5,7 @@ use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
+use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\EstatisticaController;
 use App\Http\Controllers\EstoqueProdutoController;
 use App\Http\Controllers\FederacaoController;
@@ -128,6 +129,18 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'delete']);
         Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])->name('consignacao-produtos.delete');
 
+    });
+
+    //SECRETARIA EXECUTIVA
+
+    Route::group(['modulo' => 'demandas'], function() {
+    Route::resource('demandas', DemandaController::class)->parameters(['demandas' => 'demanda'])->names('demandas')->except('delete');
+        Route::get('/demandas/{demanda}/delete', [DemandaController::class, 'delete'])->name('demandas.delete');
+        Route::get('/demandas/{demanda}/lista', [DemandaController::class, 'lista'])->name('demandas.lista');
+        Route::get('/demandas/{demanda}/{item}/delete', [DemandaController::class, 'deleteItem'])->name('demandas.delete-item');
+        Route::post('/demandas/{demanda}/{item}/atualizar', [DemandaController::class, 'atualizarItem'])->name('demandas.update-item');
+        Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])->name('demandas.store-item');
+        Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
     });
 
     // DATATABLES

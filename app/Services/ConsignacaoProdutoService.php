@@ -56,10 +56,14 @@ class ConsignacaoProdutoService
         $usuarios = User::whereHas('roles', function($sql) {
             return $sql->whereIn('name', [
                 'diretoria',
+                'executiva',
                 'secretaria_eventos',
-                'secreatria_produtos',
+                'secretaria_produtos',
                 'secretaria_evangelismo',
-                'secretaria_responsabilidade'
+                'secretaria_responsabilidade',
+                'secretaria_comunicacao',
+                'secretaria_estatistica',
+                'secretaria_educacao_crista',
             ]);
         })
         ->get()

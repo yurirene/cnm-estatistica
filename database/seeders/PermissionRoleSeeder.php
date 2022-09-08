@@ -14,7 +14,7 @@ class PermissionRoleSeeder extends Seeder
         $roles_permissions = [
             'administrador' => [
                 'resources' => [
-                    'usuario',
+                    'usuarios',
                     'sinodais',
                     'federacoes',
                     'umps-locais',
@@ -23,7 +23,8 @@ class PermissionRoleSeeder extends Seeder
                     'pesquisas',
                     'datatables',
                     'secretaria-estatistica',
-                    'secretaria-produtos'
+                    'secretaria-produtos',
+                    'demandas'
                 ]
             ],
             'diretoria' => [
@@ -81,6 +82,11 @@ class PermissionRoleSeeder extends Seeder
             'tesouraria' => [
                 'resources' => [
                     'comprovante-aci'
+                ]
+            ],
+            'executiva' => [
+                'resources' => [
+                    'demandas'
                 ]
             ],
             'secretaria_eventos' => [
