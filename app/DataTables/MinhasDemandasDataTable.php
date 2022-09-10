@@ -6,17 +6,13 @@ use App\Helpers\BootstrapHelper;
 use App\Models\Demanda;
 use App\Models\DemandaItem;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class DemandasItemDataTable extends DataTable
+class MinhasDemandasDataTable extends DataTable
 {
-    public function __construct()
-    {
-        $demanda_id = explode('/', request()->url());
-        $this->demanda_id = end($demanda_id);
-    }
     /**
      * Build DataTable class.
      *
@@ -27,17 +23,6 @@ class DemandasItemDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
-                return view('dashboard.demandas.actions-item', [
-                    'route' => 'dashboard.demandas',
-                    'id' => $sql->id,
-                    'demanda_id' => $this->demanda_id,
-                    'item' => $sql->toJson()
-                ]);
-            })
-            ->editColumn('user_id', function($sql) {
-                return $sql->usuario->name;
-            })
             ->editColumn('nivel', function($sql) {
                 return $sql->nivel_formatado;
             })
@@ -56,14 +41,12 @@ class DemandasItemDataTable extends DataTable
     public function query(DemandaItem $model)
     {
         return $model->newQuery()
-            ->where('demanda_id', $this->demanda_id)
+            ->where('user_id', Auth::id())
+            ->when(request()->filled('demanda'), function($sql) {
+                return $sql->where('demanda_id', request()->get('demanda'));
+            })
             ->when(request()->filled('status'), function($sql) {
                 return $sql->where('status', request()->get('status'));
-            })
-            ->when(request()->filled('usuario'), function($sql) {
-                return $sql->whereHas('usuario', function($q) {
-                    return $q->where('id', request()->get('usuario'));
-                });
             })
             ->when(request()->filled('nivel'), function($sql) {
                 return $sql->where('nivel', request()->get('nivel'));
@@ -78,18 +61,16 @@ class DemandasItemDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('demandas-item-table')
+                    ->setTableId('minhas-demandas-item-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(3)
-                    ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Demanda')->action('$("#modal-create-item").modal("show");')
-                    )
+                    ->orderBy(0)
                     ->parameters([
                         "language" => [
                             "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
-                        ]
+                        ],
+                        'buttons' => []
                     ]);
     }
 
@@ -101,14 +82,7 @@ class DemandasItemDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center')
-                  ->title('Ação'),
             Column::make('nivel')->title('Nível')->searchable(false),
-            Column::make('user_id')->title('Responsável')->searchable(false),
             Column::make('demanda')->title('Demanda'),
             Column::make('status')->title('Status')->searchable(false),
             Column::make('origem')->title('Origem'),

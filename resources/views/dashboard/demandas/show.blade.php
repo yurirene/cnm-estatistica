@@ -19,7 +19,35 @@
                     </div>
                 </div>
                 <div class="card-body">
-
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-filter"></i> Filtros</h5>
+                                    <div class="row mb-2">
+                                        <div class="col-md-3">
+                                            <label>Nível</label>
+                                            {!! Form::select('nivel_filtro', $niveis, null, ['class' => 'form-control', 'id' => 'nivel_filtro', 'placeholder' => '-']) !!}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Usuário</label>
+                                            {!! Form::select('usuario_filtro', $usuarios, null, ['class' => 'form-control', 'id' => 'usuario_filtro', 'placeholder' => '-']) !!}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Status</label>
+                                            {!! Form::select('status_filtro', $status, null, ['class' => 'form-control', 'id' => 'status_filtro', 'placeholder' => '-']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-3">
+                                            <button class="btn btn-primary" type="button" id="filtrar">Filtrar</button>
+                                            <button class="btn btn-secondary" type="button" id="resetar">Limpar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         {!! $dataTable->table() !!}
                     </div>
@@ -29,16 +57,16 @@
 
     </div>
 </div>
-<div class="modal fade" id="modal-create-item" tabindex="-1" role="dialog" aria-labelledby="modal-edit-item" aria-hidden="true">
+<div class="modal fade" id="modal-create-item" tabindex="-1" role="dialog" aria-labelledby="modal-create-item" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-edit-item">Editar Item</h5>
+                <h5 class="modal-title">Editar Item</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="form-edit-item" method="post" action="{{ route('dashboard.demandas.store-item', $demanda->id) }}">
+            <form id="form-create-item" method="post" action="{{ route('dashboard.demandas.store-item', $demanda->id) }}">
                 {{ csrf_field() }}
                 <div class="modal-body">
 
@@ -97,7 +125,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-edit-item">Editar Item</h5>
+                <h5 class="modal-title">Editar Item</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -177,4 +205,32 @@
         modal.find('#form-edit-item').attr('action', url);
     })
 </script>
+
+<script>
+    const table = $('#demandas-item-table');
+
+    table.on('preXhr.dt', function(e, settings, data){
+        data.nivel = $('#nivel_filtro').val();
+        data.usuario = $('#usuario_filtro').val();
+        data.status = $('#status_filtro').val();
+    });
+
+    $('#filtrar').on('click', function (){
+        table.DataTable().ajax.reload();
+        return false;
+    });
+
+    $('#resetar').on('click', function (){
+
+        $('#nivel_filtro').val(null).trigger('change');
+        $('#usuario_filtro').val(null).trigger('change');
+        $('#status_filtro').val(null).trigger('change');
+        table.DataTable().ajax.reload();
+        return false;
+    });
+
+
+
+</script>
+
 @endpush

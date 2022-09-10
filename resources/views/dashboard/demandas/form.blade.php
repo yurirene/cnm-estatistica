@@ -29,6 +29,9 @@
                     {!! Form::model($demanda, ['url' => route('dashboard.demandas.update', $demanda->id), 'method' => 'PUT']) !!}
                     @endif
 
+                    @if(isset($campos))
+                    <h2>Informações Extras</h2>
+                    @endif
                     <div class="row">
 
                         @if(!isset($campos))
@@ -49,7 +52,6 @@
                             @endif
                         @endif
                         @if(isset($campos))
-                            <h2>Informações Extras</h2>
                             @foreach($campos as $key => $campo)
                             <div class="col-md-3 mt-2">
                                 <div class="form-group">

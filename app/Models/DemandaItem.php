@@ -11,27 +11,36 @@ class DemandaItem extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $appends = ['nivel_formatado'];
 
+
+    public const SUGESTAO = 0;
+    public const RECOMENDACAO = 1;
+    public const DETERMINACAO = 2;
+
     public const NIVEIS = [
-        0 => 'Sugestão',
-        1 => 'Recomendação',
-        3 => 'Determinação'
+        self::SUGESTAO => 'Sugestão',
+        self::RECOMENDACAO => 'Recomendação',
+        self::DETERMINACAO => 'Determinação'
     ];
     public const NIVEIS_LABELS = [
-        0 => 'success',
-        1 => 'warning',
-        3 => 'danger'
+        self::SUGESTAO => 'success',
+        self::RECOMENDACAO => 'warning',
+        self::DETERMINACAO => 'danger'
     ];
 
+    public const NAO_ATENDIDO = 0;
+    public const ATENDIDO = 1;
+    public const PENDENTE = 2;
+
     public const STATUS = [
-        0 => 'Não Atendido',
-        1 => 'Atendido',
-        3 => 'Pendente'
+        self::NAO_ATENDIDO => 'Não Atendido',
+        self::ATENDIDO => 'Atendido',
+        self::PENDENTE => 'Pendente'
     ];
 
     public const STATUS_LABELS = [
-        0 => 'danger',
-        1 => 'success',
-        3 => 'warning'
+        self::NAO_ATENDIDO => 'danger',
+        self::ATENDIDO => 'success',
+        self::PENDENTE => 'warning'
     ];
 
     public function usuario()

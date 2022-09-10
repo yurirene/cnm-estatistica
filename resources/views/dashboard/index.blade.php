@@ -26,5 +26,9 @@
 @include('dashboard.index.admin.index')
 @endRole
 
+@role('executiva')
+@include('dashboard.index.executiva.index')
+@endRole
+
 
 @endsection

@@ -91,7 +91,8 @@ class DemandaController extends Controller
                 'demanda' => $demanda,
                 'usuarios' => DemandasService::getUsuarios(),
                 'status' => DemandasService::getStatus(),
-                'niveis' => DemandasService::getNiveis()
+                'niveis' => DemandasService::getNiveis(),
+                'totalizadores' => DemandasService::totalizadores($demanda)
             ]);
         } catch (Throwable $th) {
             return redirect()->route('dashboard.demandas.index')->with([

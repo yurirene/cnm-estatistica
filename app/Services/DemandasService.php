@@ -52,7 +52,7 @@ class DemandasService
                     'documento' => $row['doc_analisado'],
                     'nivel' => self::findNivel($row['nivel_de_prioridade']),
                     'demanda' => $row['demanda'],
-                    'status' => 0,
+                    'status' => DemandaItem::PENDENTE,
                     'user_id' => self::findUser($row['atividade_para'], $request->campo),
                     'demanda_id' => $demanda->id
                 ]);
@@ -178,6 +178,33 @@ class DemandasService
     public static function getNiveis() : array
     {
         return DemandaItem::NIVEIS;
+    }
+
+    public static function totalizadores(Demanda $demanda) : array
+    {
+        try {
+            $retorno['total'] = $demanda->itens->count();
+            $retorno['atendidas'] = $demanda->itens()->where('status', DemandaItem::ATENDIDO)->get()->count();
+            $retorno['nao_atendidas'] = $demanda->itens()->where('status', DemandaItem::NAO_ATENDIDO)->get()->count();
+            $retorno['pendentes'] = $demanda->itens()->where('status', DemandaItem::PENDENTE)->get()->count();
+
+            $retorno['sugestoes'] = $demanda->itens()->where('nivel', DemandaItem::SUGESTAO)->get()->count();
+            $retorno['recomendacoes'] = $demanda->itens()->where('nivel', DemandaItem::RECOMENDACAO)->get()->count();
+            $retorno['determinacoes'] = $demanda->itens()->where('nivel', DemandaItem::DETERMINACAO)->get()->count();
+
+            return $retorno;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getDemandas() : array
+    {
+        try {
+            return Demanda::get()->pluck('titulo', 'id')->toArray();
+        } catch (Throwable $th) {
+            throw $th;
+        }
     }
 
 }
