@@ -14,7 +14,7 @@ class PermissionRoleSeeder extends Seeder
         $roles_permissions = [
             'administrador' => [
                 'resources' => [
-                    'usuario',
+                    'usuarios',
                     'sinodais',
                     'federacoes',
                     'umps-locais',
@@ -23,13 +23,15 @@ class PermissionRoleSeeder extends Seeder
                     'pesquisas',
                     'datatables',
                     'secretaria-estatistica',
-                    'secretaria-produtos'
+                    'secretaria-produtos',
+                    'demandas'
                 ]
             ],
             'diretoria' => [
                 'resources' => [
                     'sinodais',
-                    'atividades'
+                    'atividades',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -80,13 +82,21 @@ class PermissionRoleSeeder extends Seeder
             ],
             'tesouraria' => [
                 'resources' => [
-                    'comprovante-aci'
+                    'comprovante-aci',
+                    'minhas-demandas'
+                ]
+            ],
+            'executiva' => [
+                'resources' => [
+                    'demandas',
+                    'minhas-demandas'
                 ]
             ],
             'secretaria_eventos' => [
                 'resources' => [
                     'atividades',
                     'eventos',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -99,6 +109,7 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -111,7 +122,8 @@ class PermissionRoleSeeder extends Seeder
             'secreatria_produtos' => [
                 'resources' => [
                     'atividades',
-                    'secretaria-produtos'
+                    'secretaria-produtos',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -124,6 +136,7 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_responsabilidade' => [
                 'resources' => [
                     'atividades',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -131,6 +144,25 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.status',
                     'dashboard.pesquisas.relatorio',
                     'dashboard.pesquisas.relatorio.excel'
+                ]
+            ],
+            'secretaria_comunicacao' => [
+                'resources' => [
+                    'atividades',
+                    'minhas-demandas'
+                ]
+            ],
+            'secretaria_estatistica' => [
+                'resources' => [
+                    'atividades',
+                    'secretaria-estatistica',
+                    'minhas-demandas'
+                ]
+            ],
+            'secretaria_educacao_crista' => [
+                'resources' => [
+                    'atividades',
+                    'minhas-demandas'
                 ]
             ],
         ];
@@ -147,7 +179,7 @@ class PermissionRoleSeeder extends Seeder
                 $role->syncPermissions($permissions);
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            dd($th->getMessage(), $permissions);
         }
     }
 }

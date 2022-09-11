@@ -140,6 +140,21 @@
                     </a>
                 </li>
                 @endCanAtLeast
+
+                @canAtLeast(['dashboard.demandas.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.demandas.index') }}">
+                        <i class="fas fa-project-diagram"></i> Demandas
+                    </a>
+                </li>
+                @endCanAtLeast
+                @canAtLeast(['dashboard.minhas-demandas.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.minhas-demandas.index') }}">
+                        <i class="fas fa-project-diagram"></i> Minhas Demandas
+                    </a>
+                </li>
+                @endCanAtLeast
                 {{-- @canAtLeast(['dashboard.formularios-locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">

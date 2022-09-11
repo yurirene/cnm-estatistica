@@ -5,6 +5,7 @@ use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
+use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\EstatisticaController;
 use App\Http\Controllers\EstoqueProdutoController;
 use App\Http\Controllers\FederacaoController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
 use App\Http\Controllers\LocalController;
+use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\SinodalController;
@@ -109,7 +111,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 
     // PAINEL ESTATISTICA
-    Route::group(['modulo' => 'secretaria-estistica'], function() {
+    Route::group(['modulo' => 'secretaria-estatistica'], function() {
         Route::get('/estatistica', [EstatisticaController::class, 'index'])->name('estatistica.index');
         Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])->name('estatistica.atualizarParametro');
         Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])->name('estatistica.exportarExcel');
@@ -128,6 +130,22 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'delete']);
         Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])->name('consignacao-produtos.delete');
 
+    });
+    // MINHAS DEMANDAS
+    Route::group(['modulo' => 'minhas-demandas'], function() {
+        Route::get('minhas-demandas', [MinhasDemandasController::class, 'index'])->name('minhas-demandas.index');
+    });
+
+    //SECRETARIA EXECUTIVA
+
+    Route::group(['modulo' => 'demandas'], function() {
+    Route::resource('demandas', DemandaController::class)->parameters(['demandas' => 'demanda'])->names('demandas')->except('delete');
+        Route::get('/demandas/{demanda}/delete', [DemandaController::class, 'delete'])->name('demandas.delete');
+        Route::get('/demandas/{demanda}/lista', [DemandaController::class, 'lista'])->name('demandas.lista');
+        Route::get('/demandas/{demanda}/{item}/delete', [DemandaController::class, 'deleteItem'])->name('demandas.delete-item');
+        Route::post('/demandas/{demanda}/{item}/atualizar', [DemandaController::class, 'atualizarItem'])->name('demandas.update-item');
+        Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])->name('demandas.store-item');
+        Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
     });
 
     // DATATABLES
