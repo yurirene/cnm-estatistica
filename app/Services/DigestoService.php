@@ -16,7 +16,7 @@ class DigestoService
     public static function store(Request $request) : Digesto 
     {
         try {
-            $path = $request->arquivo->store('public/;disgesto');
+            $path = $request->arquivo->store('public/disgesto');
             
             $digesto = Digesto::create([
                 'tipo_reuniao_id' => $request->tipo_reuniao_id,
