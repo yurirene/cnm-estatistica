@@ -47,7 +47,7 @@
                         @if(!isset($digesto))
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('arquivo', 'Imagem') !!}
+                                {!! Form::label('arquivo', 'Arquivo') !!}
                                 {!! Form::file('arquivo', ['class' => 'form-control']) !!}
                             </div>
                         </div>
