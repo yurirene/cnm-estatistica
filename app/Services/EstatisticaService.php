@@ -56,8 +56,24 @@ class EstatisticaService
 
     public static function exportarExcel(array $request)
     {
-        $formulario_base = FormularioSinodal::with('sinodal')->where('ano_referencia', $request['ano_referencia'])->first()->toArray();
-        $dados = collect($formulario_base)->except('id', 'created_at', 'updated_at', 'sinodal', 'deleted_at', 'sinodal_id');
+        $formulario_base = FormularioSinodal::with(['sinodal', 'sinodal.regiao'])->where('ano_referencia', $request['ano_referencia'])->first()->toArray();
+        $dados = collect($formulario_base)->except([
+            'id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'sinodal_id',
+            'sinodal.id',
+            'sinodal.sigla',
+            'sinodal.data_organizacao',
+            'sinodal.sinodo',
+            'sinodal.midias_sociais',
+            'sinodal.regiao_id',
+            'sinodal.status',
+            'sinodal.created_at',
+            'sinodal.updated_at',
+            'sinodal.deleted_at'
+        ]);
         $campos = [];
         $somente_colunas = [];
         foreach ($dados as $coluna_master => $coluna) {

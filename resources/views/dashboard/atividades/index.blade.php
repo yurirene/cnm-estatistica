@@ -18,26 +18,26 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist" style="line-height: 40px;">
+                    <ul class="nav nav-pills" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" 
-                                id="primeiro-tab" 
-                                data-bs-toggle="tab" 
-                                data-bs-target="#primeiro" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="primeiro" 
+                            <button class="nav-link active"
+                                id="primeiro-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#primeiro"
+                                type="button"
+                                role="tab"
+                                aria-controls="primeiro"
                                 aria-selected="true">Calendário
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" 
-                                id="segundo-tab" 
-                                data-bs-toggle="tab" 
-                                data-bs-target="#segundo" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="segundo" 
+                            <button class="nav-link"
+                                id="segundo-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#segundo"
+                                type="button"
+                                role="tab"
+                                aria-controls="segundo"
                                 aria-selected="false">Atividades
                             </button>
                         </li>
@@ -69,7 +69,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody class="list" id="tabela-eventos">
-                                                        
+
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -83,20 +83,20 @@
                                 <div class="col-md-12 mt-3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="table-responsive"> 
+                                            <div class="table-responsive">
                                                 {!! $dataTable->table(['class' => 'table w-100']) !!}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>    
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>  
+</div>
 @endsection
 
 @push('js')
@@ -115,8 +115,8 @@ $(document).ready(function() {
         buttonIcons: {
             prev: 'arrow-left',
             next: 'arrow-right',
-            prevYear: 'arrow-left-circle', 
-            nextYear: 'arrow-right-circle' 
+            prevYear: 'arrow-left-circle',
+            nextYear: 'arrow-right-circle'
         },
         events: '{{route("dashboard.atividades.calendario")}}',
         eventSourceSuccess: function(content, xhr) {
@@ -126,7 +126,7 @@ $(document).ready(function() {
                 html += `<tr>
                             <td class="text-center">
                                 ${item.dt}
-                            </td>                        
+                            </td>
                             <td class="text-left">
                                 ${item.title}
                             </td>

@@ -2,15 +2,20 @@
 
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ComprovanteACIController;
+use App\Http\Controllers\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
+use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\EstatisticaController;
+use App\Http\Controllers\EstoqueProdutoController;
 use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
 use App\Http\Controllers\LocalController;
+use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
+use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\SinodalController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -35,78 +40,122 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])->name('trocar-senha');
 
-    Route::resource('usuarios', UserController::class)->names('usuarios');
-    Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])->name('usuarios.reset-senha');
+    Route::group(['modulo' => 'usuarios'], function () {
+        Route::resource('usuarios', UserController::class)->names('usuarios');
+        Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])->name('usuarios.reset-senha');
+    });
 
+    Route::group(['modulo' => 'sinodais'], function() {
+        Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
+        Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
+        Route::put('/sinodais/{sinodal}/update-info', [SinodalController::class, 'updateInfo'])->name('sinodais.update-info');
+    });
+    Route::group(['modulo' => 'federacoes'], function() {
+        Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('delete');
+        Route::get('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])->name('federacoes.delete');
+        Route::put('/federacoes/{federacao}/update-info', [FederacaoController::class, 'updateInfo'])->name('federacoes.update-info');
+    });
+    Route::group(['modulo' => 'umps-locais'], function() {
+        Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
+        Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
+        Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])->name('locais.update-info');
+    });
+    Route::group(['modulo' => 'atividades'], function() {
+        Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('delete');
+        Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])->name('atividades.delete');
+        Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])->name('atividades.calendario');
+        Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])->name('atividades.confirmar');
+    });
+    Route::group(['modulo' => 'formularios-locais'], function() {
+        Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
+        Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
+        Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
 
-    Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
-    Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
-    Route::put('/sinodais/{sinodal}/update-info', [SinodalController::class, 'updateInfo'])->name('sinodais.update-info');
+    });
 
-    Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('delete');
-    Route::get('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])->name('federacoes.delete');
-    Route::put('/federacoes/{federacao}/update-info', [FederacaoController::class, 'updateInfo'])->name('federacoes.update-info');
+    Route::group(['modulo' => 'formularios-sinodais'], function() {
+        Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])->name('formularios-sinodais.index');
+        Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
+        Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
+        Route::post('/formularios-sinodais-resumo', [FormularioSinodalController::class, 'resumoTotalizador'])->name('formularios-sinodais.resumo');
+        Route::post('/formularios-sinodais-importar-validar', [FormularioSinodalController::class, 'validarImportacao'])->name('formularios-sinodais.importar-validar');
+        Route::post('/formularios-sinodais-importar', [FormularioSinodalController::class, 'importar'])->name('formularios-sinodais.importar');
+        Route::get('/formularios-sinodais-get-federacoes', [FormularioSinodalController::class, 'getFederacoes'])->name('formularios-sinodais.get-federacoes');
 
-    Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
-    Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
-    Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])->name('locais.update-info');
+    });
 
-    Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('delete');
-    Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])->name('atividades.delete');
-    Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])->name('atividades.calendario');
-    Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])->name('atividades.confirmar');
+    Route::group(['modulo' => 'formularios-federacoes'], function() {
+        Route::get('/formularios-federacoes', [FormularioFederacaoController::class, 'index'])->name('formularios-federacoes.index');
+        Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');
+        Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
+        Route::post('/formularios-federacoes-resumo', [FormularioFederacaoController::class, 'resumoTotalizador'])->name('formularios-federacoes.resumo');
+    });
 
-    Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
-    Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
-    Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
+    Route::group(['modulo' => 'pesquisas'], function() {
+        Route::resource('/pesquisas', PesquisaController::class)->names('pesquisas');
+        Route::get('/pesquisas/{pesquisa}/status', [PesquisaController::class, 'status'])->name('pesquisas.status');
+        Route::get('/pesquisas/{pesquisa}/respostas', [PesquisaController::class, 'respostas'])->name('pesquisas.respostas');
+        Route::post('/pesquisas-responder', [PesquisaController::class, 'responder'])->name('pesquisas.responder');
+        Route::get('/pesquisas/{pesquisa}/configuracoes', [PesquisaController::class, 'configuracoes'])->name('pesquisas.configuracoes');
+        Route::get('/pesquisas/{pesquisa}/relatorio', [PesquisaController::class, 'relatorio'])->name('pesquisas.relatorio');
+        Route::get('/pesquisas/{pesquisa}/limpar-respostas', [PesquisaController::class, 'limparRespostas'])->name('pesquisas.limpar-respostas');
+        Route::put('/pesquisas-configuracoes/{pesquisa}/update', [PesquisaController::class, 'configuracoesUpdate'])->name('pesquisas.configuracoes-update');
+        Route::get('/pesquisas-configuracoes/{pesquisa}/export', [PesquisaController::class, 'exportExcel'])->name('pesquisas.relatorio.excel');
+        Route::get('/pesquisas-acompanhar/{pesquisa}', [PesquisaController::class, 'acompanhar'])->name('pesquisas.acompanhar');
+    });
 
-    Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])->name('formularios-sinodais.index');
-    Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
-    Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
-    Route::post('/formularios-sinodais-resumo', [FormularioSinodalController::class, 'resumoTotalizador'])->name('formularios-sinodais.resumo');
-    Route::post('/formularios-sinodais-importar-validar', [FormularioSinodalController::class, 'validarImportacao'])->name('formularios-sinodais.importar-validar');
-    Route::post('/formularios-sinodais-importar', [FormularioSinodalController::class, 'importar'])->name('formularios-sinodais.importar');
-    Route::get('/formularios-sinodais-get-federacoes', [FormularioSinodalController::class, 'getFederacoes'])->name('formularios-sinodais.get-federacoes');
-
-    Route::get('/formularios-federacoes', [FormularioFederacaoController::class, 'index'])->name('formularios-federacoes.index');
-    Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');
-    Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
-    Route::post('/formularios-federacoes-resumo', [FormularioFederacaoController::class, 'resumoTotalizador'])->name('formularios-federacoes.resumo');
-
-    Route::get('/listar-formularios-federacoes/{sinodal}', [DashboardController::class, 'listarFormulariosFederacoes'])->name('formulario-federacoes.list');
-    Route::get('/listar-formularios-locais/{federacao}', [DashboardController::class, 'listarFormulariosLocais'])->name('formulario-locais.list');
-
-
-    Route::get('/comprovante-aci', [ComprovanteACIController::class, 'index'])->name('comprovante-aci.index');
-    Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
-    Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
-
-    Route::resource('/pesquisas', PesquisaController::class)->names('pesquisas');
-    Route::get('/pesquisas/{pesquisa}/status', [PesquisaController::class, 'status'])->name('pesquisas.status');
-    Route::get('/pesquisas/{pesquisa}/respostas', [PesquisaController::class, 'respostas'])->name('pesquisas.respostas');
-    Route::post('/pesquisas-responder', [PesquisaController::class, 'responder'])->name('pesquisas.responder');
-    Route::get('/pesquisas/{pesquisa}/configuracoes', [PesquisaController::class, 'configuracoes'])->name('pesquisas.configuracoes');
-    Route::get('/pesquisas/{pesquisa}/relatorio', [PesquisaController::class, 'relatorio'])->name('pesquisas.relatorio');
-    Route::get('/pesquisas/{pesquisa}/limpar-respostas', [PesquisaController::class, 'limparRespostas'])->name('pesquisas.limpar-respostas');
-    Route::put('/pesquisas-configuracoes/{pesquisa}/update', [PesquisaController::class, 'configuracoesUpdate'])->name('pesquisas.configuracoes-update');
-    Route::get('/pesquisas-configuracoes/{pesquisa}/export', [PesquisaController::class, 'exportExcel'])->name('pesquisas.relatorio.excel');
-    Route::get('/pesquisas-acompanhar/{pesquisa}', [PesquisaController::class, 'acompanhar'])->name('pesquisas.acompanhar');
-
+    Route::group(['modulo' => 'comprovante-aci'], function() {
+        Route::get('/comprovante-aci', [ComprovanteACIController::class, 'index'])->name('comprovante-aci.index');
+        Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
+        Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
+    });
 
     // PAINEL ESTATISTICA
-    Route::get('/estatistica', [EstatisticaController::class, 'index'])->name('estatistica.index');
-    Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])->name('estatistica.atualizarParametro');
-    Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])->name('estatistica.exportarExcel');
+    Route::group(['modulo' => 'secretaria-estatistica'], function() {
+        Route::get('/estatistica', [EstatisticaController::class, 'index'])->name('estatistica.index');
+        Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])->name('estatistica.atualizarParametro');
+        Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])->name('estatistica.exportarExcel');
+    });
+    // SECRETARIA DE PRODUTOS
+    Route::group(['modulo' => 'secretaria-produtos'], function() {
+        Route::resource('produtos', ProdutoController::class)->parameters(['produtos' => 'produto'])->names('produtos')->except('delete');
+        Route::get('/produtos/{produto}/delete', [ProdutoController::class, 'delete'])->name('produtos.delete');
+        Route::get('/produtos-datatable/produtos', [ProdutoController::class, 'produtoDataTable'])->name('produtos.datatable.produtos');
+        Route::get('/produtos-datatable/estoque', [ProdutoController::class, 'estoqueProdutosDataTable'])->name('produtos.datatable.estoque');
+        Route::get('/produtos-datatable/consignacao', [ProdutoController::class, 'consignacaoProdutosDataTable'])->name('produtos.datatable.consignacao');
 
+        Route::resource('estoque-produtos', EstoqueProdutoController::class)->parameters(['estoque-produtos' => 'estoque'])->names('estoque-produtos')->except(['index', 'show', 'delete']);
+        Route::get('/estoque-produtos/{estoque}/delete', [EstoqueProdutoController::class, 'delete'])->name('estoque-produtos.delete');
+
+        Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'delete']);
+        Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])->name('consignacao-produtos.delete');
+
+    });
+    // MINHAS DEMANDAS
+    Route::group(['modulo' => 'minhas-demandas'], function() {
+        Route::get('minhas-demandas', [MinhasDemandasController::class, 'index'])->name('minhas-demandas.index');
+    });
+
+    //SECRETARIA EXECUTIVA
+
+    Route::group(['modulo' => 'demandas'], function() {
+    Route::resource('demandas', DemandaController::class)->parameters(['demandas' => 'demanda'])->names('demandas')->except('delete');
+        Route::get('/demandas/{demanda}/delete', [DemandaController::class, 'delete'])->name('demandas.delete');
+        Route::get('/demandas/{demanda}/lista', [DemandaController::class, 'lista'])->name('demandas.lista');
+        Route::get('/demandas/{demanda}/{item}/delete', [DemandaController::class, 'deleteItem'])->name('demandas.delete-item');
+        Route::post('/demandas/{demanda}/{item}/atualizar', [DemandaController::class, 'atualizarItem'])->name('demandas.update-item');
+        Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])->name('demandas.store-item');
+        Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
+    });
 
     // DATATABLES
-    Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
-    Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');
-    Route::get('/datatables/pesquisas/{pesquisa}/sinodais', [DatatableAjaxController::class, 'acompanhamentoPesquisaSinodais'])->name('datatables.pesquisas.sinodais');
-    Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
-    Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
-
-
+    Route::group(['modulo' => 'datatables'], function() {
+        Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
+        Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');
+        Route::get('/datatables/pesquisas/{pesquisa}/sinodais', [DatatableAjaxController::class, 'acompanhamentoPesquisaSinodais'])->name('datatables.pesquisas.sinodais');
+        Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
+        Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
+    });
 
 });
 

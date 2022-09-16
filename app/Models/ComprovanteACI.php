@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ComprovanteACI extends Model
 {
     use Auditable;
-    
+
     protected $table = 'comprovantes_aci';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

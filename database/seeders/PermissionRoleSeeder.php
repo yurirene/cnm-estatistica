@@ -14,21 +14,24 @@ class PermissionRoleSeeder extends Seeder
         $roles_permissions = [
             'administrador' => [
                 'resources' => [
-                    'usuario',
+                    'usuarios',
                     'sinodais',
                     'federacoes',
-                    'umps_locais',
+                    'umps-locais',
                     'atividades',
-                    'formularios_umps',
+                    'formularios-locais',
                     'pesquisas',
-                    'datatables-ajax',
-                    'estatistica'
+                    'datatables',
+                    'secretaria-estatistica',
+                    'secretaria-produtos',
+                    'demandas'
                 ]
             ],
             'diretoria' => [
                 'resources' => [
                     'sinodais',
-                    'atividades'
+                    'atividades',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -43,7 +46,7 @@ class PermissionRoleSeeder extends Seeder
             'sinodal' => [
                 'resources' => [
                     'federacoes',
-                    'formularios_sin'
+                    'formularios-sinodais'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.update-info',
@@ -56,8 +59,8 @@ class PermissionRoleSeeder extends Seeder
             ],
             'federacao' => [
                 'resources' => [
-                    'umps_locais',
-                    'formularios_fed'
+                    'umps-locais',
+                    'formularios-federacoes'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -68,7 +71,7 @@ class PermissionRoleSeeder extends Seeder
             ],
             'local' => [
                 'resources' => [
-                    'formularios_ump'
+                    'formularios-locais'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -79,13 +82,21 @@ class PermissionRoleSeeder extends Seeder
             ],
             'tesouraria' => [
                 'resources' => [
-                    'comprovante-aci'
+                    'comprovante-aci',
+                    'minhas-demandas'
+                ]
+            ],
+            'executiva' => [
+                'resources' => [
+                    'demandas',
+                    'minhas-demandas'
                 ]
             ],
             'secretaria_eventos' => [
                 'resources' => [
                     'atividades',
                     'eventos',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -98,6 +109,7 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -110,6 +122,8 @@ class PermissionRoleSeeder extends Seeder
             'secreatria_produtos' => [
                 'resources' => [
                     'atividades',
+                    'secretaria-produtos',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -122,6 +136,7 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_responsabilidade' => [
                 'resources' => [
                     'atividades',
+                    'minhas-demandas'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -131,10 +146,29 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.relatorio.excel'
                 ]
             ],
+            'secretaria_comunicacao' => [
+                'resources' => [
+                    'atividades',
+                    'minhas-demandas'
+                ]
+            ],
+            'secretaria_estatistica' => [
+                'resources' => [
+                    'atividades',
+                    'secretaria-estatistica',
+                    'minhas-demandas'
+                ]
+            ],
+            'secretaria_educacao_crista' => [
+                'resources' => [
+                    'atividades',
+                    'minhas-demandas'
+                ]
+            ],
         ];
         DB::table('permission_role')->truncate();
         try {
-                
+
             foreach ($roles_permissions as $role_slug => $permissions_array) {
                 $role = Role::where('slug', $role_slug)->first();
                 $permissions = Permission::whereIn('resource', $permissions_array['resources'])->get()->pluck('id')->toArray();
@@ -145,7 +179,7 @@ class PermissionRoleSeeder extends Seeder
                 $role->syncPermissions($permissions);
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            dd($th->getMessage(), $permissions);
         }
     }
 }

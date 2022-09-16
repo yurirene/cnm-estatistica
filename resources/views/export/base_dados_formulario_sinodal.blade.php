@@ -20,7 +20,11 @@
                     @continue
                 @endif
                 @foreach($campos as $subcoluna)
+                    @if($subcoluna == 'regiao')
+                    <td>{{ $dado[$coluna][$subcoluna]['nome'] }}</td>
+                    @else
                     <td>{{ $dado[$coluna][$subcoluna] }}</td>
+                    @endif
                 @endforeach
             @endforeach
         </tr>
