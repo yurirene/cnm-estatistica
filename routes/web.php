@@ -6,6 +6,7 @@ use App\Http\Controllers\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DemandaController;
+use App\Http\Controllers\DigestoController;
 use App\Http\Controllers\EstatisticaController;
 use App\Http\Controllers\EstoqueProdutoController;
 use App\Http\Controllers\FederacaoController;
@@ -147,6 +148,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])->name('demandas.store-item');
         Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
     });
+    Route::group(['modulo' => 'digestos'], function() {
+        Route::resource('digestos', DigestoController::class)->parameters(['digestos' => 'digesto'])->names('digestos')->except('delete');
+        Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])->name('digestos.delete');
+    });
 
     // DATATABLES
     Route::group(['modulo' => 'datatables'], function() {
@@ -160,3 +165,4 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');
