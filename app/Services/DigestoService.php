@@ -77,6 +77,15 @@ class DigestoService
             return $sql->where('texto', 'like', '%' . request()->chave . '%');
         })
         ->get()
+        ->map(function($item) {
+            $texto = '';
+            if (request()->filled('chave')) {
+                $inicio = strpos($item->texto, request()->chave);
+                $texto = substr($item->texto, $inicio, 60);
+            }
+            $item->texto_formatado = $texto;
+            return $item;
+        })
         ->toArray();
     }
 }

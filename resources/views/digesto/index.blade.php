@@ -63,7 +63,7 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <span class="badge badge-primary badge-pill">{{ $dado['tipo_formatado'] }}</span>
-                                            {{ $dado['titulo'] }} - {{ $dado['texto_selecionado'] }}
+                                            {{ $dado['titulo'] }} - <i>{{ $dado['texto_formatado'] }}</i>
                                         </li>    
                                     @empty
                                     <li class="list-group-item ">
