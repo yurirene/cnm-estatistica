@@ -35,7 +35,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('ano', 'Ano') !!}
-                                    {!! Form::text('ano', request()->filled('ano') ? request()->ano : null, ['class' => 'form-control']) !!}
+                                    {!! Form::text('ano', request()->filled('ano') ? request()->ano : null, ['class' => 'form-control', 'maxlength' => 4]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
