@@ -29,19 +29,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('tipo_reuniao', 'Tipo da Reunião') !!}
-                                    {!! Form::select('tipo_reuniao', $tipos, null, ['id' => 'tipo_reuniao', 'class' => 'form-control']) !!}
+                                    {!! Form::select('tipo_reuniao', $tipos, request()->filled('tipo_reuniao') ? request()->tipo_reuniao : null , ['id' => 'tipo_reuniao', 'class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('ano', 'Ano') !!}
-                                    {!! Form::text('ano', null, ['class' => 'form-control']) !!}
+                                    {!! Form::text('ano', request()->filled('ano') ? request()->ano : null, ['class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('chave', 'Palavra Chave') !!}
-                                    {!! Form::text('chave', null, ['class' => 'form-control', 'required']) !!}
+                                    {!! Form::text('chave', request()->filled('chave') ? request()->chave : null, ['class' => 'form-control', 'required']) !!}
                                 </div>
                             </div>
                         </div>
