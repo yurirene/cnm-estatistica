@@ -39,14 +39,12 @@ class GraficoFormularioService
             'neurologico' => $dados->deficiencias['neurologico'] ?? 0,
             'intelectual' => $dados->deficiencias['intelectual'] ?? 0,
         ];
-        if (isset($dados->programacoes)) {
-            $retorno[] = [
-                'social' => $dados->programacoes['social'] ?? 0,
-                'evangelistico' => $dados->programacoes['evangelistico'] ?? 0,
-                'espiritual' => $dados->programacoes['espiritual'] ?? 0,
-                'recreativo' => $dados->programacoes['recreativo'] ?? 0,
-                'oracao' => $dados->programacoes['oracao'] ?? 0,
-            ];
+        if ($dados->programacoes) {
+            $retorno['social'] = $dados->programacoes['social'] ?? 0;
+            $retorno['evangelistico'] = $dados->programacoes['evangelistico'] ?? 0;
+            $retorno['espiritual'] = $dados->programacoes['espiritual'] ?? 0;
+            $retorno['recreativo'] = $dados->programacoes['recreativo'] ?? 0;
+            $retorno['oracao'] = $dados->programacoes['oracao'] ?? 0;
         }
         return $retorno;
     }

@@ -156,7 +156,23 @@
                     </a>
                 </li>
                 @endCanAtLeast
-                
+
+                @canAtLeast(['dashboard.formularios-locais.index'])
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                        <i class="fas fa-file"></i> Formulário Estatístico
+                    </a>
+                </li>
+                @endCanAtLeast
+                @canAtLeast(['dashboard.formularios-federacoes.index'])
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
+                        <i class="fas fa-file"></i> Formulário Estatístico
+                    </a>
+                </li>
+                @endCanAtLeast
 
 
             </ul>

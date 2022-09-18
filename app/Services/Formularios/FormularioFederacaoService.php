@@ -59,6 +59,21 @@ class FormularioFederacaoService
             
         }
     }
+    
+    public static function showFormulario($id)
+    {
+        try {
+            $formulario = FormularioFederacao::find($id);
+            $resumo = GraficoFormularioService::formatarResumo($formulario);
+            $grafico = GraficoFormularioService::formatarGrafico($formulario);
+            return [
+                'resumo' => $resumo,
+                'grafico' => $grafico
+            ];
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
 
     public static function verificarColeta()
     {
@@ -74,20 +89,7 @@ class FormularioFederacaoService
         }
     }
 
-    public static function showFormulario($id)
-    {
-        try {
-            $formulario = FormularioFederacao::find($id);
-            $resumo = GraficoFormularioService::formatarResumo($formulario);
-            $grafico = GraficoFormularioService::formatarGrafico($formulario);
-            return [
-                'resumo' => $resumo,
-                'grafico' => $grafico
-            ];
-        } catch (\Throwable $th) {
-            return $th->getMessage();
-        }
-    }
+   
 
     public static function getAnosFormulariosRespondidos()
     {
@@ -107,6 +109,7 @@ class FormularioFederacaoService
             $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', date('Y'))->get();
             
             $totalizador = [
+                'total_formularios' => $formularios->count(),
                 'aci' => 0,
                 'perfil' => [
                     'ativos' => 0,
@@ -195,4 +198,13 @@ class FormularioFederacaoService
         }
     }
 
+    
+    public static function getAnoReferencia() : int
+    {
+        try {
+            return Parametro::where('nome', 'ano_referencia')->first()->valor;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

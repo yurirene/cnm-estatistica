@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
         Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
         Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
+        Route::get('/formularios-locais-export/{ano}', [FormularioLocalController::class, 'export'])->name('formularios-locais.export');
 
     });
 

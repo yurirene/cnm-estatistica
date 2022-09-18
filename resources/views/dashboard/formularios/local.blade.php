@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Formulários - UMP Local'
+    'titulo' => 'Formulário Estatístico'
 ])
 
 <div class="container-fluid mt--7">
@@ -13,7 +13,7 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="mb-0">Painel Estatístico</h3>
+                            <h3 class="mb-0">Formulário Estatístico - UMP Local</h3>
                         </div>
                     </div>
                 </div>
@@ -27,6 +27,7 @@
                                     {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
                                 </div>
                                 <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
+                                <a href="#" id="link_export" class="btn btn-primary mb-2 ml-1">Exportar</a>
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
@@ -40,7 +41,7 @@
     </div>
     @include('dashboard.formularios.local.respostas')
     @if($coleta)
-    <div class="row mt-5" id="formulario_ump" style="{{ $errors->has('somatorio') ? ' ' : 'display: none;' }}">
+    <div class="row mt-5" id="formulario_ump" style="{{ $errors->any() ? ' ' : 'display: none;' }}">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
                 <div class="card-header border-0">
@@ -51,12 +52,23 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled /> 
+                        </div>
+                    </div>
+                    <hr>
                     @error('somatorio')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
 
-
+                    @if(!is_null($formulario))
+                    {!! Form::model($formulario, ['route' => ['dashboard.formularios-locais.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                    @else
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-locais.store', 'class' => 'form-horizontal']) !!}
+                    @endif
+
+
                     <h3>Perfil do Sócio</h3>
                     @include('dashboard.formularios.local.perfil')
 

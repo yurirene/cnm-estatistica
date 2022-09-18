@@ -30,6 +30,7 @@
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
+                                    <input type="text" class="form-control" value="{{ $ano_coleta }}" disabled /> 
                                 @endif
                             </div>
                         </div>
@@ -117,57 +118,6 @@
             </div>
         </div>
     </div>
-    {{-- <div class="row mt-5" id="formulario_importar" style="{{ $errors->has('somatorio') ? ' ' : 'display: none;' }}">
-        <div class="col-xl-12 mb-5 mb-xl-0">
-            <div class="card shadow p-3">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0">Importar Formulário Formulário Estatístico</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-sinodais.importar', 'class' => 'form-horizontal', 'files' => true]) !!}
-                    <div class="form-group{{ $errors->has('planilha') ? ' has-error' : '' }}">
-                    {!! Form::label('planilha', 'Planilha') !!}
-                    {!! Form::file('planilha', ['required' => 'required', 'class' => 'form-control']) !!}
-                    <p class="help-block">Selecione o arquivo</p>
-                    <small class="text-danger">{{ $errors->first('planilha') }}</small>
-                    </div>
-
-                    <div id="campos-federacoes"></div>
-
-                    <h2>Informações Complementares</h2>
-                    <h3>Programações</h3>
-                    @include('dashboard.formularios.local.programacoes')
-
-                    @if(count(auth()->user()->sinodais) > 1)
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('sinodal_id', 'Sinodal') !!}
-                                {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                        @else 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                    @endif
-
-
-                    <div class="btn-group pull-right">
-                        
-                    {!! Form::button('Importar', ['class' => 'btn btn-success', 'id' => 'botao-validar']) !!}
-                    <button class="btn btn-success" id="botao-importar-enviar" style="display: none;">Enviar</button>
-                    </div>
-                    {!! Form::close() !!}
-                </div>
-            </div>
-        </div>
-    </div> --}}
     @endif
 </div>  
 @endsection

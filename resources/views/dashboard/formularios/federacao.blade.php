@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Formulários - UMP Local'
+    'titulo' => 'Formulário Estatístico'
 ])
 
 <div class="container-fluid mt--7">
@@ -53,6 +53,12 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled /> 
+                        </div>
+                    </div>
+                    <hr>
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-federacoes.store', 'class' => 'form-horizontal']) !!}
 
                     <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>

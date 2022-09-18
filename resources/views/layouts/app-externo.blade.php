@@ -135,10 +135,13 @@
 </head>
 
 <body class="{{ $class ?? '' }}">
+    @if(!isset($export))
     <div class="main-content">
         @include('layouts.navbars.navs.guest')
         @yield('content')
     </div>
+    @endif
+    @yield('content')
 
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

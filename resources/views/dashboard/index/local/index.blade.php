@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-@include('dashboard.index.local.cards')
+@include('dashboard.index.local.cards', [
+    'totalizadores' => DashboardHelper::getTotalizadores()
+])
 
 @php $local = DashboardHelper::getInfo(); @endphp
 

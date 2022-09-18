@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Services\Formularios\ValidarFormularioService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreFormularioLocalRequest extends FormRequest
 {
@@ -43,6 +44,13 @@ class StoreFormularioLocalRequest extends FormRequest
 
         $validacoes = [];
         $erros = [];
+
+        if ($this->total == 0) {
+            return [
+                'status' => false,
+                'text' => 'Quantidade de Sócios inválida' 
+            ];
+        }
         
         $validacoes['Sexo'] = ValidarFormularioService::somatorio(
             $this->total, 
@@ -106,9 +114,9 @@ class StoreFormularioLocalRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $role = Auth::user()->roles->first()->name;
+        $data = [
             'perfil' => ['array', 'required', 'min:8'],
-            'estrutura' => ['array', 'required'],
             'escolaridade' => ['array', 'required', 'min:6'],
             'estado_civil' => ['array', 'required', 'min:5'],
             'deficiencias' => ['array', 'required', 'min:9'],
@@ -121,6 +129,11 @@ class StoreFormularioLocalRequest extends FormRequest
             'programacoes.*' => ['min:0'],
             
         ];
+        if (in_array($role, ['sinodal', 'federacao'])) {
+            $data['estrutura'] = ['array', 'required'];
+        }
+
+        return $data;
     }
 
     public function messages()

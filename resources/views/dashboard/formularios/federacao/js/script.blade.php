@@ -8,6 +8,7 @@
                 id: $('#federacao_id').val()
             },
             success: function(json) {
+                console.log(json);
                 $('#aci-recebida').text(json.data.aci)
                 $('#resumo-ativos').text(json.data.perfil.ativos)
                 $('#resumo-cooperadores').text(json.data.perfil.cooperadores)

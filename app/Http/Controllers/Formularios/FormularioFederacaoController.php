@@ -15,7 +15,13 @@ class FormularioFederacaoController extends Controller
         $formulario_respondido_ano = FormularioFederacaoService::getAnosFormulariosRespondidos();
         return view('dashboard.formularios.federacao', [
             'coleta' => FormularioFederacaoService::verificarColeta(),
-            'anos' => $formulario_respondido_ano
+            'anos' => $formulario_respondido_ano,
+            'ano_referencia' => FormularioFederacaoService::getAnoReferencia(),
+
+            
+            // 'coleta' => FormularioLocalService::verificarColeta(),
+            // 'anos' => $formulario_respondido_ano,
+            // 'formulario' => $formulario_coleta_atual
         ]);
     }
 
