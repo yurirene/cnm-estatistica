@@ -30,7 +30,6 @@
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
-                                    <input type="text" class="form-control" value="{{ $ano_coleta }}" disabled /> 
                                 @endif
                             </div>
                         </div>
@@ -55,35 +54,23 @@
                     @error('somatorio')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
-
+                    <div class="row">
+                        <div class="col-md-3">
+                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled /> 
+                        </div>
+                    </div>
+                    <hr>
                     @if(!is_null($formulario))
                     {!! Form::model($formulario, ['route' => ['dashboard.formularios-sinodais.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
                     @else
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-sinodais.store', 'class' => 'form-horizontal']) !!}
                     @endif
 
+                    <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>
+                    @include('dashboard.formularios.sinodal.totalizador')
+
                     <h3>Estrutura</h3>
                     @include('dashboard.formularios.sinodal.federacoes-umps')
-
-                    <hr class="my-3">
-                    
-                    <h3>Perfil do Sócio</h3>
-                    @include('dashboard.formularios.sinodal.perfil')
-                    
-                    <hr class="my-3">
-
-                    <h3>Estado Civil</h3>
-                    @include('dashboard.formularios.sinodal.estado_civil')
-
-                    <hr class="my-3">
-
-                    <h3>Escolaridade</h3>
-                    @include('dashboard.formularios.sinodal.escolaridade')
-
-                    <hr class="my-3">
-
-                    <h3>Deficiência</h3>
-                    @include('dashboard.formularios.sinodal.deficiencia')
 
                     <hr class="my-3">
 
@@ -105,14 +92,18 @@
                         @else 
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'id'=>'sinodal_id', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     @endif
 
+                    @if($qualidade_entrega['porcentagem'] >=60)
                     <div class="btn-group pull-right">
-                    {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
+                    {!! Form::submit((!isset($formulario) ? 'Enviar' : 'Atualizar'), ['class' => 'btn btn-success']) !!}
                     </div>
+                    @else 
+                    <button class="btn btn-danger" disabled>Enviar</button>
+                    @endif
                     {!! Form::close() !!}
                 </div>
             </div>

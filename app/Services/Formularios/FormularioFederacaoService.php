@@ -47,7 +47,6 @@ class FormularioFederacaoService
                 'estrutura' => $estrutura
             ]);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
@@ -113,7 +112,7 @@ class FormularioFederacaoService
     {
         $locais = Local::where('federacao_id', $id)->get()->pluck('id');
         try {
-            $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', date('Y'))->get();
+            $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', self::getAnoReferencia())->get();
             
             $totalizador = [
                 'total_formularios' => $formularios->count(),
@@ -219,19 +218,24 @@ class FormularioFederacaoService
     {
 
         try {
-            $locais = Auth::user()->federacoes->first()->locais->pluck('id');
-            $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais)
+            $locais = Auth::user()->federacoes->first()->locais;
+            $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
                 ->where('ano_referencia', self::getAnoReferencia())
                 ->count();
-            $porcentagem = round(($quantidade_entregue * 100) / $locais->count(), 2);
+            
+            if ($quantidade_entregue == 0 && $locais->where('status', 1)->count() == 0) {
+                $porcentagem = 0;
+            } else {
+                $porcentagem = round(($quantidade_entregue * 100) / $locais->where('status', 1)->count(), 2);
+            }
             
             $data = ['porcentagem' => $porcentagem];
             if ($porcentagem < 50) {
                 $data['color'] = 'danger';
-                $data['texto'] = 'Quantidade Ruim';
+                $data['texto'] = 'Quantidade Ruim (Tenha ao Menos 50%)';
             } else if ($porcentagem >= 50 && $porcentagem <= 75) {
                 $data['color'] = 'Quantidade Mediana, mas pode melhorar';
-                $data['texto'] = 'Ainda não é o ideal, mas você já pode enviar';
+                $data['texto'] = 'Ainda não é o ideal, mas você já pode enviar e/ou atualizar depois';
             } else {
                 $data['color'] = 'success';
                 $data['texto'] = 'Quantidade mínima Ideal';

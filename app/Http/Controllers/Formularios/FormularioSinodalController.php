@@ -17,11 +17,14 @@ class FormularioSinodalController extends Controller
         return view('dashboard.formularios.sinodal', [
             'coleta' => FormularioSinodalService::verificarColeta(),
             'anos' => $formulario_respondido_ano,
-            'formulario' => $formulario_esse_ano
+            'formulario' => $formulario_esse_ano,
+            'ano_referencia' => FormularioSinodalService::getAnoReferencia(),
+            'qualidade_entrega' =>  FormularioSinodalService::qualidadeEntrega(),
+            'estrutura_sinodal' => FormularioSinodalService::getEstrutura(),
         ]);
     }
 
-    public function store(StoreFormularioLocalRequest $request)
+    public function store(Request $request)
     {
         try {
             FormularioSinodalService::store($request);
@@ -62,30 +65,6 @@ class FormularioSinodalController extends Controller
         }
     }
 
-    public function validarImportacao(Request $request)
-    {
-        try {
-            $response = FormularioSinodalService::validarImportacao($request);
-            return response()->json($response, 200);
-        } catch (\Throwable $th) {
-            return response()->json($th->getMessage(), 400);
-        }
-    }
-
-    public function importar(Request $request)
-    {
-        try {
-            FormularioSinodalService::importar($request);
-            return redirect()->route('dashboard.formularios-sinodais.index')->with([
-                'mensagem' => [
-                    'status' => true,
-                    'texto' => 'Operação realizada com Sucesso!'
-                ]
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json($th->getMessage(), 400);
-        }
-    }
 
     public function getFederacoes()
     {
