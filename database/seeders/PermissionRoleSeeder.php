@@ -24,7 +24,8 @@ class PermissionRoleSeeder extends Seeder
                     'datatables',
                     'secretaria-estatistica',
                     'secretaria-produtos',
-                    'demandas'
+                    'demandas',
+                    'digestos'
                 ]
             ],
             'diretoria' => [
@@ -89,7 +90,8 @@ class PermissionRoleSeeder extends Seeder
             'executiva' => [
                 'resources' => [
                     'demandas',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'digestos'
                 ]
             ],
             'secretaria_eventos' => [

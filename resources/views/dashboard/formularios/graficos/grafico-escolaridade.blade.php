@@ -20,7 +20,6 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                console.log(context)
                                 return context.label + ': ' + context.parsed + '%'
                             }
                         }

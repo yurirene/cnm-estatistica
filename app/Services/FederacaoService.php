@@ -6,6 +6,7 @@ use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioLocal;
+use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use Carbon\Carbon;
@@ -143,11 +144,13 @@ class FederacaoService
     {
         $federacao = Auth::user()->federacoes->first();
         try {
-            $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', date('Y'))->first();
+            $formulario = FormularioFederacao::where('federacao_id', $federacao->id)
+                ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                ->first();
             if (!$formulario) {
                 return [
                     'total_umps' => $federacao->locais->count(),
-                    'total_socios' => 'Em Breve',
+                    'total_socios' => 'Responda Pendente',
                 ];
             }
             return [

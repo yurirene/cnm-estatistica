@@ -111,12 +111,6 @@
                     </a>
                 </li>
 
-                {{-- <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
-                        <i class="fas fa-file"></i> Formulário Estatístico
-                    </a>
-                </li> --}}
-
                 @endCanAtLeast
                 @canAtLeast(['dashboard.atividades.index'])
                 <li class="nav-item">
@@ -155,13 +149,30 @@
                     </a>
                 </li>
                 @endCanAtLeast
-                {{-- @canAtLeast(['dashboard.formularios-locais.index'])
+                @canAtLeast(['dashboard.digestos.index'])
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
-                        <i class="fas fa-file"></i> Formulário UMP Local
+                    <a class="nav-link" href="{{ route('dashboard.digestos.index') }}">
+                        <i class="fas fa-file-alt"></i> Digestos
                     </a>
                 </li>
-                @endCanAtLeast --}}
+                @endCanAtLeast
+
+                @canAtLeast(['dashboard.formularios-locais.index'])
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
+                        <i class="fas fa-file"></i> Formulário Estatístico
+                    </a>
+                </li>
+                @endCanAtLeast
+                @canAtLeast(['dashboard.formularios-federacoes.index'])
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
+                        <i class="fas fa-file"></i> Formulário Estatístico
+                    </a>
+                </li>
+                @endCanAtLeast
 
 
             </ul>

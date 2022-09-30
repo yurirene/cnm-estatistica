@@ -11,65 +11,144 @@
             <div class="card card-body rounded shadow">
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
-                        Ano Referência: <b id="ano_referencia"></b> <span class="ml-2 mr-2">|</span> ACI: <b id="aci"></b><br>
+                        Ano Referência: <b id="ano_referencia"></b> 
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <p>
                             <h4>Perfil</h4>
-                            Ativos: <b id="ativos"></b><br>
-                            Cooperadores: <b id="cooperadores"></b><br>
-                            Homens: <b id="homens"></b><br>
-                            Muljeres: <b id="mulheres"></b><br>
-                            Menor de 19: <b id="menor19"></b><br>
-                            19 a 23: <b id="de19a23"></b><br>
-                            24 a 29: <b id="de24a29"></b><br>
-                            30 a 35: <b id="de30a35"></b>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Ativos
+                                    <span class="badge badge-primary badge-pill"><b id="ativos"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Cooperadores
+                                    <span class="badge badge-primary badge-pill"><b id="cooperadores"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Homens
+                                    <span class="badge badge-primary badge-pill"><b id="mulheres"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Mulheres
+                                    <span class="badge badge-primary badge-pill"><b id="homens"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Menor de 19
+                                    <span class="badge badge-primary badge-pill"><b id="menor19"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    19 a 23
+                                    <span class="badge badge-primary badge-pill"><b id="de19a23"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    24 a 29
+                                    <span class="badge badge-primary badge-pill"><b id="de24a29"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    30 a 35
+                                    <span class="badge badge-primary badge-pill"><b id="de30a35"></b></span>
+                                </li>
+                            </ul>
                         </p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <p>
                             <h4>Escolaridade</h4>
-                            Até o Ens. Fundamental: <b id="fundamental"></b><br>
-                            Até o Ens. Médio: <b id="medio"></b><br>
-                            Até o Ens. Técnino: <b id="tecnico"></b><br>
-                            Até o Ens. Superior: <b id="superior"></b><br>
-                            Com Pós-Graduação: <b id="pos"></b><br>
-                            Desempregados: <b id="desempregados"></b><br>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Até o Ens. Fundamental
+                                    <span class="badge badge-primary badge-pill"><b id="fundamental"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Até o Ens. Médio
+                                    <span class="badge badge-primary badge-pill"><b id="medio"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Até o Ens. Técnino
+                                    <span class="badge badge-primary badge-pill"><b id="tecnico"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Até o Ens. Superior
+                                    <span class="badge badge-primary badge-pill"><b id="superior"></b></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Com Pós-Graduação
+                                    <span class="badge badge-primary badge-pill"><b id="pos"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Desempregados
+                                    <span class="badge badge-primary badge-pill"><b id="desempregado"></b></span>
+                                </li>
+                            </ul>
                         </p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <p>
                             <h4>Estado Civil</h4>
-                            Solteiros: <b id="solteiros"></b><br>
-                            Casados: <b id="casados"></b><br>
-                            Divorciados: <b id="divorciados"></b><br>
-                            Viúvos: <b id="viuvos"></b><br>
-                            Sócio com Filhos: <b id="filhos"></b><br>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Solteiros
+                                    <span class="badge badge-primary badge-pill"><b id="solteiros"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Casados
+                                    <span class="badge badge-primary badge-pill"><b id="casados"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Divorciados
+                                    <span class="badge badge-primary badge-pill"><b id="divorciados"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Viúvos
+                                    <span class="badge badge-primary badge-pill"><b id="viuvos"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Sócio com Filhos
+                                    <span class="badge badge-primary badge-pill"><b id="filhos"></b></span>
+                                </li>
+                            </ul>
                         </p>
                     </div>
                     <div class="col-md-3">
                         <p>
                             <h4>Deficiências</h4>
-                            Surdos: <b id="surdos"></b><br>
-                            Deficiência Auditiva: <b id="auditiva"></b><br>
-                            Cegos: <b id="cegos"></b><br>
-                            Baixa Visão: <b id="baixa_visao"></b><br>
-                            Deficiência física/motora em membros inferiores: <b id="fisica_inferior"></b><br>
-                            Deficiência física/motora em membros superiores: <b id="fisica_superior"></b><br>
-                            Transtorno Neurológico: <b id="neurologico"></b><br>
-                            Deficiência Intelectual: <b id="intelectual"></b><br>
-                        </p>
-                    </div>
-                    <div class="col-md-3">
-                        <p>
-                            <h4>Programações</h4>
-                            Social: <b id="social"></b><br>
-                            Evangelístico e Missional: <b id="evangelistico"></b><br>
-                            Espiritual: <b id="espiritual"></b><br>
-                            Recreativo: <b id="recreativo"></b><br>
-                            Oração e Vigílias: <b id="oracao"></b><br>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Surdos
+                                    <span class="badge badge-primary badge-pill"><b id="surdos"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Deficiência Auditiva
+                                    <span class="badge badge-primary badge-pill"><b id="auditiva"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Cegos
+                                    <span class="badge badge-primary badge-pill"><b id="cegos"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Baixa Visão
+                                    <span class="badge badge-primary badge-pill"><b id="baixa_visao"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Deficiência física/motora em membros inferiores
+                                    <span class="badge badge-primary badge-pill"><b id="fisica_inferior"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Deficiência física/motora em membros superiores
+                                    <span class="badge badge-primary badge-pill"><b id="fisica_superior"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Transtorno Neurológico
+                                    <span class="badge badge-primary badge-pill"><b id="neurologico"></b></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Deficiência Intelectual
+                                    <span class="badge badge-primary badge-pill"><b id="intelectual"></b></span>
+                                </li>
+                            </ul>
                         </p>
                     </div>
                 </div>

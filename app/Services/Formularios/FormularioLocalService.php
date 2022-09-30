@@ -21,16 +21,42 @@ class FormularioLocalService
     public static function store(Request $request)
     {
         try {
-            FormularioLocal::create([
-                'perfil' => $request->perfil,
-                'estado_civil' => $request->estado_civil,
-                'escolaridade' => $request->escolaridade,
-                'deficiencias' => $request->deficiencia,
-                'programacoes' => $request->programacoes,
-                'aci' => $request->aci,
-                'ano_referencia' => date('Y'),
-                'local_id' => $request->local_id
-            ]);
+            $perfil = array_map(function($item) {
+                return intval($item);
+            },$request->perfil);
+            $estado_civil = array_map(function($item) {
+                return intval($item);
+            },$request->estado_civil);
+            $deficiencias = collect($request->deficiencias)->map(function($key, $item) {
+                if ($key == 'outras') {
+                    return $item;
+                }
+                return intval($item);
+            })->toArray();
+            $escolaridade = array_map(function($item) {
+                return intval($item);
+            },$request->escolaridade);
+
+            $programacoes = array_map(function($item) {
+                return intval($item);
+            }, $request->programacoes);
+
+            FormularioLocal::updateOrCreate(
+                [
+                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'local_id' => $request->local_id
+                ],
+                [
+                    'perfil' => $perfil,
+                    'estado_civil' => $estado_civil,
+                    'escolaridade' => $escolaridade,
+                    'deficiencias' => $deficiencias,
+                    'programacoes' => $programacoes,
+                    'aci' => $request->aci,
+                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'local_id' => $request->local_id
+                ]
+            );
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -59,12 +85,7 @@ class FormularioLocalService
     public static function verificarColeta()
     {
         try {
-            $parametro_ativo = Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
-            $existe_formulario = FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
-                ->where('ano_referencia', date('Y'))
-                ->get()
-                ->isEmpty();
-            return $existe_formulario && $parametro_ativo;
+            return Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
         } catch (\Throwable $th) {
             throw new Exception("Erro ao Verificar Coleta");
         }
@@ -96,4 +117,26 @@ class FormularioLocalService
         }
     }
 
+    public static function getAnoReferencia() : int
+    {
+        try {
+            return Parametro::where('nome', 'ano_referencia')->first()->valor;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getFormularioAnoCorrente()
+    {
+        return FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->first();
+    }
+
+    public static function getFormulario($ano)
+    {
+        return FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
+            ->where('ano_referencia', $ano)
+            ->first();
+    }
 }

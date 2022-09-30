@@ -24,16 +24,27 @@ class FormularioFederacaoService
     {
         try {
             $totalizador = self::totalizador($request->federacao_id);
-            FormularioFederacao::create([
+            $programacoes = array_map(function($item) {
+                return intval($item);
+            }, $request->programacoes);
+            $estrutura = array_map(function($item) {
+                return intval($item);
+            }, $request->estrutura);
+            FormularioFederacao::updateOrCreate(
+                [
+                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'federacao_id' => $request->federacao_id
+                ],[
                 'perfil' => $totalizador['perfil'],
                 'estado_civil' => $totalizador['estado_civil'],
                 'escolaridade' => $totalizador['escolaridade'],
                 'deficiencias' => $totalizador['deficiencias'],
                 'programacoes_locais' => $totalizador['programacoes'],
-                'programacoes_federacao' => $request->programacoes,
+                'programacoes' => $programacoes,
                 'aci' => $request->aci,
-                'ano_referencia' => date('Y'),
-                'federacao_id' => $request->federacao_id
+                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                'federacao_id' => $request->federacao_id,
+                'estrutura' => $estrutura
             ]);
         } catch (\Throwable $th) {
             LogErroService::registrar([
@@ -59,21 +70,7 @@ class FormularioFederacaoService
             
         }
     }
-
-    public static function verificarColeta()
-    {
-        try {
-            $parametro_ativo = Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
-            $existe_formulario = FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
-                ->where('ano_referencia', date('Y'))
-                ->get()
-                ->isEmpty();
-            return $existe_formulario && $parametro_ativo;
-        } catch (\Throwable $th) {
-            throw new Exception("Erro ao Verificar Coleta");
-        }
-    }
-
+    
     public static function showFormulario($id)
     {
         try {
@@ -88,6 +85,17 @@ class FormularioFederacaoService
             return $th->getMessage();
         }
     }
+
+    public static function verificarColeta()
+    {
+        try {
+            return Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
+        } catch (\Throwable $th) {
+            throw new Exception("Erro ao Verificar Coleta");
+        }
+    }
+
+   
 
     public static function getAnosFormulariosRespondidos()
     {
@@ -104,9 +112,10 @@ class FormularioFederacaoService
     {
         $locais = Local::where('federacao_id', $id)->get()->pluck('id');
         try {
-            $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', date('Y'))->get();
+            $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', self::getAnoReferencia())->get();
             
             $totalizador = [
+                'total_formularios' => $formularios->count(),
                 'aci' => 0,
                 'perfil' => [
                     'ativos' => 0,
@@ -195,4 +204,80 @@ class FormularioFederacaoService
         }
     }
 
+    
+    public static function getAnoReferencia() : int
+    {
+        try {
+            return Parametro::where('nome', 'ano_referencia')->first()->valor;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function qualidadeEntrega() : array
+    {
+
+        try {
+            $locais = Auth::user()->federacoes->first()->locais;
+            $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
+                ->where('ano_referencia', self::getAnoReferencia())
+                ->count();
+            
+            if ($quantidade_entregue == 0 && $locais->where('status', 1)->count() == 0) {
+                $porcentagem = 0;
+            } else {
+                $porcentagem = round(($quantidade_entregue * 100) / $locais->where('status', 1)->count(), 2);
+            }
+            
+            $data = ['porcentagem' => $porcentagem];
+            if ($porcentagem < 50) {
+                $data['color'] = 'danger';
+                $data['texto'] = 'Quantidade Ruim (Tenha ao Menos 50%)';
+            } else if ($porcentagem >= 50 && $porcentagem <= 75) {
+                $data['color'] = 'Quantidade Mediana, mas pode melhorar';
+                $data['texto'] = 'Ainda não é o ideal, mas você já pode enviar e/ou atualizar depois';
+            } else {
+                $data['color'] = 'success';
+                $data['texto'] = 'Quantidade mínima Ideal';
+            }
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getEstrutura() : array
+    {
+
+        try {
+            $locais = Auth::user()->federacoes->first()->locais;
+            $formularios_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
+                ->where('ano_referencia', self::getAnoReferencia())
+                ->get();
+            $data = [
+                'quantidade_umps' => $locais->where('status', 1)->count(),
+                'quantidade_sem_ump' => $locais->where('status', 0)->count(),
+                'nro_repasse' => $formularios_entregue->where('aci.repasse', 'S')->count(),
+                'nro_sem_repasse' => $formularios_entregue->where('aci.repasse', 'N')->count()
+            ];
+
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getFormularioAnoCorrente()
+    {
+        return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->first();
+    }
+
+    public static function getFormulario($ano) : ?FormularioFederacao
+    {
+        return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
+            ->where('ano_referencia', $ano)
+            ->first();
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DemandaController;
+use App\Http\Controllers\DigestoController;
 use App\Http\Controllers\EstatisticaController;
 use App\Http\Controllers\EstoqueProdutoController;
 use App\Http\Controllers\FederacaoController;
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
         Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
         Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
+        Route::get('/formularios-locais-export/{ano}', [FormularioLocalController::class, 'export'])->name('formularios-locais.export');
 
     });
 
@@ -78,8 +80,6 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
         Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
         Route::post('/formularios-sinodais-resumo', [FormularioSinodalController::class, 'resumoTotalizador'])->name('formularios-sinodais.resumo');
-        Route::post('/formularios-sinodais-importar-validar', [FormularioSinodalController::class, 'validarImportacao'])->name('formularios-sinodais.importar-validar');
-        Route::post('/formularios-sinodais-importar', [FormularioSinodalController::class, 'importar'])->name('formularios-sinodais.importar');
         Route::get('/formularios-sinodais-get-federacoes', [FormularioSinodalController::class, 'getFederacoes'])->name('formularios-sinodais.get-federacoes');
 
     });
@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');
         Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
         Route::post('/formularios-federacoes-resumo', [FormularioFederacaoController::class, 'resumoTotalizador'])->name('formularios-federacoes.resumo');
+        Route::get('/formularios-federacoes-export/{ano}', [FormularioFederacaoController::class, 'export'])->name('formularios-federacoes.export');
     });
 
     Route::group(['modulo' => 'pesquisas'], function() {
@@ -147,6 +148,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])->name('demandas.store-item');
         Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
     });
+    Route::group(['modulo' => 'digestos'], function() {
+        Route::resource('digestos', DigestoController::class)->parameters(['digestos' => 'digesto'])->names('digestos')->except('delete');
+        Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])->name('digestos.delete');
+    });
 
     // DATATABLES
     Route::group(['modulo' => 'datatables'], function() {
@@ -160,3 +165,4 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');

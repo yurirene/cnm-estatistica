@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Formulários - UMP Local'
+    'titulo' => 'Formulário Estatístico'
 ])
 
 <div class="container-fluid mt--7">
@@ -27,6 +27,7 @@
                                     {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
                                 </div>
                                 <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
+                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">Exportar</a>
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
@@ -53,13 +54,30 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled /> 
+                        </div>
+                    </div>
+                    <hr>
+
+
+                    @if(!is_null($formulario))
+                    {!! Form::model($formulario, ['route' => ['dashboard.formularios-federacoes.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                    @else
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-federacoes.store', 'class' => 'form-horizontal']) !!}
+                    @endif
+
 
                     <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>
                     @include('dashboard.formularios.federacao.totalizador')
 
                     <hr class="my-3">
                     
+                    <h3>Estrutura</h3>
+                    @include('dashboard.formularios.federacao.estrutura')
+
+                    <hr class="my-3">
                     <h3>Programações</h3>
                     @include('dashboard.formularios.federacao.programacoes')
 
@@ -84,9 +102,13 @@
                         </div>
                     @endif
 
+                    @if($qualidade_entrega['porcentagem'] >=50)
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
                     </div>
+                    @else 
+                    <button class="btn btn-danger" disabled>Enviar</button>
+                    @endif
                     {!! Form::close() !!}
                 </div>
             </div>

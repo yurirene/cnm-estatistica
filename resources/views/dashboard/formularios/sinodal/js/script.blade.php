@@ -5,80 +5,48 @@
         $('#resumo-card').hide();
     });
 
-    $('#importar').on('click', function() {
-        $('#formulario_importar').show();
-        $('#formulario_ump').hide();
-        $('#resumo-card').hide();
-        
 
-    });
-
-    $('#botao-validar').on('click', function() {
-        var formData = new FormData(); 
-        let token = '{{ csrf_token() }}';
-
-        formData.append("planilha", planilha.files[0]);
-        formData.append("_token", token);
+    $('#responder').on('click', function() {
         $.ajax({
             type: "POST",
-            url: '{{ route("dashboard.formularios-sinodais.importar-validar") }}',
-            data: formData,
-            contentType : false,
-            processData : false,
-            success: function(response){
-                var html = '';
-                response.forEach((item) => {
-                    html += `<div class="form-row align-items-center">
-                                <div class="col-md-3 my-1">
-                                <label class="mr-sm-2" for="federacoes[${item.id_planilha}][federacao_id]">Federação</label>
-                                <select class="isSelectFederacoes form-control mr-sm-2" id="federacoes[${item.id_planilha}][federacao_id]" required name="federacoes[${item.id_planilha}][federacao_id]">
-                                </select>
-                                </div>
-                                <div class="col-md-3 my-1">
-                                    <label for="federacoes[${item.id_planilha}][presbiterio]">Presbitério</label>
-                                    <input type="text" class="form-control mr-sm-2" name="federacoes[${item.id_planilha}][presbiterio]" value="${item.presbiterio}" id="federacoes[${item.id_planilha}][presbiterio]" readonly>
-                                </div>
-                            </div>`;
-                });
-                $('#campos-federacoes').html(html);
-                inicializarSelect();
-                $('#botao-validar').hide();
-                $('#botao-importar-enviar').show();
+            url: '{{ route("dashboard.formularios-sinodais.resumo") }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                id: $('#sinodal_id').val()
             },
-            error: function(error) {
-                console.log(error);
-                let erros = error.responseJSON.split(';');
-                erros.forEach((item) => {
-                    if (item.length > 0) {
-                        iziToast.error({
-                            title: 'Erro!',
-                            message: item,
-                            position: 'topRight',
-                            timeout: 7000
-                        });
-                    }
-                });
+            success: function(json) {
+                $('#aci-recebida').text(json.data.aci)
+                $('#resumo-ativos').text(json.data.perfil.ativos)
+                $('#resumo-cooperadores').text(json.data.perfil.cooperadores)
+                $('#resumo-homens').text(json.data.perfil.homens)
+                $('#resumo-mulheres').text(json.data.perfil.mulheres)
+                $('#resumo-menor19').text(json.data.perfil.menor19)
+                $('#resumo-de19a23').text(json.data.perfil.de19a23)
+                $('#resumo-de24a29').text(json.data.perfil.de24a29)
+                $('#resumo-de30a35').text(json.data.perfil.de30a35)
+                $('#resumo-fundamental').text(json.data.escolaridade.fundamental)
+                $('#resumo-medio').text(json.data.escolaridade.medio)
+                $('#resumo-tecnico').text(json.data.escolaridade.tecnico)
+                $('#resumo-superior').text(json.data.escolaridade.superior)
+                $('#resumo-pos').text(json.data.escolaridade.pos)
+                $('#resumo-desempregado').text(json.data.escolaridade.desempregado)
+                $('#resumo-solteiros').text(json.data.estado_civil.solteiros)
+                $('#resumo-casados').text(json.data.estado_civil.casados)
+                $('#resumo-divorciados').text(json.data.estado_civil.divorciados)
+                $('#resumo-viuvos').text(json.data.estado_civil.viuvos)
+                $('#resumo-filhos').text(json.data.estado_civil.filhos)
+                $('#resumo-surdos').text(json.data.deficiencias.surdos)
+                $('#resumo-auditiva').text(json.data.deficiencias.auditiva)
+                $('#resumo-cegos').text(json.data.deficiencias.cegos)
+                $('#resumo-baixa_visao').text(json.data.deficiencias.baixa_visao)
+                $('#resumo-fisica_inferior').text(json.data.deficiencias.fisica_inferior)
+                $('#resumo-fisica_superior').text(json.data.deficiencias.fisica_superior)
+                $('#resumo-neurologico').text(json.data.deficiencias.neurologico)
+                $('#resumo-intelectual').text(json.data.deficiencias.intelectual)
             },
-            complete: function (data) {
-                console.log(data);
-            }
-            
         });
+        $('#formulario_ump').show();
     });
-
-    function inicializarSelect()
-    {
-        $('.isSelectFederacoes').select2({
-            ajax: {
-                url: '{{ route("dashboard.formularios-sinodais.get-federacoes") }}',
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                },
-            }
-        });
-    }
     
     $('#visualizar').on('click', function() {
         $.ajax({

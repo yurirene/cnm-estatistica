@@ -14,9 +14,12 @@ class FormularioLocalController extends Controller
     public function index()
     {
         $formulario_respondido_ano = FormularioLocalService::getAnosFormulariosRespondidos();
+        $formulario_coleta_atual = FormularioLocalService::getFormularioAnoCorrente();
         return view('dashboard.formularios.local', [
             'coleta' => FormularioLocalService::verificarColeta(),
-            'anos' => $formulario_respondido_ano
+            'anos' => $formulario_respondido_ano,
+            'ano_referencia' => FormularioLocalService::getAnoReferencia(),
+            'formulario' => $formulario_coleta_atual
         ]);
     }
 
@@ -49,5 +52,13 @@ class FormularioLocalController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['erro' => $th->getMessage()]);
         }
+    }
+
+    
+    public function export($ano)
+    {
+        return view('dashboard.formularios.local.export', [
+            'formulario' => FormularioLocalService::getFormulario($ano)
+        ]);
     }
 }
