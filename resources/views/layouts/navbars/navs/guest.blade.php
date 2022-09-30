@@ -37,6 +37,12 @@
                         <span class="nav-link-inner--text">{{ __('Login') }}</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-icon" href="{{ route('digesto') }}">
+                        <i class="ni ni-collection"></i>
+                        <span class="nav-link-inner--text">Digesto</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

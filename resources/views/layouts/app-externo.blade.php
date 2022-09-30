@@ -138,7 +138,6 @@
     @if(!isset($export))
     <div class="main-content">
         @include('layouts.navbars.navs.guest')
-        @yield('content')
     </div>
     @endif
     @yield('content')
