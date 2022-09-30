@@ -17,11 +17,8 @@ class FormularioFederacaoController extends Controller
             'coleta' => FormularioFederacaoService::verificarColeta(),
             'anos' => $formulario_respondido_ano,
             'ano_referencia' => FormularioFederacaoService::getAnoReferencia(),
-
-            
-            // 'coleta' => FormularioLocalService::verificarColeta(),
-            // 'anos' => $formulario_respondido_ano,
-            // 'formulario' => $formulario_coleta_atual
+            'qualidade_entrega' =>  FormularioFederacaoService::qualidadeEntrega(),
+            'estrutura_federacao' => FormularioFederacaoService::getEstrutura()
         ]);
     }
 
@@ -64,5 +61,13 @@ class FormularioFederacaoController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['erro' => $th->getMessage()]);
         }
+    }
+
+    
+    public function export($ano)
+    {
+        return view('dashboard.formularios.federacao.export', [
+            'formulario' => FormularioFederacaoService::getFormulario($ano)
+        ]);
     }
 }

@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');
         Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
         Route::post('/formularios-federacoes-resumo', [FormularioFederacaoController::class, 'resumoTotalizador'])->name('formularios-federacoes.resumo');
+        Route::get('/formularios-federacoes-export/{ano}', [FormularioFederacaoController::class, 'export'])->name('formularios-federacoes.export');
     });
 
     Route::group(['modulo' => 'pesquisas'], function() {

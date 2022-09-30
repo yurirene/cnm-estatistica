@@ -40,6 +40,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     
     <style>
+        @media print{
+            body {
+                background-color: white;
+            }
+            .badge {
+                background-color: white !important;
+                color: black !important;
+                min-width: 40px;
+            }
+            /* @page {
+               size: A4 landscape;
+            } */
+        }
         @media (max-width: 767.98px) {
             .fc .fc-toolbar.fc-header-toolbar {
                 font-size: 10px;

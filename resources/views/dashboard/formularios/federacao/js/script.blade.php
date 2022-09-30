@@ -1,4 +1,22 @@
 <script>
+
+
+    $(document).ready(function() {
+        let link = "{{ route('dashboard.formularios-federacoes.export', ':id') }}";
+        let val = link.replace(':id', $('#ano').text());
+        $('#link_export').attr('href', val);
+    })
+    $('#responder').on('click', function() {
+        $('#formulario_ump').show();
+        $('#resumo-card').hide();
+    });
+    $('#ano').on('change', function() {
+        let link = "{{ route('dashboard.formularios-locais.export', ':id') }}";
+        let val = link.replace(':id', $('#ano').text());
+        $('#link_export').attr('href', val);
+    })
+
+
     $('#responder').on('click', function() {
         $.ajax({
             type: "POST",
@@ -8,7 +26,6 @@
                 id: $('#federacao_id').val()
             },
             success: function(json) {
-                console.log(json);
                 $('#aci-recebida').text(json.data.aci)
                 $('#resumo-ativos').text(json.data.perfil.ativos)
                 $('#resumo-cooperadores').text(json.data.perfil.cooperadores)

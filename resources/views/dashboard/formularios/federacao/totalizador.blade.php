@@ -3,11 +3,21 @@
         <div class="progress-wrapper">
             <div class="progress-info">
                 <div class="progress-percentage">
-                    <span class="text-sm font-weight-bold">60% dos Formulários Entregues (Ano Referência - {{ $ano_referencia }})</span>
+                    <span class="text-sm font-weight-bold">
+                        {{$qualidade_entrega['porcentagem']}}% dos Formulários Entregues (Ano Referência - {{ $ano_referencia }})</span> - 
+                        <small>{{$qualidade_entrega['texto']}}</small>
                 </div>
             </div>
-            <div class="progress">
-                <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+            <div class="progress" style="height: 15px;">
+                <div 
+                    class="progress-bar bg-{{$qualidade_entrega['color']}}" 
+                    role="progressbar" 
+                    aria-valuenow="{{$qualidade_entrega['porcentagem']}}" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100" 
+                    style="width: {{$qualidade_entrega['porcentagem']}}%;">
+                </div>
+                {{$qualidade_entrega['porcentagem']}}%
             </div>
         </div>
     </div>

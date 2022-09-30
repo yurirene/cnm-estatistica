@@ -24,16 +24,23 @@ class FormularioFederacaoService
     {
         try {
             $totalizador = self::totalizador($request->federacao_id);
+            $programacoes = array_map(function($item) {
+                return intval($item);
+            }, $request->programacoes);
+            $estrutura = array_map(function($item) {
+                return intval($item);
+            }, $request->estrutura);
             FormularioFederacao::create([
                 'perfil' => $totalizador['perfil'],
                 'estado_civil' => $totalizador['estado_civil'],
                 'escolaridade' => $totalizador['escolaridade'],
                 'deficiencias' => $totalizador['deficiencias'],
                 'programacoes_locais' => $totalizador['programacoes'],
-                'programacoes_federacao' => $request->programacoes,
+                'programacoes' => $programacoes,
                 'aci' => $request->aci,
                 'ano_referencia' => date('Y'),
-                'federacao_id' => $request->federacao_id
+                'federacao_id' => $request->federacao_id,
+                'estrutura' => $estrutura
             ]);
         } catch (\Throwable $th) {
             LogErroService::registrar([
@@ -206,5 +213,62 @@ class FormularioFederacaoService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public static function qualidadeEntrega() : array
+    {
+
+        try {
+            $locais = Auth::user()->federacoes->first()->locais->pluck('id');
+            $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais)
+                ->where('ano_referencia', self::getAnoReferencia())
+                ->count();
+            $porcentagem = round(($quantidade_entregue * 100) / $locais->count(), 2);
+            
+            $data = ['porcentagem' => $porcentagem];
+            if ($porcentagem < 50) {
+                $data['color'] = 'danger';
+                $data['texto'] = 'Quantidade Ruim';
+            } else if ($porcentagem >= 50 && $porcentagem <= 75) {
+                $data['color'] = 'Quantidade Mediana, mas pode melhorar';
+                $data['texto'] = 'Ainda não é o ideal, mas você já pode enviar';
+            } else {
+                $data['color'] = 'success';
+                $data['texto'] = 'Quantidade mínima Ideal';
+            }
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getEstrutura() : array
+    {
+
+        try {
+            $locais = Auth::user()->federacoes->first()->locais;
+            $formularios_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
+                ->where('ano_referencia', self::getAnoReferencia())
+                ->get();
+            $data = [
+                'quantidade_umps' => $locais->where('status', 1)->count(),
+                'quantidade_sem_ump' => $locais->where('status', 0)->count(),
+                'nro_repasse' => $formularios_entregue->where('aci.repasse', 'S')->count(),
+                'nro_sem_repasse' => $formularios_entregue->where('aci.repasse', 'N')->count()
+            ];
+
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+
+    public static function getFormulario($ano) : ?FormularioFederacao
+    {
+        return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
+            ->where('ano_referencia', $ano)
+            ->first();
     }
 }

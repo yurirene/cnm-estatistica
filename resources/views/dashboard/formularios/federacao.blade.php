@@ -27,6 +27,7 @@
                                     {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
                                 </div>
                                 <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
+                                <a href="#" id="link_export" class="btn btn-primary mb-2 ml-1">Exportar</a>
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
@@ -66,6 +67,10 @@
 
                     <hr class="my-3">
                     
+                    <h3>Estrutura</h3>
+                    @include('dashboard.formularios.federacao.estrutura')
+
+                    <hr class="my-3">
                     <h3>Programações</h3>
                     @include('dashboard.formularios.federacao.programacoes')
 
@@ -90,9 +95,13 @@
                         </div>
                     @endif
 
+                    @if($qualidade_entrega['porcentagem'] >=50)
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
                     </div>
+                    @else 
+                    <button class="btn btn-danger" disabled>Enviar</button>
+                    @endif
                     {!! Form::close() !!}
                 </div>
             </div>
