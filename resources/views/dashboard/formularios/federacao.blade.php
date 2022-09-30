@@ -27,7 +27,7 @@
                                     {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
                                 </div>
                                 <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
-                                <a href="#" id="link_export" class="btn btn-primary mb-2 ml-1">Exportar</a>
+                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">Exportar</a>
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
@@ -60,7 +60,14 @@
                         </div>
                     </div>
                     <hr>
+
+
+                    @if(!is_null($formulario))
+                    {!! Form::model($formulario, ['route' => ['dashboard.formularios-federacoes.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                    @else
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-federacoes.store', 'class' => 'form-horizontal']) !!}
+                    @endif
+
 
                     <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>
                     @include('dashboard.formularios.federacao.totalizador')

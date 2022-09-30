@@ -30,7 +30,11 @@ class FormularioFederacaoService
             $estrutura = array_map(function($item) {
                 return intval($item);
             }, $request->estrutura);
-            FormularioFederacao::create([
+            FormularioFederacao::updateOrCreate(
+                [
+                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'federacao_id' => $request->federacao_id
+                ],[
                 'perfil' => $totalizador['perfil'],
                 'estado_civil' => $totalizador['estado_civil'],
                 'escolaridade' => $totalizador['escolaridade'],
@@ -38,11 +42,12 @@ class FormularioFederacaoService
                 'programacoes_locais' => $totalizador['programacoes'],
                 'programacoes' => $programacoes,
                 'aci' => $request->aci,
-                'ano_referencia' => date('Y'),
+                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                 'federacao_id' => $request->federacao_id,
                 'estrutura' => $estrutura
             ]);
         } catch (\Throwable $th) {
+            dd($th->getMessage());
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
@@ -85,12 +90,7 @@ class FormularioFederacaoService
     public static function verificarColeta()
     {
         try {
-            $parametro_ativo = Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
-            $existe_formulario = FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
-                ->where('ano_referencia', date('Y'))
-                ->get()
-                ->isEmpty();
-            return $existe_formulario && $parametro_ativo;
+            return Parametro::where('nome', 'coleta_dados')->first()->valor == 'SIM';
         } catch (\Throwable $th) {
             throw new Exception("Erro ao Verificar Coleta");
         }
@@ -263,7 +263,12 @@ class FormularioFederacaoService
         }
     }
 
-
+    public static function getFormularioAnoCorrente()
+    {
+        return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->first();
+    }
 
     public static function getFormulario($ano) : ?FormularioFederacao
     {

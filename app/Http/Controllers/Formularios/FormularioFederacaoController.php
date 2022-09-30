@@ -13,12 +13,14 @@ class FormularioFederacaoController extends Controller
     public function index()
     {
         $formulario_respondido_ano = FormularioFederacaoService::getAnosFormulariosRespondidos();
+        $formulario_coleta_atual = FormularioFederacaoService::getFormularioAnoCorrente();
         return view('dashboard.formularios.federacao', [
             'coleta' => FormularioFederacaoService::verificarColeta(),
             'anos' => $formulario_respondido_ano,
             'ano_referencia' => FormularioFederacaoService::getAnoReferencia(),
             'qualidade_entrega' =>  FormularioFederacaoService::qualidadeEntrega(),
-            'estrutura_federacao' => FormularioFederacaoService::getEstrutura()
+            'estrutura_federacao' => FormularioFederacaoService::getEstrutura(),
+            'formulario' => $formulario_coleta_atual
         ]);
     }
 

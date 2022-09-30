@@ -9,7 +9,7 @@
     <div class="col-md-3 col-sm-6 mt-3">
         <div class="form-group{{ $errors->has('aci[valor]') ? ' has-error' : '' }}">
         {!! Form::label('aci[valor]', 'Valor repassado') !!}
-        {!! Form::text('aci[valor]', 0, ['class' => 'form-control isMoney', 'required' => 'required']) !!}
+        {!! Form::text('aci[valor]', isset($formulario) ? null : 0, ['class' => 'form-control isMoney', 'required' => 'required']) !!}
         <small class="text-danger">{{ $errors->first('aci[valor]') }}</small>
         </div>  
     </div>
