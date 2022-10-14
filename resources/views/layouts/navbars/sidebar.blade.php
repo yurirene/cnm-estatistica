@@ -174,6 +174,12 @@
                 </li>
                 @endCanAtLeast
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.tutoriais.index') }}">
+                        <i class="fas fa-video"></i> Tutoriais
+                    </a>
+                </li>
+
 
             </ul>
             <hr class="my-3">
