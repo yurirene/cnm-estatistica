@@ -25,14 +25,16 @@ class PermissionRoleSeeder extends Seeder
                     'secretaria-estatistica',
                     'secretaria-produtos',
                     'demandas',
-                    'digestos'
+                    'digestos',
+                    'tutoriais'
                 ]
             ],
             'diretoria' => [
                 'resources' => [
                     'sinodais',
                     'atividades',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'tutoriais'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -47,7 +49,8 @@ class PermissionRoleSeeder extends Seeder
             'sinodal' => [
                 'resources' => [
                     'federacoes',
-                    'formularios-sinodais'
+                    'formularios-sinodais',
+                    'tutoriais'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.update-info',
@@ -61,7 +64,8 @@ class PermissionRoleSeeder extends Seeder
             'federacao' => [
                 'resources' => [
                     'umps-locais',
-                    'formularios-federacoes'
+                    'formularios-federacoes',
+                    'tutoriais'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -72,7 +76,8 @@ class PermissionRoleSeeder extends Seeder
             ],
             'local' => [
                 'resources' => [
-                    'formularios-locais'
+                    'formularios-locais',
+                    'tutoriais'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
