@@ -283,6 +283,7 @@ class SinodalService
                     'sigla' => $federacao->sigla,
                     'numero_umps' => $total_umps_organizada['organizadas'] . ' de ' . $total_umps_organizada['total'],
                     'numero_socios' => $total_socios,
+                    'status' => $federacao->status
                 ];
             }
             return $info_federacao;

@@ -97,4 +97,9 @@ class UserController extends Controller
             ->withInput();
         }
     }
+
+    public function checkUser(Request $request) 
+    {
+        return response()->json(UserService::checkUser($request->all()), 200);
+    }
 }
