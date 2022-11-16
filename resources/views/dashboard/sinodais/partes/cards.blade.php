@@ -3,7 +3,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col text-center">
-                <h4 class="card-title text-uppercase text-muted mb-0">{{$sigla}}</h4>
+                <h4 class="card-title text-uppercase text-muted mb-0">{{$sigla}} - <small><span class="badge badge-pill badge-{{ $status ? 'success' : 'danger' }}">{{ $status ? 'Ativo' : 'Inativo' }}</span></small></h4>
                 <span class="h5 font-weight-bold mb-0">{{$nome}}</span>
             </div>
         </div>
