@@ -24,7 +24,7 @@
                         <span>Trocar Senha</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
+                    <a href="#" class="dropdown-item" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
                         <i class="ni ni-user-run"></i>
                         <span>{{ __('Logout') }}</span>

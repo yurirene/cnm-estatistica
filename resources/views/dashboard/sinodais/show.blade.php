@@ -10,7 +10,7 @@
 <div class="container-fluid mt--7">
     <div class="row mt-5">
         <div class="col-xl-5 mb-5 mb-xl-0">
-            <div class="card shadow p-3">
+            <div class="card shadow p-3 h-100">
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
@@ -86,11 +86,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto" style="max-height: 600px">
                     <div class="row mt-3">
                         @if(count($federacoes))
                         @foreach($federacoes as $federacao)
-                        <div class="col-md-6 col-xl-4 mt-3">
+                        <div class="col-md-6 col-xl-6 mt-3">
                             @include('dashboard.sinodais.partes.cards', $federacao)
                         </div>
                         @endforeach
