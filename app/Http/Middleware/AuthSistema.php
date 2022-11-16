@@ -14,7 +14,8 @@ class AuthSistema
         $route = $request->route()->getName();
         $excpetions = [
             'dashboard.home',
-            'dashboard.trocar-senha'
+            'dashboard.trocar-senha',
+            'dashboard.usuarios.check-usuario'
         ];
         if (in_array($route, $excpetions)) {
             return $next($request);

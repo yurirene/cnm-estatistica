@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::group(['modulo' => 'usuarios'], function () {
         Route::resource('usuarios', UserController::class)->names('usuarios');
         Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])->name('usuarios.reset-senha');
+        Route::post('/check-usuario', [UserController::class, 'checkUser'])->name('usuarios.check-usuario');
     });
 
     Route::group(['modulo' => 'sinodais'], function() {
