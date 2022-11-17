@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FormularioFederacaoService
@@ -22,6 +23,7 @@ class FormularioFederacaoService
 
     public static function store(Request $request)
     {
+        DB::beginTransaction();
         try {
             $totalizador = self::totalizador($request->federacao_id);
             $programacoes = array_map(function($item) {
@@ -30,7 +32,7 @@ class FormularioFederacaoService
             $estrutura = array_map(function($item) {
                 return intval($item);
             }, $request->estrutura);
-            FormularioFederacao::updateOrCreate(
+            $formulario = FormularioFederacao::updateOrCreate(
                 [
                     'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                     'federacao_id' => $request->federacao_id
@@ -46,7 +48,10 @@ class FormularioFederacaoService
                 'federacao_id' => $request->federacao_id,
                 'estrutura' => $estrutura
             ]);
+            AtualizarAutomaticamenteFormulariosService::atualizarSinodal($formulario);
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
