@@ -22,4 +22,9 @@ class FormularioLocal extends Model
         'estado_civil' => 'array',
         'programacoes' => 'array',
     ];
+
+    public function local()
+    {
+        return $this->belongsTo(Local::class, 'local_id');
+    }
 }

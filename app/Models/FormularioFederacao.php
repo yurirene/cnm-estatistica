@@ -24,4 +24,9 @@ class FormularioFederacao extends Model
         'programacoes_locais' => 'array',
         'programacoes' => 'array',
     ];
+
+    public function federacao()
+    {
+        return $this->belongsTo(Federacao::class, 'federacao_id');
+    }
 }
