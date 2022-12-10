@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
         Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
         Route::get('/formularios-locais-export/{ano}', [FormularioLocalController::class, 'export'])->name('formularios-locais.export');
+        Route::get('/formularios-local-export/{local}', [FormularioLocalController::class, 'localExport'])->name('formularios-local.export');
 
     });
 
@@ -92,6 +93,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
         Route::post('/formularios-federacoes-resumo', [FormularioFederacaoController::class, 'resumoTotalizador'])->name('formularios-federacoes.resumo');
         Route::get('/formularios-federacoes-export/{ano}', [FormularioFederacaoController::class, 'export'])->name('formularios-federacoes.export');
+        Route::get('/formularios-federacao-export/{federacao}', [FormularioFederacaoController::class, 'federacaoExport'])->name('formularios-federacao.export');
     });
 
     Route::group(['modulo' => 'pesquisas'], function() {
@@ -163,6 +165,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     // DATATABLES
     Route::group(['modulo' => 'datatables'], function() {
         Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
+        Route::get('/datatables/formularios-entregues/{instancia}/{id?}', [DatatableAjaxController::class, 'formulariosEntregues'])->name('datatables.formularios-entregues');
         Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');
         Route::get('/datatables/pesquisas/{pesquisa}/sinodais', [DatatableAjaxController::class, 'acompanhamentoPesquisaSinodais'])->name('datatables.pesquisas.sinodais');
         Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');

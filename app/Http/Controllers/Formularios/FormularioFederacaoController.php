@@ -54,7 +54,7 @@ class FormularioFederacaoController extends Controller
             return response()->json(['erro' => $th->getMessage()]);
         }
     }
-    
+
     public function resumoTotalizador(Request $request)
     {
         try {
@@ -65,11 +65,18 @@ class FormularioFederacaoController extends Controller
         }
     }
 
-    
+
     public function export($ano)
     {
         return view('dashboard.formularios.federacao.export', [
             'formulario' => FormularioFederacaoService::getFormulario($ano)
+        ]);
+    }
+
+    public function federacaoExport($federacao)
+    {
+        return view('dashboard.formularios.federacao.export', [
+            'formulario' => FormularioFederacaoService::getFormularioDaFederacao($federacao)
         ]);
     }
 }

@@ -54,7 +54,7 @@ class FormularioLocalController extends Controller
         }
     }
 
-    
+
     public function export($ano)
     {
         try {
@@ -80,5 +80,12 @@ class FormularioLocalController extends Controller
             ])
             ->withInput();
         }
+    }
+
+    public function localExport($local)
+    {
+        return view('dashboard.formularios.local.export', [
+            'formulario' => FormularioLocalService::getFormularioLocal($local)
+        ]);
     }
 }
