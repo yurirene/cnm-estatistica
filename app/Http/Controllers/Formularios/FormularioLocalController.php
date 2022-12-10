@@ -57,8 +57,28 @@ class FormularioLocalController extends Controller
     
     public function export($ano)
     {
-        return view('dashboard.formularios.local.export', [
-            'formulario' => FormularioLocalService::getFormulario($ano)
-        ]);
+        try {
+            $formulario = FormularioLocalService::getFormulario($ano);
+            if (!$formulario) {
+                return redirect()->route('dashboard.formularios-locais.index')->with([
+                    'mensagem' => [
+                        'status' => false,
+                        'texto' => 'Preencha o formulário primeiro!'
+                    ]
+                ]);
+            }
+            
+            return view('dashboard.formularios.local.export', [
+                'formulario' => FormularioLocalService::getFormulario($ano)
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->route('dashboard.formularios-locais.index')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
     }
 }
