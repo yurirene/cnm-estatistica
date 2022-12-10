@@ -6,6 +6,7 @@ use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\LogErro;
+use App\Models\Parametro;
 use App\Models\Pesquisa;
 use App\Models\Regiao;
 use App\Models\RegistroLogin;
@@ -38,7 +39,7 @@ class DatatableAjaxService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
    }
 
@@ -50,7 +51,7 @@ class DatatableAjaxService
             }
             $informacoes = $federacao->locais->map(function($local) {
                 $ultimo_relatorio = $local->relatorios->last();
-                $total_socios = !is_null($ultimo_relatorio) ? $ultimo_relatorio->perfil['ativos'] + $ultimo_relatorio->perfil['cooperadores'] : 'Sem informação';
+                $total_socios = !is_null($ultimo_relatorio) ? $ultimo_relatorio->perfil['ativos'] + $ultimo_relatorio->perfil['cooperadores'] : 'Sem informaÃ§Ã£o';
                 $relatorio_entregue = (!is_null($ultimo_relatorio) && $ultimo_relatorio->ano_referencia == date('Y')) ? 'Entregue' : 'Pendente';
                 return [
                     'nome_ump' => $local->nome,
@@ -64,7 +65,7 @@ class DatatableAjaxService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
    }
 
@@ -89,17 +90,17 @@ class DatatableAjaxService
                         'sigla' => $item->sigla
                     ];
                 });
-          
+
             return datatables()::of($nao_responderam)->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
    }
-   
+
 
    public static function acompanhamentoPesquisaFederacoes(Pesquisa $pesquisa)
    {
@@ -123,14 +124,14 @@ class DatatableAjaxService
                         'sinodal' => $item->sinodal->sigla
                     ];
                 });
-          
+
             return datatables()::of($nao_responderam)->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
    }
 
@@ -157,14 +158,64 @@ class DatatableAjaxService
                     ];
                 });
 
-          
+
             return datatables()::of($nao_responderam)->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
+        }
+   }
+
+   public static function formulariosEntregues(string $instancia, string $id = null)
+   {
+    \Log::info([$instancia, $id]);
+        try {
+            $query = null;
+            if ($instancia == 'Federacao') {
+                $query = Federacao::when($id, function ($sql) use ($id) {
+                        return $sql->where('sinodal_id', $id);
+                    }, function ($sql) {
+                        return $sql->where('sinodal_id', auth()->user()->sinodais->first()->id);
+                    });
+            }
+            if ($instancia == 'Sinodal') {
+                $query = Sinodal::when($id, function ($sql) use ($id) {
+                        return $sql->where('regiao_id', $id);
+                    }, function ($sql) {
+                        return $sql->where('regiao_id', auth()->user()->regioes->first()->id);
+                    });
+            }
+            if ($instancia == 'Local') {
+                $query = Local::when($id, function ($sql) use ($id) {
+                        return $sql->where('federacao_id', $id);
+                    }, function ($sql) {
+                        return $sql->where('federacao_id', auth()->user()->federacoes->first()->id);
+                    });
+            }
+            $formulariosEntregues = $query
+                ->where('status', true)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'nome' => $item->nome,
+                        'entregue' => $item->relatorios()
+                            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                            ->get()
+                            ->count(),
+                    ];
+                });
+
+        return datatables()::of($formulariosEntregues)->make();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
         }
    }
 }

@@ -43,7 +43,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.pesquisas.sinodais',
                     'dashboard.datatables.pesquisas.federacoes',
                     'dashboard.datatables.pesquisas.locais',
-                    'dashboard.pesquisas.acompanhar'
+                    'dashboard.pesquisas.acompanhar',
+                    'dashboard.datatables.formularios-entregues',
                 ]
             ],
             'sinodal' => [
@@ -58,7 +59,10 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.comprovante-aci.store',
                     'dashboard.pesquisas.index',
                     'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.responder'
+                    'dashboard.pesquisas.responder',
+                    'dashboard.datatables.formularios-entregues',
+                    'dashboard.formularios-local.export',
+                    'dashboard.formularios-federacao.export',
                 ]
             ],
             'federacao' => [
@@ -71,7 +75,10 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.federacoes.update-info',
                     'dashboard.pesquisas.index',
                     'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.responder'
+                    'dashboard.pesquisas.responder',
+                    'dashboard.datatables.formularios-entregues',
+                    'dashboard.formularios-local.export',
+                    'dashboard.formularios-federacao.export',
                 ]
             ],
             'local' => [
@@ -83,7 +90,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.index',
                     'dashboard.pesquisas.show',
                     'dashboard.pesquisas.responder',
-                    'dashboard.locais.update-info'
+                    'dashboard.locais.update-info',
                 ]
             ],
             'tesouraria' => [

@@ -21,7 +21,7 @@ class DatatableAjaxController extends Controller
     {
         return DatatableAjaxService::informacaoFederacao($federacao);
     }
-    
+
     public function acompanhamentoPesquisaSinodais(Request $request, Pesquisa $pesquisa)
     {
         return DatatableAjaxService::acompanhamentoPesquisaSinodais($pesquisa);
@@ -31,9 +31,14 @@ class DatatableAjaxController extends Controller
     {
         return DatatableAjaxService::acompanhamentoPesquisaFederacoes($pesquisa);
     }
-    
+
     public function acompanhamentoPesquisaLocais(Request $request, Pesquisa $pesquisa)
     {
         return DatatableAjaxService::acompanhamentoPesquisaLocais($pesquisa);
+    }
+
+    public function formulariosEntregues(string $instancia, string $id = null)
+    {
+        return DatatableAjaxService::formulariosEntregues($instancia, $id);
     }
 }
