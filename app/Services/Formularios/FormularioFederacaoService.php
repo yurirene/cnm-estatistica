@@ -56,8 +56,8 @@ class FormularioFederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
-            throw new Exception("Erro ao Salvar");           
+            ]);
+            throw new Exception("Erro ao Salvar");
         }
     }
 
@@ -70,12 +70,12 @@ class FormularioFederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
-    
+
     public static function showFormulario($id)
     {
         try {
@@ -100,7 +100,7 @@ class FormularioFederacaoService
         }
     }
 
-   
+
 
     public static function getAnosFormulariosRespondidos()
     {
@@ -118,7 +118,7 @@ class FormularioFederacaoService
         $locais = Local::where('federacao_id', $id)->get()->pluck('id');
         try {
             $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', self::getAnoReferencia())->get();
-            
+
             $totalizador = [
                 'total_formularios' => $formularios->count(),
                 'aci' => 0,
@@ -166,7 +166,7 @@ class FormularioFederacaoService
                 ]
             ];
 
-            foreach ($formularios as $formulario) {                
+            foreach ($formularios as $formulario) {
                     $totalizador['aci'] += isset($formulario->aci['valor']) ? floatval($formulario->aci['valor']) : 0;
                     $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
                     $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
@@ -195,7 +195,7 @@ class FormularioFederacaoService
                     $totalizador['deficiencias']['fisica_superior'] += (isset($formulario->deficiencias['fisica_superior']) ? intval($formulario->deficiencias['fisica_superior']) : 0);
                     $totalizador['deficiencias']['neurologico'] += (isset($formulario->deficiencias['neurologico']) ? intval($formulario->deficiencias['neurologico']) : 0);
                     $totalizador['deficiencias']['intelectual'] += (isset($formulario->deficiencias['intelectual']) ? intval($formulario->deficiencias['intelectual']) : 0);
-                    
+
                     $totalizador['programacoes']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                     $totalizador['programacoes']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
                     $totalizador['programacoes']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
@@ -205,11 +205,11 @@ class FormularioFederacaoService
             return $totalizador;
         } catch (\Throwable $th) {
             throw new Exception("Erro no Totalizador", 1);
-            
+
         }
     }
 
-    
+
     public static function getAnoReferencia() : int
     {
         try {
@@ -227,13 +227,13 @@ class FormularioFederacaoService
             $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
                 ->where('ano_referencia', self::getAnoReferencia())
                 ->count();
-            
+
             if ($quantidade_entregue == 0 && $locais->where('status', 1)->count() == 0) {
                 $porcentagem = 0;
             } else {
                 $porcentagem = round(($quantidade_entregue * 100) / $locais->where('status', 1)->count(), 2);
             }
-            
+
             $data = ['porcentagem' => $porcentagem];
             if ($porcentagem < 50) {
                 $data['color'] = 'danger';
@@ -283,6 +283,13 @@ class FormularioFederacaoService
     {
         return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
             ->where('ano_referencia', $ano)
+            ->first();
+    }
+
+    public static function getFormularioDaFederacao($federacao) : ?FormularioFederacao
+    {
+        return FormularioFederacao::where('federacao_id', $federacao)
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
             ->first();
     }
 }

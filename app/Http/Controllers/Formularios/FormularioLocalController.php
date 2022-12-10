@@ -54,11 +54,18 @@ class FormularioLocalController extends Controller
         }
     }
 
-    
+
     public function export($ano)
     {
         return view('dashboard.formularios.local.export', [
             'formulario' => FormularioLocalService::getFormulario($ano)
+        ]);
+    }
+
+    public function localExport($local)
+    {
+        return view('dashboard.formularios.local.export', [
+            'formulario' => FormularioLocalService::getFormularioLocal($local)
         ]);
     }
 }

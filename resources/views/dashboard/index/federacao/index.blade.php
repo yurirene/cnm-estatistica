@@ -8,7 +8,7 @@
 @php $federacao = DashboardHelper::getInfo(); @endphp
 
 <div class="container-fluid mt--7">
-    
+
     <div class="row">
         <div class="col-xl-6">
             <div class="card shadow h-100">
@@ -40,11 +40,41 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-xl-6 mb-5 mb-xl-0">
             @include('dashboard.index.avisos')
         </div>
-       
+
+    </div>
+    <div class="row">
+        <div class="col-xl-12 mt-3">
+            <div class="card shadow h-100">
+                <div class="card-header bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class=" mb-0">Entrega de Formulários</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="table-responsive">
+                                <table id="formularios-entregues-table" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">Federação</th>
+                                            <th class="text-center">Status</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -69,6 +99,7 @@
                 {!! Form::label('presbiterio', 'Presbitério') !!}
                 {!! Form::text('presbiterio', null, ['class' => 'form-control', 'required' => 'required']) !!}
                 <small class="text-danger">{{ $errors->first('presbiterio') }}</small>
+                </div>
                 <div class="form-group{{ $errors->has('data_organizacao') ? ' has-error' : '' }}">
                 {!! Form::label('data_organizacao', 'Data da Organização') !!}
                 {!! Form::text('data_organizacao', null, ['class' => 'form-control isDate', 'required' => 'required']) !!}
@@ -89,3 +120,46 @@
     </div>
 </div>
 @endsection
+@push('js')
+
+@push('js')
+
+<script>
+    $(function() {
+        var rotaExport = "{{ route('dashboard.formularios-local.export', ':id') }}";
+        $('#formularios-entregues-table').DataTable({
+            dom: 'frtip',
+            destroy: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route("dashboard.datatables.formularios-entregues", "Local") }}',
+            columns: [
+                {
+                    render: function (data, type, result) {
+                        var imprimir = '';
+                        if (result.entregue == 1) {
+                            imprimir = `<a
+                            href="${rotaExport.replace(':id', result.id)}"
+                            class="btn btn-sm btn-primary"
+                            target="_blank"
+                            >
+                                <i class="fas fa-print"></i>
+                            </a>`;
+                        }
+                        return imprimir;
+                    }
+                },
+                {data: 'nome'},
+                {
+                    render: function (data, type, result) {
+                        return `<span class="badge bg-${result.entregue == 1 ? 'success' : 'danger'}">
+                            ${result.entregue == 1 ? 'Entregue' : 'Pendente'}
+                        </span>`;
+                    }
+                },
+            ]
+        });
+    });
+</script>
+@endpush
