@@ -8,6 +8,7 @@ use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
+use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +60,7 @@ class DiretoriaService
         $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
         foreach ($sinodais as $sinodal) {
             $status = true;
-            $formulario = FormularioSinodal::where('ano_referencia', date('Y'))
+            $formulario = FormularioSinodal::where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
                 ->where('sinodal_id', $sinodal->id)
                 ->first();
             if (!$formulario) {
@@ -81,7 +82,7 @@ class DiretoriaService
             $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
             $federacoes = Federacao::whereIn('sinodal_id', $sinodais->pluck('id'))->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
-            $formularios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->where('ano_referencia', date('Y'))->get();
+            $formularios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->get();
             if (!$formularios) {
                 return [
                     'total_sinodos' => $sinodais->count(),

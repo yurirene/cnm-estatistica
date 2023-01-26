@@ -68,7 +68,7 @@
                                     @forelse(DashboardHelper::getFormularioEntregue() as $formulario)
                                     <tr>
                                         <td scope="row"> 
-                                            <button class="btn btn-primary btn-sm btn-info-sinodal" disabled 
+                                            <button class="btn btn-primary btn-sm btn-info-sinodal" 
                                                 data-sinodal='{{ $formulario['id'] }}'>
                                                     <i class="fas fa-eye"></i>
                                             </button>
