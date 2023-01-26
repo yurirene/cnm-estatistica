@@ -29,7 +29,7 @@ class FormularioSinodalService
         try {
             FormularioSinodal::updateOrCreate(
                 [
-                    'ano_referencia' => date('Y'),
+                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                     'sinodal_id' => $request->sinodal_id
                 ],
                 [
@@ -42,7 +42,7 @@ class FormularioSinodalService
                 'programacoes_locais' => $request->programacoes_locais,
                 'programacoes' => $request->programacoes,
                 'aci' => $request->aci,
-                'ano_referencia' => date('Y'),
+                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                 'sinodal_id' => $request->sinodal_id
             ]);
         } catch (\Throwable $th) {
@@ -71,7 +71,7 @@ class FormularioSinodalService
 
             FormularioSinodal::updateOrCreate(
                 [
-                    'ano_referencia' => date('Y'),
+                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                     'sinodal_id' => $request->sinodal_id
                 ],
                 [
@@ -84,7 +84,7 @@ class FormularioSinodalService
                 'programacoes_locais' => $totalizador['programacoes_locais'],
                 'programacoes' => $programacoes,
                 'aci' => $request->aci,
-                'ano_referencia' => date('Y'),
+                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                 'sinodal_id' => $request->sinodal_id
             ]);
         } catch (\Throwable $th) {

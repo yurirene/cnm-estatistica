@@ -11,6 +11,7 @@ use App\Models\FormularioFederacao;
 use App\Models\FormularioLocal;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
+use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use App\Services\IClaudiaService;
@@ -75,7 +76,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     {
         $relatorios = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get()
             ->count();
@@ -86,7 +87,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     {
         $relatorios = Federacao::whereIn('sinodal_id', $sinodais)
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get()
             ->count();
@@ -96,7 +97,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     {
         $relatorios = Local::whereIn('federacao_id', $federacoes)
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get()
             ->count();

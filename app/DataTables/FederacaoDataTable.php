@@ -36,6 +36,16 @@ class FederacaoDataTable extends DataTable
             ->editColumn('regiao_id', function($sql) {
                 return $sql->regiao->nome;
             })
+            ->addColumn('estatistica', function($sql) {
+
+                $relatorio = $sql->relatorios()->orderBy('created_at', 'desc')->get()->first();
+                if (!$relatorio) {
+                    return 'Sem Relatório';
+                }
+
+
+                return $relatorio->ano_referencia;
+            })
             ->editColumn('estado_id', function($sql) {
                 return $sql->estado->nome;
             })
@@ -102,6 +112,7 @@ class FederacaoDataTable extends DataTable
             Column::make('nome')->title('Nome'),
             Column::make('sigla')->title('Sigla'),
             Column::make('nro_umps')->title('Nº UMPs')->orderable(false),
+            Column::make('estatistica')->title('Estatística')->orderable(false),
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),

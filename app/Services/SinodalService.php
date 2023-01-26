@@ -7,6 +7,7 @@ use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
+use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use Carbon\Carbon;
@@ -128,7 +129,7 @@ class SinodalService
             $sinodal = Auth::user()->sinodais->first();
             $federacoes = Federacao::where('sinodal_id', $sinodal->id)->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
-            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))->where('ano_referencia', date('Y'))->get();
+            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->get();
             if (!$formularios) {
                 return [
                     'total_presbiterios' => $federacoes->count(),
@@ -198,7 +199,7 @@ class SinodalService
     public static function getInformacoesOrganizacao(Sinodal $sinodal) : array
     {
         try {
-            $formulario = FormularioSinodal::where('sinodal_id', $sinodal->id)->where('ano_referencia', date('Y'))->first();
+            $formulario = FormularioSinodal::where('sinodal_id', $sinodal->id)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->first();
 
             $total_umps_organizada = self::getTotalUmpsOrganizadas($sinodal, $formulario);
             $total_federacoes_organizada = self::getTotalFederacoesOrganizadas($sinodal, $formulario);
@@ -267,7 +268,7 @@ class SinodalService
             $federacoes = $sinodal->federacoes;
             $info_federacao = [];
             foreach ($federacoes as $federacao) {
-                $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', date('Y'))->first();
+                $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->first();
                 $total_umps_organizada = FederacaoService::getTotalUmpsOrganizadas($federacao, $formulario);;
                 
                 $utlimo_formulario = $federacao->relatorios->last();

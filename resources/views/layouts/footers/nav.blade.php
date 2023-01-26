@@ -1,7 +1,8 @@
-<div class="row align-items-center justify-content-xl-between">
-    <div class="col-xl-6">
-        <div class="copyright text-center text-xl-left text-muted">
-            
+<div class="row align-items-center">
+    <div class="col-xl-12">
+        <div class="copyright text-center text-muted">
+            <img class="text-center" src="/img/logos/ump.png" style="height: 60px;" />
+            Confederação Nacional de Mocidade
         </div>
     </div>
 </div>

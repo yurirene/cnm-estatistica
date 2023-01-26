@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Estado;
+use App\Models\Parametro;
 use App\Models\Regiao;
 use App\Models\RegistroLogin;
 use App\Models\Sinodal;
@@ -51,7 +52,7 @@ class AdministradorService
     public static function getTotalRelatoriosPendentes()
     {
         return Sinodal::whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->where('status', 1)
             ->get()
@@ -61,7 +62,7 @@ class AdministradorService
     public static function getTotalRelatoriosEntregues()
     {
         return Sinodal::whereHas('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get()
             ->count();
@@ -178,7 +179,7 @@ class AdministradorService
         try {
             $total_sinodais = Sinodal::where('regiao_id', $regiao->id)->get()->count();
             $total_entregue = Sinodal::where('regiao_id', $regiao->id)->whereHas('relatorios', function($sql) {
-                    return $sql->where('ano_referencia', date('Y'));
+                    return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
                 })
                 ->get()
                 ->count();

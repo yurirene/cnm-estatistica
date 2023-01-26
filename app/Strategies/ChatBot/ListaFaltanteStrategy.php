@@ -11,6 +11,7 @@ use App\Models\FormularioFederacao;
 use App\Models\FormularioLocal;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
+use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use App\Services\IClaudiaService;
@@ -69,7 +70,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
     {
         $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get();
         $texto = '';
@@ -83,7 +84,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
     {
         $federacoes = Federacao::whereIn('sinodal_id', $sinodais)
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get();
 
@@ -97,7 +98,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
     {
         $locais = Local::whereIn('federacao_id', $federacoes)
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', date('Y'));
+                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
             })
             ->get();
         $texto = '';
