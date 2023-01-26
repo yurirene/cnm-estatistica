@@ -18,7 +18,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body h-100">
                     <a class="btn btn-primary" href="{{route('dashboard.federacoes.index')}}"><i class="fas fa-arrow-left"></i> Voltar</a>
                     
                     <div class="row mt-3">
@@ -78,11 +78,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow-auto" style="max-height: 600px">
                     <div class="row mt-3">
                         @if(count($umps))
                         @foreach($umps as $ump)
-                        <div class="col-lg-6 mt-3">
+                        <div class="col-md-6 col-xl-6 mt-3">
                             @include('dashboard.federacoes.partes.cards', $ump)
                         </div>
                         @endforeach

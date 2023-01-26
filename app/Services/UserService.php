@@ -209,4 +209,25 @@ class UserService
         return $administrando;
     }
 
+    public static function checkUser(array $request) : array
+    {
+        $usuario = User::where('email', $request['email'])
+            ->when($request['isNovo'] == "true", function($sql) use ($request) {
+                return $sql->where('id', '!=', $request['idUsuario']);
+            })
+            ->get()
+            ->isNotEmpty();
+            if ($usuario) {
+                return [
+                    'status' => false,
+                    'msg' => 'E-mail em uso por outra UMP'
+                ];
+            }
+            return [
+                'status' => true,
+                'msg' => 'E-mail disponível'
+            ];
+
+    }
+
 }

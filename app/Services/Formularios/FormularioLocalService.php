@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FormularioLocalService
@@ -20,6 +21,7 @@ class FormularioLocalService
 
     public static function store(Request $request)
     {
+        DB::beginTransaction();
         try {
             $perfil = array_map(function($item) {
                 return intval($item);
@@ -27,7 +29,7 @@ class FormularioLocalService
             $estado_civil = array_map(function($item) {
                 return intval($item);
             },$request->estado_civil);
-            $deficiencias = collect($request->deficiencias)->map(function($key, $item) {
+            $deficiencias = collect($request->deficiencias)->map(function($item,$key) {
                 if ($key == 'outras') {
                     return $item;
                 }
@@ -40,8 +42,7 @@ class FormularioLocalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
-
-            FormularioLocal::updateOrCreate(
+            $formulario = FormularioLocal::updateOrCreate(
                 [
                     'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                     'local_id' => $request->local_id
@@ -57,7 +58,10 @@ class FormularioLocalService
                     'local_id' => $request->local_id
                 ]
             );
+            AtualizarAutomaticamenteFormulariosService::atualizarFederacao($formulario);
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),

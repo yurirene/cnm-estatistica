@@ -24,7 +24,7 @@
                         <span>Trocar Senha</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault();
+                    <a href="#" class="dropdown-item" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
                         <i class="ni ni-user-run"></i>
                         <span>{{ __('Logout') }}</span>
@@ -173,6 +173,12 @@
                     </a>
                 </li>
                 @endCanAtLeast
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.tutoriais.index') }}">
+                        <i class="fas fa-video"></i> Tutoriais
+                    </a>
+                </li>
 
 
             </ul>

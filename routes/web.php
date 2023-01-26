@@ -18,6 +18,7 @@ use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\SinodalController;
+use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::group(['modulo' => 'usuarios'], function () {
         Route::resource('usuarios', UserController::class)->names('usuarios');
         Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])->name('usuarios.reset-senha');
+        Route::post('/check-usuario', [UserController::class, 'checkUser'])->name('usuarios.check-usuario');
     });
 
     Route::group(['modulo' => 'sinodais'], function() {
@@ -151,6 +153,11 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::group(['modulo' => 'digestos'], function() {
         Route::resource('digestos', DigestoController::class)->parameters(['digestos' => 'digesto'])->names('digestos')->except('delete');
         Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])->name('digestos.delete');
+    });
+
+
+    Route::group(['modulo' => 'tutoriais'], function() {
+        Route::get('/tutoriais', [TutorialController::class, 'index'])->name('tutoriais.index');
     });
 
     // DATATABLES
