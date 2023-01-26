@@ -4,6 +4,7 @@ namespace App\Services\Formularios\Totalizadores;
 
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
+use App\Models\Parametro;
 use Exception;
 
 class TotalizadorFormularioSinodalService
@@ -12,7 +13,7 @@ class TotalizadorFormularioSinodalService
     {
         $federacoes = Federacao::where('sinodal_id', $id)->get()->pluck('id');
         try {
-            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes)->where('ano_referencia', date('Y'))->get();
+            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->get();
             
             $totalizador = [
                 'aci' => [

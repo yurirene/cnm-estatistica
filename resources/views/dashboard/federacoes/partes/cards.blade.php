@@ -5,7 +5,6 @@
             <div class="col text-center">
                 <span class="h5 font-weight-bold mb-0">{{$nome}}</span>
                 <h6><small>* Informação obtida do Relatório Estatístico</small></h6>
-
             </div>
         </div>
         <div class="row">
@@ -25,6 +24,11 @@
                         </div>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <div class="badge badge-info mr-3"> {{ $ultimo_formulario }} </div>
             </div>
         </div>
     </div>

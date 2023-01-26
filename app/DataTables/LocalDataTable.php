@@ -38,6 +38,16 @@ class LocalDataTable extends DataTable
             ->editColumn('estado_id', function($sql) {
                 return $sql->estado->nome;
             })
+            ->addColumn('estatistica', function($sql) {
+
+                $relatorio = $sql->relatorios()->orderBy('created_at', 'desc')->get()->first();
+                if (!$relatorio) {
+                    return 'Sem Relatório';
+                }
+
+
+                return $relatorio->ano_referencia;
+            })
             ->editColumn('sinodal_id', function($sql) {
                 return $sql->sinodal->sigla;
             })
@@ -99,6 +109,7 @@ class LocalDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
+            Column::make('estatistica')->title('Estatística')->orderable(false),
             Column::make('federacao_id')->title('Federação'),
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),
