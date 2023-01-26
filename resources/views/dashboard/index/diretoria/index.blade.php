@@ -4,7 +4,7 @@
     @include('dashboard.index.diretoria.cards', [
         'totalizador' => DashboardHelper::getTotalizadores()
     ])
-    
+
     <div class="container-fluid mt--7">
 
         <div class="row">
@@ -43,64 +43,109 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-xl-12">
-                <div class="card shadow">
-                    <div class="card-header border-0">
+
+        <div class="row">
+            <div class="col-xl-12 mt-3">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Entrega dos Formulários</h3>
+                                <h2 class=" mb-0">Entrega de Formulários</h2>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <!-- Projects table -->
-                            <table class="table align-items-center table-flush" id="tabela-formulario">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">Ação</th>
-                                        <th scope="col">Sinodal</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse(DashboardHelper::getFormularioEntregue() as $formulario)
-                                    <tr>
-                                        <td scope="row"> 
-                                            <button class="btn btn-primary btn-sm btn-info-sinodal" 
-                                                data-sinodal='{{ $formulario['id'] }}'>
-                                                    <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                        <th scope="row"> {{$formulario['sinodal']}} </th>
-                                        <td> {!! $formulario['status'] !!} </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <th scope="row" colspan="2">
-                                            Sem Sinodais Cadastradas
-                                        </th>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="col">
+                                <div class="table-responsive">
+                                    <table id="sinodal-entregues-table" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Sinodal</th>
+                                                <th class="text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            
         </div>
 
         @include('layouts.footers.auth')
     </div>
+
+<div class="modal fade"
+    id="sinodal-modal" tabindex="-1" role="dialog"
+    aria-labelledby="sinodal-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="sinodal-modalLabel">[Federação] - Formulários</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table id="federacao-entregues-table" class="table w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Federação</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+    id="local-modal" tabindex="-1" role="dialog"
+    aria-labelledby="local-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="local-modalLabel">[UMP Local] - Formulários</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table id="local-entregues-table" class="table w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center">UMP Local</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('js')
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
-    
+
     <script>
         Highcharts.mapChart('mapa-brazil', {
             chart: {
@@ -170,13 +215,116 @@
 
     $('#tabela-formulario').dataTable();
 
-    // $('.btn-info-sinodal').on('click', function() {
-    //     let rota = '{{ route("dashboard.usuarios.index") }}';
-    //     $.ajax({
-    //         url: rota
-    //     });
-    // })
 
+</script>
+@endpush
+
+@push('js')
+
+<script>
+    $(function() {
+        $('#sinodal-entregues-table').DataTable({
+            dom: 'frtip',
+            destroy: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route("dashboard.datatables.formularios-entregues", "Sinodal") }}',
+            columns: [
+                {
+                    render: function (data, type, result) {
+                        return `<button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            data-toggle="modal"
+                            data-target="#sinodal-modal"
+                            data-id="${result.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>`;
+                    }
+                },
+                {data: 'nome'},
+                {
+                    render: function (data, type, result) {
+                        return `<span class="badge bg-${result.entregue == 1 ? 'success' : 'danger'}">
+                            ${result.entregue == 1 ? 'Entregue' : 'Pendente'}
+                        </span>`;
+                    }
+                },
+            ]
+        });
+    });
+
+
+    $('#sinodal-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var route = '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Federacao", "id" => ":id"]) }}'.replace(':id', id);
+        carregarDataTableFederacao(route);
+    });
+
+    $('#local-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var route = '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Local", "id" => ":id"]) }}'.replace(':id', id);
+        carregarDataTableLocal(route);
+    });
+
+    function carregarDataTableFederacao(route) {
+
+        $('#federacao-entregues-table').DataTable().destroy();
+        $('#federacao-entregues-table').DataTable({
+            dom: 'frtip',
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: route,
+            columns: [
+                {
+                    render: function (data, type, result) {
+                        return `<button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            data-toggle="modal"
+                            data-target="#local-modal"
+                            data-id="${result.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>`;
+                    }
+                },
+                {data: 'nome'},
+                {
+                    render: function (data, type, result) {
+                        return `<span class="badge bg-${result.entregue == 1 ? 'success' : 'danger'}">
+                            ${result.entregue == 1 ? 'Entregue' : 'Pendente'}
+                        </span>`;
+                    }
+                },
+            ]
+        });
+    }
+
+function carregarDataTableLocal(route) {
+
+    $('#local-entregues-table').DataTable().destroy();
+    $('#local-entregues-table').DataTable({
+        dom: 'frtip',
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ajax: route,
+        columns: [
+            {data: 'nome'},
+            {
+                render: function (data, type, result) {
+                    return `<span class="badge bg-${result.entregue == 1 ? 'success' : 'danger'}">
+                        ${result.entregue == 1 ? 'Entregue' : 'Pendente'}
+                    </span>`;
+                }
+            },
+        ]
+    });
+}
 
 </script>
 @endpush

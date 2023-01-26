@@ -66,8 +66,8 @@ class FormularioLocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
-            throw new Exception("Erro ao Salvar");           
+            ]);
+            throw new Exception("Erro ao Salvar");
         }
     }
 
@@ -80,9 +80,9 @@ class FormularioLocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -108,7 +108,7 @@ class FormularioLocalService
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
-    }    
+    }
 
     public static function getAnosFormulariosRespondidos()
     {
@@ -141,6 +141,13 @@ class FormularioLocalService
     {
         return FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
             ->where('ano_referencia', $ano)
+            ->first();
+    }
+
+    public static function getFormularioLocal($local)
+    {
+        return FormularioLocal::where('local_id', $local)
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
             ->first();
     }
 }

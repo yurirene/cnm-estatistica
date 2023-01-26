@@ -54,11 +54,38 @@ class FormularioLocalController extends Controller
         }
     }
 
-    
+
     public function export($ano)
     {
+        try {
+            $formulario = FormularioLocalService::getFormulario($ano);
+            if (!$formulario) {
+                return redirect()->route('dashboard.formularios-locais.index')->with([
+                    'mensagem' => [
+                        'status' => false,
+                        'texto' => 'Preencha o formulário primeiro!'
+                    ]
+                ]);
+            }
+            
+            return view('dashboard.formularios.local.export', [
+                'formulario' => FormularioLocalService::getFormulario($ano)
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->route('dashboard.formularios-locais.index')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function localExport($local)
+    {
         return view('dashboard.formularios.local.export', [
-            'formulario' => FormularioLocalService::getFormulario($ano)
+            'formulario' => FormularioLocalService::getFormularioLocal($local)
         ]);
     }
 }

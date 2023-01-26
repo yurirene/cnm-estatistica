@@ -5,8 +5,8 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <!-- Brand -->
-        <a class="navbar-brand pt-0" href="{{ route('home') }}">
-            <img src="/img/logo.png" class="navbar-brand-img" alt="..." style="max-height: 60px;">
+        <a class="navbar-brand pt-0 pb-0" href="{{ route('home') }}">
+            <img src="/img/logos/logo.png" class="navbar-brand-img" alt="..." style="max-height: 90px;">
         </a>
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class="col-6 collapse-brand">
                         <a href="{{ route('home') }}">
-                            <img src="/img/logo.png" class="navbar-brand-img" alt="..." style="max-height: 60px;">
+                            <img src="/img/logos/logo.png" class="navbar-brand-img" alt="..." style="max-height: 60px;">
                         </a>
                     </div>
                     <div class="col-6 collapse-close">

@@ -8,10 +8,10 @@
         <div class="col-md-12 text-center">
             <img class="img-responsive" src="/img/images.png" />
             <h1 class="text-center">Relatório Estatístico</h1>
-            <h4 class="text-center">{{ auth()->user()->locais->first()->nome }}</h4>
+            <h4 class="text-center">{{ $formulario->local->nome }}</h4>
         </div>
     </div>
-    
+
     <div class="row mt-5" id="formulario_ump">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="row">
@@ -71,7 +71,7 @@
         </div>
 
     </div>
-</div>  
+</div>
 <script>
     window.print()
 </script>
