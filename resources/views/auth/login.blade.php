@@ -7,8 +7,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-5 col-md-7">
                 <div class="card bg-secondary shadow border-0">
-                    <div class="card-body px-lg-5 py-lg-5">
+                    <div class="card-body px-lg-5 py-lg-2">
                         <div class="text-center text-muted mb-4">
+                            <img src="/img/logos/ump.png" class="img-fluid" style="max-height: 150px;" />
+                            <br/>
                             <small>
                                     Informe as credenciais para acessar
                             </small>
