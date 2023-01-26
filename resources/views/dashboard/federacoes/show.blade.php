@@ -29,7 +29,13 @@
                             <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $federacao->midias_sociais }}</h3>
                         </div>
                     </div>
-                    <div class="row mt-3">
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <h3><span class="badge badge-primary">Último Formulário:</span> {{ $informacoes['ultimo_formulario'] }}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col">
                             <div class="progress-wrapper">
                                 <div class="progress-info">
@@ -76,7 +82,7 @@
                     <div class="row mt-3">
                         @if(count($umps))
                         @foreach($umps as $ump)
-                        <div class="col-md-6 col-xl-4 mt-3">
+                        <div class="col-lg-6 mt-3">
                             @include('dashboard.federacoes.partes.cards', $ump)
                         </div>
                         @endforeach

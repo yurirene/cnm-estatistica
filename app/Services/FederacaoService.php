@@ -150,7 +150,7 @@ class FederacaoService
             if (!$formulario) {
                 return [
                     'total_umps' => $federacao->locais->count(),
-                    'total_socios' => 'Responda Pendente',
+                    'total_socios' => 'Resposta Pendente',
                 ];
             }
             return [
@@ -206,7 +206,7 @@ class FederacaoService
     public static function getInformacoesFederacaoOrganizacao(Federacao $federacao) : array
     {
         try {
-            $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', date('Y'))->first();
+            $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->orderBy('created_at', 'desc')->get()->first();
 
             $total_umps_organizada = self::getTotalUmpsOrganizadas($federacao, $formulario);
 
@@ -214,6 +214,7 @@ class FederacaoService
             $total_igrejas_n_sociedades = SinodalService::getPorcentagem($federacao->locais->count(), $federacao->locais->where('outro_modelo', true)->count());
             
             return [
+                'ultimo_formulario' => $formulario ? $formulario->ano_referencia : 'Sem Resposta',
                 'total_umps_organizada' => $total_umps_organizada,
                 'total_igrejas_n_sociedades' => $total_igrejas_n_sociedades
             ];
@@ -234,19 +235,22 @@ class FederacaoService
             $locais = $federacao->locais()->orderBy('status', 'desc')->get();
             $info_local = [];
             foreach ($locais as $local) {
+                $utlimo_formulario = $local->relatorios()->orderBy('created_at','desc')->get()->first();
 
-                $utlimo_formulario = $local->relatorios->last();
-
-                $total_socios = 0;
+                $ultimo_ano = 'Sem Resposta';
+                $total_socios = 0; 
                 if (!is_null($utlimo_formulario)) {
                     $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0); 
+                    $ultimo_ano = $utlimo_formulario->ano_referencia;
                 }
+                
 
                 $info_local[] = [
                     'id' => $local->id,
                     'nome' => $local->nome,
                     'status' => $local->status,
                     'numero_socios' => $total_socios,
+                    'ultimo_formulario' => $ultimo_ano
                 ];
             }
             return $info_local;

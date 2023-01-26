@@ -223,6 +223,24 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        function deleteRegistro(url) {
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Deseja apagar o registro?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                })
+            }
+    </script>
+    <script>
         (function($) {  // important!!!
             // in here it is safe to use $ for jQuery (nowhere else!)
             $('.isDate:not([readonly])').datepicker({
@@ -434,29 +452,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="/js/form-builder.min.js"></script>
 <script src="/js/form-render.min.js"></script>
+
+<script>
+    function deleteRegistro(url) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja apagar o registro?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            })
+        }
+</script>
+
+
+
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
     @stack('script')
 
 
-    <script>
-        function deleteRegistro(url) {
-                Swal.fire({
-                    title: 'Tem certeza?',
-                    text: "Deseja apagar o registro?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sim!',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = url;
-                    }
-                })
-            }
-    </script>
 
 </body>
 
