@@ -36,7 +36,7 @@ class EstatisticaService
     public static function getParametros() : Collection
     {
         try {
-            return Parametro::where('area', 'estatistica')->get()->map(function($item) {
+            return Parametro::get()->map(function($item) {
                 return [
                     'id' => $item->id,
                     'nome' => $item->nome,
