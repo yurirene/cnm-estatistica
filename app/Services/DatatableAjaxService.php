@@ -171,7 +171,6 @@ class DatatableAjaxService
 
    public static function formulariosEntregues(string $instancia, string $id = null)
    {
-    \Log::info([$instancia, $id]);
         try {
             $query = null;
             if ($instancia == 'Federacao') {
@@ -196,6 +195,50 @@ class DatatableAjaxService
                     });
             }
             $formulariosEntregues = $query
+                ->where('status', true)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'nome' => $item->nome,
+                        'entregue' => $item->relatorios()
+                            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                            ->get()
+                            ->count(),
+                    ];
+                });
+
+        return datatables()::of($formulariosEntregues)->make();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+        }
+   }
+
+   
+    /**
+     * Retorna lista das sinodais informando se entregaram os formulários
+     * e a qualidade dos formulários
+     */
+    public static function getFormularioSinodais()
+    {
+        try {
+            $dados = EstatisticaService::getDadosQualidadeEstatistica()->toArray();
+            return datatables()::of($dados)->make();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+    }
+
+    
+   public static function estatisticaFormulariosLocais(string $id)
+   {
+        try {
+            $formulariosEntregues = Local::where('sinodal_id', $id)
                 ->where('status', true)
                 ->get()
                 ->map(function ($item) {

@@ -122,6 +122,7 @@
             responsive: true,
             processing: true,
             serverSide: true,
+            order: [1],
             ajax: '{{ route("dashboard.datatables.log-erros") }}',
             columns: [
                 {
