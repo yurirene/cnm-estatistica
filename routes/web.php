@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
         Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
         Route::put('/sinodais/{sinodal}/update-info', [SinodalController::class, 'updateInfo'])->name('sinodais.update-info');
+        Route::get('/sinodais/get-ranking', [SinodalController::class, 'getRanking'])->name('sinodais.get-ranking');
     });
     Route::group(['modulo' => 'federacoes'], function() {
         Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('delete');
@@ -120,6 +121,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/estatistica', [EstatisticaController::class, 'index'])->name('estatistica.index');
         Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])->name('estatistica.atualizarParametro');
         Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])->name('estatistica.exportarExcel');
+        Route::get('/estatistica/atualizar-ranking', [EstatisticaController::class, 'atualizarRanking'])->name('estatistica.atualizar-ranking');
     });
     // SECRETARIA DE PRODUTOS
     Route::group(['modulo' => 'secretaria-produtos'], function() {
@@ -170,6 +172,11 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/datatables/pesquisas/{pesquisa}/sinodais', [DatatableAjaxController::class, 'acompanhamentoPesquisaSinodais'])->name('datatables.pesquisas.sinodais');
         Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
         Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
+
+        
+        Route::get('/datatables/estatistica/formularios-sinodais', [DatatableAjaxController::class, 'estatisticaFormulariosSinodais'])->name('datatables.estatistica.formularios-sinodais');
+        Route::get('/datatables/estatistica/formularios-federacoes', [DatatableAjaxController::class, 'estatisticaFormulariosFederacoes'])->name('datatables.estatistica.formularios-federacoes');
+        Route::get('/datatables/estatistica/formularios-locais', [DatatableAjaxController::class, 'estatisticaFormulariosLocais'])->name('datatables.estatistica.formularios-locais');
     });
 
 });

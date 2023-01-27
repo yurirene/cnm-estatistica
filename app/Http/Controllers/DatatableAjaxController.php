@@ -41,4 +41,9 @@ class DatatableAjaxController extends Controller
     {
         return DatatableAjaxService::formulariosEntregues($instancia, $id);
     }
+
+    public function estatisticaFormulariosSinodais ()
+    {
+        return DatatableAjaxService::getFormularioSinodais();
+    }
 }

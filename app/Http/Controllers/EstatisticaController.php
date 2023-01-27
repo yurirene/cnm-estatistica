@@ -33,4 +33,25 @@ class EstatisticaController extends Controller
             return response()->json(['mensagem' => 'Erro ao Atualizar Parâmetro'], 500);
         }
     }
+
+    public function atualizarRanking()
+    {
+        try {
+            EstatisticaService::atualizarRanking();
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
 }

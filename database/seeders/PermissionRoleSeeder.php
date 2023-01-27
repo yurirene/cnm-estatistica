@@ -54,6 +54,7 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais'
                 ],
                 'permissions' => [
+                    'dashboard.sinodais.get-ranking',
                     'dashboard.sinodais.update-info',
                     'dashboard.comprovante-aci.index',
                     'dashboard.comprovante-aci.store',
@@ -171,6 +172,12 @@ class PermissionRoleSeeder extends Seeder
                     'atividades',
                     'secretaria-estatistica',
                     'minhas-demandas'
+                ],
+                'permissions' => [
+                    'dashboard.datatables.estatistica.formularios-sinodais',
+                    'dashboard.datatables.estatistica.formularios-federacoes',
+                    'dashboard.datatables.estatistica.formularios-locais',
+                    'dashboard.datatables.estatistica.ranking',
                 ]
             ],
             'secretaria_educacao_crista' => [

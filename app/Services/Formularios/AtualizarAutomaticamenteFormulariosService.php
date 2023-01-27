@@ -42,9 +42,9 @@ class AtualizarAutomaticamenteFormulariosService
             $formulario_sinodal = FormularioSinodal::where('sinodal_id', $federacao->sinodal_id)
                 ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
                 ->get();
-                if ($formulario_sinodal->isEmpty()) {
-                    return;
-                }
+            if ($formulario_sinodal->isEmpty()) {
+                return;
+            }
             $totalizador = TotalizadorFormularioSinodalService::totalizador($federacao->sinodal_id);
             $formulario_sinodal->first()->update([
                 'perfil' => $totalizador['perfil'],

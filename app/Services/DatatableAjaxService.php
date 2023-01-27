@@ -171,7 +171,6 @@ class DatatableAjaxService
 
    public static function formulariosEntregues(string $instancia, string $id = null)
    {
-    \Log::info([$instancia, $id]);
         try {
             $query = null;
             if ($instancia == 'Federacao') {
@@ -218,4 +217,20 @@ class DatatableAjaxService
             ]);
         }
    }
+
+   
+    /**
+     * Retorna lista das sinodais informando se entregaram os formulários
+     * e a qualidade dos formulários
+     */
+    public static function getFormularioSinodais()
+    {
+        try {
+            $dados = EstatisticaService::getDadosQualidadeEstatistica()->toArray();
+            return datatables()::of($dados)->make();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+    }
 }
