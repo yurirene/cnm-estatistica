@@ -13,9 +13,24 @@
         <div class="col-xl-3 mt-3">
             <div class="card shadow h-100">
                 <div class="card-header bg-transparent">
-                    <div class="row align-items-center">
-                        <div class="col">
+                    <div class="row align-items-center justify-content-between">
+                        <div class="col-8">
                             <h2 class=" mb-0">Ranking</h2>
+                        </div>
+                        <div class="col-4 text-right">
+                            <button
+                                type="button" 
+                                class="btn btn-sm btn-default"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-color="warning"
+                                data-placement="top"
+                                data-content="{{ $sinodal->ranking ? $sinodal->ranking->explicacao_detalhada : '' }}" 
+                            >
+                                <em 
+                                    class="fas fa-info"
+                                ></em>
+                            </button>
                         </div>
 
                     </div>
@@ -30,8 +45,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <h2 class="text-center"><span class="badge badge-primary h2" >X°</span></h2>
-                            <h5 class="text-center">Posição</h5>
+                            <h2 class="text-center mt-3"><span class="badge badge-primary" style="font-size: 20px;" >{{ $sinodal->ranking ? $sinodal->ranking->posicao : '0' }}°</span></h2>
                         </div>
                     </div>
                 </div>

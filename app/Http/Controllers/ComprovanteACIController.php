@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ComprovanteAciDataTable;
 use App\Models\ComprovanteACI;
+use App\Models\Parametro;
 use App\Services\ComprovanteAciService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -12,7 +13,9 @@ class ComprovanteACIController extends Controller
 {
     public function index(ComprovanteAciDataTable $dataTable)
     {
-        return $dataTable->render('dashboard.comprovante-aci.index');
+        return $dataTable->render('dashboard.comprovante-aci.index', [
+            'ano' => Parametro::where('nome', 'ano_referencia')->first()->valor
+        ]);
     }
 
     public function store(Request $request)

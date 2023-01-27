@@ -15,10 +15,10 @@ class ComprovanteAciService
         try {
             $comprovante = ComprovanteACI::updateOrCreate([
                 'sinodal_id' => Auth::user()->sinodais->first()->id,
-                'ano' => date('Y')
+                'ano' => $request->ano
             ], [
                 'sinodal_id' => Auth::user()->sinodais->first()->id,
-                'ano' => date('Y'),
+                'ano' => $request->ano,
                 'status' => false
             ]);
 

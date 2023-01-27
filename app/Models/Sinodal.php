@@ -54,4 +54,9 @@ class Sinodal extends Model
     {
         return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
     }
+
+    public function ranking()
+    {
+        return $this->hasOne(Ranking::class, 'sinodal_id');
+    }
 }

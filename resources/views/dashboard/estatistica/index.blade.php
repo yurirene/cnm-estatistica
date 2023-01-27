@@ -19,8 +19,20 @@
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-tabs" id="myTab" role="tablist" style="line-height: 40px;">
+                        
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active"
+                                id="terceiro-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#terceiro"
+                                type="button"
+                                role="tab"
+                                aria-controls="terceiro"
+                                aria-selected="false">Relatórios
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link"
                                 id="primeiro-tab"
                                 data-bs-toggle="tab"
                                 data-bs-target="#primeiro"
@@ -43,56 +55,9 @@
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="primeiro" role="tabpanel" aria-labelledby="primeiro-tab">
-                            <div class="row mt-3">
-                                <div class="col-md-12 mt-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h2>Parâmetros</h2>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                @foreach($parametros as $parametro)
-                                                    @include('parametros.view',$parametro)
-                                                @endforeach
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="segundo" role="tabpanel" aria-labelledby="segundo-tab">
-                            <div class="row mt-3">
-                                <div class="col-md-12 mt-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="card shadow">
-                                                        <div class="card-header">
-                                                            Exportar Base de Dados Excel
-                                                        </div>
-                                                        <div class="card-body">
-                                                            {!! Form::open(['method' => 'POST', 'route' => 'dashboard.estatistica.exportarExcel', 'class' => 'form-horizontal']) !!}
-                                                            {!! Form::select('ano_referencia', $anos_referencias, null, ['class' => 'form-control']) !!}
-                                                            <button class="btn btn-primary mt-2">
-                                                                <i class="fas fa-file-excel"></i> Exportar
-                                                            </button>
-                                                            {!! Form::close() !!}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('dashboard.estatistica.tabs.formularios')
+                        @include('dashboard.estatistica.tabs.parametros')
+                        @include('dashboard.estatistica.tabs.base')
                     </div>
                 </div>
             </div>
