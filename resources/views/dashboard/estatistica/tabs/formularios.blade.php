@@ -34,7 +34,66 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade"
+    id="federacoes-modal" tabindex="-1" role="dialog"
+    aria-labelledby="locais-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="locais-modalLabel">Lista de Federações</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table id="federacoes-table" class="table w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Federação</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade"
+    id="locais-modal" tabindex="-1" role="dialog"
+    aria-labelledby="locais-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="locais-modalLabel">Lista de UMPs Locais</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table id="local-table" class="table w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center">UMP Local</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+        </div>
+    </div>
+</div>
 @push('js')
 
 <script>
@@ -85,42 +144,30 @@
     });
 
 
-    $('#sinodal-modal').on('show.bs.modal', function (event) {
+    $('#federacoes-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
         var route = '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Federacao", "id" => ":id"]) }}'.replace(':id', id);
         carregarDataTableFederacao(route);
     });
 
-    $('#local-modal').on('show.bs.modal', function (event) {
+    $('#locais-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
-        var route = '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Local", "id" => ":id"]) }}'.replace(':id', id);
+        var route = '{{ route("dashboard.datatables.estatistica.formularios-locais", ["id" => ":id"]) }}'.replace(':id', id);
         carregarDataTableLocal(route);
     });
 
     function carregarDataTableFederacao(route) {
 
-        $('#federacao-entregues-table').DataTable().destroy();
-        $('#federacao-entregues-table').DataTable({
+        $('#federacoes-table').DataTable().destroy();
+        $('#federacoes-table').DataTable({
             dom: 'frtip',
             responsive: true,
             processing: true,
             serverSide: true,
             ajax: route,
             columns: [
-                {
-                    render: function (data, type, result) {
-                        return `<button
-                            type="button"
-                            class="btn btn-sm btn-primary"
-                            data-toggle="modal"
-                            data-target="#local-modal"
-                            data-id="${result.id}">
-                                <i class="fas fa-eye"></i>
-                            </button>`;
-                    }
-                },
                 {data: 'nome'},
                 {
                     render: function (data, type, result) {
@@ -134,9 +181,8 @@
     }
 
 function carregarDataTableLocal(route) {
-
-    $('#local-entregues-table').DataTable().destroy();
-    $('#local-entregues-table').DataTable({
+    $('#local-table').DataTable().destroy();
+    $('#local-table').DataTable({
         dom: 'frtip',
         responsive: true,
         processing: true,

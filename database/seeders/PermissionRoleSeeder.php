@@ -175,9 +175,7 @@ class PermissionRoleSeeder extends Seeder
                 ],
                 'permissions' => [
                     'dashboard.datatables.estatistica.formularios-sinodais',
-                    'dashboard.datatables.estatistica.formularios-federacoes',
                     'dashboard.datatables.estatistica.formularios-locais',
-                    'dashboard.datatables.estatistica.ranking',
                 ]
             ],
             'secretaria_educacao_crista' => [

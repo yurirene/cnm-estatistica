@@ -175,8 +175,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
         
         Route::get('/datatables/estatistica/formularios-sinodais', [DatatableAjaxController::class, 'estatisticaFormulariosSinodais'])->name('datatables.estatistica.formularios-sinodais');
-        Route::get('/datatables/estatistica/formularios-federacoes', [DatatableAjaxController::class, 'estatisticaFormulariosFederacoes'])->name('datatables.estatistica.formularios-federacoes');
-        Route::get('/datatables/estatistica/formularios-locais', [DatatableAjaxController::class, 'estatisticaFormulariosLocais'])->name('datatables.estatistica.formularios-locais');
+        Route::get('/datatables/estatistica/formularios-locais/{id}', [DatatableAjaxController::class, 'estatisticaFormulariosLocais'])->name('datatables.estatistica.formularios-locais');
     });
 
 });
