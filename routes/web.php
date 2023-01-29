@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\ConsignacaoProdutoController;
@@ -173,11 +174,17 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
         Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
 
-        
+
         Route::get('/datatables/estatistica/formularios-sinodais', [DatatableAjaxController::class, 'estatisticaFormulariosSinodais'])->name('datatables.estatistica.formularios-sinodais');
         Route::get('/datatables/estatistica/formularios-locais/{id}', [DatatableAjaxController::class, 'estatisticaFormulariosLocais'])->name('datatables.estatistica.formularios-locais');
     });
 
+
+    // APPS
+    Route::group(['modulo' => 'apps'], function () {
+        Route::get('/apps/sites', [SiteController::class, 'index'])->name('apps.sites.index');
+
+    });
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -26,7 +26,8 @@ class PermissionRoleSeeder extends Seeder
                     'secretaria-produtos',
                     'demandas',
                     'digestos',
-                    'tutoriais'
+                    'tutoriais',
+                    'apps'
                 ]
             ],
             'diretoria' => [

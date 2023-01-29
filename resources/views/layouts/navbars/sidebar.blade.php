@@ -180,6 +180,12 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
+                        <i class="fas fa-android"></i> Apps
+                    </a>
+                </li>
+
 
             </ul>
             <hr class="my-3">
