@@ -38,6 +38,9 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
 
+Route::group(['prefix' => 'site'], function() {
+    Route::get('/{sigla}', [SiteController::class, 'show'])->name('index');
+});
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
@@ -183,6 +186,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     // APPS
     Route::group(['modulo' => 'apps'], function () {
         Route::get('/apps/sites', [SiteController::class, 'index'])->name('apps.sites.index');
+        Route::post('/apps/sites/{sinodal_id}/atualizar-config',[SiteController::class, 'atualizar'])->name('apps.sites.atualizar-config');
+        Route::post('/apps/sites/{sinodal_id}/adicionar-galeria',[SiteController::class, 'adicionarGaleria'])->name('apps.sites.adicionar-galeria');
+        Route::get('/apps/sites/{sinodal_id}/remover-galeria/{id}',[SiteController::class, 'removerGaleria'])->name('apps.sites.remover-galeria');
+        Route::post('/apps/sites/{sinodal_id}/atualizar-foto-diretoria',[SiteController::class, 'atualizarFotoDiretoria'])->name('apps.sites.atualizar-foto-diretoria');
 
     });
 });

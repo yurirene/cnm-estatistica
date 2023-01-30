@@ -18,13 +18,14 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @foreach($modelo['configuracoes']['editaveis'] as $item)
+                    @foreach($configuracoes['editaveis'] as $k => $item)
                         @foreach ($item as $nome => $campo)
                             @include('dashboard.apps.sites.campos', [
                                 'campo' => $campo,
                                 'nome' => $nome,
                                 'mapeamento' => $modelo['mapeamento'],
-                                'sinodal_id' => 'b3201496-329d-43b4-82ba-8ead42f25b1f'
+                                'sinodal_id' => $sinodal_id,
+                                'k' => $k
                             ])
                         @endforeach
                     @endforeach
@@ -40,6 +41,8 @@
 <script>
 
 $(document).ready(function() {
+    const ROUTE = "{{ route('dashboard.apps.sites.atualizar-config', ['sinodal_id' => $sinodal_id]) }}"
+    const TOKEN = "{{ csrf_token() }}"
     var SaveButton = function (context) {
         var ui = $.summernote.ui;
 
@@ -47,8 +50,10 @@ $(document).ready(function() {
         var button = ui.button({
             contents: '<i class="fa fa-save"/> Atualizar',
             click: function () {
-                var markup = $('.isSummernoteCampo').summernote('code');
-                console.log(markup);
+                var editor = $('.isSummernoteCampo');
+                var valor = editor.summernote('code');
+                atualizarConfig('sobreNos',editor.data('chave'),valor);
+
             }
         });
 
@@ -69,6 +74,54 @@ $(document).ready(function() {
             salvar: SaveButton
         }
     });
+
+    $('.update').on('click', function() {
+        var config = $(this).data('id');
+        var chave = $(this).data('chave');
+        var valor = $('#' + config).val();
+        atualizarConfig(config, chave, valor);
+    });
+
+
+
+    $('.update-cargo').on('click', function() {
+        var config = $(this).data('id');
+        var chave = $(this).data('chave');
+        var cargo = $(this).data('cargo');
+        var valor = $('#' + config).val();
+        console.log(config, chave, cargo, valor);
+        atualizarConfig(config, chave, valor, cargo);
+    });
+
+    function atualizarConfig(config, chave, valor, cargo = null) {
+        $.ajax({
+            url: ROUTE,
+            type: "POST",
+            data: {
+                _token: TOKEN,
+                config: config,
+                valor: valor,
+                chave: chave,
+                cargo: cargo
+            },
+            success: function(response) {
+
+                iziToast.show({
+                    title: 'Sucesso!',
+                    message: response.mensagem,
+                    position: 'topRight',
+                });
+            },
+            error: function(error){
+
+                iziToast.show({
+                    title: 'Erro!',
+                    message: response.mensagem,
+                    position: 'topRight',
+                });
+            }
+        });
+    }
 });
 
 </script>
