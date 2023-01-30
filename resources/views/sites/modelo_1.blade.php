@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="utf-8">
@@ -84,7 +84,7 @@
                         @endif
                         @if(!empty($linkTitulo))
                         <div class="text-center text-lg-start">
-                            <a href="#sobre" class="btn-get-started scrollto">{{$linkTitulo}}</a>
+                            <a href="{{ $link ?? '#' }}" target="blank" class="btn-get-started scrollto">{{$linkTitulo}}</a>
                         </div>
                         @endif
                     </div>

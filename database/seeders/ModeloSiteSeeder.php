@@ -26,7 +26,8 @@ class ModeloSiteSeeder extends Seeder
                         ['destaque' => 'Texto Destaque'],
                         ['subtitulo' => 'Meu Subtitulo'],
                         ['linkTitulo' => 'Link Título'],
-                        ['sobreNos' => '<p>Sobre <b>nós</b> - <i>ASDAS</i></p>'],
+                        ['link' => 'https://google.com'],
+                        ['sobreNos' => '<p>Sobre nós - <i>ASDAS</i></p>'],
                         ['galeria' => []],
                         ['diretoria' => [
                             0 => [
@@ -81,15 +82,17 @@ class ModeloSiteSeeder extends Seeder
                         'destaque' => 'text',
                         'subtitulo' => 'text',
                         'linkTitulo' => 'text',
+                        'link' => 'text',
                         'sobreNos' => 'rich',
                         'galeria' => 'custom',
                         'diretoria' => 'custom'
                     ],
                     'titulo' => [
                         'titulo' => 'Título',
+                        'link' => 'Link Externo',
                         'destaque' => 'Texto em Destaque',
                         'subtitulo' => 'Subtítulo',
-                        'linkTitulo' => 'Botão Link',
+                        'linkTitulo' => 'Botão Link Texto',
                         'sobreNos' => 'Sobre Nós',
                         'galeria' => 'Galeria',
                         'diretoria' => 'Diretoria'
