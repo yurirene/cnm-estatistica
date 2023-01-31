@@ -28,7 +28,7 @@ class AppsSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'nome' => 'Registro Atos',
+                'nome' => 'Registro de Atos',
                 'name' => 'registro_atos'
             ]
         ];

@@ -180,13 +180,29 @@
                     </a>
                 </li>
 
+
+                @canAtLeast(['dashboard.apps.liberacao'])
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
-                        <i class="fas fa-android"></i> Apps
+                    <a class="nav-link" href="{{ route('dashboard.apps.liberacao') }}">
+                        <i class="fas fa-key"></i> Liberar Apps
                     </a>
                 </li>
+                @endCanAtLeast
 
-
+                @can('apps', 'sites')
+                <a class="nav-link" href="#meusapps" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-tablet-alt"></i> Meus Apps
+                </a>
+                <ul class="collapse list-unstyled" id="meusapps" >
+                    <li class="nav-item ml-3">
+                        <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
+                            <i class="fab fa-chrome"></i>
+                            Site
+                        </a>
+                    </li>
+                </ul>
+                @endcan
             </ul>
             <hr class="my-3">
 

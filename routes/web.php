@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Apps\AppController;
 use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ComprovanteACIController;
@@ -182,6 +183,15 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/datatables/estatistica/formularios-locais/{id}', [DatatableAjaxController::class, 'estatisticaFormulariosLocais'])->name('datatables.estatistica.formularios-locais');
     });
 
+
+    //ACESSO APPS
+
+
+    Route::group(['modulo' => 'acesso-apps'], function () {
+        Route::get('/apps/liberar', [AppController::class, 'index'])->name('apps.liberacao');
+        Route::post('/apps/liberar', [AppController::class, 'liberar'])->name('apps.liberar');
+        Route::get('/apps/get-sinodal-apps/{id}', [AppController::class, 'getSinodalApps'])->name('apps.get-sinodal-apps');
+    });
 
     // APPS
     Route::group(['modulo' => 'apps'], function () {

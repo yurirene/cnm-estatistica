@@ -27,7 +27,7 @@ class PermissionRoleSeeder extends Seeder
                     'demandas',
                     'digestos',
                     'tutoriais',
-                    'apps'
+                    'acesso-apps'
                 ]
             ],
             'diretoria' => [
@@ -52,7 +52,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'federacoes',
                     'formularios-sinodais',
-                    'tutoriais'
+                    'tutoriais',
+                    'apps'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',

@@ -2,12 +2,31 @@
 
 namespace App\Services\Apps;
 
+use App\Models\Apps\Site\ModeloSite;
+use App\Models\Apps\Site\Site;
 use App\Models\Sinodal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SiteService
 {
+
+    public static function criarSite(Sinodal $sinodal): ?Site
+    {
+        try {
+            $modelo = ModeloSite::first();
+            return Site::create([
+                'sinodal_id' => $sinodal->id,
+                'modelo_id' => $modelo->id,
+                'configuracoes' => $modelo->configuracoes,
+                'url' => "https://ump.app.br/site/" . strtolower(str_replace(['-', ' '], '', $sinodal->sigla))
+            ]);
+
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            throw $th;
+        }
+    }
 
     public static function atualizarConfig(string $id, array $request)
     {
@@ -39,9 +58,9 @@ class SiteService
             })->toArray();
             $relatorio = $sinodal->relatorios()->get()->last();
             $totalizador = [
-                'umps' => $relatorio->estrutura['ump_organizada'],
-                'federacao' => $relatorio->estrutura['federacao_organizada'],
-                'socios' => intval($relatorio->perfil['ativos']) + intval($relatorio->perfil['cooperadores'])
+                'umps' => $relatorio->estrutura['ump_organizada'] ?? 0,
+                'federacao' => $relatorio->estrutura['federacao_organizada'] ?? 0,
+                'socios' => intval($relatorio->perfil['ativos'] ?? 0) + intval($relatorio->perfil['cooperadores'] ?? 0)
             ];
             $galeria  = $sinodal->galeria->map(function ($item) {
                 return $item->path;

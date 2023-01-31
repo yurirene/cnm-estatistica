@@ -13,12 +13,15 @@ class SiteController extends Controller
 {
     public function index()
     {
-        $sinodal_id = 'b3201496-329d-43b4-82ba-8ead42f25b1f';
-        $site = Site::where('sinodal_id', $sinodal_id)->first();
+        $sinodal = auth()->user()->sinodais()->first();
+        $site = Site::where('sinodal_id', $sinodal->id)->first();
+        if (!$site) {
+            $site = SiteService::criarSite($sinodal);
+        }
         return view('dashboard.apps.sites.index', [
             'modelo' => $site->modelo,
-            'configuracoes' => $site->configuracoes,
-            'sinodal_id' => $sinodal_id
+            'site' => $site,
+            'sinodal_id' => $sinodal->id
         ]);
     }
 
@@ -42,7 +45,10 @@ class SiteController extends Controller
     public function show($sigla)
     {
         try {
-            $sinodal = Sinodal::where('sigla', $sigla)->first();
+            $sinodal = Sinodal::where('sigla', $sigla)
+                ->whereHas('apps', function ($sql) {
+                    $sql->where('name', 'sites');
+                })->first();
             $site = $sinodal->site;
             $variaveis = SiteService::montar($sinodal, $site->configuracoes);
             return view("sites.modelo_{$site->modelo_id}", $variaveis);

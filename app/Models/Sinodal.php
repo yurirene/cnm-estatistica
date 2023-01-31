@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Apps\App;
 use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
 use App\Traits\Auditable;
@@ -70,5 +71,10 @@ class Sinodal extends Model
     public function galeria()
     {
         return $this->hasMany(Galeria::class, 'sinodal_id');
+    }
+
+    public function apps()
+    {
+        return $this->belongsToMany(App::class, 'app_sinodal');
     }
 }

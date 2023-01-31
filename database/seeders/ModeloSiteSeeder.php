@@ -27,44 +27,52 @@ class ModeloSiteSeeder extends Seeder
                         ['subtitulo' => 'Meu Subtitulo'],
                         ['linkTitulo' => 'Link Título'],
                         ['link' => 'https://google.com'],
-                        ['sobreNos' => '<p>Sobre nós - <i>ASDAS</i></p>'],
+                        ['sobreNos' => "<p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        Cupiditate fugiat dolore excepturi modi,
+                        explicabo esse accusantium ea odio inventore beatae libero facilis,
+                        maxime, dolorem quaerat animi mollitia perspiciatis!
+                        Ipsa vel incidunt voluptates repellat velit quia iste in illo.
+                        Ex quasi ea ut exercitationem eius repellendus voluptate deleniti
+                        libero illum quo!
+                        </p>"],
                         ['galeria' => []],
                         ['diretoria' => [
                             0 => [
                                 'titulo' => 'Presidente',
                                 'cargo' => 'presidente',
                                 'path' => '',
-                                'nome' => 'Nome'
+                                'nome' => 'Nome do Presidente'
                             ],
                             1 => [
                                 'cargo' => 'vice_presidente',
                                 'titulo' => 'Vice-Presidente',
                                 'path' => '',
-                                'nome' => 'Nome'
+                                'nome' => 'Nome do Vice'
                             ],
                             2 => [
                                 'cargo' => 'secretaria_executiva',
                                 'titulo' => 'Secretário-Executivo',
                                 'path' => '',
-                                'nome' => 'Nome'
+                                'nome' => 'Nome do Secretário-Executivo'
                             ],
                             3 => [
                                 'cargo' => 'primeiro_secretario',
-                                'titulo' => '1º Secretário(a)',
+                                'titulo' => 'Primeiro(a) Secretário(a)',
                                 'path' => '',
-                                'nome' => 'Nome'
+                                'nome' => 'Nome do(a) Secretário'
                             ],
                             4 => [
                                 'cargo' => 'segundo_secretario',
-                                'titulo' => '2º Secretário(a)',
+                                'titulo' => 'Segundo(a) Secretário(a)',
                                 'path' => '',
-                                'nome' => 'Nome'
+                                'nome' => 'Nome do(a) Secretário(a)'
                             ],
                             5 => [
                                 'cargo' => 'tesoureiro',
                                 'titulo' => 'Tesoureiro',
                                 'path' => '',
-                                'nome' => 'Nome'
+                                'nome' => 'Nome do Tesourerio(a)'
                             ]
                         ]]
                     ],
