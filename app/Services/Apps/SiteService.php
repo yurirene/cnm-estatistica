@@ -23,7 +23,6 @@ class SiteService
             ]);
 
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             throw $th;
         }
     }
@@ -133,7 +132,6 @@ class SiteService
             ]);
 
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             throw $th;
         }
     }
