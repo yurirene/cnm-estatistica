@@ -24,21 +24,21 @@
                                 <div class="card-body">
                                     <h5><i class="fas fa-filter"></i> Filtros</h5>
                                     <div class="row mb-2">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label>Origem</label>
                                             {!! Form::select('demanda_filtro', $demandas, null, ['class' => 'form-control', 'id' => 'demanda_filtro', 'placeholder' => '-']) !!}
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label>Nível</label>
                                             {!! Form::select('nivel_filtro', $niveis, null, ['class' => 'form-control', 'id' => 'nivel_filtro', 'placeholder' => '-']) !!}
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label>Status</label>
                                             {!! Form::select('status_filtro', $status, null, ['class' => 'form-control', 'id' => 'status_filtro', 'placeholder' => '-']) !!}
                                         </div>
                                     </div>
                                     <div class="row mb-2">
-                                        <div class="col-md-3">
+                                        <div class="col-md-12">
                                             <button class="btn btn-primary" type="button" id="filtrar">Filtrar</button>
                                             <button class="btn btn-secondary" type="button" id="resetar">Limpar</button>
                                         </div>

@@ -45,7 +45,6 @@ class EstatisticaController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

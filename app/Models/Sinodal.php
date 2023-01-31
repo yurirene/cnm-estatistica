@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Apps\App;
+use App\Models\Apps\Site\Galeria;
+use App\Models\Apps\Site\Site;
 use App\Traits\Auditable;
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;
@@ -12,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class Sinodal extends Model
 {
     use GenericTrait, SoftDeletes;
-    
+
     protected $table = 'sinodais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $dates = ['data_organizacao'];
@@ -58,5 +61,20 @@ class Sinodal extends Model
     public function ranking()
     {
         return $this->hasOne(Ranking::class, 'sinodal_id');
+    }
+
+    public function site()
+    {
+        return $this->hasOne(Site::class, 'sinodal_id');
+    }
+
+    public function galeria()
+    {
+        return $this->hasMany(Galeria::class, 'sinodal_id');
+    }
+
+    public function apps()
+    {
+        return $this->belongsToMany(App::class, 'app_sinodal');
     }
 }

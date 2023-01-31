@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Apps\AppController;
+use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\ConsignacaoProdutoController;
@@ -37,6 +39,9 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
 
+Route::group(['prefix' => 'site'], function() {
+    Route::get('/{sigla}', [SiteController::class, 'show'])->name('index');
+});
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
@@ -173,11 +178,30 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/datatables/pesquisas/{pesquisa}/federacoes', [DatatableAjaxController::class, 'acompanhamentoPesquisaFederacoes'])->name('datatables.pesquisas.federacoes');
         Route::get('/datatables/pesquisas/{pesquisa}/locais', [DatatableAjaxController::class, 'acompanhamentoPesquisaLocais'])->name('datatables.pesquisas.locais');
 
-        
+
         Route::get('/datatables/estatistica/formularios-sinodais', [DatatableAjaxController::class, 'estatisticaFormulariosSinodais'])->name('datatables.estatistica.formularios-sinodais');
         Route::get('/datatables/estatistica/formularios-locais/{id}', [DatatableAjaxController::class, 'estatisticaFormulariosLocais'])->name('datatables.estatistica.formularios-locais');
     });
 
+
+    //ACESSO APPS
+
+
+    Route::group(['modulo' => 'acesso-apps'], function () {
+        Route::get('/apps/liberar', [AppController::class, 'index'])->name('apps.liberacao');
+        Route::post('/apps/liberar', [AppController::class, 'liberar'])->name('apps.liberar');
+        Route::get('/apps/get-sinodal-apps/{id}', [AppController::class, 'getSinodalApps'])->name('apps.get-sinodal-apps');
+    });
+
+    // APPS
+    Route::group(['modulo' => 'apps'], function () {
+        Route::get('/apps/sites', [SiteController::class, 'index'])->name('apps.sites.index');
+        Route::post('/apps/sites/{sinodal_id}/atualizar-config',[SiteController::class, 'atualizar'])->name('apps.sites.atualizar-config');
+        Route::post('/apps/sites/{sinodal_id}/adicionar-galeria',[SiteController::class, 'adicionarGaleria'])->name('apps.sites.adicionar-galeria');
+        Route::get('/apps/sites/{sinodal_id}/remover-galeria/{id}',[SiteController::class, 'removerGaleria'])->name('apps.sites.remover-galeria');
+        Route::post('/apps/sites/{sinodal_id}/atualizar-foto-diretoria',[SiteController::class, 'atualizarFotoDiretoria'])->name('apps.sites.atualizar-foto-diretoria');
+
+    });
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

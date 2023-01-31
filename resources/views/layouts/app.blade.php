@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -33,12 +33,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    
+
     <style>
         @media (max-width: 767.98px) {
             .fc .fc-toolbar.fc-header-toolbar {
@@ -135,12 +135,6 @@
 </head>
 
 <body class="{{ $class ?? '' }}">
-    {{-- @auth()
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-        @include('layouts.navbars.sidebar')
-    @endauth --}}
 
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
@@ -162,7 +156,7 @@
     <script>
         $(function(){
 
-            var url = window.location.pathname, 
+            var url = window.location.pathname,
                 urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
                 // now grab every link from the navigation
                 $('.navbar-nav a').each(function(){
@@ -174,7 +168,7 @@
                         } else {
                             $(this).addClass('text-primary');
                         }
-                        
+
                         if ($(this).parents().closest('.nav-item').length > 1) {
                             console.log($(this).parents().closest('.nav-item'));
                             $(this).parents().closest('.nav-item').first().find('a').first().addClass('active text-primary');
@@ -208,7 +202,7 @@
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
 
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
@@ -220,8 +214,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SUMMERNOTE -->
+    <link href="/vendor/summernote/summernote-lite.min.css" rel="stylesheet">
+    <script src="/vendor/summernote/summernote-lite.min.js"></script>
+    <script src="/vendor/summernote/lang/summernote-pt-BR.js"></script>
+    <script src="/vendor/summernote/plugin/specialchars/summernote-ext-specialchars.js"></script>
+
     <script>
         function deleteRegistro(url) {
                 Swal.fire({
@@ -255,7 +256,7 @@
     </script>
     <script>
         $(document).ready(function() {
-           
+
             $('.isDateRange').daterangepicker({
                 autoUpdateInput: false,
                 "locale": {
@@ -304,22 +305,16 @@
 
             $('.isSelect2').select2();
 
-            
+
             $('.isMoney').mask("#.##0,00", {reverse: true});
-            
+
             $("#hide-sidebar").click(function() {
                 $("#sidenav-main").toggle();
                 $(".main-content").toggleClass("hideme");
             });
-
-
-            
         });
 
     </script>
-    
-
-
     @stack('js')
 
     <script>
@@ -369,7 +364,7 @@
         })(jQuery, jQuery.fn.dataTable);
     </script>
 
-    
+
 
     <!-- Argon JS -->
     <script src="{{ asset('argon') }}/js/argon.js?v=1.0.0"></script>
@@ -385,7 +380,7 @@
         });
     </script>
     @endif
-    
+
     @if(session()->has('mensagem') && session('mensagem')['status'] == false)
     <script>
         iziToast.show({
@@ -426,7 +421,7 @@
                 buttons: [
                     ['<button><b>Sim</b></button>', function (instance, toast) {
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        window.location.href = rota;            
+                        window.location.href = rota;
                     }, true],
                     ['<button>Cancelar</button>', function (instance, toast) {
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
@@ -445,9 +440,9 @@
             $('.table-responsive').css( "overflow", "auto" );
         })
     </script>
-        
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="/js/form-builder.min.js"></script>

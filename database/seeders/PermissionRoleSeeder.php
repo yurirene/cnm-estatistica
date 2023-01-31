@@ -26,7 +26,8 @@ class PermissionRoleSeeder extends Seeder
                     'secretaria-produtos',
                     'demandas',
                     'digestos',
-                    'tutoriais'
+                    'tutoriais',
+                    'acesso-apps'
                 ]
             ],
             'diretoria' => [
@@ -51,7 +52,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'federacoes',
                     'formularios-sinodais',
-                    'tutoriais'
+                    'tutoriais',
+                    'apps'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -176,6 +178,7 @@ class PermissionRoleSeeder extends Seeder
                 'permissions' => [
                     'dashboard.datatables.estatistica.formularios-sinodais',
                     'dashboard.datatables.estatistica.formularios-locais',
+                    'dashboard.datatables.formularios-entregues'
                 ]
             ],
             'secretaria_educacao_crista' => [
