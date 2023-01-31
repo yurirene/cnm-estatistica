@@ -275,7 +275,8 @@ class EstatisticaService
                     'locais' => self::getPorcentagemFormularioLocal($item->id, $ano),
                     'qtd_fomr_fed' => self::getDadosFormularioFederacao($item->id, $ano)->where('formulario', '!=', 0)->count(),
                     'qtd_fomr_local' => self::getDadosFormularioLocal($item->id, $ano)->where('formulario', '!=', 0)->count(),
-                    'qualidade' => self::calcularQualidade($item->id, $ano)
+                    'qualidade' => self::calcularQualidade($item->id, $ano),
+                    'regiao' => $item->regiao->nome
                 ];
             });
     }

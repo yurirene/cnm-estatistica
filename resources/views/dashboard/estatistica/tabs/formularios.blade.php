@@ -4,16 +4,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col">
-                            <a 
-                                href="{{ route('dashboard.estatistica.atualizar-ranking') }}" 
-                                class="btn btn-primary"
-                            >
-                            Atualizar Lista
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="table-responsive">
                             <table id="formularios-table" class="table">
                                 <thead>
@@ -23,6 +13,7 @@
                                         <th class="text-center">Federações</th>
                                         <th class="text-center">UMP Locais</th>
                                         <th class="text-center">Qualidade</th>
+                                        <th class="text-center">Região</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -95,12 +86,28 @@
     </div>
 </div>
 @push('js')
-
+<script src="/vendor/datatables/buttons.html5.min.js"></script>
 <script>
+    const ROUTE_ATUALIZAR_LISTA = "{{ route('dashboard.estatistica.atualizar-ranking') }}";
     $(function() {
         $('#formularios-table').DataTable({
-            dom: 'frtip',
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Atualizar Lista',
+                    className: 'bg-primary text-white',
+                    action: function ( e, dt, node, config ) {
+                        window.location.href = ROUTE_ATUALIZAR_LISTA;
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: 'Exportar',
+                }
+            ],
+            order: [4, 'desc'],
             destroy: true,
+            pageLength: 50,
             responsive: true,
             processing: true,
             serverSide: true,
@@ -139,6 +146,7 @@
                     }
                 },
                 {data: 'qualidade'},
+                {data: 'regiao'},
             ]
         });
     });
