@@ -58,5 +58,13 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
+        Gate::define('apps', function (User $user, string $app) {
+            $sinodal = $user->sinodais()->first();
+            if (!$sinodal) {
+                return false;
+            }
+            return $sinodal->apps()->where('name', $app)->get()->isNotEmpty();
+        });
+
     }
 }

@@ -19,7 +19,7 @@
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-tabs" id="myTab" role="tablist" style="line-height: 40px;">
-                        
+
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active"
                                 id="terceiro-tab"
@@ -50,7 +50,7 @@
                                 type="button"
                                 role="tab"
                                 aria-controls="segundo"
-                                aria-selected="false">Relatórios
+                                aria-selected="false">Base de Dados
                             </button>
                         </li>
                     </ul>

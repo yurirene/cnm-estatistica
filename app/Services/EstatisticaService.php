@@ -129,7 +129,7 @@ class EstatisticaService
             if ($federacoes->count() != 0) {
                 $porcentagem = round(($formularios * 100) / $federacoes->count(), 2);
             }
-            return "{$porcentagem}% ({$formularios} de {$federacoes->count()})"; 
+            return "{$porcentagem}% ({$formularios} de {$federacoes->count()})";
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -170,7 +170,7 @@ class EstatisticaService
             if ($locais->count() != 0) {
                 $porcentagem = round(($formularios * 100) / $locais->count(), 2);
             }
-            return "{$porcentagem}% ({$formularios} de {$locais->count()})"; 
+            return "{$porcentagem}% ({$formularios} de {$locais->count()})";
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -244,7 +244,6 @@ class EstatisticaService
                 $posicao++;
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage(), $th->getLine(), $th->getFile());
             throw $th;
         }
     }
@@ -276,7 +275,8 @@ class EstatisticaService
                     'locais' => self::getPorcentagemFormularioLocal($item->id, $ano),
                     'qtd_fomr_fed' => self::getDadosFormularioFederacao($item->id, $ano)->where('formulario', '!=', 0)->count(),
                     'qtd_fomr_local' => self::getDadosFormularioLocal($item->id, $ano)->where('formulario', '!=', 0)->count(),
-                    'qualidade' => self::calcularQualidade($item->id, $ano)
+                    'qualidade' => self::calcularQualidade($item->id, $ano),
+                    'regiao' => $item->regiao->nome
                 ];
             });
     }
