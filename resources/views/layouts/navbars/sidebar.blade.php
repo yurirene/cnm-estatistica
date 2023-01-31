@@ -24,11 +24,10 @@
                         <span>Trocar Senha</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item" onclick="event.preventDefault();
-                    document.getElementById('logout-form').submit();">
+                    <button class="dropdown-item" onclick="document.getElementById('logout-form').submit();">
                         <i class="ni ni-user-run"></i>
                         <span>{{ __('Logout') }}</span>
-                    </a>
+                    </button>
                 </div>
             </li>
         </ul>
