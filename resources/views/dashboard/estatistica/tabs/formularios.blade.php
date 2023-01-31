@@ -12,7 +12,17 @@
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Federações</th>
                                         <th class="text-center">UMP Locais</th>
-                                        <th class="text-center">Qualidade</th>
+                                        <th class="text-center">
+                                            Qualidade
+                                            <sup>
+                                                <em
+                                                    class="fas fa-1x fa-info-circle"
+                                                    data-toggle="tooltip"
+                                                    data-placement="top"
+                                                    title="Representa a porcentagem de UMPs Locais das Federações que enviaram o relatório para a Sinodal"
+                                                ></em>
+                                            </sup>
+                                        </th>
                                         <th class="text-center">Região</th>
                                     </tr>
                                 </thead>
