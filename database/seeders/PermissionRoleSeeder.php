@@ -27,7 +27,8 @@ class PermissionRoleSeeder extends Seeder
                     'demandas',
                     'digestos',
                     'tutoriais',
-                    'acesso-apps'
+                    'acesso-apps',
+                    'avisos'
                 ]
             ],
             'diretoria' => [
@@ -66,6 +67,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
+                    'dashboard.avisos.listar',
+                    'dashboard.avisos.visualizado'
                 ]
             ],
             'federacao' => [
@@ -82,6 +85,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
+                    'dashboard.avisos.listar',
+                    'dashboard.avisos.visualizado'
                 ]
             ],
             'local' => [
@@ -94,6 +99,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.show',
                     'dashboard.pesquisas.responder',
                     'dashboard.locais.update-info',
+                    'dashboard.avisos.listar',
+                    'dashboard.avisos.visualizado'
                 ]
             ],
             'tesouraria' => [
@@ -173,7 +180,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'atividades',
                     'secretaria-estatistica',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'avisos'
                 ],
                 'permissions' => [
                     'dashboard.datatables.estatistica.formularios-sinodais',
