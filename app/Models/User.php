@@ -95,7 +95,7 @@ class User extends Authenticatable
         }
 
         $perfil_usuario =  Auth::user()->roles->pluck('name')->toArray();
-        $param_busca = count($perfil_usuario) > 1 ? 'orWhereHas' : 'whereHas'; 
+        $param_busca = count($perfil_usuario) > 1 ? 'orWhereHas' : 'whereHas';
         return $query->whereDoesntHave('roles', function($sql) {
             return $sql->whereIn('name', ['diretoria']);
         })
@@ -116,7 +116,7 @@ class User extends Authenticatable
                 return $q->whereIn('locais.federacao_id', Auth::user()->federacoes->pluck('id')->toArray());
             });
         });
-        
+
     }
 
     public function getInstanciaFormatadaAttribute()
@@ -131,7 +131,13 @@ class User extends Authenticatable
             return 'Federação';
         } else if ($this->roles->first()->name == 'local') {
             return 'Local';
-        } 
+        }
+    }
+
+    public function avisos()
+    {
+        return $this->belongsToMany(Aviso::class, 'aviso_usuarios', 'user_id', 'aviso_id')
+            ->withPivot('visualizado');
     }
 
 }
