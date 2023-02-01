@@ -69,7 +69,6 @@ class SiteService
                 [
                     'galeria' => $galeria,
                     'sigla' => $sinodal->sigla,
-                    'nomeSinodal' => $sinodal->nome,
                     'federacoes' => $federacoes,
                     'totalizador' => $totalizador
                 ]

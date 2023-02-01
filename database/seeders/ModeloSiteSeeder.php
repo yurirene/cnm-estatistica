@@ -22,6 +22,7 @@ class ModeloSiteSeeder extends Seeder
                 'name' => 'modelo_1',
                 'configuracoes' => [
                     'editaveis' => [
+                        ['nomeSinodal' => 'CSM Sinodal'],
                         ['titulo' => 'Meu Título'],
                         ['destaque' => 'Texto Destaque'],
                         ['subtitulo' => 'Meu Subtitulo'],
@@ -76,7 +77,6 @@ class ModeloSiteSeeder extends Seeder
                             ]
                         ]]
                     ],
-                    'nomeSinodal' => 'CSM Sinodal',
                     'federacoes' => [],
                     'totalizador' => [
                         'federacao' => 0,
@@ -86,6 +86,7 @@ class ModeloSiteSeeder extends Seeder
                 ],
                 'mapeamento' => [
                     'campos' => [
+                        'nomeSinodal' => 'text',
                         'titulo' => 'text',
                         'destaque' => 'text',
                         'subtitulo' => 'text',
@@ -96,6 +97,7 @@ class ModeloSiteSeeder extends Seeder
                         'diretoria' => 'custom'
                     ],
                     'titulo' => [
+                        'nomeSinodal' => 'Nome Sinodal',
                         'titulo' => 'Título',
                         'link' => 'Link Externo',
                         'destaque' => 'Texto em Destaque',

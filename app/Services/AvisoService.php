@@ -73,7 +73,6 @@ class AvisoService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage(), $th->getLine());
             throw $th;
 
         }
