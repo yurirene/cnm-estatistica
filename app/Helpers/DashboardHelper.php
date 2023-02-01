@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Parametro;
 use App\Services\AdministradorService;
 use App\Services\DiretoriaService;
 use App\Services\FederacaoService;
@@ -10,7 +11,7 @@ use App\Services\SinodalService;
 
 class DashboardHelper
 {
-    
+
     public static function make()
     {
         if (auth()->user()->hasRole(['sinodal'])) {
@@ -25,7 +26,7 @@ class DashboardHelper
             return app()->make(LocalService::class);
         }
     }
-    
+
     public static function getTotalizadores()
     {
         $class = self::make();
@@ -38,7 +39,7 @@ class DashboardHelper
         $class = self::make();
         return $class::getInfo();
     }
-    
+
     public static function getTotalLocais()
     {
         return 10;
@@ -55,7 +56,43 @@ class DashboardHelper
         $class = self::make();
         return $class::getFormularioEntregue();
     }
-    
-    
-    
+
+
+    public static function entregouRelatorio(): bool
+    {
+        $instancia = auth()->user()->instancia() ? auth()->user()->instancia()->first() : null;
+        if (!$instancia) {
+            return true;
+        }
+        $ano = Parametro::where('nome', 'ano_referencia')->first()->valor;
+        return $instancia->relatorios()->where('ano_referencia', $ano)->get()->isNotEmpty();
+    }
+
+
+    public static function getAvisosUsuario(): array
+    {
+        return auth()->user()
+            ->avisos()
+            ->where('ativo', true)
+            ->select(['titulo', 'texto'])
+            ->get()
+            ->toArray();
+    }
+
+    public static function getAvisosUsuarioModal(): array
+    {
+        $aviso = auth()->user()
+            ->avisos()
+            ->where('ativo', true)
+            ->where('modal', true)
+            ->wherePivot('visualizado', false)
+            ->select(['avisos.id', 'titulo', 'texto'])
+            ->first();
+        if (is_null($aviso)) {
+            return [];
+        }
+        return $aviso->toArray();
+    }
+
+
 }

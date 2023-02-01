@@ -3,6 +3,7 @@
 use App\Http\Controllers\Apps\AppController;
 use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\AtividadeController;
+use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
@@ -185,13 +186,12 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
 
     //ACESSO APPS
-
-
     Route::group(['modulo' => 'acesso-apps'], function () {
         Route::get('/apps/liberar', [AppController::class, 'index'])->name('apps.liberacao');
         Route::post('/apps/liberar', [AppController::class, 'liberar'])->name('apps.liberar');
         Route::get('/apps/get-sinodal-apps/{id}', [AppController::class, 'getSinodalApps'])->name('apps.get-sinodal-apps');
     });
+
 
     // APPS
     Route::group(['modulo' => 'apps'], function () {
@@ -200,8 +200,19 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/apps/sites/{sinodal_id}/adicionar-galeria',[SiteController::class, 'adicionarGaleria'])->name('apps.sites.adicionar-galeria');
         Route::get('/apps/sites/{sinodal_id}/remover-galeria/{id}',[SiteController::class, 'removerGaleria'])->name('apps.sites.remover-galeria');
         Route::post('/apps/sites/{sinodal_id}/atualizar-foto-diretoria',[SiteController::class, 'atualizarFotoDiretoria'])->name('apps.sites.atualizar-foto-diretoria');
-
     });
+
+
+    //AVISOS
+    Route::group(['modulo' => 'avisos'], function () {
+        Route::get('/avisos', [AvisoController::class, 'index'])->name('avisos.index');
+        Route::get('/listar-avisos', [AvisoController::class, 'listar'])->name('avisos.listar');
+        Route::post('/avisos', [AvisoController::class, 'store'])->name('avisos.store');
+        Route::get('/avisos/visualizado/{id}', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
+        Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])->name('avisos.delete');
+        Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])->name('avisos.get-usuarios');
+    });
+
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

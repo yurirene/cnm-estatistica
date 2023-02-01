@@ -189,6 +189,15 @@
                 </li>
                 @endCanAtLeast
 
+                @canAtLeast(['dashboard.avisos.index'])
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.avisos.index') }}">
+                        <i class="fas fa-bullhorn"></i> Avisos
+                    </a>
+                </li>
+                @endCanAtLeast
+
                 @can('apps', 'sites')
                 <a class="nav-link" href="#meusapps" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <i class="fas fa-tablet-alt"></i> Meus Apps

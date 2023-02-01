@@ -15,7 +15,7 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="mb-0">Painel de Estatística</h3>
+                            <h3 class="mb-0">Painel de Apps - Site</h3>
                         </div>
                     </div>
                 </div>
