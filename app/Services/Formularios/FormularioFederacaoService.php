@@ -10,6 +10,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\EstatisticaService;
 use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;
@@ -48,6 +49,7 @@ class FormularioFederacaoService
                 'federacao_id' => $request->federacao_id,
                 'estrutura' => $estrutura
             ]);
+            EstatisticaService::atualizarRelatorioGeral();
             AtualizarAutomaticamenteFormulariosService::atualizarSinodal($formulario);
             DB::commit();
         } catch (\Throwable $th) {

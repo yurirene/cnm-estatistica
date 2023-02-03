@@ -30,5 +30,9 @@
 @include('dashboard.index.executiva.index')
 @endRole
 
+@role('secretaria_estatistica')
+@include('dashboard.index.estatistica.index')
+@endRole
+
 
 @endsection
