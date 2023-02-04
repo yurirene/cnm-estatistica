@@ -6,104 +6,187 @@
     ])
 
     <div class="container-fluid mt--7">
+        <div class="row mb-5">
+            <div class="col-xl-12 mb-xl-0">
+                <div class="card shadow">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h4 class="text-uppercase text-light ls-1 mb-1">Parâmetros</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Ano</label>
+                                    <select class="form-control" id="ano">
+                                        <option value="2022">2022</option>
+                                    <select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Região</label>
+                                    <select class="form-control" id="regiao">
+                                        <option value="">Todas</option>
+                                        <option value="1">Norte</option>
+                                        <option value="2">Nordeste</option>
+                                        <option value="3-oeste">Centro-Oeste</option>
+                                        <option value="4">Sudeste</option>
+                                        <option value="5">Sul</option>
+                                    <select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mt-1">
+                                <button class="btn btn-default" typle="button" id="filtrar">Filtrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
-            <div class="col-xl-7 mb-5 mb-xl-0">
-                <div class="card bg-gradient-default shadow h-100">
-                    <div class="card-header bg-transparent">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-uppercase text-light ls-1 mb-1">Acesso na Plataforma</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <!-- Chart -->
-                        <div class="">
-                            <!-- Chart wrapper -->
-                            <canvas id="atividades"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-5">
+
+            <div class="mt-3 col-xl-3 col-md-6">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Logs de Errros</h6>
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Tipo de Sócios</h6>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="log-erros-table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">#</th>
-                                        <th class="text-center">Data</th>
-                                        <th class="text-center">Erro</th>
-                                        <th class="text-center">Usuário Afetado</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <canvas id="tipo_socios"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 col-xl-3 col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Gênero dos Sócios</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <canvas id="genero"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 col-xl-6 col-md-12">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Idade dos Sócios</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <canvas id="idade"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-xl-6">
+
+
+        <div class="row">
+
+            <div class="mt-3 col-xl-6 col-md-12">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Gráfico de Entrega de Relatórios por Região</h6>
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Estado Civil dos Sócios</h6>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <canvas id="grafico-formularios-entregues"></canvas>
+                            <canvas id="estado_civil"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-6">
+            <div class="mt-3 col-xl-3 col-md-6">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Estados do Usuário</h6>
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Escolaridade dos Sócios</h6>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <div id="mapa-brazil" style="margin: 0 auto; width: 460px"></div>
+                            <canvas id="escolaridade"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 col-xl-3 col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Sócios Desempregados</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex align-items-center">
+                        <div class="table-responsive">
+                            <canvas id="desempregados"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="log-erro-modal" tabindex="-1" role="dialog" aria-labelledby="log-erro-modalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="log-erro-modalLabel">Erro do Sistema</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+
+
+        <div class="row">
+
+            <div class="mt-3 col-xl-8 col-md-12">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Sócios com Deficiências</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <canvas id="deficiencias"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <h4>Data: <span  id="dia_modal"></span></h4>
-                    <h5>Erro: <span  id="erro_modal"></span></h5>
-                    <h5>Linha: <span  id="linha_modal"></span></h5>
-                    <h5>Arquivo: <span  id="arquivo_modal"></span></h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                </div>
+            </div>
+            <div class="mt-3 col-xl-4 col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Repasse da ACI</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <canvas id="repasse_aci"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -111,153 +194,62 @@
     </div>
 @endsection
 
-{{-- @push('js')
+@push('js')
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
-
     <script>
-        $(function() {
-            $('#log-erros-table').DataTable({
-                dom: 'frtip',
-                responsive: true,
-                processing: true,
-                serverSide: true,
-                order: [1],
-                ajax: '{{ route("dashboard.datatables.log-erros") }}',
-                columns: [
-                    {
-                        render: function (data, type, result) {
-                            return `<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#log-erro-modal" data-dia="${result.dia}" data-informacoes="${result.erro_completo}"><i class="fas fa-eye"></i></button>`;
+        const URL = "{{ route('graficos.index') }}";
+        const TOKEN = "{{ csrf_token() }}";
+        const LEGEND = {
+            labels: {
+                generateLabels: function(chart) {
+                    const original = Chart.overrides.pie.plugins.legend.labels.generateLabels;
+                    const labelsOriginal = original.call(this, chart);
+                    let datasetColors = chart.data.datasets.map(function(e) {
+                        return e.backgroundColor;
+                    });
+                    datasetColors = datasetColors.flat();
+                    labelsOriginal.forEach(label => {
+                        label.datasetIndex = (label.index - label.index % 2) / 2;
+                        label.hidden = !chart.isDatasetVisible(label.datasetIndex);
+                        label.fillStyle = datasetColors[label.index];
+                    });
+                    return labelsOriginal;
+                }
+            },
+            onClick: function(mouseEvent, legendItem, legend) {
+                legend.chart.getDatasetMeta(
+                    legendItem.datasetIndex
+                ).hidden = legend.chart.isDatasetVisible(legendItem.datasetIndex);
+                legend.chart.update();
+            }
+        };
+        $('#filtrar').on('click', function () {
+            $.ajax({
+                url: URL,
+                type: 'POST',
+                data: {
+                    _token: TOKEN,
+                    ano: $('#ano').val(),
+                    regiao: $('#regiao').val()
+                },
+                success: function(response) {
+                    response.forEach(function(grafico) {
+                        let chart = Chart.getChart(grafico.id);
+                        if (chart) {
+                            chart.destroy();
                         }
-                    },
-                    {data: 'dia'},
-                    {data: 'erro'},
-                    {data: 'usuario'},
-                ]
+                        if (grafico.config.need) {
+                            grafico.config.options.plugins.legend = LEGEND;
+                        }
+                        new Chart(
+                            document.getElementById(grafico.id),
+                            grafico.config
+                        );
+                    })
+                }
             });
         });
     </script>
-    <script>
-        Highcharts.mapChart('mapa-brazil', {
-            chart: {
-                map: 'countries/br/br-all',
-                height: 470
-            },
 
-            title: {
-                text: ''
-            },
-
-            credits: {
-                enabled: false
-            },
-
-            navigation: {
-                buttonOptions: {
-                    enabled: false
-                }
-            },
-
-            series: [{
-                borderColor: '#666',
-                borderWidth: 0.4,
-                data: {!! json_encode($dataMapaBrazil) !!},
-                name: 'Estados do Usuário',
-                states: {
-                    hover: {
-                        color: '#BADA55'
-                    },
-                    select: {
-                        color: 'gray'
-                    }
-                },
-                allowPointSelect: true,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.name}',
-                    style: {
-                        fontSize: '7px',
-                        textOutline: '0px',
-                        fontWeight: 'normal'
-                    },
-                },
-            }]
-        });
-    </script>
-    <script>
-        var config_grafico_entrega_relatorio = {
-            type: 'polarArea',
-            data: @json(DashboardHelper::getTotalizadores()['grafico_entrega_formulario_por_regiao']),
-            options: {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                console.log(context);
-                                return context.label + ': ' + context.parsed.r + '%'
-                            }
-                        }
-                    },
-                    legend: {
-                        display: true,
-                        position: 'bottom'
-                    }
-                },
-                scale: {
-                    ticks: {
-                        min: 0,
-                        max: 100
-                    }
-                }
-            }
-        };
-        const programcaoChart = new Chart(
-            document.getElementById('grafico-formularios-entregues'),
-            config_grafico_entrega_relatorio
-        );
-    </script>
-    @endpush
-
-@push('script')
-    <script>
-        const config_grafico_acesso = {
-                type: 'line',
-                data: @json(DashboardHelper::getTotalizadores()['grafico_acesso_trinta_dias']),
-                options: {
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
-                    },
-                    responsive: true,
-                        plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Gráfico de Acessos'
-                        }
-                    }
-                },
-            };
-        const acessoChart = new Chart(
-            document.getElementById('atividades'),
-            config_grafico_acesso
-        );
-
-        $('#log-erro-modal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget)
-            var informacoes = button.data('informacoes')
-            var dia = button.data('dia')
-            console.log(informacoes);
-            var modal = $(this)
-            modal.find('#dia_modal').text(dia);
-            modal.find('#erro_modal').text(informacoes.message);
-            modal.find('#linha_modal').text(informacoes.line);
-            modal.find('#arquivo_modal').text(informacoes.file);
-        })
-
-
-    </script>
-@endpush --}}
+@endpush

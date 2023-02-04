@@ -41,7 +41,11 @@ use Illuminate\Support\Facades\Route;
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'site'], function() {
-    Route::get('/{sigla}', [SiteController::class, 'show'])->name('index');
+    Route::get('/{sigla}', [SiteController::class, 'show'])->name('meusite.index');
+});
+
+Route::group(['prefix' => 'graficos'], function() {
+    Route::post('/', [EstatisticaController::class, 'graficos'])->name('graficos.index');
 });
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {

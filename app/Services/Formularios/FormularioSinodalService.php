@@ -11,7 +11,7 @@ use App\Models\FormularioLocal;
 use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
-use App\Services\EstatisticaService;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
 use Exception;

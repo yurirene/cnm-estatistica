@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Estatistica;
 
 use App\Exports\BaseDadosFormularioExport;
 use App\Models\EstatisticaGeral;
@@ -247,7 +247,6 @@ class EstatisticaService
                 $posicao++;
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage(), $th->getLine(), $th->getFile());
             throw $th;
         }
     }
@@ -303,6 +302,11 @@ class EstatisticaService
     }
 
 
+    /**
+     * Função para atualizar o relatório geral do ano vigente
+     *
+     * @return void
+     */
     public static function atualizarRelatorioGeral()
     {
 
@@ -328,17 +332,32 @@ class EstatisticaService
         );
     }
 
-    public static function getDadosRelatorioGeral($ano_referencia): array
+    /**
+     * Função que retorna os dados estatísticos gerais, independente de entrega
+     *
+     * @param [type] $ano_referencia
+     * @return array
+     */
+    public static function getDadosRelatorioGeral($ano_referencia, $regiao_id = null): array
     {
         try {
-            $formularios_locais = FormularioLocal::where('ano_referencia', $ano_referencia)->get();
+            $formularios_locais = FormularioLocal::where('ano_referencia', $ano_referencia)
+                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
+                    return $sql->whereHas('local', function ($q) use ($regiao_id) {
+                        return $q->where('regiao_id', $regiao_id);
+                    });
+                })
+                ->get();
             $totalizador = [];
 
             $totalizador = [
                 'aci' => [
                     'locais' => 0,
+                    'locais_nao' => 0,
                     'federacoes' => 0,
-                    'sinodais' => 0
+                    'federacoes_nao' => 0,
+                    'sinodais' => 0,
+                    'sinodais_nao' => 0
                 ],
                 'perfil' => [
                     'ativos' => 0,
@@ -402,6 +421,7 @@ class EstatisticaService
 
             foreach ($formularios_locais as $formulario) {
                 $totalizador['aci']['locais'] += isset($formulario->aci['valor']) && $formulario->aci['repasse'] == 'S' ? 1 : 0;
+                $totalizador['aci']['locais_nao'] += isset($formulario->aci['valor']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
                 $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
                 $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
                 $totalizador['perfil']['homens'] += (isset($formulario->perfil['homens']) ? intval($formulario->perfil['homens']) : 0);
@@ -440,10 +460,17 @@ class EstatisticaService
                 $totalizador['programacoes']['locais']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
             }
 
-            $formularios_federacoes = FormularioFederacao::where('ano_referencia', $ano_referencia)->get();
+            $formularios_federacoes = FormularioFederacao::where('ano_referencia', $ano_referencia)
+                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
+                    return $sql->whereHas('federacao', function ($q) use ($regiao_id) {
+                        return $q->where('regiao_id', $regiao_id);
+                    });
+                })
+                ->get();
 
             foreach ($formularios_federacoes as $formulario) {
                 $totalizador['aci']['federacoes'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S' ? 1 : 0;
+                $totalizador['aci']['federacoes_nao'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
                 $totalizador['programacoes']['federacoes']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                 $totalizador['programacoes']['federacoes']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
                 $totalizador['programacoes']['federacoes']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
@@ -452,10 +479,17 @@ class EstatisticaService
             }
 
 
-            $formularios_sinodais = FormularioSinodal::where('ano_referencia', $ano_referencia)->get();
+            $formularios_sinodais = FormularioSinodal::where('ano_referencia', $ano_referencia)
+                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
+                    return $sql->whereHas('sinodal', function ($q) use ($regiao_id) {
+                        return $q->where('regiao_id', $regiao_id);
+                    });
+                })
+                ->get();
 
             foreach ($formularios_sinodais as $formulario) {
                 $totalizador['aci']['sinodais'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S' ? 1 : 0;
+                $totalizador['aci']['sinodais_nao'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
                 $totalizador['programacoes']['sinodais']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                 $totalizador['programacoes']['sinodais']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
                 $totalizador['programacoes']['sinodais']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
@@ -463,9 +497,21 @@ class EstatisticaService
                 $totalizador['programacoes']['sinodais']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
             }
 
-            $totalizador['estrutura']['umps_organizadas'] = Local::where('status', true)->count();
-            $totalizador['estrutura']['federacoes_organizadas'] = Federacao::where('status', true)->count();
-            $totalizador['estrutura']['sinodais_organizadas'] = Sinodal::where('status', true)->count();
+            $totalizador['estrutura']['umps_organizadas'] = Local::where('status', true)
+                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
+                    return $sql->where('regiao_id', $regiao_id);
+                })
+                ->count();
+            $totalizador['estrutura']['federacoes_organizadas'] = Federacao::where('status', true)
+                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
+                    return $sql->where('regiao_id', $regiao_id);
+                })
+                ->count();
+            $totalizador['estrutura']['sinodais_organizadas'] = Sinodal::where('status', true)
+                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
+                    return $sql->where('regiao_id', $regiao_id);
+                })
+                ->count();
 
             $totalizador['abrangencia']['sinodais'] = [
                 'respondido' => $formularios_sinodais->count(),
@@ -489,4 +535,5 @@ class EstatisticaService
             throw $th;
         }
     }
+
 }

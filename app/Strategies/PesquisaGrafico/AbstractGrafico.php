@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Strategies\PesquisaGrafico;
 
@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Log;
 abstract class AbstractGrafico
 {
     protected const PALETA = [
-        "#001219", 
-        "#03071E", 
+        "#001219",
+        "#03071E",
         "#370617",
         "#6A040F",
         "#9D0208",
@@ -29,7 +29,7 @@ abstract class AbstractGrafico
 
 
 
-    protected static function getPaleta(array $dados) : array 
+    protected static function getPaleta(array $dados) : array
     {
         try {
             $retorno = array();
@@ -47,10 +47,10 @@ abstract class AbstractGrafico
             return $cores;
         } catch (\Throwable $th) {
             throw new Exception("Erro no getPaleta", 1);
-            
+
         }
     }
-    
+
     public static function getDados(Pesquisa $pesquisa, string $campo, string $chave) : array
     {
         try {
@@ -77,7 +77,7 @@ abstract class AbstractGrafico
                         'quantidade' => $quantidade,
                         'label' => $resposta
                     ];
-                }                
+                }
             } else {
                 foreach ($valores as $valor) {
                     $dados['dados'][] = [
@@ -93,7 +93,7 @@ abstract class AbstractGrafico
                     ];
                 }
             }
-            
+
             $tipo_dado = $configuracao['tipo_dado'];
             return [
                 'dados' => $dados,
@@ -129,7 +129,7 @@ abstract class AbstractGrafico
     protected static function gerarPorcentagemComTotal(array $quantidades, $valor) : array
     {
         try {
-            
+
             $total = array_sum($quantidades);
             if ($total == 0) {
                 return [0];

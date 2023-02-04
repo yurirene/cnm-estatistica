@@ -11,6 +11,7 @@ use App\Models\Pesquisa;
 use App\Models\Regiao;
 use App\Models\RegistroLogin;
 use App\Models\Sinodal;
+use App\Services\Estatistica\EstatisticaService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -218,7 +219,7 @@ class DatatableAjaxService
         }
    }
 
-   
+
     /**
      * Retorna lista das sinodais informando se entregaram os formulários
      * e a qualidade dos formulários
@@ -234,7 +235,7 @@ class DatatableAjaxService
 
     }
 
-    
+
    public static function estatisticaFormulariosLocais(string $id)
    {
         try {

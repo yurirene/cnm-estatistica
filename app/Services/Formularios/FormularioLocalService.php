@@ -8,7 +8,7 @@ use App\Models\FormularioLocal;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
-use App\Services\EstatisticaService;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;

@@ -5,7 +5,7 @@ namespace App\Helpers;
 use App\Models\Parametro;
 use App\Services\AdministradorService;
 use App\Services\DiretoriaService;
-use App\Services\EstatisticaService;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\FederacaoService;
 use App\Services\LocalService;
 use App\Services\SinodalService;
