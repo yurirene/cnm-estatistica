@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Pesquisas;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +12,7 @@ class PesquisaConfiguracao extends Model
 
     public const TIPO_GRAFICO = [
         null => 'Sem Gráfico',
-        'barras' => 'Barras', 
+        'barras' => 'Barras',
         'linhas' => 'Linhas',
         'pizza' => 'Pizza',
         'polar' => 'Polar',
@@ -27,7 +27,7 @@ class PesquisaConfiguracao extends Model
     ];
 
     public const TAMANHO = [
-        'barras' => '4', 
+        'barras' => '4',
         'linhas' => '5',
         'pizza' => '3',
         'polar' => '4',

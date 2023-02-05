@@ -1,16 +1,15 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Produtos;
 
-use App\Helpers\BootstrapHelper;
-use App\Models\FluxoEstoqueProduto;
-use App\Services\EstoqueProdutoService;
+use App\Helpers\FormHelper;
+use App\Models\Produtos\ConsignacaoProduto;
 use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class EstoqueProdutosDataTable extends DataTable
+class ConsignacaoProdutosDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -24,24 +23,25 @@ class EstoqueProdutosDataTable extends DataTable
             ->eloquent($query)
             ->addColumn('action', function($sql) {
                 return view('dashboard.produtos.actions', [
-                    'route' => 'dashboard.estoque-produtos',
+                    'route' => 'dashboard.consignacao-produtos',
                     'id' => $sql->id,
-                    'confirmar' => !$sql->status
                 ]);
             })
             ->editColumn('created_at', function($sql) {
                 return Carbon::parse($sql->created_at)->format('d/m/Y');
             })
-            ->editColumn('tipo', function($sql) {
-                return BootstrapHelper::badge(EstoqueProdutoService::LABELS_TIPOS[$sql->tipo], EstoqueProdutoService::TIPOS[$sql->tipo]);
-            })
-            ->editColumn('quantidade', function($sql) {
-                return $sql->quantidade;
-            })
             ->editColumn('produto_id', function($sql) {
                 return $sql->produto->nome;
             })
-            ->rawColumns(['tipo']);
+            ->editColumn('user_id', function($sql) {
+                return $sql->usuario->name;
+            })
+            ->editColumn('quantidade_consignada', function($sql) {
+                return $sql->quantidade_consignada;
+            })
+            ->editColumn('quantidade_retornada', function($sql) {
+                return $sql->quantidade_retornada;
+            });
     }
 
     /**
@@ -50,7 +50,7 @@ class EstoqueProdutosDataTable extends DataTable
      * @param \App\Models\Atividade $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(FluxoEstoqueProduto $model)
+    public function query(ConsignacaoProduto $model)
     {
         return $model->newQuery();
     }
@@ -63,15 +63,15 @@ class EstoqueProdutosDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('estoque-table')
+                    ->setTableId('consignacao-table')
                     ->columns($this->getColumns())
-                    ->minifiedAjax(route('dashboard.produtos.datatable.estoque'))
+                    ->minifiedAjax(route('dashboard.produtos.datatable.consignacao'))
                     ->dom('Bfrtip')
                     ->orderBy(2)
                     ->buttons(
                         Button::make('create')
-                            ->text('<i class="fas fa-plus"></i> Novo Registro')
-                            ->action("window.location = '".route('dashboard.estoque-produtos.create')."';")
+                        ->text('<i class="fas fa-plus"></i> Novo Registro')
+                        ->action("window.location = '".route('dashboard.consignacao-produtos.create')."';")
                     )
                     ->parameters([
                         "language" => [
@@ -95,10 +95,10 @@ class EstoqueProdutosDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('created_at')->title('Criado em'),
-            Column::make('tipo')->title('Tipo'),
             Column::make('produto_id')->title('Produto'),
-            Column::make('quantidade')->title('Quantidade'),
-            Column::make('observacao')->title('Observação'),
+            Column::make('user_id')->title('Usuário'),
+            Column::make('quantidade_consignada')->title('Saída'),
+            Column::make('quantidade_retornada')->title('Retorno'),
         ];
     }
 

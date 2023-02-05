@@ -10,7 +10,7 @@ use App\Models\FormularioLocal;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
 use App\Models\Parametro;
-use App\Models\Ranking;
+use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

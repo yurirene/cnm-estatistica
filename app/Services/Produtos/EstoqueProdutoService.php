@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Produtos;
 
-use App\Models\FluxoEstoqueProduto;
-use App\Models\Produto;
+use App\Models\Produtos\FluxoEstoqueProduto;
+use App\Models\Produtos\Produto;
 
 class EstoqueProdutoService
 {

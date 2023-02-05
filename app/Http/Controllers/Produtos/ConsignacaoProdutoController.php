@@ -1,34 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Produtos;
 
-use App\Models\FluxoEstoqueProduto;
-use App\Models\Produto;
-use App\Services\EstoqueProdutoService;
-use App\Services\ProdutoService;
+use App\Http\Controllers\Controller;
+use App\Models\Produtos\ConsignacaoProduto;
+use App\Services\Produtos\ConsignacaoProdutoService;
+use App\Services\Produtos\ProdutoService;
 use Illuminate\Http\Request;
 
-class EstoqueProdutoController extends Controller
+class ConsignacaoProdutoController extends Controller
 {
 
     public function create()
     {
-        return view('dashboard.produtos.estoque-form', [
+        return view('dashboard.produtos.consignado-form', [
             'produtos' => ProdutoService::getAllProdutos()->pluck('nome', 'id'),
-            'tipos' => EstoqueProdutoService::getTipos(true)
+            'usuarios' => ConsignacaoProdutoService::getUsuarios()
         ]);
     }
 
     public function store(Request $request)
     {
         try {
-            EstoqueProdutoService::store($request->all());
+            ConsignacaoProdutoService::store($request->all());
             return redirect()->route('dashboard.produtos.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
                 ],
-                'aba' => 1
+                'aba' => 2
             ]);
         } catch (\Throwable $th) {
             return redirect()->back()->with([
@@ -36,30 +36,30 @@ class EstoqueProdutoController extends Controller
                     'status' => false,
                     'texto' => 'Algo deu Errado!'
                 ],
-                'aba' => 1
+                'aba' => 2
             ])
             ->withInput();
         }
     }
-    public function edit(FluxoEstoqueProduto $estoque)
+    public function edit(ConsignacaoProduto $consignado)
     {
-        return view('dashboard.produtos.estoque-form', [
-            'estoque' => $estoque,
+        return view('dashboard.produtos.consignado-form', [
+            'consignado' => $consignado,
             'produtos' => ProdutoService::getAllProdutos()->pluck('nome', 'id'),
-            'tipos' => EstoqueProdutoService::getTipos(true)
+            'usuarios' => ConsignacaoProdutoService::getUsuarios()
         ]);
     }
 
-    public function update(FluxoEstoqueProduto $estoque, Request $request)
+    public function update(ConsignacaoProduto $consignado, Request $request)
     {
         try {
-            EstoqueProdutoService::update($estoque, $request->all());
+            ConsignacaoProdutoService::update($consignado, $request->all());
             return redirect()->route('dashboard.produtos.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
                 ],
-                'aba' => 1
+                'aba' => 2
             ]);
         } catch (\Throwable $th) {
             return redirect()->back()->with([
@@ -67,22 +67,22 @@ class EstoqueProdutoController extends Controller
                     'status' => false,
                     'texto' => 'Algo deu Errado!'
                 ],
-                'aba' => 1
+                'aba' => 2
             ])
             ->withInput();
         }
     }
 
-    public function delete(FluxoEstoqueProduto $estoque)
+    public function delete(ConsignacaoProduto $consignado)
     {
         try {
-            EstoqueProdutoService::delete($estoque);
+            ConsignacaoProdutoService::delete($consignado);
             return redirect()->route('dashboard.produtos.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
                 ],
-                'aba' => 1
+                'aba' => 2
             ]);
         } catch (\Throwable $th) {
             return redirect()->back()->with([
@@ -90,7 +90,7 @@ class EstoqueProdutoController extends Controller
                     'status' => false,
                     'texto' => 'Algo deu Errado!'
                 ],
-                'aba' => 1
+                'aba' => 2
             ])
             ->withInput();
         }

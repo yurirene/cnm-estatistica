@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Produtos;
 
-use App\Models\ConsignacaoProduto;
-use App\Models\FluxoEstoqueProduto;
-use App\Models\Produto;
+use App\Models\Produtos\ConsignacaoProduto;
 use App\Models\User;
 
 class ConsignacaoProdutoService
@@ -13,14 +11,13 @@ class ConsignacaoProdutoService
     public static function store(array $request) : ?ConsignacaoProduto
     {
         try {
-            $fluxo = ConsignacaoProduto::create([
+            return ConsignacaoProduto::create([
                 'quantidade_consignada' => $request['quantidade_consignada'],
                 'quantidade_retornada' => 0,
                 'produto_id' => $request['produto_id'],
                 'user_id' => $request['user_id'],
             ]);
 
-            return $fluxo;
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -53,7 +50,7 @@ class ConsignacaoProdutoService
 
     public static function getUsuarios() : array
     {
-        $usuarios = User::whereHas('roles', function($sql) {
+        return User::whereHas('roles', function ($sql) {
             return $sql->whereIn('name', [
                 'diretoria',
                 'executiva',
@@ -69,6 +66,5 @@ class ConsignacaoProdutoService
         ->get()
         ->pluck('name', 'id')
         ->toArray();
-        return $usuarios;
     }
 }

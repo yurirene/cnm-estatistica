@@ -47,6 +47,17 @@
                                 Consignação
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ session()->get('aba') == 2 ? 'active' : '' }}"
+                                id="custom-tabs-fluxo-tab"
+                                data-toggle="pill"
+                                href="#custom-tabs-fluxo"
+                                role="tab"
+                                aria-controls="custom-tabs-fluxo"
+                                aria-selected="false">
+                                Consignação
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
@@ -64,6 +75,11 @@
                         <div class="tab-pane fade {{ session()->get('aba') == 2 ? 'show active' : '' }}" id="custom-tabs-five-profile" role="tabpanel" aria-labelledby="custom-tabs-five-profile-tab">
                             <div class="table-responsive">
                                 {!! $consignacaoProdutosDataTable->table(['style'=>'width:100%']) !!}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade {{ session()->get('aba') == 3 ? 'show active' : '' }}" id="custom-tabs-fluxo" role="tabpanel" aria-labelledby="custom-tabs-fluxo-tab">
+                            <div class="table-responsive">
+                                {!! $fluxoCaixaDataTable->table(['style'=>'width:100%']) !!}
                             </div>
                         </div>
                     </div>

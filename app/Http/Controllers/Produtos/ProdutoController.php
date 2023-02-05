@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Produtos;
 
-use App\DataTables\ConsignacaoProdutosDataTable;
-use App\DataTables\EstoqueProdutosDataTable;
-use App\DataTables\ProdutosDataTable;
-use App\Models\Produto;
-use App\Services\ProdutoService;
+use App\DataTables\Produtos\ConsignacaoProdutosDataTable;
+use App\DataTables\Produtos\EstoqueProdutosDataTable;
+use App\DataTables\Produtos\ProdutosDataTable;
+use App\Http\Controllers\Controller;
+use App\Models\Produtos\Produto;
+use App\Services\Produtos\ProdutoService;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller

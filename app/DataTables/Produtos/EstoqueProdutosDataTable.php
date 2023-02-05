@@ -1,15 +1,16 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Produtos;
 
-use App\Helpers\FormHelper;
-use App\Models\ConsignacaoProduto;
+use App\Helpers\BootstrapHelper;
+use App\Models\Produtos\FluxoEstoqueProduto;
+use App\Services\Produtos\EstoqueProdutoService;
 use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class ConsignacaoProdutosDataTable extends DataTable
+class EstoqueProdutosDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -21,27 +22,29 @@ class ConsignacaoProdutosDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
+            ->addColumn('action', function ($sql) {
                 return view('dashboard.produtos.actions', [
-                    'route' => 'dashboard.consignacao-produtos',
+                    'route' => 'dashboard.estoque-produtos',
                     'id' => $sql->id,
+                    'confirmar' => !$sql->status
                 ]);
             })
-            ->editColumn('created_at', function($sql) {
+            ->editColumn('created_at', function ($sql) {
                 return Carbon::parse($sql->created_at)->format('d/m/Y');
             })
-            ->editColumn('produto_id', function($sql) {
+            ->editColumn('tipo', function ($sql) {
+                return BootstrapHelper::badge(
+                    EstoqueProdutoService::LABELS_TIPOS[$sql->tipo],
+                    EstoqueProdutoService::TIPOS[$sql->tipo]
+                );
+            })
+            ->editColumn('quantidade', function ($sql) {
+                return $sql->quantidade;
+            })
+            ->editColumn('produto_id', function ($sql) {
                 return $sql->produto->nome;
             })
-            ->editColumn('user_id', function($sql) {
-                return $sql->usuario->name;
-            })
-            ->editColumn('quantidade_consignada', function($sql) {
-                return $sql->quantidade_consignada;
-            })
-            ->editColumn('quantidade_retornada', function($sql) {
-                return $sql->quantidade_retornada;
-            });
+            ->rawColumns(['tipo']);
     }
 
     /**
@@ -50,7 +53,7 @@ class ConsignacaoProdutosDataTable extends DataTable
      * @param \App\Models\Atividade $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(ConsignacaoProduto $model)
+    public function query(FluxoEstoqueProduto $model)
     {
         return $model->newQuery();
     }
@@ -63,15 +66,15 @@ class ConsignacaoProdutosDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('consignacao-table')
+                    ->setTableId('estoque-table')
                     ->columns($this->getColumns())
-                    ->minifiedAjax(route('dashboard.produtos.datatable.consignacao'))
+                    ->minifiedAjax(route('dashboard.produtos.datatable.estoque'))
                     ->dom('Bfrtip')
                     ->orderBy(2)
                     ->buttons(
                         Button::make('create')
-                        ->text('<i class="fas fa-plus"></i> Novo Registro')
-                        ->action("window.location = '".route('dashboard.consignacao-produtos.create')."';")
+                            ->text('<i class="fas fa-plus"></i> Novo Registro')
+                            ->action("window.location = '".route('dashboard.estoque-produtos.create')."';")
                     )
                     ->parameters([
                         "language" => [
@@ -95,10 +98,10 @@ class ConsignacaoProdutosDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('created_at')->title('Criado em'),
+            Column::make('tipo')->title('Tipo'),
             Column::make('produto_id')->title('Produto'),
-            Column::make('user_id')->title('Usuário'),
-            Column::make('quantidade_consignada')->title('Saída'),
-            Column::make('quantidade_retornada')->title('Retorno'),
+            Column::make('quantidade')->title('Quantidade'),
+            Column::make('observacao')->title('Observação'),
         ];
     }
 

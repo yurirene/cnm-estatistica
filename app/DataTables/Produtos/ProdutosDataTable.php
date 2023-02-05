@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Produtos;
 
-use App\Models\Produto;
+use App\Models\Produtos\Produto;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -19,13 +19,13 @@ class ProdutosDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
+            ->addColumn('action', function ($sql) {
                 return view('dashboard.produtos.actions', [
                     'route' => 'dashboard.produtos',
                     'id' => $sql->id,
                 ]);
             })
-            ->editColumn('valor', function($sql) {
+            ->editColumn('valor', function ($sql) {
                 return $sql->valor_formatado;
             });
     }

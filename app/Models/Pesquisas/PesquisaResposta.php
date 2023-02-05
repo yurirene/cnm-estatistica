@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Pesquisas;
 
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;

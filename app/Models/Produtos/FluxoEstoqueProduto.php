@@ -1,23 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Produtos;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ConsignacaoProduto extends Model
+class FluxoEstoqueProduto extends Model
 {
-    protected $table = 'consignacao_produtos';
+    protected $table = 'fluxo_estoque_produtos';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-
 
     public function produto()
     {
         return $this->belongsTo(Produto::class, 'produto_id');
-    }
-
-    public function usuario()
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 }
