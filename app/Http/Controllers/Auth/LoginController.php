@@ -46,27 +46,16 @@ class LoginController extends Controller
     {
         return $request->only($this->username(), 'password') + ['status' => 1];
     }
-    
+
     protected function authenticated(Request $request, $user)
     {
         LoginService::login($request, $user);
     }
-    
-    public function logout(Request $request)
+
+    public function logout()
     {
         LoginService::logout(Auth::user());
         $this->guard()->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        if ($response = $this->loggedOut($request)) {
-            return $response;
-        }
-
-        return $request->wantsJson()
-            ? new JsonResponse([], 204)
-            : redirect('/');
+        return redirect()->route('login');
     }
 }

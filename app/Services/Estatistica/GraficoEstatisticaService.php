@@ -72,7 +72,7 @@ class GraficoEstatisticaService extends AbstractGrafico
                 ['Física/Motora membros inferiores', 'Física/Motora membros superiores'],
                 ['Neurológicos', 'Intelectual']
             ],
-            'tipo' => 'stackedBar'
+            'tipo' => 'groupBar'
         ],
         [
             'nome' => 'repasse_aci',
@@ -92,7 +92,67 @@ class GraficoEstatisticaService extends AbstractGrafico
                 'Sinodais Não Repassaram'
             ],
             'tipo' => 'multiPie'
-        ]
+        ],
+        [
+            'nome' => 'programacoes_umps',
+            'coluna' => 'programacoes.locais',
+            'titulo' => 'Nº de Programções',
+            'campos' => [
+                'social',
+                'oracao',
+                'evangelistico',
+                'espiritual',
+                'recreativo',
+            ],
+            'labels' => [
+                'Social',
+                'Oração',
+                'Evangelística/Missionária',
+                'Espiritual',
+                'Recreativa'
+            ],
+            'tipo' => 'bar'
+        ],
+        [
+            'nome' => 'programacoes_sinodais',
+            'coluna' => 'programacoes.sinodais',
+            'titulo' => 'Nº de Programções',
+            'campos' => [
+                'social',
+                'oracao',
+                'evangelistico',
+                'espiritual',
+                'recreativo',
+            ],
+            'labels' => [
+                'Social',
+                'Oração',
+                'Evangelística/Missionária',
+                'Espiritual',
+                'Recreativa'
+            ],
+            'tipo' => 'bar'
+        ],
+        [
+            'nome' => 'programacoes_federacoes',
+            'coluna' => 'programacoes.federacoes',
+            'titulo' => 'Nº de Programções',
+            'campos' => [
+                'social',
+                'oracao',
+                'evangelistico',
+                'espiritual',
+                'recreativo',
+            ],
+            'labels' => [
+                'Social',
+                'Oração',
+                'Evangelística/Missionária',
+                'Espiritual',
+                'Recreativa'
+            ],
+            'tipo' => 'bar'
+        ],
     ];
 
     public const GRAFICOS_COMPLEXOS = [
@@ -158,7 +218,7 @@ class GraficoEstatisticaService extends AbstractGrafico
         $dadosGerais = EstatisticaService::getDadosRelatorioGeral($request['ano'], $request['regiao']);
         $dadosEspecificos = [];
         foreach ($campos as $campo) {
-            $dadosEspecificos['dados'][$campo] = $dadosGerais[$coluna][$campo];
+            $dadosEspecificos['dados'][$campo] = data_get($dadosGerais, $coluna.'.'.$campo);
         }
         return $dadosEspecificos;
     }
@@ -387,12 +447,12 @@ class GraficoEstatisticaService extends AbstractGrafico
     }
 
     /**
-     * Gerador de Gráfico do Tipo Barras Verticais Empilhadas
+     * Gerador de Gráfico do Tipo Barras Agrupadas
      *
      * @param array $dados
      * @return array
      */
-    public static function stackedBar(array $dados): array
+    public static function groupBar(array $dados): array
     {
         try {
             $retorno = [
@@ -425,6 +485,7 @@ class GraficoEstatisticaService extends AbstractGrafico
                 $retorno['data']["datasets"][] = [
                     "label" => $dados['label'][$key],
                     "data" => $dado,
+                    "borderRadius" => 15,
                     "backgroundColor" => self::getPaleta(['dados' => $dado]),
                 ];
             }

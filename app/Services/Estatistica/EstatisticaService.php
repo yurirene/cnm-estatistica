@@ -278,7 +278,8 @@ class EstatisticaService
                     'locais' => self::getPorcentagemFormularioLocal($item->id, $ano),
                     'qtd_fomr_fed' => self::getDadosFormularioFederacao($item->id, $ano)->where('formulario', '!=', 0)->count(),
                     'qtd_fomr_local' => self::getDadosFormularioLocal($item->id, $ano)->where('formulario', '!=', 0)->count(),
-                    'qualidade' => self::calcularQualidade($item->id, $ano)
+                    'qualidade' => self::calcularQualidade($item->id, $ano),
+                    'regiao' => $item->regiao->nome
                 ];
             });
     }
@@ -398,21 +399,21 @@ class EstatisticaService
                     'sinodais' => [
                         'social' => 0,
                         'oracao' => 0,
-                        'evangelistica' => 0,
+                        'evangelistico' => 0,
                         'espiritual' => 0,
                         'recreativo' => 0,
                     ],
                     'federacoes' => [
                         'social' => 0,
                         'oracao' => 0,
-                        'evangelistica' => 0,
+                        'evangelistico' => 0,
                         'espiritual' => 0,
                         'recreativo' => 0,
                     ],
                     'locais' => [
                         'social' => 0,
                         'oracao' => 0,
-                        'evangelistica' => 0,
+                        'evangelistico' => 0,
                         'espiritual' => 0,
                         'recreativo' => 0,
                     ]
@@ -455,7 +456,7 @@ class EstatisticaService
 
                 $totalizador['programacoes']['locais']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                 $totalizador['programacoes']['locais']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
-                $totalizador['programacoes']['locais']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
+                $totalizador['programacoes']['locais']['evangelistico'] += (isset($formulario->programacoes['evangelistico']) ? intval($formulario->programacoes['evangelistico']) : 0);
                 $totalizador['programacoes']['locais']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
                 $totalizador['programacoes']['locais']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
             }
@@ -473,7 +474,7 @@ class EstatisticaService
                 $totalizador['aci']['federacoes_nao'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
                 $totalizador['programacoes']['federacoes']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                 $totalizador['programacoes']['federacoes']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
-                $totalizador['programacoes']['federacoes']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
+                $totalizador['programacoes']['federacoes']['evangelistico'] += (isset($formulario->programacoes['evangelistico']) ? intval($formulario->programacoes['evangelistico']) : 0);
                 $totalizador['programacoes']['federacoes']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
                 $totalizador['programacoes']['federacoes']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
             }
@@ -492,7 +493,7 @@ class EstatisticaService
                 $totalizador['aci']['sinodais_nao'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
                 $totalizador['programacoes']['sinodais']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                 $totalizador['programacoes']['sinodais']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
-                $totalizador['programacoes']['sinodais']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
+                $totalizador['programacoes']['sinodais']['evangelistico'] += (isset($formulario->programacoes['evangelistico']) ? intval($formulario->programacoes['evangelistico']) : 0);
                 $totalizador['programacoes']['sinodais']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
                 $totalizador['programacoes']['sinodais']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
             }

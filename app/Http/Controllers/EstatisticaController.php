@@ -59,4 +59,9 @@ class EstatisticaController extends Controller
     {
         return response()->json(GraficoEstatisticaService::graficos($request->all()), 200);
     }
+
+    public function externo()
+    {
+        return view('externo.estatistica');
+    }
 }

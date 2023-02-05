@@ -16,6 +16,7 @@ use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
@@ -39,6 +40,13 @@ use Illuminate\Support\Facades\Route;
 
 
 Auth::routes(['register' => false]);
+
+
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');
+Route::get('/estatistica', [EstatisticaController::class, 'externo'])->name('estatistica');
+
 
 Route::group(['prefix' => 'site'], function() {
     Route::get('/{sigla}', [SiteController::class, 'show'])->name('meusite.index');
@@ -219,6 +227,3 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 
 });
-
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');

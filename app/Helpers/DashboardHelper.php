@@ -36,6 +36,11 @@ class DashboardHelper
         return $class::getTotalizadores();
     }
 
+    public static function getTotalizadoresEstatisticaExterno()
+    {
+        return EstatisticaService::getTotalizadores();
+    }
+
     public static function getInfo()
     {
 

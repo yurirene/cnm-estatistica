@@ -1,8 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.app-externo', [
+    'export' => true
+])
 
 @section('content')
     @include('dashboard.index.estatistica.cards', [
-        'totalizador' => DashboardHelper::getTotalizadores()
+        'totalizador' => DashboardHelper::getTotalizadoresEstatisticaExterno()
     ])
 
     <div class="container-fluid mt--7">
@@ -60,7 +62,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body ">
                         @include('dashboard.partes.skeleton')
                         <div class="table-responsive">
                             <canvas id="tipo_socios"></canvas>
@@ -150,7 +152,7 @@
                             </div>
                         </div>
                     </div>
-                    @include('dashboard.partes.skeleton')
+                        @include('dashboard.partes.skeleton')
                     <div class="card-body d-flex align-items-center">
                         <div class="table-responsive">
                             <canvas id="desempregados"></canvas>
@@ -259,8 +261,6 @@
 @endsection
 
 @push('js')
-    <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
-    <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
     <script>
         const URL = "{{ route('graficos.index') }}";
         const TOKEN = "{{ csrf_token() }}";
@@ -329,7 +329,6 @@
             });
         });
         $(document).ready(function() {
-            $('.skeleton-loading').show();
             $('#filtrar').click();
         })
     </script>
