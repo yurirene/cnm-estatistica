@@ -9,7 +9,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Total de Sinodais</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizador['total_sinodais'] }}</span>
+                                    <span class="h2 font-weight-bold mb-0" id="total_sinodais"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
@@ -26,7 +26,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Total de Federações</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizador['total_federacoes'] }}</span>
+                                    <span class="h2 font-weight-bold mb-0" id="total_federacoes"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-success text-white rounded-circle shadow">
@@ -43,7 +43,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Total de UMPs</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizador['total_umps'] }}</span>
+                                    <span class="h2 font-weight-bold mb-0" id="total_umps"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Total de Sócios</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizador['total_socios'] }}</span>
+                                    <span class="h2 font-weight-bold mb-0" id="total_socios"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -80,7 +80,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Relatórios das Sinodais</h5>
-                                    <span class="h3 font-weight-bold mb-0">{{ $totalizador['relatorios_sinodais'] }}</span>
+                                    <span class="h3 font-weight-bold mb-0" id="relatorios_sinodais"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -97,7 +97,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Relatórios das Federações</h5>
-                                    <span class="h3 font-weight-bold mb-0">{{ $totalizador['relatorios_federacoes'] }}</span>
+                                    <span class="h3 font-weight-bold mb-0" id="relatorios_federacoes"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
@@ -114,7 +114,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Relatórios das UMPs Locais</h5>
-                                    <span class="h3 font-weight-bold mb-0">{{ $totalizador['relatorios_locais'] }}</span>
+                                    <span class="h3 font-weight-bold mb-0" id="relatorios_umps_locais"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-success text-white rounded-circle shadow">
@@ -131,7 +131,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Qualidade do Relatório</h5>
-                                    <span class="h3 font-weight-bold mb-0">{{ $totalizador['qualidade'] }}%</span>
+                                    <span class="h3 font-weight-bold mb-0" id="qualidade_relatorio"></span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-warning text-white rounded-circle shadow">

@@ -6,6 +6,9 @@ use App\Strategies\PesquisaGrafico\AbstractGrafico;
 
 class GraficoEstatisticaService extends AbstractGrafico
 {
+
+    private static $dados = [];
+
     public const GRAFICOS = [
         [
             'nome' => 'tipo_socios',
@@ -197,11 +200,21 @@ class GraficoEstatisticaService extends AbstractGrafico
                     $dados
                 ]
             );
-            $retorno[] = [
+            $retorno['graficos'][] = [
                 'config' => $dadosGrafico,
                 'id' => $grafico['nome']
             ];
         }
+        $retorno['totalizadores'] = [
+            'total_sinodais' => self::$dados['estrutura']['sinodais_organizadas'],
+            'total_federacoes' => self::$dados['estrutura']['federacoes_organizadas'],
+            'total_umps' => self::$dados['estrutura']['umps_organizadas'],
+            'total_socios' => self::$dados['perfil']['ativos'] + self::$dados['perfil']['cooperadores'],
+            'relatorios_sinodais' => self::$dados['abrangencia']['sinodais']['respondido'] . ' / ' . self::$dados['abrangencia']['sinodais']['total'],
+            'relatorios_federacoes' => self::$dados['abrangencia']['federacoes']['respondido'] . ' / ' . self::$dados['abrangencia']['federacoes']['total'],
+            'relatorios_umps_locais' => self::$dados['abrangencia']['locais']['respondido'] . ' / ' . self::$dados['abrangencia']['locais']['total'],
+            'qualidade_relatorio' => round(self::$dados['qualidade'], 2)  . "%",
+        ];
         return $retorno;
     }
 
@@ -215,7 +228,10 @@ class GraficoEstatisticaService extends AbstractGrafico
      */
     public static function dados(string $coluna, array $campos, array $request): array
     {
-        $dadosGerais = EstatisticaService::getDadosRelatorioGeral($request['ano'], $request['regiao']);
+        if (empty(self::$dados)) {
+            self::$dados = EstatisticaService::getDadosRelatorioGeral($request['ano'], $request['regiao']);
+        }
+        $dadosGerais = self::$dados;
         $dadosEspecificos = [];
         foreach ($campos as $campo) {
             $dadosEspecificos['dados'][$campo] = data_get($dadosGerais, $coluna.'.'.$campo);
@@ -237,7 +253,10 @@ class GraficoEstatisticaService extends AbstractGrafico
      */
     public static function dadosComplexos(string $coluna, array $grupoCampos, array $request, array $labels_map = []): array
     {
-        $dadosGerais = EstatisticaService::getDadosRelatorioGeral($request['ano'], $request['regiao']);
+        if (empty(self::$dados)) {
+            self::$dados = EstatisticaService::getDadosRelatorioGeral($request['ano'], $request['regiao']);
+        }
+        $dadosGerais = self::$dados;
         $dadosEspecificos = [];
         foreach ($grupoCampos as $key => $campos) {
             foreach ($campos as $k => $campo) {

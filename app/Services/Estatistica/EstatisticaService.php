@@ -284,25 +284,6 @@ class EstatisticaService
             });
     }
 
-
-    public static function getTotalizadores(): array
-    {
-        $ano_referencia = Parametro::where('nome', 'ano_referencia')->first()->valor;
-
-        $dados = EstatisticaGeral::where('ano_referencia', $ano_referencia)->first();
-        return [
-            'total_sinodais' => $dados['estrutura']['sinodais_organizadas'],
-            'total_federacoes' => $dados['estrutura']['federacoes_organizadas'],
-            'total_umps' => $dados['estrutura']['umps_organizadas'],
-            'total_socios' => $dados['perfil']['ativos'] + $dados['perfil']['cooperadores'],
-            'relatorios_sinodais' => $dados['abrangencia']['sinodais']['respondido'] . ' / ' . $dados['abrangencia']['sinodais']['total'],
-            'relatorios_federacoes' => $dados['abrangencia']['federacoes']['respondido'] . ' / ' . $dados['abrangencia']['federacoes']['total'],
-            'relatorios_locais' => $dados['abrangencia']['locais']['respondido'] . ' / ' . $dados['abrangencia']['locais']['total'],
-            'qualidade' => $dados['qualidade'],
-        ];
-    }
-
-
     /**
      * Função para atualizar o relatório geral do ano vigente
      *
