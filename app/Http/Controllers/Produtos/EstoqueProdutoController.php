@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Produtos;
 
+use App\Http\Controllers\Controller;
 use App\Models\Produtos\FluxoEstoqueProduto;
 use App\Services\Produtos\EstoqueProdutoService;
 use App\Services\Produtos\ProdutoService;

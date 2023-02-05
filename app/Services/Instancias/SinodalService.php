@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Instancias;
 
 use App\Models\Estado;
 use App\Models\Federacao;
@@ -10,6 +10,8 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\LogErroService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -38,7 +40,7 @@ class SinodalService
                     UserService::resetarSenha($usuario);
                 }
             }
-            
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -46,9 +48,9 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Salvar");
-            
+
         }
     }
 
@@ -69,7 +71,7 @@ class SinodalService
                     UserService::resetarSenha($usuario);
                 }
             }
-            
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -77,9 +79,9 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -101,9 +103,9 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
     public static function getEstados()
@@ -119,7 +121,7 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
     }
 
@@ -168,7 +170,7 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }
@@ -191,7 +193,7 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }
@@ -208,7 +210,7 @@ class SinodalService
             $total_umps_organizada = self::getPorcentagem($total_umps_organizada['total'], $total_umps_organizada['organizadas']);
             $total_federacoes_organizada = self::getPorcentagem($total_federacoes_organizada['total'], $total_federacoes_organizada['organizadas']);
             $total_igrejas_n_sociedades = self::getPorcentagem($sinodal->locais->count(), $sinodal->locais->where('outro_modelo', true)->count());
-            
+
             return [
                 'total_umps_organizada' => $total_umps_organizada,
                 'total_federacoes_organizada' => $total_federacoes_organizada,
@@ -219,7 +221,7 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }
@@ -236,7 +238,7 @@ class SinodalService
         return [
             'total' => $sinodal->locais->count(),
             'organizadas' => $sinodal->locais->where('status', true)->count()
-        ]; 
+        ];
     }
     public static function getTotalFederacoesOrganizadas(Sinodal $sinodal, FormularioSinodal $formulario = null) : array
     {
@@ -250,7 +252,7 @@ class SinodalService
         return [
             'total' => $sinodal->federacoes->count(),
             'organizadas' => $sinodal->federacoes->where('status', true)->count()
-        ]; 
+        ];
     }
 
     public static function getPorcentagem($total, $valor)
@@ -261,7 +263,7 @@ class SinodalService
         $resultado = ($valor * 100) / $total;
         return floatval(number_format($resultado, 2));
     }
-    
+
     public static function getInformacoesFederacoesShow(Sinodal $sinodal) : array
     {
         try {
@@ -270,12 +272,12 @@ class SinodalService
             foreach ($federacoes as $federacao) {
                 $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->first();
                 $total_umps_organizada = FederacaoService::getTotalUmpsOrganizadas($federacao, $formulario);;
-                
+
                 $utlimo_formulario = $federacao->relatorios->last();
 
                 $total_socios = 0;
                 if (!is_null($utlimo_formulario)) {
-                    $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0); 
+                    $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0);
                 }
 
                 $info_federacao[] = [
@@ -294,7 +296,7 @@ class SinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }

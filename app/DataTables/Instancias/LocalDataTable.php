@@ -1,16 +1,16 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Instancias;
 
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
-use App\Models\Federacao;
+use App\Models\Local;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class FederacaoDataTable extends DataTable
+class LocalDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -22,21 +22,23 @@ class FederacaoDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
+            ->addColumn('action', function ($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.federacoes',
+                    'route' => 'dashboard.locais',
                     'id' => $sql->id,
-                    'show' => true,
-                    'delete' => $sql->locais->count() > 0 ? false : true
+                    'show' => false
                 ]);
             })
-            ->editColumn('status', function($sql) {
+            ->editColumn('status', function ($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
-            ->editColumn('regiao_id', function($sql) {
+            ->editColumn('regiao_id', function ($sql) {
                 return $sql->regiao->nome;
             })
-            ->addColumn('estatistica', function($sql) {
+            ->editColumn('estado_id', function ($sql) {
+                return $sql->estado->nome;
+            })
+            ->addColumn('estatistica', function ($sql) {
 
                 $relatorio = $sql->relatorios()->orderBy('created_at', 'desc')->get()->first();
                 if (!$relatorio) {
@@ -46,14 +48,11 @@ class FederacaoDataTable extends DataTable
 
                 return $relatorio->ano_referencia;
             })
-            ->editColumn('estado_id', function($sql) {
-                return $sql->estado->nome;
-            })
-            ->editColumn('sinodal_id', function($sql) {
+            ->editColumn('sinodal_id', function ($sql) {
                 return $sql->sinodal->sigla;
             })
-            ->addColumn('nro_umps', function($sql) {
-                return $sql->locais->count();
+            ->editColumn('federacao_id', function ($sql) {
+                return $sql->federacao->sigla;
             })
             ->rawColumns(['status']);
     }
@@ -64,12 +63,12 @@ class FederacaoDataTable extends DataTable
      * @param \App\Models\AcessoExterno $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Federacao $model)
+    public function query(Local $model)
     {
         if (Auth::user()->admin == true) {
             return $model->newQuery();
         }
-        return $model->newQuery()->minhaSinodal();
+        return $model->newQuery()->minhaFederacao();
     }
 
     /**
@@ -80,13 +79,13 @@ class FederacaoDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('federacoes-table')
+                    ->setTableId('ump-local-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Federação')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova UMP')
                     )
                     ->parameters([
                         "language" => [
@@ -110,9 +109,8 @@ class FederacaoDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
-            Column::make('sigla')->title('Sigla'),
-            Column::make('nro_umps')->title('Nº UMPs')->orderable(false),
             Column::make('estatistica')->title('Estatística')->orderable(false),
+            Column::make('federacao_id')->title('Federação'),
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),
@@ -127,6 +125,6 @@ class FederacaoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Federacao_' . date('YmdHis');
+        return 'UMP_LOCAL_' . date('YmdHis');
     }
 }

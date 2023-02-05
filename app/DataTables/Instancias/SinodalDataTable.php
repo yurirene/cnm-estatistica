@@ -1,16 +1,15 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Instancias;
 
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
-use App\Models\Local;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Sinodal;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class LocalDataTable extends DataTable
+class SinodalDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -22,37 +21,25 @@ class LocalDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
+            ->addColumn('action', function ($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.locais',
+                    'route' => 'dashboard.sinodais',
                     'id' => $sql->id,
-                    'show' => false
+                    'show' => true,
+                    'delete' => $sql->federacoes->count() > 0 ? false : true
                 ]);
             })
-            ->editColumn('status', function($sql) {
+            ->editColumn('status', function ($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
-            ->editColumn('regiao_id', function($sql) {
+            ->editColumn('regiao_id', function ($sql) {
                 return $sql->regiao->nome;
             })
-            ->editColumn('estado_id', function($sql) {
-                return $sql->estado->nome;
+            ->addColumn('nro_federacoes', function ($sql) {
+                return $sql->federacoes->count();
             })
-            ->addColumn('estatistica', function($sql) {
-
-                $relatorio = $sql->relatorios()->orderBy('created_at', 'desc')->get()->first();
-                if (!$relatorio) {
-                    return 'Sem Relatório';
-                }
-
-
-                return $relatorio->ano_referencia;
-            })
-            ->editColumn('sinodal_id', function($sql) {
-                return $sql->sinodal->sigla;
-            })
-            ->editColumn('federacao_id', function($sql) {
-                return $sql->federacao->sigla;
+            ->addColumn('nro_locais', function ($sql) {
+                return $sql->locais->count();
             })
             ->rawColumns(['status']);
     }
@@ -63,12 +50,9 @@ class LocalDataTable extends DataTable
      * @param \App\Models\AcessoExterno $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Local $model)
+    public function query(Sinodal $model)
     {
-        if (Auth::user()->admin == true) {
-            return $model->newQuery();
-        }
-        return $model->newQuery()->minhaFederacao();
+        return $model->newQuery()->query();
     }
 
     /**
@@ -79,13 +63,13 @@ class LocalDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('ump-local-table')
+                    ->setTableId('sinodais-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova UMP')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
                     )
                     ->parameters([
                         "language" => [
@@ -109,10 +93,9 @@ class LocalDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
-            Column::make('estatistica')->title('Estatística')->orderable(false),
-            Column::make('federacao_id')->title('Federação'),
-            Column::make('sinodal_id')->title('Sinodal'),
-            Column::make('estado_id')->title('Estado'),
+            Column::make('sigla')->title('Sigla'),
+            Column::make('nro_federacoes')->title('Nº Federações')->orderable(false),
+            Column::make('nro_locais')->title('Nº UMPs Locais')->orderable(false),
             Column::make('status')->title('Status'),
             Column::make('regiao_id')->title('Região'),
         ];
@@ -125,6 +108,6 @@ class LocalDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'UMP_LOCAL_' . date('YmdHis');
+        return 'Sinodais_' . date('YmdHis');
     }
 }

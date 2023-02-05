@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Instancias;
 
-use App\DataTables\FederacaoDataTable;
+use App\DataTables\Instancias\FederacaoDataTable;
+use App\Http\Controllers\Controller;
 use App\Models\Federacao;
-use App\Services\FederacaoService;
+use App\Services\Instancias\FederacaoService;
 use Illuminate\Http\Request;
 use Throwable;
 
 class FederacaoController extends Controller
 {
-    
+
     public function index(FederacaoDataTable $dataTable)
     {
-        return $dataTable->render('dashboard.federacoes.index');        
+        return $dataTable->render('dashboard.federacoes.index');
     }
 
     public function create()

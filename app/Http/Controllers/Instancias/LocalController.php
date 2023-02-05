@@ -1,33 +1,32 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Instancias;
 
-use App\DataTables\SinodalDataTable;
-use App\Models\Sinodal;
-use App\Services\SinodalService;
+use App\DataTables\Instancias\LocalDataTable;
+use App\Http\Controllers\Controller;
+use App\Models\Local;
+use App\Services\Instancias\LocalService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Throwable;
 
-class SinodalController extends Controller
+class LocalController extends Controller
 {
-    public function index(SinodalDataTable $dataTable)
+
+    public function index(LocalDataTable $dataTable)
     {
-        return $dataTable->render('dashboard.sinodais.index');        
+        return $dataTable->render('dashboard.locais.index');
     }
 
     public function create()
     {
-        return view('dashboard.sinodais.form', [
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome)
-        ]);
+        return view('dashboard.locais.form');
     }
 
     public function store(Request $request)
     {
         try {
-            SinodalService::store($request);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            LocalService::store($request);
+            return redirect()->route('dashboard.locais.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
@@ -44,30 +43,25 @@ class SinodalController extends Controller
         }
     }
 
-    public function show(Sinodal $sinodal)
+    public function show(Local $local)
     {
-        return view('dashboard.sinodais.show', [
-            'federacoes' => SinodalService::getInformacoesFederacoesShow($sinodal),
-            'informacoes' => SinodalService::getInformacoesOrganizacao($sinodal),
-            'sinodal' => $sinodal,
+        return view('dashboard.locais.show', [
+            'local' => $local,
         ]);
     }
 
-    public function edit(Sinodal $sinodal)
+    public function edit(Local $local)
     {
-        $estados = SinodalService::getEstados();
-        return view('dashboard.sinodais.form', [
-            'sinodal' => $sinodal,
-            'estados' => $estados,
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome)
+        return view('dashboard.locais.form', [
+            'local' => $local,
         ]);
     }
 
-    public function update(Sinodal $sinodal, Request $request)
+    public function update(Local $local, Request $request)
     {
         try {
-            SinodalService::update($sinodal, $request);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            LocalService::update($local, $request);
+            return redirect()->route('dashboard.locais.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
@@ -84,10 +78,10 @@ class SinodalController extends Controller
         }
     }
 
-    public function updateInfo(Sinodal $sinodal, Request $request)
+    public function updateInfo(Local $local, Request $request)
     {
         try {
-            SinodalService::updateInfo($sinodal, $request);
+            LocalService::updateInfo($local, $request);
             return redirect()->route('dashboard.home')->with([
                 'mensagem' => [
                     'status' => true,
@@ -105,11 +99,11 @@ class SinodalController extends Controller
         }
     }
 
-    public function delete(Sinodal $sinodal)
+    public function delete(Local $local)
     {
         try {
-            SinodalService::delete($sinodal);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            LocalService::delete($local);
+            return redirect()->route('dashboard.locais.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Instancias;
 
 use App\Helpers\FormHelper;
 use App\Models\Atividade;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DiretoriaService
 {
-    
+
     public static function getGraficoAtividades() : array
     {
         $usuario = Auth::id();
@@ -39,7 +39,7 @@ class DiretoriaService
                 ->where('user_id', $usuario)
                 ->where('start', '>=', date('Y').'-01-01')
                 ->where('status', 1)
-                ->count();  
+                ->count();
             $retorno['labels'][] = $texto;
             $retorno['datasets'][0]['data'][] =  self::porcentagem($total_programacoes, $quantidade);
         }
@@ -75,7 +75,7 @@ class DiretoriaService
         return $retorno;
     }
 
-    
+
     public static function getTotalizadores()
     {
         try {

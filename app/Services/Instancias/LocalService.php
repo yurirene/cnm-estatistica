@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Instancias;
 
 use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\FormularioLocal;
 use App\Models\Local;
+use App\Services\LogErroService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -41,9 +43,9 @@ class LocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Salvar");
-            
+
         }
     }
 
@@ -61,7 +63,7 @@ class LocalService
                 'status' => $request->status == 'A' ? true : false ,
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
-             
+
             $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
@@ -74,9 +76,9 @@ class LocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -96,9 +98,9 @@ class LocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -125,7 +127,7 @@ class LocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }
@@ -158,7 +160,7 @@ class LocalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }

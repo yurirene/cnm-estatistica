@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Instancias;
 
 use App\Models\Estado;
 use App\Models\Federacao;
@@ -9,6 +9,8 @@ use App\Models\FormularioLocal;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\LogErroService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class FederacaoService
                 'regiao_id' => $regiao,
                 'status' => $request->status == 'A' ? true : false
             ]);
-            
+
 
             $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
             if ($request->has('resetar_senha')) {
@@ -46,9 +48,9 @@ class FederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Salvar");
-            
+
         }
     }
 
@@ -70,7 +72,7 @@ class FederacaoService
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }
-            
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -78,9 +80,9 @@ class FederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -106,7 +108,7 @@ class FederacaoService
         return $regioes;
     }
 
-   
+
     public static function updateInfo(Federacao $federacao, Request $request)
     {
         DB::beginTransaction();
@@ -124,9 +126,9 @@ class FederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -175,14 +177,14 @@ class FederacaoService
                 $usuario->delete();
             }
 
-            
+
             $federacao->delete();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }
@@ -199,7 +201,7 @@ class FederacaoService
         return [
             'total' => $federacao->locais->count(),
             'organizadas' => $federacao->locais->where('status', true)->count()
-        ]; 
+        ];
     }
 
 
@@ -212,7 +214,7 @@ class FederacaoService
 
             $total_umps_organizada = SinodalService::getPorcentagem($total_umps_organizada['total'], $total_umps_organizada['organizadas']);
             $total_igrejas_n_sociedades = SinodalService::getPorcentagem($federacao->locais->count(), $federacao->locais->where('outro_modelo', true)->count());
-            
+
             return [
                 'ultimo_formulario' => $formulario ? $formulario->ano_referencia : 'Sem Resposta',
                 'total_umps_organizada' => $total_umps_organizada,
@@ -223,7 +225,7 @@ class FederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }
@@ -231,19 +233,19 @@ class FederacaoService
     public static function getInformacoesLocaisShow(Federacao $federacao) : array
     {
         try {
-        
+
             $locais = $federacao->locais()->orderBy('status', 'desc')->get();
             $info_local = [];
             foreach ($locais as $local) {
                 $utlimo_formulario = $local->relatorios()->orderBy('created_at','desc')->get()->first();
 
                 $ultimo_ano = 'Sem Resposta';
-                $total_socios = 0; 
+                $total_socios = 0;
                 if (!is_null($utlimo_formulario)) {
-                    $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0); 
+                    $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0);
                     $ultimo_ano = $utlimo_formulario->ano_referencia;
                 }
-                
+
 
                 $info_local[] = [
                     'id' => $local->id,
@@ -260,7 +262,7 @@ class FederacaoService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
     }

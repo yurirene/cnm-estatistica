@@ -1,15 +1,16 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Instancias;
 
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
-use App\Models\Sinodal;
+use App\Models\Federacao;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class SinodalDataTable extends DataTable
+class FederacaoDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -21,24 +22,37 @@ class SinodalDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
+            ->addColumn('action', function ($sql) {
                 return view('includes.actions', [
-                    'route' => 'dashboard.sinodais',
+                    'route' => 'dashboard.federacoes',
                     'id' => $sql->id,
                     'show' => true,
-                    'delete' => $sql->federacoes->count() > 0 ? false : true
+                    'delete' => $sql->locais->count() > 0 ? false : true
                 ]);
             })
-            ->editColumn('status', function($sql) {
+            ->editColumn('status', function ($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
-            ->editColumn('regiao_id', function($sql) {
+            ->editColumn('regiao_id', function ($sql) {
                 return $sql->regiao->nome;
             })
-            ->addColumn('nro_federacoes', function($sql) {
-                return $sql->federacoes->count();
+            ->addColumn('estatistica', function ($sql) {
+
+                $relatorio = $sql->relatorios()->orderBy('created_at', 'desc')->get()->first();
+                if (!$relatorio) {
+                    return 'Sem Relatório';
+                }
+
+
+                return $relatorio->ano_referencia;
             })
-            ->addColumn('nro_locais', function($sql) {
+            ->editColumn('estado_id', function ($sql) {
+                return $sql->estado->nome;
+            })
+            ->editColumn('sinodal_id', function ($sql) {
+                return $sql->sinodal->sigla;
+            })
+            ->addColumn('nro_umps', function ($sql) {
                 return $sql->locais->count();
             })
             ->rawColumns(['status']);
@@ -50,9 +64,12 @@ class SinodalDataTable extends DataTable
      * @param \App\Models\AcessoExterno $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Sinodal $model)
+    public function query(Federacao $model)
     {
-        return $model->newQuery()->query();
+        if (Auth::user()->admin == true) {
+            return $model->newQuery();
+        }
+        return $model->newQuery()->minhaSinodal();
     }
 
     /**
@@ -63,13 +80,13 @@ class SinodalDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('sinodais-table')
+                    ->setTableId('federacoes-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
+                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Federação')
                     )
                     ->parameters([
                         "language" => [
@@ -94,8 +111,10 @@ class SinodalDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sigla')->title('Sigla'),
-            Column::make('nro_federacoes')->title('Nº Federações')->orderable(false),
-            Column::make('nro_locais')->title('Nº UMPs Locais')->orderable(false),
+            Column::make('nro_umps')->title('Nº UMPs')->orderable(false),
+            Column::make('estatistica')->title('Estatística')->orderable(false),
+            Column::make('sinodal_id')->title('Sinodal'),
+            Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),
             Column::make('regiao_id')->title('Região'),
         ];
@@ -108,6 +127,6 @@ class SinodalDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Sinodais_' . date('YmdHis');
+        return 'Federacao_' . date('YmdHis');
     }
 }

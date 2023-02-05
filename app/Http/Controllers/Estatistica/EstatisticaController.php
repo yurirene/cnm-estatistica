@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Estatistica;
 
+use App\Http\Controllers\Controller;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Estatistica\GraficoEstatisticaService;
 use Illuminate\Http\Request;
