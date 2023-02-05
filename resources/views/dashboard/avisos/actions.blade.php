@@ -9,5 +9,11 @@
         >
             Remover
         </a>
+
+        <button type="button" data-target="#modal-visualizados" data-id="{{ $id }}" data-toggle="modal"
+            class="dropdown-item"
+        >
+            Visualizados
+        </button>
     </div>
 </div>

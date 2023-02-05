@@ -4,7 +4,7 @@
     @include('dashboard.index.admin.cards', [
         'totalizador' => DashboardHelper::getTotalizadores()
     ])
-    
+
     <div class="container-fluid mt--7">
 
         <div class="row">
@@ -64,7 +64,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <canvas id="grafico-formularios-entregues"></canvas>    
+                            <canvas id="grafico-formularios-entregues"></canvas>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
 @push('js')
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
-    
+
 <script>
     $(function() {
         $('#log-erros-table').DataTable({
@@ -250,7 +250,6 @@
         var button = $(event.relatedTarget)
         var informacoes = button.data('informacoes')
         var dia = button.data('dia')
-        console.log(informacoes);
         var modal = $(this)
         modal.find('#dia_modal').text(dia);
         modal.find('#erro_modal').text(informacoes.message);

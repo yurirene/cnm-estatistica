@@ -16,6 +16,7 @@ use App\Http\Controllers\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocalController;
 use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
@@ -40,8 +41,19 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
 
+
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');
+Route::get('/estatistica', [EstatisticaController::class, 'externo'])->name('estatistica');
+
+
 Route::group(['prefix' => 'site'], function() {
-    Route::get('/{sigla}', [SiteController::class, 'show'])->name('index');
+    Route::get('/{sigla}', [SiteController::class, 'show'])->name('meusite.index');
+});
+
+Route::group(['prefix' => 'graficos'], function() {
+    Route::post('/', [EstatisticaController::class, 'graficos'])->name('graficos.index');
 });
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
@@ -211,9 +223,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/avisos/visualizado/{id}', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
         Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])->name('avisos.delete');
         Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])->name('avisos.get-usuarios');
+        Route::get('/avisos/lista-visualizados/{id}', [AvisoController::class, 'listarVisualizados'])->name('avisos.listar-visualizados');
     });
 
 });
-
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');

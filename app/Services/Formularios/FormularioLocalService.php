@@ -8,6 +8,7 @@ use App\Models\FormularioLocal;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;
@@ -58,6 +59,7 @@ class FormularioLocalService
                     'local_id' => $request->local_id
                 ]
             );
+            EstatisticaService::atualizarRelatorioGeral();
             AtualizarAutomaticamenteFormulariosService::atualizarFederacao($formulario);
             DB::commit();
         } catch (\Throwable $th) {

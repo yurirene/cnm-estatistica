@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\EstatisticaService;
+use App\Services\Estatistica\EstatisticaService;
+use App\Services\Estatistica\GraficoEstatisticaService;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -52,5 +53,15 @@ class EstatisticaController extends Controller
                 ]
             ]);
         }
+    }
+
+    public function graficos(Request $request)
+    {
+        return response()->json(GraficoEstatisticaService::graficos($request->all()), 200);
+    }
+
+    public function externo()
+    {
+        return view('externo.estatistica');
     }
 }

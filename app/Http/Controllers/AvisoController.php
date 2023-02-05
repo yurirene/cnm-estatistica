@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\AvisosDataTable;
 use App\Models\Aviso;
 use App\Services\AvisoService;
+use App\Services\DatatableAjaxService;
 use Illuminate\Http\Request;
 
 class AvisoController extends Controller
@@ -45,6 +46,26 @@ class AvisoController extends Controller
         }
     }
 
+    public function delete($id)
+    {
+        try {
+            AvisoService::delete($id);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Aviso removido com sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
+
     public function getUsuarios()
     {
         return response()->json(['results' => AvisoService::getUsuarios()], 200);
@@ -53,5 +74,10 @@ class AvisoController extends Controller
     public function visualizado($id)
     {
         return response()->json(AvisoService::visualizado($id), 200);
+    }
+
+    public function listarVisualizados($id)
+    {
+        return DatatableAjaxService::listarVisualizados($id);
     }
 }

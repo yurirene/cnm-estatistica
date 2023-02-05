@@ -33,12 +33,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    
+
     <style>
         @media print{
             body {
@@ -158,12 +158,13 @@
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
     <script>
         $(function(){
 
-            var url = window.location.pathname, 
+            var url = window.location.pathname,
                 urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
                 // now grab every link from the navigation
                 $('.navbar-nav a').each(function(){
@@ -175,7 +176,7 @@
                         } else {
                             $(this).addClass('text-primary');
                         }
-                        
+
                         if ($(this).parents().closest('.nav-item').length > 1) {
                             console.log($(this).parents().closest('.nav-item'));
                             $(this).parents().closest('.nav-item').first().find('a').first().addClass('active text-primary');
@@ -209,7 +210,7 @@
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
+
 
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
@@ -221,7 +222,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('js')
 
@@ -239,7 +240,7 @@
         });
     </script>
     @endif
-    
+
     @if(session()->has('mensagem') && session('mensagem')['status'] == false)
     <script>
         iziToast.show({
@@ -262,7 +263,7 @@
         @endforeach
     @endif
 
-    
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script src="/js/form-builder.min.js"></script>

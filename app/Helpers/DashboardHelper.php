@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Parametro;
 use App\Services\AdministradorService;
 use App\Services\DiretoriaService;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\FederacaoService;
 use App\Services\LocalService;
 use App\Services\SinodalService;
@@ -24,6 +25,8 @@ class DashboardHelper
             return app()->make(AdministradorService::class);
         } else if (auth()->user()->hasRole(['local'])) {
             return app()->make(LocalService::class);
+        } else if (auth()->user()->hasRole(['secretaria_estatistica'])) {
+            return app()->make(EstatisticaService::class);
         }
     }
 
@@ -31,6 +34,11 @@ class DashboardHelper
     {
         $class = self::make();
         return $class::getTotalizadores();
+    }
+
+    public static function getTotalizadoresEstatisticaExterno()
+    {
+        return EstatisticaService::getTotalizadores();
     }
 
     public static function getInfo()
