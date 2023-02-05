@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Aviso;
 use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\Local;
@@ -261,5 +262,37 @@ class DatatableAjaxService
                 'file' => $th->getFile()
             ]);
         }
-   }
+    }
+
+    /**
+     * Listar usuários que visualizaram o aviso
+     *
+     * @param integer $id
+     * @return void
+     */
+    public static function listarVisualizados(int $id)
+    {
+
+        try {
+            $aviso = Aviso::find($id);
+            $usuarios = $aviso->usuarios()
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'nome' => $item->instancia()->first()->nome,
+                        'lido' => $item->pivot->visualizado
+                    ];
+                })
+                ->toArray();
+
+        return datatables()::of($usuarios)->make();
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+        }
+    }
+
 }

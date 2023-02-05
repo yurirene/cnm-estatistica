@@ -215,6 +215,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/avisos/visualizado/{id}', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
         Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])->name('avisos.delete');
         Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])->name('avisos.get-usuarios');
+        Route::get('/avisos/lista-visualizados/{id}', [AvisoController::class, 'listarVisualizados'])->name('avisos.listar-visualizados');
     });
 
 });
