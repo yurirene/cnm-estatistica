@@ -19,15 +19,15 @@
                         </div>
                         <div class="col-4 text-right">
                             <button
-                                type="button" 
+                                type="button"
                                 class="btn btn-sm btn-default"
                                 data-container="body"
                                 data-toggle="popover"
                                 data-color="warning"
                                 data-placement="top"
-                                data-content="{{ $sinodal->ranking ? $sinodal->ranking->explicacao_detalhada : '' }}" 
+                                data-content="{{ $sinodal->ranking ? $sinodal->ranking->explicacao_detalhada : '' }}"
                             >
-                                <em 
+                                <em
                                     class="fas fa-info"
                                 ></em>
                             </button>

@@ -15,9 +15,10 @@ class CreateFluxoCaixasTable extends Migration
     {
         Schema::create('produtos_fluxo_caixa', function (Blueprint $table) {
             $table->uuid('id');
-            $table->string('descricao')->nullable();
+            $table->string('descricao');
             $table->float('valor')->default(0);
             $table->tinyInteger('tipo');
+            $table->string('comprovante')->nullable();
             $table->timestamps();
         });
     }

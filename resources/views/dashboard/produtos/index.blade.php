@@ -5,6 +5,7 @@
 
 @include('dashboard.produtos.cards')
 @include('dashboard.partes.head', [
+    'remover' => true,
     'titulo' => 'Produtos'
 ])
 
@@ -55,7 +56,7 @@
                                 role="tab"
                                 aria-controls="custom-tabs-fluxo"
                                 aria-selected="false">
-                                Consignação
+                                Fluxo Caixa
                             </a>
                         </li>
                     </ul>
@@ -96,5 +97,6 @@
 {!! $produtosDataTable->scripts() !!}
 {!! $estoqueProdutosDataTable->scripts() !!}
 {!! $consignacaoProdutosDataTable->scripts() !!}
+{!! $fluxoCaixaDataTable->scripts() !!}
 
 @endpush

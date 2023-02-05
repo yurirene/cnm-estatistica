@@ -10,7 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\DigestoController;
-use App\Http\Controllers\EstatisticaController;
+use App\Http\Controllers\Estatistica\EstatisticaController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
 use App\Http\Controllers\Instancias\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
+use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -154,6 +155,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
         Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'delete']);
         Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])->name('consignacao-produtos.delete');
+
+        Route::resource('produtos/fluxo-caixa', FluxoCaixaController::class)->parameters(['fluxo-caixa' => 'fluxo'])->names('produtos.fluxo-caixa')->except(['index', 'show', 'delete']);
+        Route::get('/produtos/fluxo-caixa/{fluxo}/delete', [FluxoCaixaController::class, 'delete'])->name('produtos.fluxo-caixa.delete');
+        Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])->name('produtos.datatable.fluxo-caixa');
 
     });
     // MINHAS DEMANDAS

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Produtos;
 
 use App\DataTables\Produtos\ConsignacaoProdutosDataTable;
 use App\DataTables\Produtos\EstoqueProdutosDataTable;
+use App\DataTables\Produtos\FluxoCaixaDataTable;
 use App\DataTables\Produtos\ProdutosDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Produtos\Produto;
@@ -15,13 +16,15 @@ class ProdutoController extends Controller
     public function index(
         ProdutosDataTable $produtosDataTable,
         EstoqueProdutosDataTable $estoqueProdutosDataTable,
-        ConsignacaoProdutosDataTable $consignacaoProdutosDataTable
+        ConsignacaoProdutosDataTable $consignacaoProdutosDataTable,
+        FluxoCaixaDataTable $fluxoCaixaDataTable
     )
     {
         return view('dashboard.produtos.index', [
             'produtosDataTable' => $produtosDataTable->html(),
             'estoqueProdutosDataTable' => $estoqueProdutosDataTable->html(),
             'consignacaoProdutosDataTable' => $consignacaoProdutosDataTable->html(),
+            'fluxoCaixaDataTable' => $fluxoCaixaDataTable->html(),
             'totalizadores' => ProdutoService::getTotalizadores()
         ]);
     }
