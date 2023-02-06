@@ -2,7 +2,7 @@
 
 namespace App\Strategies\PesquisaGrafico;
 
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 use Exception;
 use Illuminate\Support\Facades\Log;
 

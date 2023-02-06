@@ -5,7 +5,7 @@ namespace App\DataTables;
 use App\Helpers\FormHelper;
 use App\Helpers\BoostrapHelper;
 use App\Helpers\BootstrapHelper;
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;

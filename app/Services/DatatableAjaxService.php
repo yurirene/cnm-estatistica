@@ -8,7 +8,7 @@ use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\LogErro;
 use App\Models\Parametro;
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 use App\Models\Regiao;
 use App\Models\RegistroLogin;
 use App\Models\Sinodal;

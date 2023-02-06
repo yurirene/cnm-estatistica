@@ -32,16 +32,15 @@ class FileCast implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes)
     {
-        if (is_null($value)) {
+        if (empty($value)) {
             return $value;
         }
 
-
-        if (!empty($model->comprovante)) {
-            Storage::delete($model->comprovante);
+        if (!empty($attributes[$key])) {
+            Storage::delete($model->getRawOriginal($key));
         }
 
-        $filename = 'comprovante_' . time() . '.' . $value->getClientOriginalExtension();
-        return $value->storeAs('public/produtos/comprovantes', $filename);
+        $filename = $key . '_' . time() . '.' . $value->getClientOriginalExtension();
+        return $value->storeAs($model->path, $filename);
     }
 }

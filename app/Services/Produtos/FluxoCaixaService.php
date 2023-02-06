@@ -5,6 +5,7 @@ namespace App\Services\Produtos;
 use App\Models\Produtos\ConsignacaoProduto;
 use App\Models\Produtos\FluxoCaixa;
 use App\Models\Produtos\Produto;
+use Illuminate\Support\Facades\Storage;
 
 class FluxoCaixaService
 {
@@ -40,6 +41,9 @@ class FluxoCaixaService
     public static function delete(FluxoCaixa $fluxo)
     {
         try {
+            if (!empty($fluxo->comprovante)) {
+                Storage::delete($fluxo->getRawOriginal('comprovante'));
+            }
             $fluxo->delete();
         } catch (\Throwable $th) {
             throw $th;
@@ -50,35 +54,38 @@ class FluxoCaixaService
 
     public static function getTotalizadores()
     {
-        $total_produtos = 0;
-        $valor_produtos = 0;
-        $total_consignado = 0;
-        $valor_consignado = 0;
-        $consignacao = ConsignacaoProduto::all();
-        $fluxos = Produto::all();
+        $entradas = 0;
+        $saidas = 0;
+        $saldo_inicial = FluxoCaixa::where('tipo', FluxoCaixa::SALDO_INICIAL)->first()
+            ? FluxoCaixa::where('tipo', FluxoCaixa::SALDO_INICIAL)->first()->getRawOriginal('valor')
+            : 0;
 
-        $fluxos->map(function($item) use (&$total_produtos) {
-            $total_produtos += $item->estoque;
-        });
-
-        $fluxos->map(function($item) use (&$valor_produtos) {
-            $valor_produtos += $item->estoque * $item->valor;
-        });
-
-
-
-        $consignacao->map(function($item) use (&$total_consignado) {
-            $total_consignado += $item->quantidade_consignada - $item->quantidade_retornada;
-        });
-        $consignacao->map(function($item) use (&$valor_consignado) {
-            $quantidade = $item->quantidade_consignada - $item->quantidade_retornada;
-            $valor_consignado += $quantidade * $item->produto->valor;
-        });
+        $lancamentos = FluxoCaixa::get();
+        foreach ($lancamentos as $lancamento) {
+            if ($lancamento->tipo == FluxoCaixa::ENTRADA) {
+                $entradas += $lancamento->getRawOriginal('valor');
+            }
+            if ($lancamento->tipo == FluxoCaixa::SAIDA) {
+                $saidas += $lancamento->getRawOriginal('valor');
+            }
+        }
+        $saldo = ($saldo_inicial + $entradas) - $saidas;
         return [
-            'total_produtos' => $total_produtos,
-            'valor_produtos' => $valor_produtos,
-            'total_consignado' => $total_consignado,
-            'valor_consignado' => $valor_consignado
+            'entradas' => number_format($entradas, 2, ',', '.'),
+            'saidas' => number_format($saidas, 2, ',', '.'),
+            'saldo' => number_format($saldo, 2, ',', '.')
         ];
+    }
+
+    /**
+     * Retorna se já existe saldo inicial cadastrado
+     *
+     * @return boolean
+     */
+    public static function validaSaldoInicial(): bool
+    {
+        return FluxoCaixa::where('tipo', 0)->first()
+            ? true
+            : false;
     }
 }

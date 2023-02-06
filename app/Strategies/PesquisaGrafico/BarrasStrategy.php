@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 namespace App\Strategies\PesquisaGrafico;
 
 use App\Interfaces\PesquisaGraficoStrategy;
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 use App\Models\PesquisaConfiguracao;
 use Illuminate\Support\Facades\Log;
 
@@ -31,12 +31,12 @@ class BarrasStrategy extends AbstractGrafico implements PesquisaGraficoStrategy
 
     public static function formatarDados(array $dados, string $tipo_dado) : array
     {
-        
+
         try {
             $quantidades = data_get($dados['dados'], '*.quantidade');
             if ($tipo_dado == PesquisaConfiguracao::PORCENTAGEM) {
                 $quantidades = self::gerarPorcentagem($quantidades);
-            } 
+            }
 
             $retorno = array();
             $retorno = [

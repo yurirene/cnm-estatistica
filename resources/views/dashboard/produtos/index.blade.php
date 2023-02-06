@@ -49,7 +49,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ session()->get('aba') == 2 ? 'active' : '' }}"
+                            <a class="nav-link {{ session()->get('aba') == 3 ? 'active' : '' }}"
                                 id="custom-tabs-fluxo-tab"
                                 data-toggle="pill"
                                 href="#custom-tabs-fluxo"

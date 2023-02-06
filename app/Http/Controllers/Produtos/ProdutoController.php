@@ -8,6 +8,7 @@ use App\DataTables\Produtos\FluxoCaixaDataTable;
 use App\DataTables\Produtos\ProdutosDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Produtos\Produto;
+use App\Services\Produtos\FluxoCaixaService;
 use App\Services\Produtos\ProdutoService;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,8 @@ class ProdutoController extends Controller
             'estoqueProdutosDataTable' => $estoqueProdutosDataTable->html(),
             'consignacaoProdutosDataTable' => $consignacaoProdutosDataTable->html(),
             'fluxoCaixaDataTable' => $fluxoCaixaDataTable->html(),
-            'totalizadores' => ProdutoService::getTotalizadores()
+            'totalizadores' => ProdutoService::getTotalizadores(),
+            'totalizadores_fluxo' => FluxoCaixaService::getTotalizadores()
         ]);
     }
 

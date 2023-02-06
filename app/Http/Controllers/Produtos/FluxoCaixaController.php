@@ -16,7 +16,9 @@ class FluxoCaixaController extends Controller
     {
         try {
             return view('dashboard.produtos.fluxo-caixa.form', [
-                'tipos' => FluxoCaixa::TIPOS_ATIVOS
+                'tipos' => FluxoCaixaService::validaSaldoInicial()
+                    ? FluxoCaixa::TIPOS_ATIVOS
+                    : FluxoCaixa::TIPOS
             ]);
         } catch (\Throwable $th) {
             return redirect()->route('home')->with([
@@ -53,8 +55,9 @@ class FluxoCaixaController extends Controller
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
-                ]
-                ]);
+                ],
+                'aba' => 3
+            ]);
         } catch (Throwable $th) {
             return redirect()->back()->with([
                 'mensagem' => [
@@ -75,8 +78,9 @@ class FluxoCaixaController extends Controller
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
-                ]
-                ]);
+                ],
+                'aba' => 3
+            ]);
         } catch (Throwable $th) {
             return redirect()->back()->with([
                 'mensagem' => [
@@ -97,8 +101,9 @@ class FluxoCaixaController extends Controller
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
-                ]
-                ]);
+                ],
+                'aba' => 3
+            ]);
         } catch (Throwable $th) {
             return redirect()->back()->with([
                 'mensagem' => [

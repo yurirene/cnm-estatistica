@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Federacao;
 use App\Models\LogErro;
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 use App\Services\DatatableAjaxService;
 use App\Services\LogErroService;
 use Carbon\Carbon;
@@ -46,7 +46,7 @@ class DatatableAjaxController extends Controller
     {
         return DatatableAjaxService::getFormularioSinodais();
     }
-    
+
     public function estatisticaFormulariosLocais (string $id)
     {
         return DatatableAjaxService::estatisticaFormulariosLocais($id);
