@@ -37,6 +37,10 @@ class FluxoCaixaDataTable extends DataTable
             ->editColumn('valor', function ($sql) {
                 return 'R$' . $sql->valor;
             })
+
+            ->editColumn('created_at', function ($sql) {
+                return $sql->created_at->format('d/m/Y');
+            })
             ->rawColumns(['tipo']);
     }
 
@@ -63,7 +67,7 @@ class FluxoCaixaDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax(route('dashboard.produtos.datatable.fluxo-caixa'))
                     ->dom('Bfrtip')
-                    ->orderBy(2)
+                    ->orderBy(1)
                     ->parameters([
                         "buttons" => [
                             [
@@ -93,6 +97,7 @@ class FluxoCaixaDataTable extends DataTable
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
+            Column::make('created_at')->title('Data'),
             Column::make('tipo')->title('Tipo'),
             Column::make('descricao')->title('Descrição'),
             Column::make('valor')->title('Valor'),

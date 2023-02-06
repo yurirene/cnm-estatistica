@@ -18,6 +18,7 @@ class FluxoCaixa extends Model
         'valor' => MoneyCast::class,
         'comprovante' => FileCast::class
     ];
+    protected $dates = ['created_at', 'updated_at'];
     public $path = 'public/produtos/comprovantes';
 
     public const SALDO_INICIAL = 0;

@@ -77,9 +77,9 @@ class ProdutoService
         });
         return [
             'total_produtos' => $total_produtos,
-            'valor_produtos' => $valor_produtos,
+            'valor_produtos' => number_format($valor_produtos, 2, ',', '.'),
             'total_consignado' => $total_consignado,
-            'valor_consignado' => $valor_consignado
+            'valor_consignado' => number_format($valor_consignado, 2, ',', '.')
         ];
     }
 }

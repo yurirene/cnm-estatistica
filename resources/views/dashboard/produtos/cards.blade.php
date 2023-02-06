@@ -7,11 +7,11 @@
                     <div class="card card-stats mb-4 mb-xl-0">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col">
+                                <div class="col-8">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Produtos em Estoque</h5>
                                     <span class="h2 font-weight-bold mb-0">{{ $totalizadores['total_produtos'] }}</span>
                                 </div>
-                                <div class="col-auto">
+                                <div class="col-4">
                                     <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
                                         <i class="fas fa-gift"></i>
                                     </div>
@@ -24,11 +24,11 @@
                     <div class="card card-stats mb-4 mb-xl-0">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col">
+                                <div class="col-8">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Valor em Estoque</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores['valor_produtos'] }}</span>
+                                    <sup>R$</sup><span class="h3 font-weight-bold mb-0">{{ $totalizadores['valor_produtos'] }}</span>
                                 </div>
-                                <div class="col-auto">
+                                <div class="col-4">
                                     <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
                                         <i class="fas fa-donate"></i>
                                     </div>
@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div class="col-8">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Valor Consignado</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores['valor_consignado'] }}</span>
+                                    <sup>R$</sup><span class="h2 font-weight-bold mb-0">{{ $totalizadores['valor_consignado'] }}</span>
                                 </div>
                                 <div class="col-4">
                                     <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -81,7 +81,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Entradas</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores_fluxo['entradas'] }}</span>
+                                    <sup>R$</sup><span class="h2 font-weight-bold mb-0">{{ $totalizadores_fluxo['entradas'] }}</span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-success text-white rounded-circle shadow">
@@ -98,7 +98,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Saídas</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores_fluxo['saidas'] }}</span>
+                                    <sup>R$</sup><span class="h2 font-weight-bold mb-0">{{ $totalizadores_fluxo['saidas'] }}</span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -115,7 +115,7 @@
                             <div class="row">
                                 <div class="col">
                                     <h5 class="card-title text-uppercase text-muted mb-0">Saldo</h5>
-                                    <span class="h2 font-weight-bold mb-0"> {{ $totalizadores_fluxo['saldo'] }}</span>
+                                    <sup>R$</sup><span class="h2 font-weight-bold mb-0"> {{ $totalizadores_fluxo['saldo'] }}</span>
                                 </div>
                                 <div class="col-auto">
                                     <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
