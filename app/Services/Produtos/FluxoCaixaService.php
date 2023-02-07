@@ -16,6 +16,7 @@ class FluxoCaixaService
                 'descricao' => $request['descricao'],
                 'valor' => $request['valor'],
                 'tipo' => $request['tipo'],
+                'data_lancamento' => $request['data_lancamento'],
                 'comprovante' => $request['comprovante'] ?? null
             ]);
         } catch (\Throwable $th) {
@@ -30,6 +31,7 @@ class FluxoCaixaService
                 'descricao' => $request['descricao'],
                 'valor' => $request['valor'],
                 'tipo' => $request['tipo'],
+                'data_lancamento' => $request['data_lancamento'],
                 'comprovante' => $request['comprovante'] ?? null
             ]);
             return $fluxo;

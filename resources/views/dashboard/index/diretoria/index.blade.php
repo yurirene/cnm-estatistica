@@ -74,8 +74,6 @@
                 </div>
             </div>
         </div>
-
-        @include('layouts.footers.auth')
     </div>
 
 <div class="modal fade"

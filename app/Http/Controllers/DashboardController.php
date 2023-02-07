@@ -13,7 +13,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $dataMapaBrazil = MapaService::getDefaultMap();  
+        $dataMapaBrazil = MapaService::getDefaultMap();
         return view('dashboard.index', [
             'dataMapaBrazil' => $dataMapaBrazil
         ]);
@@ -34,7 +34,7 @@ class DashboardController extends Controller
             $request->user()->fill([
                 'password' => Hash::make($request->nova_senha)
             ])->save();
-            
+
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => true,
@@ -46,7 +46,7 @@ class DashboardController extends Controller
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]);          
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

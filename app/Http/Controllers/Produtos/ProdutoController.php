@@ -26,7 +26,7 @@ class ProdutoController extends Controller
             'estoqueProdutosDataTable' => $estoqueProdutosDataTable->html(),
             'consignacaoProdutosDataTable' => $consignacaoProdutosDataTable->html(),
             'fluxoCaixaDataTable' => $fluxoCaixaDataTable->html(),
-            'totalizadores' => ProdutoService::getTotalizadores(),
+            'totalizadores' => ProdutoService::getTotalizadoresProdutos(),
             'totalizadores_fluxo' => FluxoCaixaService::getTotalizadores()
         ]);
     }

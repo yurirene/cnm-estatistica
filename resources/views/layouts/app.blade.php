@@ -146,12 +146,16 @@
     <div class="main-content">
         @include('layouts.navbars.navbar')
         @yield('content')
+
+        @auth
+            <footer class="footer">
+                <div class="copyright text-center text-muted">
+                    <img class="text-center" src="/img/logos/ump.png" style="height: 60px;" />
+                    Confederação Nacional de Mocidade
+                </div>
+            </footer>
+        @endauth
     </div>
-
-    @auth
-    @include('layouts.footers.auth')
-
-    @endauth
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 

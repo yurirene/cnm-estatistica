@@ -24,23 +24,28 @@
                     {!! Form::model($fluxo, ['url' => route('dashboard.produtos.fluxo-caixa.update', $fluxo->id), 'method' => 'PUT', 'files' => true]) !!}
                     @endif
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('tipo', 'Tipo') !!}
                                 {!! Form::select('tipo', $tipos, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('data_lancamento', 'Data do Lançamento') !!}
+                                {!! Form::text('data_lancamento', null, ['class' => 'isDate form-control', 'required'=>true, 'autocomplete' => 'off', 'placeholder' => '00/00/0000']) !!}
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('descricao', 'Descrição') !!}
                                 {!! Form::text('descricao', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off', 'placeholder' => 'Venda de X camisas']) !!}
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
+                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('valor', 'Valor') !!}
                                 {!! Form::text('valor', null, ['class' => 'form-control isMoney', 'required'=>true, 'autocomplete' => 'off']) !!}

@@ -9,12 +9,14 @@ use App\Services\Estatistica\EstatisticaService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\SinodalService;
+use App\Services\Produtos\ProdutoService;
 
 class DashboardHelper
 {
 
     public static function make()
     {
+
         if (auth()->user()->hasRole(['sinodal'])) {
             return app()->make(SinodalService::class);
         } else if (auth()->user()->hasRole(['federacao'])) {
@@ -27,6 +29,8 @@ class DashboardHelper
             return app()->make(LocalService::class);
         } else if (auth()->user()->hasRole(['secretaria_estatistica'])) {
             return app()->make(EstatisticaService::class);
+        } else if (auth()->user()->hasRole(['secreatria_produtos'])) {
+            return app()->make(ProdutoService::class);
         }
     }
 

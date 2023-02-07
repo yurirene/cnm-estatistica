@@ -2,6 +2,7 @@
 
 namespace App\Models\Produtos;
 
+use App\Casts\DateCast;
 use App\Casts\FileCast;
 use App\Casts\MoneyCast;
 use App\Traits\GenericTrait;
@@ -16,7 +17,8 @@ class FluxoCaixa extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $casts = [
         'valor' => MoneyCast::class,
-        'comprovante' => FileCast::class
+        'comprovante' => FileCast::class,
+        'data_lancamento' => DateCast::class
     ];
     protected $dates = ['created_at', 'updated_at'];
     public $path = 'public/produtos/comprovantes';

@@ -97,7 +97,7 @@ class FluxoCaixaDataTable extends DataTable
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('created_at')->title('Data'),
+            Column::make('data_lancamento')->title('Data'),
             Column::make('tipo')->title('Tipo'),
             Column::make('descricao')->title('Descrição'),
             Column::make('valor')->title('Valor'),
