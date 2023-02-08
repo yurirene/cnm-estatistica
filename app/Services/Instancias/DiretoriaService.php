@@ -6,6 +6,7 @@ use App\Helpers\FormHelper;
 use App\Models\Atividade;
 use App\Models\Estado;
 use App\Models\Federacao;
+use App\Models\FormularioLocal;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
 use App\Models\Parametro;
@@ -82,24 +83,16 @@ class DiretoriaService
             $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
             $federacoes = Federacao::whereIn('sinodal_id', $sinodais->pluck('id'))->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
-            $formularios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->get();
-            if (!$formularios) {
-                return [
-                    'total_sinodos' => $sinodais->count(),
-                    'total_presbiterios' => $federacoes->count(),
-                    'total_igrejas' => $umps->count(),
-                    'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
-                    'total_sinodais' => $sinodais->where('status', true)->count(),
-                    'total_federacoes' => $federacoes->where('status', true)->count(),
-                    'total_umps' => $umps->where('status', true)->count(),
-                    'total_socios' => 0,
-                ];
-            }
-            $total_socios = 0;
-            $total_umps = 0;
+            $formularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
+                $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
+            })
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->get();
+
+            $totalSocios = 0;
+            $totalUmps = $umps->where('status', '=', 1)->count();
             foreach ($formularios as $formulario) {
-                $total_umps += intval($formulario->estrutura['ump_organizada']);
-                $total_socios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
+                $totalSocios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
             }
             return [
                 'total_sinodos' => $sinodais->count(),
@@ -108,8 +101,38 @@ class DiretoriaService
                 'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
                 'total_sinodais' => $sinodais->where('status', true)->count(),
                 'total_federacoes' => $federacoes->where('status', true)->count(),
-                'total_umps' => ($total_umps == 0 && $umps->where('status', true)->count() > 0) ? $umps->where('status', true)->count() : $total_umps . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>',
-                'total_socios' => $total_socios . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
+                'total_umps' => $totalUmps,
+                'total_socios' => $totalSocios
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public static function getQualidadeEntregaRelatorios()
+    {
+        try {
+            $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->get();
+            $quantidadeUmps = Local::whereIn('sinodal_id', $sinodais->pluck('id'))
+                ->where('status', true)
+                ->count();
+
+            $quantidadeFormularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
+                    $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
+                })
+                ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                ->count();
+            $restante = $quantidadeUmps - $quantidadeFormularios;
+            return [
+                "labels" => ['Entregue', 'Pendente'],
+                "datasets" => [
+                    [
+                        "label" => 'Formulários',
+                        "data" => [$quantidadeFormularios, $restante],
+                        "backgroundColor" => ["#ffa322", "#22054e"],
+                        'borderColor' => "#ffa9001f"
+                    ]
+                ]
             ];
         } catch (\Throwable $th) {
             throw $th;

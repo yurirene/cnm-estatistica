@@ -111,13 +111,13 @@
                 </li>
 
                 @endCanAtLeast
-                @canAtLeast(['dashboard.atividades.index'])
+                {{-- @canAtLeast(['dashboard.atividades.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
                         <i class="fas fa-calendar"></i> Atividades
                     </a>
                 </li>
-                @endCanAtLeast
+                @endCanAtLeast --}}
                 @canAtLeast(['dashboard.estatistica.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.estatistica.index') }}">

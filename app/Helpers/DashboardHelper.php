@@ -101,5 +101,9 @@ class DashboardHelper
         return $aviso->toArray();
     }
 
+    public static function getQualidadeEntregaRelatorios(): array
+    {
+        return DiretoriaService::getQualidadeEntregaRelatorios();
+    }
 
 }
