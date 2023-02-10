@@ -58,13 +58,18 @@
                         if (grafico.config.need) {
                             grafico.config.options.plugins = LEGEND;
                         }
+
+                        if (grafico.id == 'distribuicao') {
+                            montarGraficoDistribuicao(grafico.dados);
+                            return;
+                        }
+
                         new Chart(
                             document.getElementById(grafico.id),
                             grafico.config
                         );
                     });
                     let keys = Object.keys(response.totalizadores);
-                    console.log(keys);
                     keys.forEach(function(key) {
                         $(`#${key}`).text(response.totalizadores[key]);
                     });
@@ -74,4 +79,80 @@
         $(document).ready(function() {
             $('#filtrar').click();
         })
+
+        function montarGraficoDistribuicao(dados) {
+            var dadosFormatados = dados.map(function(item) {
+                return [item['hc-key'], item['n_socios']];
+            });
+            Highcharts.mapChart('distribuicao', {
+                chart: {
+                    map: 'countries/br/br-all',
+                    height: 600
+                },
+
+                colorAxis: {
+                    min: 0
+                },
+
+                title: {
+                    text: ''
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                navigation: {
+                    buttonOptions: {
+                        enabled: false
+                    }
+                },
+
+                series: [{
+                    borderColor: '#666',
+                    borderWidth: 0.4,
+                    data: dadosFormatados,
+                    tooltip: {
+                        pointFormatter: function() {
+                            let point = this;
+                            let info = [];
+
+                            dados.forEach(d => {
+                                if(d['hc-key'] == point['hc-key']){
+                                    info = [
+                                        d.n_socios,
+                                        d.n_umps,
+                                        d.n_federacoes
+                                    ]
+                                }
+                            });
+                            return `${point.name} <br>
+                                <b>Nº Sócios</b>: ${info[0]} <br>
+                                <b>Nº UMPs Locais</b>: ${info[1]} <br>
+                                <b>Nº Federações</b>: ${info[2]}`
+
+                        }
+                    },
+                    name: 'Distribuição por Estado',
+                    states: {
+                        hover: {
+                            color: '#BADA55'
+                        },
+                        select: {
+                            color: 'gray'
+                        }
+                    },
+                    allowPointSelect: true,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}',
+                        style: {
+                            fontSize: '7px',
+                            textOutline: '0px',
+                            fontWeight: 'normal'
+                        },
+                    },
+                }]
+            });
+        }
     </script>

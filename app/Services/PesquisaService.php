@@ -7,9 +7,9 @@ use App\Factories\PesquisaGraficoFactory;
 use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\Local;
-use App\Models\Pesquisa;
-use App\Models\PesquisaConfiguracao;
-use App\Models\PesquisaResposta;
+use App\Models\Pesquisas\Pesquisa;
+use App\Models\Pesquisas\PesquisaConfiguracao;
+use App\Models\Pesquisas\PesquisaResposta;
 use App\Models\Regiao;
 use App\Models\Sinodal;
 use Carbon\Carbon;
@@ -248,8 +248,8 @@ class PesquisaService
                     ->pluck('resposta.'.$configuracao['campo']);
                 if (count($valores_respostas->toArray()) == count($valores_respostas->toArray(), COUNT_RECURSIVE)) {
                     $valores = $pesquisa->respostas()
-                        ->when(request()->has('filtro'), function($query) {
-                            return $query->whereHas('usuario', function($sql) {
+                        ->when(request()->has('filtro'), function ($query) {
+                            return $query->whereHas('usuario', function ($sql) {
                                 return $sql->whereHas(request()->filtro);
                             });
                         })
@@ -257,8 +257,8 @@ class PesquisaService
                         ->pluck('resposta.'.$configuracao['campo'])->countBy();
                 } else {
                     $valores = $pesquisa->respostas()
-                        ->when(request()->has('filtro'), function($query) {
-                            return $query->whereHas('usuario', function($sql) {
+                        ->when(request()->has('filtro'), function ($query) {
+                            return $query->whereHas('usuario', function ($sql) {
                                 return $sql->whereHas(request()->filtro);
                             });
                         })
@@ -417,8 +417,8 @@ class PesquisaService
         try {
             $retorno = array();
             foreach (Regiao::all() as $regiao) {
-                $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($regiao) {
-                    return $sql->whereHas('sinodais', function($q) use ($regiao) {
+                $respostas = $pesquisa->respostas()->whereHas('usuario', function ($sql) use ($regiao) {
+                    return $sql->whereHas('sinodais', function ($q) use ($regiao) {
                         return $q->where('regiao_id', $regiao->id);
                     });
                 })->count();
@@ -436,8 +436,8 @@ class PesquisaService
         try {
             $retorno = array();
             foreach (Estado::all() as $estado) {
-                $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($estado) {
-                    return $sql->whereHas('federacoes', function($q) use ($estado) {
+                $respostas = $pesquisa->respostas()->whereHas('usuario', function ($sql) use ($estado) {
+                    return $sql->whereHas('federacoes', function ($q) use ($estado) {
                         return $q->where('estado_id', $estado->id);
                     });
                 })->count();
@@ -459,8 +459,8 @@ class PesquisaService
         try {
             $retorno = array();
             foreach (Estado::all() as $estado) {
-                $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($estado) {
-                    return $sql->whereHas('locais', function($q) use ($estado) {
+                $respostas = $pesquisa->respostas()->whereHas('usuario', function ($sql) use ($estado) {
+                    return $sql->whereHas('locais', function ($q) use ($estado) {
                         return $q->where('estado_id', $estado->id);
                     });
                 })->count();
@@ -503,12 +503,12 @@ class PesquisaService
                     'total' => Local::where('status', true)->where('regiao_id', $regiao)->whereNull('deleted_at')->count()
                 ];
             }
-            $respostas = $pesquisa->respostas()->whereHas('usuario', function($sql) use ($regiao) {
-                return $sql->whereHas('sinodais', function($q) use ($regiao) {
+            $respostas = $pesquisa->respostas()->whereHas('usuario', function ($sql) use ($regiao) {
+                return $sql->whereHas('sinodais', function ($q) use ($regiao) {
                     return $q->where('regiao_id', $regiao);
-                })->orWhereHas('federacoes', function($q) use ($regiao) {
+                })->orWhereHas('federacoes', function ($q) use ($regiao) {
                     return $q->where('regiao_id', $regiao);
-                })->orWhereHas('locais', function($q) use ($regiao) {
+                })->orWhereHas('locais', function ($q) use ($regiao) {
                     return $q->where('regiao_id', $regiao);
                 });
             })->get();

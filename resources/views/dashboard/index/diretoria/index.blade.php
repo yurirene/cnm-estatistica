@@ -13,7 +13,7 @@
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-light ls-1 mb-1">Perfil de Atividades</h6>
+                                <h6 class="text-uppercase text-light ls-1 mb-1">Qualidade da Entrega dos Formulários Estatísticos</h6>
                             </div>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                         <!-- Chart -->
                         <div class="">
                             <!-- Chart wrapper -->
-                            <canvas id="atividades"></canvas>
+                            <canvas id="entregas"></canvas>
                         </div>
                     </div>
                 </div>
@@ -74,8 +74,6 @@
                 </div>
             </div>
         </div>
-
-        @include('layouts.footers.auth')
     </div>
 
 <div class="modal fade"
@@ -171,6 +169,33 @@
                 borderColor: '#666',
                 borderWidth: 0.4,
                 data: {!! json_encode($dataMapaBrazil) !!},
+                keys: ['id', 'n_socios', 'n_umps', 'n_federacoes'],
+                joinBy: ['hc-key'],
+                tooltip: {
+                    pointFormatter: function() {
+                        var hoverVotes = this.hoverVotes; // Used by pie only
+                        return this.name + '<br/>' +
+                            Highcharts.map(
+                                [
+                                    ['Nº de Sócios', this.n_socios],
+                                    ['Nº de UMPs', this.n_umps],
+                                    ['Nº de Federações', this.n_federacoes]
+
+                                ],
+                                 function(line) {
+                                    return '<span style="color:' + line[2] +
+                                        // Colorized bullet
+                                        '">\u25CF</span> ' +
+                                        // Party and votes
+                                        (line[0] === hoverVotes ? '<b>' : '') +
+                                        line[0] + ': ' +
+                                        Highcharts.numberFormat(line[1], 0) +
+                                        (line[0] === hoverVotes ? '</b>' : '') +
+                                        '<br/>';
+                                }
+                            ).join('')
+                    }
+                },
                 name: 'Estados do Usuário',
                 states: {
                     hover: {
@@ -189,28 +214,33 @@
                         textOutline: '0px',
                         fontWeight: 'normal'
                     },
-                },
+                }
             }]
         });
     </script>
 @endpush
-
 @push('script')
 <script>
-    const config_grafico_atividade = {
-            type: 'radar',
-            data: @json(DashboardHelper::getGraficoAtividades()),
-            options: {
-                elements: {
-                    line: {
-                        borderWidth: 3
-                    }
-                }
+    const config_grafico_entrega = {
+        type: 'doughnut',
+        data: @json(DashboardHelper::getQualidadeEntregaRelatorios()),
+        options: {
+            responsive: true,
+            plugins: {
+            legend: {
+                position: 'top',
             },
-        };
-    const atividadeChart = new Chart(
-        document.getElementById('atividades'),
-        config_grafico_atividade
+            title: {
+                display: true,
+                text: 'Entrega dos Formulários de UMPs Locais (%)'
+            }
+            }
+        },
+    };
+
+    const entregaChart = new Chart(
+        document.getElementById('entregas'),
+        config_grafico_entrega
     );
 
     $('#tabela-formulario').dataTable();

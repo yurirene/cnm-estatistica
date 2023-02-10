@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Apps\App;
 use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
+use App\Models\Estatistica\Ranking;
 use App\Traits\Auditable;
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;

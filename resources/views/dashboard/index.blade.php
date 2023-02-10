@@ -34,5 +34,8 @@
 @include('dashboard.index.estatistica.index')
 @endRole
 
+@role('secreatria_produtos')
+@include('dashboard.index.produtos.index')
+@endRole
 
 @endsection

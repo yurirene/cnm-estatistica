@@ -5,23 +5,24 @@ use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ComprovanteACIController;
-use App\Http\Controllers\ConsignacaoProdutoController;
+use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\DigestoController;
-use App\Http\Controllers\EstatisticaController;
-use App\Http\Controllers\EstoqueProdutoController;
-use App\Http\Controllers\FederacaoController;
+use App\Http\Controllers\Estatistica\EstatisticaController;
+use App\Http\Controllers\Produtos\EstoqueProdutoController;
+use App\Http\Controllers\Instancias\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LocalController;
+use App\Http\Controllers\Instancias\LocalController;
 use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
-use App\Http\Controllers\ProdutoController;
-use App\Http\Controllers\SinodalController;
+use App\Http\Controllers\Produtos\ProdutoController;
+use App\Http\Controllers\Instancias\SinodalController;
+use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -48,15 +49,15 @@ Route::get('/digesto', [DigestoController::class, 'digesto'])->name('digesto');
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])->name('estatistica');
 
 
-Route::group(['prefix' => 'site'], function() {
+Route::group(['prefix' => 'site'], function () {
     Route::get('/{sigla}', [SiteController::class, 'show'])->name('meusite.index');
 });
 
-Route::group(['prefix' => 'graficos'], function() {
+Route::group(['prefix' => 'graficos'], function () {
     Route::post('/', [EstatisticaController::class, 'graficos'])->name('graficos.index');
 });
 
-Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function() {
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])->name('trocar-senha');
 
@@ -66,29 +67,29 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/check-usuario', [UserController::class, 'checkUser'])->name('usuarios.check-usuario');
     });
 
-    Route::group(['modulo' => 'sinodais'], function() {
+    Route::group(['modulo' => 'sinodais'], function () {
         Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
         Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
         Route::put('/sinodais/{sinodal}/update-info', [SinodalController::class, 'updateInfo'])->name('sinodais.update-info');
         Route::get('/sinodais/get-ranking', [SinodalController::class, 'getRanking'])->name('sinodais.get-ranking');
     });
-    Route::group(['modulo' => 'federacoes'], function() {
+    Route::group(['modulo' => 'federacoes'], function () {
         Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('delete');
         Route::get('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])->name('federacoes.delete');
         Route::put('/federacoes/{federacao}/update-info', [FederacaoController::class, 'updateInfo'])->name('federacoes.update-info');
     });
-    Route::group(['modulo' => 'umps-locais'], function() {
+    Route::group(['modulo' => 'umps-locais'], function () {
         Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
         Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
         Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])->name('locais.update-info');
     });
-    Route::group(['modulo' => 'atividades'], function() {
+    Route::group(['modulo' => 'atividades'], function () {
         Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('delete');
         Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])->name('atividades.delete');
         Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])->name('atividades.calendario');
         Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])->name('atividades.confirmar');
     });
-    Route::group(['modulo' => 'formularios-locais'], function() {
+    Route::group(['modulo' => 'formularios-locais'], function () {
         Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])->name('formularios-locais.index');
         Route::post('/formularios-locais', [FormularioLocalController::class, 'store'])->name('formularios-locais.store');
         Route::post('/formularios-locais-view', [FormularioLocalController::class, 'view'])->name('formularios-locais.view');
@@ -97,7 +98,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     });
 
-    Route::group(['modulo' => 'formularios-sinodais'], function() {
+    Route::group(['modulo' => 'formularios-sinodais'], function () {
         Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])->name('formularios-sinodais.index');
         Route::post('/formularios-sinodais', [FormularioSinodalController::class, 'store'])->name('formularios-sinodais.store');
         Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
@@ -106,7 +107,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     });
 
-    Route::group(['modulo' => 'formularios-federacoes'], function() {
+    Route::group(['modulo' => 'formularios-federacoes'], function () {
         Route::get('/formularios-federacoes', [FormularioFederacaoController::class, 'index'])->name('formularios-federacoes.index');
         Route::post('/formularios-federacoes', [FormularioFederacaoController::class, 'store'])->name('formularios-federacoes.store');
         Route::post('/formularios-federacoes-view', [FormularioFederacaoController::class, 'view'])->name('formularios-federacoes.view');
@@ -115,7 +116,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/formularios-federacao-export/{federacao}', [FormularioFederacaoController::class, 'federacaoExport'])->name('formularios-federacao.export');
     });
 
-    Route::group(['modulo' => 'pesquisas'], function() {
+    Route::group(['modulo' => 'pesquisas'], function () {
         Route::resource('/pesquisas', PesquisaController::class)->names('pesquisas');
         Route::get('/pesquisas/{pesquisa}/status', [PesquisaController::class, 'status'])->name('pesquisas.status');
         Route::get('/pesquisas/{pesquisa}/respostas', [PesquisaController::class, 'respostas'])->name('pesquisas.respostas');
@@ -128,21 +129,21 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/pesquisas-acompanhar/{pesquisa}', [PesquisaController::class, 'acompanhar'])->name('pesquisas.acompanhar');
     });
 
-    Route::group(['modulo' => 'comprovante-aci'], function() {
+    Route::group(['modulo' => 'comprovante-aci'], function () {
         Route::get('/comprovante-aci', [ComprovanteACIController::class, 'index'])->name('comprovante-aci.index');
         Route::post('/comprovante-aci', [ComprovanteACIController::class, 'store'])->name('comprovante-aci.store');
         Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])->name('comprovante-aci.status');
     });
 
     // PAINEL ESTATISTICA
-    Route::group(['modulo' => 'secretaria-estatistica'], function() {
+    Route::group(['modulo' => 'secretaria-estatistica'], function () {
         Route::get('/estatistica', [EstatisticaController::class, 'index'])->name('estatistica.index');
         Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])->name('estatistica.atualizarParametro');
         Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])->name('estatistica.exportarExcel');
         Route::get('/estatistica/atualizar-ranking', [EstatisticaController::class, 'atualizarRanking'])->name('estatistica.atualizar-ranking');
     });
     // SECRETARIA DE PRODUTOS
-    Route::group(['modulo' => 'secretaria-produtos'], function() {
+    Route::group(['modulo' => 'secretaria-produtos'], function () {
         Route::resource('produtos', ProdutoController::class)->parameters(['produtos' => 'produto'])->names('produtos')->except('delete');
         Route::get('/produtos/{produto}/delete', [ProdutoController::class, 'delete'])->name('produtos.delete');
         Route::get('/produtos-datatable/produtos', [ProdutoController::class, 'produtoDataTable'])->name('produtos.datatable.produtos');
@@ -155,15 +156,19 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'delete']);
         Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])->name('consignacao-produtos.delete');
 
+        Route::resource('produtos/fluxo-caixa', FluxoCaixaController::class)->parameters(['fluxo-caixa' => 'fluxo'])->names('produtos.fluxo-caixa')->except(['index', 'show', 'delete']);
+        Route::get('/produtos/fluxo-caixa/{fluxo}/delete', [FluxoCaixaController::class, 'delete'])->name('produtos.fluxo-caixa.delete');
+        Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])->name('produtos.datatable.fluxo-caixa');
+
     });
     // MINHAS DEMANDAS
-    Route::group(['modulo' => 'minhas-demandas'], function() {
+    Route::group(['modulo' => 'minhas-demandas'], function () {
         Route::get('minhas-demandas', [MinhasDemandasController::class, 'index'])->name('minhas-demandas.index');
     });
 
     //SECRETARIA EXECUTIVA
 
-    Route::group(['modulo' => 'demandas'], function() {
+    Route::group(['modulo' => 'demandas'], function () {
     Route::resource('demandas', DemandaController::class)->parameters(['demandas' => 'demanda'])->names('demandas')->except('delete');
         Route::get('/demandas/{demanda}/delete', [DemandaController::class, 'delete'])->name('demandas.delete');
         Route::get('/demandas/{demanda}/lista', [DemandaController::class, 'lista'])->name('demandas.lista');
@@ -172,18 +177,18 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])->name('demandas.store-item');
         Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
     });
-    Route::group(['modulo' => 'digestos'], function() {
+    Route::group(['modulo' => 'digestos'], function () {
         Route::resource('digestos', DigestoController::class)->parameters(['digestos' => 'digesto'])->names('digestos')->except('delete');
         Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])->name('digestos.delete');
     });
 
 
-    Route::group(['modulo' => 'tutoriais'], function() {
+    Route::group(['modulo' => 'tutoriais'], function () {
         Route::get('/tutoriais', [TutorialController::class, 'index'])->name('tutoriais.index');
     });
 
     // DATATABLES
-    Route::group(['modulo' => 'datatables'], function() {
+    Route::group(['modulo' => 'datatables'], function () {
         Route::get('/datatables/log-erro', [DatatableAjaxController::class, 'logErros'])->name('datatables.log-erros');
         Route::get('/datatables/formularios-entregues/{instancia}/{id?}', [DatatableAjaxController::class, 'formulariosEntregues'])->name('datatables.formularios-entregues');
         Route::get('/datatables/informacao-federacoes/{federacao}', [DatatableAjaxController::class, 'informacaoFederacao'])->name('datatables.informacao-federacoes');

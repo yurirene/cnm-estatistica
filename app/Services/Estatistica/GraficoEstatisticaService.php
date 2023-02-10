@@ -2,6 +2,8 @@
 
 namespace App\Services\Estatistica;
 
+use App\Models\Estado;
+use App\Services\MapaService;
 use App\Strategies\PesquisaGrafico\AbstractGrafico;
 
 class GraficoEstatisticaService extends AbstractGrafico
@@ -156,6 +158,9 @@ class GraficoEstatisticaService extends AbstractGrafico
             ],
             'tipo' => 'bar'
         ],
+        [
+            'nome' => 'distribuicao',
+        ],
     ];
 
     public const GRAFICOS_COMPLEXOS = [
@@ -182,6 +187,13 @@ class GraficoEstatisticaService extends AbstractGrafico
                     $request,
                     $grafico['labels_map'] ?? []
                 );
+            } else if ($grafico['nome'] == 'distribuicao') {
+                $retorno['graficos'][] = [
+                    'dados' => self::getDadosDistribuicao($request),
+                    'config' => [],
+                    'id' => $grafico['nome']
+                ];
+                continue;
             } else {
                 $dados = self::dados(
                     $grafico['coluna'],
@@ -268,6 +280,29 @@ class GraficoEstatisticaService extends AbstractGrafico
             }
         }
         return $dadosEspecificos;
+    }
+
+
+    public static function getDadosDistribuicao(array $request): array
+    {
+        $estados = Estado::when(!is_null($request['regiao']), function ($sql) use ($request) {
+                return $sql->where('regiao_id', $request['regiao']);
+            })
+            ->get()
+            ->map(function ($item) {
+                return 'br-' . strtolower($item->sigla);
+            })->toArray();
+        $data = [];
+        foreach ($estados as $estado) {
+            $totalizador = MapaService::getTotalizador($estado);
+            $data[] = [
+                'hc-key' => $estado,
+                'n_socios' => $totalizador['n_socios'],
+                'n_umps' => $totalizador['n_umps'],
+                'n_federacoes' => $totalizador['n_federacoes']
+            ];
+        }
+        return $data;
     }
 
 

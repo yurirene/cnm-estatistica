@@ -4,17 +4,19 @@ namespace App\Helpers;
 
 use App\Models\Parametro;
 use App\Services\AdministradorService;
-use App\Services\DiretoriaService;
+use App\Services\Instancias\DiretoriaService;
 use App\Services\Estatistica\EstatisticaService;
-use App\Services\FederacaoService;
-use App\Services\LocalService;
-use App\Services\SinodalService;
+use App\Services\Instancias\FederacaoService;
+use App\Services\Instancias\LocalService;
+use App\Services\Instancias\SinodalService;
+use App\Services\Produtos\ProdutoService;
 
 class DashboardHelper
 {
 
     public static function make()
     {
+
         if (auth()->user()->hasRole(['sinodal'])) {
             return app()->make(SinodalService::class);
         } else if (auth()->user()->hasRole(['federacao'])) {
@@ -27,6 +29,8 @@ class DashboardHelper
             return app()->make(LocalService::class);
         } else if (auth()->user()->hasRole(['secretaria_estatistica'])) {
             return app()->make(EstatisticaService::class);
+        } else if (auth()->user()->hasRole(['secreatria_produtos'])) {
+            return app()->make(ProdutoService::class);
         }
     }
 
@@ -34,11 +38,6 @@ class DashboardHelper
     {
         $class = self::make();
         return $class::getTotalizadores();
-    }
-
-    public static function getTotalizadoresEstatisticaExterno()
-    {
-        return EstatisticaService::getTotalizadores();
     }
 
     public static function getInfo()
@@ -102,5 +101,9 @@ class DashboardHelper
         return $aviso->toArray();
     }
 
+    public static function getQualidadeEntregaRelatorios(): array
+    {
+        return DiretoriaService::getQualidadeEntregaRelatorios();
+    }
 
 }

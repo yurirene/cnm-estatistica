@@ -1,5 +1,7 @@
-@extends('layouts.app')
 
+@extends(isset($externo) ? 'layouts.app-externo' : 'layouts.app', [
+    'export' => isset($externo)
+])
 @section('content')
     @include('dashboard.index.estatistica.cards')
 
@@ -49,53 +51,77 @@
 
         <div class="row">
 
-            <div class="mt-3 col-xl-3 col-md-6">
+            <div class="mt-3 col-xl-6 col-md-6 col-sm-12">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Tipo de Sócios</h6>
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Distribuição por Estado</h6>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body ">
                         @include('dashboard.partes.skeleton')
                         <div class="table-responsive">
-                            <canvas id="tipo_socios"></canvas>
+                            <div id="distribuicao"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mt-3 col-xl-3 col-md-6">
-                <div class="card shadow h-100">
-                    <div class="card-header bg-transparent">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Gênero dos Sócios</h6>
+
+            <div class="mt-3 col-xl-6 col-md-6 col-sm-12">
+                <div class="row">
+                    <div class="col-xl-6 col-md-6">
+                        <div class="card shadow h-100">
+                            <div class="card-header bg-transparent">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="text-uppercase text-muted ls-1 mb-1">Tipo de Sócios</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body ">
+                                @include('dashboard.partes.skeleton')
+                                <div class="table-responsive">
+                                    <canvas id="tipo_socios"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        @include('dashboard.partes.skeleton')
-                        <div class="table-responsive">
-                            <canvas id="genero"></canvas>
+                    <div class="col-xl-6 col-md-6 col-sm-12 mt-sm-3 mt-md-0">
+                        <div class="card shadow h-100">
+                            <div class="card-header bg-transparent">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="text-uppercase text-muted ls-1 mb-1">Gênero dos Sócios</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                @include('dashboard.partes.skeleton')
+                                <div class="table-responsive">
+                                    <canvas id="genero"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="mt-3 col-xl-6 col-md-12">
-                <div class="card shadow h-100">
-                    <div class="card-header bg-transparent">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Idade dos Sócios</h6>
+                <div class="row">
+                    <div class="mt-3 col-xl-12 col-md-12">
+                        <div class="card shadow h-100">
+                            <div class="card-header bg-transparent">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="text-uppercase text-muted ls-1 mb-1">Idade dos Sócios</h6>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        @include('dashboard.partes.skeleton')
-                        <div class="table-responsive">
-                            <canvas id="idade"></canvas>
+                            <div class="card-body">
+                                @include('dashboard.partes.skeleton')
+                                <div class="table-responsive">
+                                    <canvas id="idade"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -104,7 +130,6 @@
 
 
         <div class="row">
-
             <div class="mt-3 col-xl-6 col-md-12">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
@@ -148,7 +173,7 @@
                             </div>
                         </div>
                     </div>
-                    @include('dashboard.partes.skeleton')
+                        @include('dashboard.partes.skeleton')
                     <div class="card-body d-flex align-items-center">
                         <div class="table-responsive">
                             <canvas id="desempregados"></canvas>
@@ -160,7 +185,7 @@
 
 
         <div class="row">
-            <div class="mt-3 col-xl-8 col-md-12">
+            <div class="mt-3 col-xl-8 col-md-8">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
@@ -177,7 +202,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-3 col-xl-4 col-md-6">
+            <div class="mt-3 col-xl-4 col-md-4">
                 <div class="card shadow h-100">
                     <div class="card-header bg-transparent">
                         <div class="row align-items-center">
@@ -251,13 +276,10 @@
                 </div>
             </div>
         </div>
-
-        @include('layouts.footers.auth')
     </div>
 @endsection
 
 @push('js')
-
 @include('dashboard.index.estatistica.script')
 
 @endpush

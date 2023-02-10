@@ -5,7 +5,7 @@ namespace App\DataTables;
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
 use App\Models\Aviso;
-use App\Models\Ranking;
+use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;

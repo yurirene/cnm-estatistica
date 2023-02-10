@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace App\Interfaces;
 
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 
-interface PesquisaGraficoStrategy 
+interface PesquisaGraficoStrategy
 {
 
     public function handle(Pesquisa $pesquisa, string $campo, string $chave) : array;
