@@ -10,12 +10,19 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AvisoService
 {
 
-    public static function store(array $request)
+    /**
+     * Salvar aviso
+     *
+     * @param array $request
+     * @return void
+     */
+    public static function store(array $request): void
     {
         DB::beginTransaction();
         try {
@@ -78,7 +85,11 @@ class AvisoService
         }
     }
 
-    public static function getUsuarios()
+    /**
+     * Retornar usuários para o select2 de avisos
+     */
+
+    public static function getUsuarios(): Collection
     {
         return User::where('status', 1)
             ->when(request()->has('term'), function ($sql) {
@@ -103,12 +114,29 @@ class AvisoService
             });
     }
 
-    public static function visualizado($id)
+    /**
+     * Marcar aviso como visualizado
+     *
+     * @param [type] $id
+     * @return array
+     */
+    public static function visualizado($id): array
     {
         $usuario = auth()->user();
 
         $usuario->avisos()->updateExistingPivot($id, ['visualizado' => true], false);
         return [];
+    }
+
+    /**
+     * Apagar Aviso
+     *
+     * @param [type] $id
+     * @return void
+     */
+    public static function delete($id): void
+    {
+        Aviso::find($id)->delete();
     }
 
 }

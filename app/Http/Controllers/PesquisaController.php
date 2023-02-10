@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\DataTables\PesquisaDataTable;
 use App\Exports\PesquisaExport;
-use App\Models\Pesquisa;
-use App\Models\PesquisaConfiguracao;
+use App\Models\Pesquisas\Pesquisa;
+use App\Models\Pesquisas\PesquisaConfiguracao;
 use App\Models\User;
 use App\Services\PesquisaService;
 use Exception;
@@ -18,7 +18,7 @@ class PesquisaController extends Controller
 {
     public function index(PesquisaDataTable $dataTable)
     {
-        return $dataTable->render('dashboard.pesquisas.index');    
+        return $dataTable->render('dashboard.pesquisas.index');
     }
 
     public function create()
@@ -36,7 +36,7 @@ class PesquisaController extends Controller
         try {
             if (in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS)) {
                 if (!in_array(Auth::user()->instancia_formatada, $pesquisa->instancias)) {
-                    throw new Exception("Sem Permissão para acessar formulário de pesquisa", 1);                    
+                    throw new Exception("Sem Permissão para acessar formulário de pesquisa", 1);
                 }
             }
             return view('dashboard.pesquisas.show', [
@@ -147,7 +147,7 @@ class PesquisaController extends Controller
         }
     }
 
-    public function configuracoesUpdate(Pesquisa $pesquisa, Request $request) 
+    public function configuracoesUpdate(Pesquisa $pesquisa, Request $request)
     {
         try {
             PesquisaService::setConfiguracoesPesquisa($pesquisa, $request);
@@ -247,7 +247,7 @@ class PesquisaController extends Controller
         }
     }
 
-    
+
     public function acompanhar(Pesquisa $pesquisa)
     {
         try {

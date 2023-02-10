@@ -26,6 +26,12 @@
             <!-- Navbar items -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <a class="nav-link nav-link-icon"  target="_blank" href="{{ route('estatistica') }}">
+                        <i class="ni ni-chart-bar-32"></i>
+                        <span class="nav-link-inner--text">Painel de Estatística</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link nav-link-icon" href="{{ route('digesto') }}">
                         <i class="ni ni-collection"></i>
                         <span class="nav-link-inner--text">Digesto</span>

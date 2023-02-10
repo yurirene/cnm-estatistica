@@ -11,6 +11,7 @@ use App\Models\FormularioLocal;
 use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
 use Exception;
@@ -23,37 +24,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class FormularioSinodalService
 {
-
-    public static function storeV1(Request $request)
-    {
-        try {
-            FormularioSinodal::updateOrCreate(
-                [
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
-                    'sinodal_id' => $request->sinodal_id
-                ],
-                [
-                'estrutura' => $request->estrutura,
-                'perfil' => $request->perfil,
-                'estado_civil' => $request->estado_civil,
-                'escolaridade' => $request->escolaridade,
-                'deficiencias' => $request->deficiencias,
-                'programacoes_federacoes' => $request->programacoes_federacoes,
-                'programacoes_locais' => $request->programacoes_locais,
-                'programacoes' => $request->programacoes,
-                'aci' => $request->aci,
-                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
-                'sinodal_id' => $request->sinodal_id
-            ]);
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]); 
-            throw new Exception("Erro ao Salvar");           
-        }
-    }
 
     public static function store(Request $request)
     {
@@ -87,13 +57,15 @@ class FormularioSinodalService
                 'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
                 'sinodal_id' => $request->sinodal_id
             ]);
+
+            EstatisticaService::atualizarRelatorioGeral();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
-            throw new Exception("Erro ao Salvar");           
+            ]);
+            throw new Exception("Erro ao Salvar");
         }
     }
 
@@ -106,9 +78,9 @@ class FormularioSinodalService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
 
@@ -155,7 +127,7 @@ class FormularioSinodalService
         }
     }
 
-    
+
     public static function getAnoReferencia() : int
     {
         try {
@@ -231,7 +203,7 @@ class FormularioSinodalService
         $federacoes = Federacao::where('sinodal_id', $id)->get()->pluck('id');
         try {
             $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes)->where('ano_referencia', self::getAnoReferencia())->get();
-            
+
             $totalizador = [
                 'total_formularios' => $formularios->count(),
                 'aci' => 0,
@@ -292,7 +264,7 @@ class FormularioSinodalService
                 ]
             ];
 
-            foreach ($formularios as $formulario) {                
+            foreach ($formularios as $formulario) {
                 $totalizador['aci'] += isset($formulario->aci['valor']) ? floatval($formulario->aci['valor']) : 0;
                 $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
                 $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
@@ -321,18 +293,18 @@ class FormularioSinodalService
                 $totalizador['deficiencias']['fisica_superior'] += (isset($formulario->deficiencias['fisica_superior']) ? intval($formulario->deficiencias['fisica_superior']) : 0);
                 $totalizador['deficiencias']['neurologico'] += (isset($formulario->deficiencias['neurologico']) ? intval($formulario->deficiencias['neurologico']) : 0);
                 $totalizador['deficiencias']['intelectual'] += (isset($formulario->deficiencias['intelectual']) ? intval($formulario->deficiencias['intelectual']) : 0);
-                
+
                 $totalizador['estrutura']['ump_organizada'] += (isset($formulario->estrutura['ump_organizada']) ? intval($formulario->estrutura['ump_organizada']) : 0);
                 $totalizador['estrutura']['ump_nao_organizada'] += (isset($formulario->estrutura['ump_nao_organizada']) ? intval($formulario->estrutura['ump_nao_organizada']) : 0);
                 $totalizador['estrutura']['nro_repasse'] += (isset($formulario->estrutura['nro_repasse']) ? intval($formulario->estrutura['nro_repasse']) : 0);
                 $totalizador['estrutura']['nro_sem_repasse'] += (isset($formulario->estrutura['nro_sem_repasse']) ? intval($formulario->estrutura['nro_sem_repasse']) : 0);
-                    
+
                 $totalizador['programacoes_federacoes']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                 $totalizador['programacoes_federacoes']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
                 $totalizador['programacoes_federacoes']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
                 $totalizador['programacoes_federacoes']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
                 $totalizador['programacoes_federacoes']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
-                
+
                 $totalizador['programacoes_locais']['social'] += (isset($formulario->programacoes_locais['social']) ? intval($formulario->programacoes_locais['social']) : 0);
                 $totalizador['programacoes_locais']['oracao'] += (isset($formulario->programacoes_locais['oracao']) ? intval($formulario->programacoes_locais['oracao']) : 0);
                 $totalizador['programacoes_locais']['evangelistica'] += (isset($formulario->programacoes_locais['evangelistica']) ? intval($formulario->programacoes_locais['evangelistica']) : 0);
@@ -342,7 +314,7 @@ class FormularioSinodalService
             return $totalizador;
         } catch (\Throwable $th) {
             throw new Exception("Erro no Totalizador", 1);
-            
+
         }
     }
 

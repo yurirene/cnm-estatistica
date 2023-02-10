@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Pesquisa;
+use App\Models\Pesquisas\Pesquisa;
 use Exception;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -45,7 +45,7 @@ class PesquisaExport implements FromCollection, WithHeadings, ShouldAutoSize
     public function getOpcoesLabel(string $coluna, array $valores) : string
     {
         try {
-            
+
         $referencias = $this->pesquisa->referencias;
         $valores_marcados = array();
         foreach ($referencias as $referencia) {
@@ -63,7 +63,7 @@ class PesquisaExport implements FromCollection, WithHeadings, ShouldAutoSize
         return implode(", ", $valores_marcados);
         } catch (\Throwable $th) {
             throw new Exception("Error buscando label", 1);
-            
+
         }
 
     }

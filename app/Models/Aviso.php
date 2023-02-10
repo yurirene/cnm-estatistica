@@ -43,6 +43,6 @@ class Aviso extends Model
 
     public function usuarios()
     {
-        return $this->belongsToMany(User::class, 'aviso_usuarios', 'aviso_id', 'user_id');
+        return $this->belongsToMany(User::class, 'aviso_usuarios', 'aviso_id', 'user_id')->withPivot(['visualizado']);
     }
 }

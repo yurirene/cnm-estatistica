@@ -101,10 +101,12 @@ class SiteService
     {
         try {
             $sinodal = Sinodal::find($sinodal_id);
-            $sinodal->galeria()
-                ->where('id', $galeria_id)
-                ->first()
-                ->delete();
+            $foto = $sinodal->galeria()
+            ->where('id', $galeria_id)
+            ->first();
+            Storage::delete(str_replace('storage', 'public', $foto));
+
+            $foto->delete();
         } catch (\Throwable $th) {
             throw $th;
         }
