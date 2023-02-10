@@ -3,7 +3,7 @@
 namespace App\Services\Estatistica;
 
 use App\Exports\BaseDadosFormularioExport;
-use App\Models\EstatisticaGeral;
+use App\Models\Estatistica\EstatisticaGeral;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioLocal;
