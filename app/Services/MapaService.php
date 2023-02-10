@@ -32,7 +32,7 @@ class MapaService
             return AdministradorService::getMapa();
         }
         $estados = self::getEstadosUsuario();
-        $data = array();
+        $data = [];
 
         foreach ($estados as $estado) {
             $totalizador = self::getTotalizador($estado);
@@ -62,8 +62,8 @@ class MapaService
             }
             return [
                 'n_socios' => $total,
-                'n_umps' => Local::where('estado_id', $estado->id)->count(),
-                'n_federacoes' => Federacao::where('estado_id', $estado->id)->count()
+                'n_umps' => Local::where('estado_id', $estado->id)->where('status', 1)->count(),
+                'n_federacoes' => Federacao::where('estado_id', $estado->id)->where('status', 1)->count()
             ];
         } catch (\Throwable $th) {
             throw $th;

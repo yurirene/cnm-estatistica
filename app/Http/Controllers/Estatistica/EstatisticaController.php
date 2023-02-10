@@ -63,6 +63,8 @@ class EstatisticaController extends Controller
 
     public function externo()
     {
-        return view('externo.estatistica');
+        return view('dashboard.index.estatistica.index', [
+            'externo' => true
+        ]);
     }
 }
