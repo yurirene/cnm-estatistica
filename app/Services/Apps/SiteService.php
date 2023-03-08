@@ -19,7 +19,7 @@ class SiteService
                 'sinodal_id' => $sinodal->id,
                 'modelo_id' => $modelo->id,
                 'configuracoes' => $modelo->configuracoes,
-                'url' => "https://ump.app.br/site/" . strtolower(str_replace(['-', ' '], '', $sinodal->sigla))
+                'url' => "https://ump.app.br/site/" . strtolower($sinodal->sigla)
             ]);
 
         } catch (\Throwable $th) {
