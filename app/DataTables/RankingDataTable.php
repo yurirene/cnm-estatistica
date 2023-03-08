@@ -30,6 +30,9 @@ class RankingDataTable extends DataTable
             ->editColumn('nome', function ($sql) {
                 return $sql->sinodal->nome;
             })
+	    ->editColumn('sigla', function ($sql) {
+                return $sql->sinodal->sigla;
+            })
             ->editColumn('apps', function ($sql) {
                 $apps = $sql->sinodal->apps->pluck('nome')->toArray();
                 return  empty($apps) ? 'Sem apps' : $apps;
@@ -88,6 +91,7 @@ class RankingDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('posicao')->title('Posição'),
+            Column::make('sigla')->title('Sigla'),
             Column::make('nome')->title('Sinodal'),
             Column::make('apps')->title('Apps Liberados'),
             Column::make('ano_referencia')->title('Ano Referência'),
