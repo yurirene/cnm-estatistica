@@ -63,6 +63,7 @@ class Handler extends ExceptionHandler
                 'file'       => $exception->getFile(),
                 'metodo'     => $request->method(),
                 'tipo_erro'  => get_class($exception),
+                'IP'         => $request->ip(),
                 'uri'        => $request->fullUrl(),
             ]);
         } catch (\Exception $e) {
