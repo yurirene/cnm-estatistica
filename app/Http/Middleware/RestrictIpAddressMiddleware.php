@@ -20,7 +20,7 @@ class RestrictIpAddressMiddleware
     public function handle($request, Closure $next)
     {
         if (in_array($request->ip(), $this->restrictedIp)) {
-            abort( response()->json('Seu IP está bloqueado', 401) );
+            abort(406, 'Seu IP está bloqueado');
         }
         return $next($request);
     }
