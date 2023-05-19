@@ -65,6 +65,7 @@ class Handler extends ExceptionHandler
                 'tipo_erro'  => get_class($exception),
                 'IP'         => $request->ip(),
                 'uri'        => $request->fullUrl(),
+		'body'	     => var_dump(json_encode($request->all()))
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

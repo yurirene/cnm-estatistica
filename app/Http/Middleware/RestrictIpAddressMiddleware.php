@@ -9,7 +9,8 @@ class RestrictIpAddressMiddleware
 {
 
     // Blocked IP addresses
-    public $restrictedIp = ['185.81.68.180'];
+    public $restrictedIp = ['185.81.68.180', 
+'104.36.23.10', '149.154.161.237', '63.250.33.242'];
     /**
      * Handle an incoming request.
      *
