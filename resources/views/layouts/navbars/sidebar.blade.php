@@ -125,6 +125,13 @@
                     </a>
                 </li>
                 @endCanAtLeast
+                @canAtLeast(['dashboard.ce.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.ce.index') }}">
+                        <i class="fas fa-gavel"></i> Comissão Executiva
+                    </a>
+                </li>
+                @endCanAtLeast
 
                 @canAtLeast(['dashboard.produtos.index'])
                 <li class="nav-item">

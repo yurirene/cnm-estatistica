@@ -68,7 +68,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
+                    'dashboard.ce.index'
                 ]
             ],
             'federacao' => [
