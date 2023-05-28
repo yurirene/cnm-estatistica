@@ -116,4 +116,45 @@ class SiteController extends Controller
             ]);
         }
     }
+
+    public function novaSecretaria(string $sinodal_id, Request $request)
+    {
+        try {
+            SiteService::novaSecretaria($sinodal_id, $request);
+            return redirect()->route('dashboard.apps.sites.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Secretaria alterada com Sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
+
+
+    public function removerSecretaria(string $sinodal_id, int $config, int $chave)
+    {
+        try {
+            SiteService::removerSecretaria($sinodal_id, $config, $chave);
+            return redirect()->route('dashboard.apps.sites.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Imagem removida com Sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
 }

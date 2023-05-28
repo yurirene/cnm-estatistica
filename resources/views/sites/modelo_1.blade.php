@@ -253,6 +253,35 @@
             </div>
         </section><!-- End Team Section -->
 
+        @if(!empty($secretarias))
+        <section id="secretarias" class="diretoria">
+            <div class="container">
+
+                <div class="section-title" data-aos="fade-up">
+                    <h2>Nossas</h2>
+                    <p>Secretarias</p>
+                </div>
+
+                <div class="row" data-aos="fade-left">
+                @foreach ($secretarias as $secretarios)
+                    <div class="col-lg-4 mt-3 col-md-6">
+                        <div class="member" data-aos="zoom-in" data-aos-delay="100">
+                            <div class="pic">
+                                <img src="/{{ !empty($secretarios['path']) ? $secretarios['path'] : 'img/team-1.jpg' }}" class="img-fluid" alt="">
+                            </div>
+                            <div class="member-info">
+                                <h4>{{ $secretarios['nome'] }}</h4>
+                                <span>{{ $secretarios['secretaria'] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
+                </div>
+
+            </div>
+        </section><!-- End Team Section -->
+        @endif
 
     </main><!-- End #main -->
 

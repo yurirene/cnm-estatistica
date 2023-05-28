@@ -217,6 +217,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/apps/sites/{sinodal_id}/adicionar-galeria',[SiteController::class, 'adicionarGaleria'])->name('apps.sites.adicionar-galeria');
         Route::get('/apps/sites/{sinodal_id}/remover-galeria/{id}',[SiteController::class, 'removerGaleria'])->name('apps.sites.remover-galeria');
         Route::post('/apps/sites/{sinodal_id}/atualizar-foto-diretoria',[SiteController::class, 'atualizarFotoDiretoria'])->name('apps.sites.atualizar-foto-diretoria');
+        Route::post('/apps/sites/{sinodal_id}/nova-secretaria',[SiteController::class, 'novaSecretaria'])->name('apps.sites.nova-secretaria');
+        Route::get('/apps/sites/{sinodal_id}/remover-secretaria/{config}/{chave}',[SiteController::class, 'removerSecretaria'])->name('apps.sites.remover-secretaria');
     });
 
 
