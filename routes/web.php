@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Apps\AppController;
+use App\Http\Controllers\Apps\EventoController;
 use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
@@ -51,6 +52,8 @@ Route::get('/estatistica', [EstatisticaController::class, 'externo'])->name('est
 
 Route::group(['prefix' => 'site'], function () {
     Route::get('/{sigla}', [SiteController::class, 'show'])->name('meusite.index');
+    Route::get('/{sigla}/evento', [EventoController::class, 'show'])->name('meusite.evento');
+    Route::post('/{sigla}/evento/inscricao', [EventoController::class, 'inscricao'])->name('meusite.evento.inscricao');
 });
 
 Route::group(['prefix' => 'graficos'], function () {
@@ -219,6 +222,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/apps/sites/{sinodal_id}/atualizar-foto-diretoria',[SiteController::class, 'atualizarFotoDiretoria'])->name('apps.sites.atualizar-foto-diretoria');
         Route::post('/apps/sites/{sinodal_id}/nova-secretaria',[SiteController::class, 'novaSecretaria'])->name('apps.sites.nova-secretaria');
         Route::get('/apps/sites/{sinodal_id}/remover-secretaria/{config}/{chave}',[SiteController::class, 'removerSecretaria'])->name('apps.sites.remover-secretaria');
+        Route::get('/apps/sites/{sinodal_id}/status',[EventoController::class, 'status'])->name('apps.sites.eventos.status');
+        Route::get('/apps/sites/{sinodal_id}/update',[EventoController::class, 'update'])->name('apps.sites.eventos.update');
+        Route::put('/apps/sites/{evento_id}/atualizar-config-evento',[EventoController::class, 'atualizar'])->name('apps.sites.atualizar-config-evento');
     });
 
 

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Apps;
 
 use App\Http\Controllers\Controller;
+use App\Models\Apps\Site\Evento;
 use App\Models\Apps\Site\ModeloSite;
 use App\Models\Apps\Site\Site;
 use App\Models\Sinodal;
+use App\Services\Apps\EventoService;
 use App\Services\Apps\SiteService;
 use Illuminate\Http\Request;
 
@@ -15,13 +17,18 @@ class SiteController extends Controller
     {
         $sinodal = auth()->user()->sinodais()->first();
         $site = Site::where('sinodal_id', $sinodal->id)->first();
+        $evento = Evento::where('sinodal_id', $sinodal->id)->first();
         if (!$site) {
             $site = SiteService::criarSite($sinodal);
+        }
+        if (!$evento) {
+            $evento = EventoService::criarEvento($sinodal);
         }
         return view('dashboard.apps.sites.index', [
             'modelo' => $site->modelo,
             'site' => $site,
-            'sinodal_id' => $sinodal->id
+            'sinodal_id' => $sinodal->id,
+            'evento' => $evento
         ]);
     }
 

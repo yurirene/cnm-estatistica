@@ -35,6 +35,14 @@
         * Author: BootstrapMade.com
         * License: https://bootstrapmade.com/license/
         ======================================================== -->
+    <style>
+        #evento {
+            background-image: url('/{{$evento}}') !important;
+            background-size: contain;
+            background-repeat: no-repeat;
+            height: 70px !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -114,7 +122,10 @@
     </section><!-- End Hero -->
 
     <main id="main">
-
+        @if(!is_null($evento))
+        <section id="evento">
+        </section>
+        @endif
         <!-- ======= sobre Section ======= -->
         <section id="sobre" class="sobre">
             <div class="container-fluid">
@@ -320,7 +331,11 @@
     <!-- Template Main JS File -->
     <script src="/sites/modelo-1/assets/js/main.js"></script>
     <script type="text/javascript" src="/sites/modelo-1/assets/vendor/grid-gallery/script.min.js"></script>
-
+    <script>
+        document.getElementById('evento').addEventListener('click', function() {
+            window.open("{{route('meusite.evento', $sigla)}}", '_blank');
+        })
+    </script>
 </body>
 
 </html>

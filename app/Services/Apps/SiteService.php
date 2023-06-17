@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Storage;
  * - As configurações são organizadas por tipos: Editáveis e Não editaveis
  * -- Para referenciar uma configuração é necessário informar a chave da configuração,
  *    que é a sua posição no array de configurações editáveis
+ *
+ * Quando criar uma nova funcionalidade adicionar nas configurações do modelo
+ * "ModeloSiteSeeder.php" e rodar o "SiteAtualizarConfigSeeder.php"
+ *
  */
 class SiteService
 {
@@ -73,13 +77,18 @@ class SiteService
             $galeria  = $sinodal->galeria->map(function ($item) {
                 return $item->path;
             });
+            $evento = $sinodal->evento;
             return array_merge(
                 $editaveis,
                 [
                     'galeria' => $galeria,
                     'sigla' => $sinodal->sigla,
                     'federacoes' => $federacoes,
-                    'totalizador' => $totalizador
+                    'totalizador' => $totalizador,
+                    'evento' => !is_null($evento->path_arte_2) && $evento->status
+                        ? $evento->path_arte_2
+                        : null,
+                    'url' => ''
                 ]
             );
 
@@ -236,7 +245,6 @@ class SiteService
             ]);
 
         } catch (\Throwable $th) {
-            dd($th->getMessage(), $th->getFile(), $th->getLine());
             throw $th;
         }
     }

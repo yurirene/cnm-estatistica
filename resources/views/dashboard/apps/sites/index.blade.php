@@ -24,7 +24,9 @@
 
 
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active"
+                            <button class="nav-link {{
+                                !session()->has('aba') || session('aba') == 'site' ? 'active' : ''
+                            }}"
                                 id="primeiro-tab"
                                 data-bs-toggle="tab"
                                 data-bs-target="#primeiro"
@@ -35,7 +37,9 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link"
+                            <button class="nav-link {{
+                                session()->has('aba') && session('aba') == 'evento' ? 'active' : ''
+                            }}"
                                 id="segundo-tab"
                                 data-bs-toggle="tab"
                                 data-bs-target="#segundo"
