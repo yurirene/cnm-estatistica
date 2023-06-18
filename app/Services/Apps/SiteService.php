@@ -86,7 +86,7 @@ class SiteService
                     'federacoes' => $federacoes,
                     'totalizador' => $totalizador,
                     'evento_url' => $sinodal->site->url . '/evento',
-                    'evento_status' => $sinodal->evento->status
+                    'evento_status' => $sinodal->evento->status ?? false
                 ]
             );
 
