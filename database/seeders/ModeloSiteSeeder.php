@@ -38,44 +38,53 @@ class ModeloSiteSeeder extends Seeder
                         libero illum quo!
                         </p>"],
                         ['galeria' => []],
-                        ['diretoria' => [
-                            0 => [
-                                'titulo' => 'Presidente',
-                                'cargo' => 'presidente',
-                                'path' => '',
-                                'nome' => 'Nome do Presidente'
+                        [
+                            'diretoria' => [
+                                0 => [
+                                    'titulo' => 'Presidente',
+                                    'cargo' => 'presidente',
+                                    'path' => '',
+                                    'nome' => 'Nome do Presidente'
+                                ],
+                                1 => [
+                                    'cargo' => 'vice_presidente',
+                                    'titulo' => 'Vice-Presidente',
+                                    'path' => '',
+                                    'nome' => 'Nome do Vice'
+                                ],
+                                2 => [
+                                    'cargo' => 'secretaria_executiva',
+                                    'titulo' => 'Secretário-Executivo',
+                                    'path' => '',
+                                    'nome' => 'Nome do Secretário-Executivo'
+                                ],
+                                3 => [
+                                    'cargo' => 'primeiro_secretario',
+                                    'titulo' => 'Primeiro(a) Secretário(a)',
+                                    'path' => '',
+                                    'nome' => 'Nome do(a) Secretário'
+                                ],
+                                4 => [
+                                    'cargo' => 'segundo_secretario',
+                                    'titulo' => 'Segundo(a) Secretário(a)',
+                                    'path' => '',
+                                    'nome' => 'Nome do(a) Secretário(a)'
+                                ],
+                                5 => [
+                                    'cargo' => 'tesoureiro',
+                                    'titulo' => 'Tesoureiro',
+                                    'path' => '',
+                                    'nome' => 'Nome do Tesourerio(a)'
+                                ],
+                                6 => [
+                                    'cargo' => 'secretario_sinodal',
+                                    'titulo' => 'Secretário Sinodal',
+                                    'path' => '',
+                                    'nome' => 'Nome do Secretário Sinodal'
+                                ]
                             ],
-                            1 => [
-                                'cargo' => 'vice_presidente',
-                                'titulo' => 'Vice-Presidente',
-                                'path' => '',
-                                'nome' => 'Nome do Vice'
-                            ],
-                            2 => [
-                                'cargo' => 'secretaria_executiva',
-                                'titulo' => 'Secretário-Executivo',
-                                'path' => '',
-                                'nome' => 'Nome do Secretário-Executivo'
-                            ],
-                            3 => [
-                                'cargo' => 'primeiro_secretario',
-                                'titulo' => 'Primeiro(a) Secretário(a)',
-                                'path' => '',
-                                'nome' => 'Nome do(a) Secretário'
-                            ],
-                            4 => [
-                                'cargo' => 'segundo_secretario',
-                                'titulo' => 'Segundo(a) Secretário(a)',
-                                'path' => '',
-                                'nome' => 'Nome do(a) Secretário(a)'
-                            ],
-                            5 => [
-                                'cargo' => 'tesoureiro',
-                                'titulo' => 'Tesoureiro',
-                                'path' => '',
-                                'nome' => 'Nome do Tesourerio(a)'
-                            ]
-                        ]]
+                        ],
+                        ['secretarias' => []],
                     ],
                     'federacoes' => [],
                     'totalizador' => [
@@ -94,7 +103,8 @@ class ModeloSiteSeeder extends Seeder
                         'link' => 'text',
                         'sobreNos' => 'rich',
                         'galeria' => 'custom',
-                        'diretoria' => 'custom'
+                        'diretoria' => 'custom',
+                        'secretarias' => 'custom'
                     ],
                     'titulo' => [
                         'nomeSinodal' => 'Nome Sinodal',
@@ -105,7 +115,8 @@ class ModeloSiteSeeder extends Seeder
                         'linkTitulo' => 'Botão Link Texto',
                         'sobreNos' => 'Sobre Nós',
                         'galeria' => 'Galeria',
-                        'diretoria' => 'Diretoria'
+                        'diretoria' => 'Diretoria',
+                        'secretarias' => 'Secretarias'
                     ]
                 ]
 

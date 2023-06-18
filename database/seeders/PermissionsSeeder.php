@@ -44,7 +44,7 @@ class PermissionsSeeder extends Seeder
                     'slug' => $route['as'],
                     'resource' => $route['modulo'],
                 ];
-                Permission::create($data);
+                Permission::firstOrCreate(['slug' => $route['as']], $data);
             }
        } catch (\Throwable $th) {
             dd($th->getMessage(), $th->getLine(), $th->getFile());

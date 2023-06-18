@@ -1,7 +1,10 @@
-<div class="tab-pane fade show active" id="primeiro" role="tabpanel" aria-labelledby="primeiro-tab">
+<div
+    class="tab-pane fade  {{ !session()->has('aba') || session('aba') == 'site' ? 'show active' : ''}}"
+    id="primeiro" role="tabpanel" aria-labelledby="primeiro-tab"
+>
     <div class="row">
         <div class="col-xl-12 mb-5 mb-xl-0">
-            <div class="card shadow p-3">
+            <div class="card p-3 border-0">
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">

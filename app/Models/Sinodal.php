@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Apps\App;
+use App\Models\Apps\Site\Evento;
 use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
 use App\Models\Estatistica\Ranking;
@@ -67,6 +68,11 @@ class Sinodal extends Model
     public function site()
     {
         return $this->hasOne(Site::class, 'sinodal_id');
+    }
+
+    public function evento()
+    {
+        return $this->hasOne(Evento::class, 'sinodal_id');
     }
 
     public function galeria()
