@@ -47,8 +47,8 @@ class ComprovanteAciDataTable extends DataTable
             })
             ->rawColumns(['status']);
     }
-    
-    public function valorInformado($sql) 
+
+    public function valorInformado($sql)
     {
         $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
             ->where('ano_referencia', $sql->ano)->first();
@@ -58,7 +58,7 @@ class ComprovanteAciDataTable extends DataTable
         return isset($formulario['aci']['valor_repassado']) ? 'R$' .$formulario['aci']['valor_repassado'] : 'Não Informado' ;
     }
 
-    public function valorPrevisto($sql) 
+    public function valorPrevisto($sql)
     {
         $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
             ->where('ano_referencia', $sql->ano)->first();
@@ -67,7 +67,7 @@ class ComprovanteAciDataTable extends DataTable
         }
         $total_de_socios = intval($formulario['perfil']['ativos']) + intval($formulario['perfil']['cooperadores']);
         $param_valor_aci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
-        return 'R$' . $total_de_socios * $param_valor_aci;
+        return 'R$' . $total_de_socios * $param_valor_aci * 0.25;
     }
 
     /**
