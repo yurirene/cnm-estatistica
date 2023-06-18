@@ -57,9 +57,12 @@
                 border-radius: 25px;
             }
             .border-bottom {
-                border-bottom: 1px solid #dee2e6 !important;
+                border-bottom: 1px solid #585a5c !important;
                 width: 75%;
                 margin-left: 12.25%
+            }
+            .fot {
+                background-color: #010351
             }
 
         </style>
@@ -82,7 +85,11 @@
         <!-- Icons Grid-->
         <section class="features-icons bg-light">
             <div class="container">
-                <h2 class="mb-4 text-center">Informações</h2>
+
+                <div class="section-title" data-aos="fade-up">
+                    <h2>Mais</h2>
+                    <p>Informações</p>
+                </div>
                 <div class="row">
                     <div class="col-lg-10 offset-md-1">
                         {!! $evento->descricao !!}
@@ -103,11 +110,15 @@
 
 
         <!-- Call to Action-->
-        <section class="call-to-action text-center" id="signup" style="min-height:400px;">
+        <section class="call-to-action" id="signup" style="min-height:400px;">
             <div class="container position-relative">
-                <div class="row justify-content-center">
+
+                <div class="section-title mt-5" data-aos="fade-up">
+                    <h2>Faça já sua</h2>
+                    <p>Inscrição</p>
+                </div>
+                <div class="row justify-content-center text-center">
                     <div class="col-xl-6">
-                        <h2 class="mb-4 mt-5">Inscrição</h2>
                         <form action="{{route('meusite.evento.inscricao', $sigla)}}"
                             class="form-subscribe" id="contactFormFooter" method="POST"
                         >
@@ -133,7 +144,7 @@
             </div>
         </section>
 
-        <section class="bg-dark text-white mt-5" id="signup">
+        <section class="fot text-white mt-5" id="signup">
             <footer class="py-3">
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li class="nav-item"><a href="https://ump.org.br" class="nav-link px-2 text-muted">Site CNM</a></li>
