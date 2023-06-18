@@ -14,7 +14,7 @@ class CreateEventosTable extends Migration
     public function up()
     {
         Schema::create('eventos', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->uuid('sinodal_id')->unique();
             $table->string('nome')->nullable();
             $table->date('data_inicio')->nullable();

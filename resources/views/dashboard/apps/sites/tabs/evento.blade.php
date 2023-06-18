@@ -4,24 +4,41 @@
 >
     <div class="row">
         <div class="col-xl-12 mb-5 mb-xl-0">
-            <div class="card shadow p-3">
+            <div class="card p-3 border-0">
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
                             <h3 class="mb-0">Configure seu Evento -
-                                {{-- <a target="_blank" href="{{$site->url}}">{{$site->url}}</a> --}}
+                                <a target="_blank" href="{{$site->url}}/evento">{{$site->url}}/evento</a>
                             </h3>
-                            TODO:
-                            Botao de Ativação do Evento<br>
-                            Botão para resetar configs <br>
-                            Tab inscritos com limpeza de inscritos <br>
-                            Campo obrigatório (opcional)<br>
-                            Modal de Confirmação de inscrição
-
+                        </div>
+                        <div class="col text-end">
+                            <a href="{{route('dashboard.apps.sites.limpar-config', $evento->id)}}"
+                                class="btn btn-danger"
+                                style="border-radius: 25px;"
+                            >
+                                Limpar Configurações
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span>Status do Evento</span><br>
+                            <input type="checkbox"
+                                data-toggle="toggle"
+                                data-onstyle="success"
+                                data-on="Ativado"
+                                data-off="Desativado"
+                                id="evento_status"
+                                data-size="large"
+                                {{$evento->status ? 'checked' : ''}}
+                            >
+                        </div>
+                    </div>
+                    <small class="text-muted">Quando ativado o evento fica disponível no site</small>
+
                     {!! Form::model(
                         $evento,
                         [
@@ -30,7 +47,7 @@
                             'files' => true
                         ]
                     ) !!}
-                    <div class="mb-3">
+                    <div class="mb-3 mt-3">
                         {!! Form::label('nome', 'Nome do Evento') !!}
                         {!! Form::text('nome', null, ['class' => 'form-control', 'required' => 'required']) !!}
                     </div>
@@ -73,10 +90,13 @@
                                 name="arte_evento_principal"
                             >
                             <label class="custom-file-label" for="image">Buscar Imagem</label>
-                            <small class="text-muted">1140 x 300px</small>
+                            <small class="text-muted">1995 x 525px</small>
                         </div>
                         @if(isset($evento->path_arte_1))
-                        <img src="/{{$evento->path_arte_1}}" class="img-thumbnail" alt="banner">
+                        <img src="{{$evento->path_arte_1 != 'https://placehold.co/1995x525'
+                                ? '/' . $evento->path_arte_1
+                                : $evento->path_arte_1}}"
+                            class="img-thumbnail" alt="banner">
                         @endif
                     </div>
 
@@ -90,7 +110,7 @@
                             <button class="btn btn-success" type="submit">
                                 <i class="fas fa-save"></i>
                                 Salvar
-                            </div>
+                            </button>
                         </div>
                     </div>
                     {!! Form::close() !!}
@@ -116,6 +136,7 @@ function makeForm(id, type, value, option = '') {
             <select class="form-control campo_form_type" name="form[${id}][tipo]">
                 <option value="text">Texto</option>
                 <option value="data">Data</option>
+                <option value="telefone">Telefone</option>
                 <option value="select">Seleção</option>
                 <option value="remover">Remover</option>
             </select>
@@ -155,6 +176,25 @@ $(document).ready(function() {
         $('select[name="form['+indice+'][tipo]"] ').val(item.tipo);
     });
     refreshChange();
+
+    $('#evento_status').on('change', function() {
+        $.ajax({
+            url: '{{route("dashboard.apps.sites.status-evento", $evento->id)}}',
+            success: (response) => {
+                iziToast.success({
+                    message: 'Status alterado com sucesso!',
+                    position: 'topRight',
+                });
+            },
+            error: (error) => {
+                iziToast.error({
+                    title: 'Erro!',
+                    message: 'Erro ao alterar o status',
+                    position: 'topRight',
+                });
+            }
+        });
+    });
 });
 
 $('#add_campo').on('click', function() {

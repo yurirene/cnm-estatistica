@@ -7,11 +7,23 @@ class FormularioEventoHelper
     public const TEXT = "text";
     public const SELECT = "select";
     public const DATA = "data";
+    public const TELEFONE = "telefone";
+    public const REMOVER = "remover";
+
+    public const OPCOES = [
+        self::TEXT => 'Texto Comum',
+        self::SELECT => 'Seleção',
+        self::DATA => 'Data',
+        self::TELEFONE => 'Telefone',
+        self::REMOVER => 'Remover'
+    ];
 
     public const INPUTS = [
-        self::TEXT => '<input type="text" class="form-control" name="%_name_%">',
-        self::DATA => '<input type="text" class="form-control isDate" name="%_name_%">',
-        self::SELECT => '<select class="form-control" name="%_name_%">%_options_%</select>'
+        self::TEXT => '<input type="text" class="form-control" name="%_name_%" required>',
+        self::DATA => '<input type="text" class="form-control isDate" name="%_name_%" required>',
+        self::TELEFONE => '<input type="text" class="form-control isTelefone" name="%_name_%" required>',
+        self::SELECT => '<select class="form-control" name="%_name_%" placeholder="Escolha uma opção"'
+            . ' required>%_options_%</select>'
     ];
 
     /**

@@ -225,6 +225,11 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/apps/sites/{sinodal_id}/status',[EventoController::class, 'status'])->name('apps.sites.eventos.status');
         Route::get('/apps/sites/{sinodal_id}/update',[EventoController::class, 'update'])->name('apps.sites.eventos.update');
         Route::put('/apps/sites/{evento_id}/atualizar-config-evento',[EventoController::class, 'atualizar'])->name('apps.sites.atualizar-config-evento');
+        Route::get('/apps/sites/{evento_id}/status-evento',[EventoController::class, 'status'])->name('apps.sites.status-evento');
+        Route::get('/apps/sites/{evento_id}/limpar-config',[EventoController::class, 'limparConfig'])->name('apps.sites.limpar-config');
+        Route::get('/apps/sites/{evento_id}/status-inscrito/{inscrito_id}',[EventoController::class, 'statusInscrito'])->name('apps.sites.status-inscrito');
+        Route::get('/apps/sites/{evento_id}/remover-inscrito/{inscrito_id}',[EventoController::class, 'removerInscrito'])->name('apps.sites.remover-inscrito');
+        Route::get('/apps/sites/{evento_id}/limpar-lista',[EventoController::class, 'limparLista'])->name('apps.sites.limpar-lista');
     });
 
 
@@ -233,7 +238,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/avisos', [AvisoController::class, 'index'])->name('avisos.index');
         Route::get('/listar-avisos', [AvisoController::class, 'listar'])->name('avisos.listar');
         Route::post('/avisos', [AvisoController::class, 'store'])->name('avisos.store');
-        Route::get('/avisos/visualizado/{id}', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
+        Route::get('/avisos/visualizado/{id', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
         Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])->name('avisos.delete');
         Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])->name('avisos.get-usuarios');
         Route::get('/avisos/lista-visualizados/{id}', [AvisoController::class, 'listarVisualizados'])->name('avisos.listar-visualizados');

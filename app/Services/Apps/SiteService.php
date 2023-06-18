@@ -77,7 +77,7 @@ class SiteService
             $galeria  = $sinodal->galeria->map(function ($item) {
                 return $item->path;
             });
-            $evento = $sinodal->evento;
+
             return array_merge(
                 $editaveis,
                 [
@@ -85,10 +85,8 @@ class SiteService
                     'sigla' => $sinodal->sigla,
                     'federacoes' => $federacoes,
                     'totalizador' => $totalizador,
-                    'evento' => !is_null($evento->path_arte_2) && $evento->status
-                        ? $evento->path_arte_2
-                        : null,
-                    'url' => ''
+                    'evento_url' => $sinodal->site->url . '/evento',
+                    'evento_status' => $sinodal->evento->status
                 ]
             );
 

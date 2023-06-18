@@ -35,14 +35,6 @@
         * Author: BootstrapMade.com
         * License: https://bootstrapmade.com/license/
         ======================================================== -->
-    <style>
-        #evento {
-            background-image: url('/{{$evento}}') !important;
-            background-size: contain;
-            background-repeat: no-repeat;
-            height: 70px !important;
-        }
-    </style>
 </head>
 
 <body>
@@ -64,6 +56,9 @@
                     <li><a class="nav-link scrollto" href="#federacoes">Federações</a></li>
                     <li><a class="nav-link scrollto" href="#galeria">Galeria</a></li>
                     <li><a class="nav-link scrollto" href="#diretoria">Diretoria</a></li>
+                    @if($evento_status)
+                    <li><a class="nav-link scrollto" target="_blank" href="{{$evento_url}}">Evento</a></li>
+                    @endif
                     <li class="ms-md-3"><a class="btn-get-started" target="_blank" href="https://ump.org.br">Site UMP</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
@@ -122,10 +117,6 @@
     </section><!-- End Hero -->
 
     <main id="main">
-        @if(!is_null($evento))
-        <section id="evento">
-        </section>
-        @endif
         <!-- ======= sobre Section ======= -->
         <section id="sobre" class="sobre">
             <div class="container-fluid">

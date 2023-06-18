@@ -28,7 +28,8 @@ class SiteController extends Controller
             'modelo' => $site->modelo,
             'site' => $site,
             'sinodal_id' => $sinodal->id,
-            'evento' => $evento
+            'evento' => $evento,
+            'inscritos' => EventoService::dataTableInscritos($evento->id)
         ]);
     }
 

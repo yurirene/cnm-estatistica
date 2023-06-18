@@ -17,7 +17,7 @@ class CreateEventoInscritosTable extends Migration
             $table->id();
             $table->json('informacoes')->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->bigInteger('evento_id')->unsigned();
+            $table->uuid('evento_id');
             $table->timestamps();
 
             $table->foreign('evento_id')->references('id')->on('eventos');

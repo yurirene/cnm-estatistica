@@ -131,6 +131,12 @@
         .select2-selection__arrow {
             height: 44px !important;
         }
+        .toggle.btn-lg {
+            min-width: 140px !important;
+        }
+        .btn-lg, .btn-group-lg > .btn {
+            padding: 0.65rem 1rem;
+        }
     </style>
 </head>
 

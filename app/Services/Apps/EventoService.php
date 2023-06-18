@@ -28,6 +28,7 @@ class EventoService
         try {
             return Evento::create([
                 'sinodal_id' => $sinodal->id,
+                'path_arte_1' => 'https://placehold.co/1995x525',
                 'form' => [
                     0 => [
                         'tipo' => 'text',
@@ -44,16 +45,15 @@ class EventoService
     /**
      * Método para atualizar as configurações da página de eventos
      *
-     * @param integer $eventoId
+     * @param string $eventoId
      * @param array $request
      * @return void
      */
-    public static function atualizarConfig(int $eventoId, array $request)
+    public static function atualizarConfig(string $eventoId, array $request)
     {
         try {
             $evento = Evento::find($eventoId);
             $pathArte1 = $evento->path_arte_1 ?? null;
-            $pathArte2 = $evento->path_arte_2 ?? null;
 
             $pathArte1 = self::salvarArte($request, $pathArte1, 'arte_evento_principal', $evento->sinodal_id);
             $form = self::processarForm($request['form']);
@@ -114,6 +114,9 @@ class EventoService
     {
         $form = [];
         foreach ($request as $item) {
+            if ($item['tipo'] == FormularioEventoHelper::REMOVER) {
+                continue;
+            }
             $form[] = [
                 'tipo' => $item['tipo'],
                 'campo' => $item['campo'],
@@ -141,6 +144,117 @@ class EventoService
             'evento_id' => $evento->id,
             'informacoes' => $request
         ]);
+    }
+
+    /**
+     * Atualizar status do evento
+     *
+     * @param string $eventoId
+     * @return void
+     */
+    public static function updateStatus(string $eventoId)
+    {
+        $evento = Evento::find($eventoId);
+        $evento->update([
+            'status' => !$evento->status
+        ]);
+    }
+
+    public static function limparConfig(string $eventoId)
+    {
+        $evento = Evento::find($eventoId);
+        $evento->update([
+            'status' => 0,
+            'path_arte_1' => 'https://placehold.co/1995x525',
+            'nome' => null,
+            'data_inicio' => null,
+            'data_fim' => null,
+            'descricao' => null,
+            'form' => [
+                0 => [
+                    'tipo' => 'text',
+                    'campo' => 'Nome',
+                    'input' => str_replace('%_nome_%', 'nome', FormularioEventoHelper::INPUTS['text'])
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Método para gerar a lista de inscritos com as informações
+     * de acordo com os campos atuais do formulário
+     *
+     * @param string $eventoId
+     * @return void
+     */
+    public static function dataTableInscritos(string $eventoId)
+    {
+        try {
+
+        $inscritos = EventoInscrito::where('evento_id', $eventoId);
+        $forms =  data_get(Evento::find($eventoId)->form, '*.campo');
+        $cabecalhos = array_map(function ($item) {
+            return FormularioEventoHelper::formatName($item);
+        }, $forms);
+
+        return $inscritos->get()
+            ->map(function ($item) use ($cabecalhos) {
+                $dados = [];
+                $dados['id'] = $item->id;
+                foreach ($cabecalhos as $c) {
+                    $dados[$c] = isset($item['informacoes'][$c])
+                        ? $item['informacoes'][$c]
+                        : 'Não preenchido';
+                }
+                $dados['status'] = $item->status_formatado;
+                return $dados;
+            })
+            ->toArray();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Método para inverter o status do inscrito
+     *
+     * @param string $eventoId
+     * @param integer $inscritoId
+     * @return string
+     */
+    public static function statusInscrito(string $eventoId, int $inscritoId): string
+    {
+        $inscrito = EventoInscrito::where('evento_id', $eventoId)
+            ->where('id', $inscritoId)
+            ->first();
+        $inscrito->update([
+            'status' => !$inscrito->status
+        ]);
+
+        return $inscrito->status_formatado;
+    }
+
+    /**
+     * Método para remover o inscrito
+     *
+     * @param string $eventoId
+     * @param integer $inscritoId
+     * @return void
+     */
+    public static function removerInscrito(string $eventoId, int $inscritoId)
+    {
+        EventoInscrito::where('evento_id', $eventoId)
+            ->where('id', $inscritoId)
+            ->first()
+            ->delete();
+    }
+
+    public static function limparLista(string $eventoId)
+    {
+        $inscritos = EventoInscrito::where('evento_id', $eventoId)->get();
+        foreach ($inscritos as $inscrito) {
+            $inscrito->delete();
+        }
     }
 
 }
