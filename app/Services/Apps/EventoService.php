@@ -33,7 +33,7 @@ class EventoService
                     0 => [
                         'tipo' => 'text',
                         'campo' => 'Nome',
-                        'input' => str_replace('%_nome_%', 'nome', FormularioEventoHelper::INPUTS['text'])
+                        'input' => str_replace('%_name_%', 'nome', FormularioEventoHelper::INPUTS['text'])
                     ]
                 ]
             ]);
@@ -140,6 +140,9 @@ class EventoService
      */
     public static function inscricao(Evento $evento, array $request)
     {
+        if (!$evento->status) {
+            return;
+        }
         EventoInscrito::create([
             'evento_id' => $evento->id,
             'informacoes' => $request
