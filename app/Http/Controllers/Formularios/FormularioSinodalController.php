@@ -54,7 +54,7 @@ class FormularioSinodalController extends Controller
             return response()->json(['erro' => $th->getMessage()]);
         }
     }
-    
+
     public function resumoTotalizador(Request $request)
     {
         try {
@@ -73,6 +73,40 @@ class FormularioSinodalController extends Controller
         } catch (\Throwable $th) {
             return response()->json($th->getMessage(), 400);
         }
+    }
+
+    public function export($ano)
+    {
+        try {
+            $formulario = FormularioSinodalService::getFormulario($ano);
+            if (!$formulario) {
+                return redirect()->route('dashboard.formularios-sinodal.index')->with([
+                    'mensagem' => [
+                        'status' => false,
+                        'texto' => 'Preencha o formulário primeiro!'
+                    ]
+                ]);
+            }
+
+            return view('dashboard.formularios.sinodal.export', [
+                'formulario' => FormularioSinodalService::getFormulario($ano)
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->route('dashboard.formularios-sinodal.index')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function SinodalExport($sinodal)
+    {
+        return view('dashboard.formularios.sinodal.export', [
+            'formulario' => FormularioSinodalService::getFormularioDaSinodal($sinodal)
+        ]);
     }
 
 }

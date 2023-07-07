@@ -107,6 +107,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
         Route::post('/formularios-sinodais-resumo', [FormularioSinodalController::class, 'resumoTotalizador'])->name('formularios-sinodais.resumo');
         Route::get('/formularios-sinodais-get-federacoes', [FormularioSinodalController::class, 'getFederacoes'])->name('formularios-sinodais.get-federacoes');
+        Route::get('/formularios-sinodais-export/{ano}', [FormularioSinodalController::class, 'export'])->name('formularios-sinodais.export');
+        Route::get('/formularios-sinodal-export/{sinodal}', [FormularioSinodalController::class, 'sinodalExport'])->name('formularios-sinodal.export-sinodal');
 
     });
 
