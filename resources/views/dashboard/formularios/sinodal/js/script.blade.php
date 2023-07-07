@@ -1,4 +1,15 @@
 <script>
+    $(document).ready(function() {
+        let link = "{{ route('dashboard.formularios-sinodais.export', ':id') }}";
+        let val = link.replace(':id', $('#ano').text());
+        $('#link_export').attr('href', val);
+    })
+    $('#ano').on('change', function() {
+        let link = "{{ route('dashboard.formularios-sinodais.export', ':id') }}";
+        let val = link.replace(':id', $('#ano').text());
+        $('#link_export').attr('href', val);
+    })
+
     $('#responder').on('click', function() {
         $('#formulario_ump').show();
         $('#formulario_importar').hide();
@@ -47,7 +58,7 @@
         });
         $('#formulario_ump').show();
     });
-    
+
     $('#visualizar').on('click', function() {
         $.ajax({
             type: "POST",

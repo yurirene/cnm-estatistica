@@ -27,6 +27,7 @@
                                     {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
                                 </div>
                                 <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
+                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">Exportar</a>
                                 @endif
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
@@ -56,7 +57,7 @@
                     @enderror
                     <div class="row">
                         <div class="col-md-3">
-                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled /> 
+                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled />
                         </div>
                     </div>
                     <hr>
@@ -89,7 +90,7 @@
                                 {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @else 
+                        @else
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'id'=>'sinodal_id', 'required'=>true, 'autocomplete' => 'off']) !!}
@@ -101,7 +102,7 @@
                     <div class="btn-group pull-right">
                     {!! Form::submit((!isset($formulario) ? 'Enviar' : 'Atualizar'), ['class' => 'btn btn-success']) !!}
                     </div>
-                    @else 
+                    @else
                     <button class="btn btn-danger" disabled>Enviar</button>
                     @endif
                     {!! Form::close() !!}
@@ -110,7 +111,7 @@
         </div>
     </div>
     @endif
-</div>  
+</div>
 @endsection
 
 @push('js')

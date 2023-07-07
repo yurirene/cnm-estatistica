@@ -107,6 +107,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-sinodais-view', [FormularioSinodalController::class, 'view'])->name('formularios-sinodais.view');
         Route::post('/formularios-sinodais-resumo', [FormularioSinodalController::class, 'resumoTotalizador'])->name('formularios-sinodais.resumo');
         Route::get('/formularios-sinodais-get-federacoes', [FormularioSinodalController::class, 'getFederacoes'])->name('formularios-sinodais.get-federacoes');
+        Route::get('/formularios-sinodais-export/{ano}', [FormularioSinodalController::class, 'export'])->name('formularios-sinodais.export');
+        Route::get('/formularios-sinodal-export/{sinodal}', [FormularioSinodalController::class, 'sinodalExport'])->name('formularios-sinodal.export');
 
     });
 
@@ -238,7 +240,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/avisos', [AvisoController::class, 'index'])->name('avisos.index');
         Route::get('/listar-avisos', [AvisoController::class, 'listar'])->name('avisos.listar');
         Route::post('/avisos', [AvisoController::class, 'store'])->name('avisos.store');
-        Route::get('/avisos/visualizado/{id', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
+        Route::get('/avisos/visualizado/{id}', [AvisoController::class, 'visualizado'])->name('avisos.visualizado');
         Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])->name('avisos.delete');
         Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])->name('avisos.get-usuarios');
         Route::get('/avisos/lista-visualizados/{id}', [AvisoController::class, 'listarVisualizados'])->name('avisos.listar-visualizados');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instancias;
 
 use App\DataTables\Instancias\SinodalDataTable;
 use App\Http\Controllers\Controller;
+use App\Models\Regiao;
 use App\Models\Sinodal;
 use App\Services\Instancias\SinodalService;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class SinodalController extends Controller
     public function create()
     {
         return view('dashboard.sinodais.form', [
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome)
+            'regiao' => strtolower(Auth::user()->regioes->first()->nome),
+            'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }
 
@@ -60,7 +62,8 @@ class SinodalController extends Controller
         return view('dashboard.sinodais.form', [
             'sinodal' => $sinodal,
             'estados' => $estados,
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome)
+            'regiao' => strtolower(Auth::user()->regioes->first()->nome),
+            'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }
 
