@@ -56,6 +56,9 @@
                     <li><a class="nav-link scrollto" href="#federacoes">Federações</a></li>
                     <li><a class="nav-link scrollto" href="#galeria">Galeria</a></li>
                     <li><a class="nav-link scrollto" href="#diretoria">Diretoria</a></li>
+                    @if($evento_status)
+                    <li><a class="nav-link scrollto" target="_blank" href="{{$evento_url}}">Evento</a></li>
+                    @endif
                     <li class="ms-md-3"><a class="btn-get-started" target="_blank" href="https://ump.org.br">Site UMP</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
@@ -114,7 +117,6 @@
     </section><!-- End Hero -->
 
     <main id="main">
-
         <!-- ======= sobre Section ======= -->
         <section id="sobre" class="sobre">
             <div class="container-fluid">
@@ -253,6 +255,35 @@
             </div>
         </section><!-- End Team Section -->
 
+        @if(!empty($secretarias))
+        <section id="secretarias" class="diretoria">
+            <div class="container">
+
+                <div class="section-title" data-aos="fade-up">
+                    <h2>Nossas</h2>
+                    <p>Secretarias</p>
+                </div>
+
+                <div class="row" data-aos="fade-left">
+                @foreach ($secretarias as $secretarios)
+                    <div class="col-lg-4 mt-3 col-md-6">
+                        <div class="member" data-aos="zoom-in" data-aos-delay="100">
+                            <div class="pic">
+                                <img src="/{{ !empty($secretarios['path']) ? $secretarios['path'] : 'img/team-1.jpg' }}" class="img-fluid" alt="">
+                            </div>
+                            <div class="member-info">
+                                <h4>{{ $secretarios['nome'] }}</h4>
+                                <span>{{ $secretarios['secretaria'] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
+                </div>
+
+            </div>
+        </section><!-- End Team Section -->
+        @endif
 
     </main><!-- End #main -->
 
@@ -291,7 +322,11 @@
     <!-- Template Main JS File -->
     <script src="/sites/modelo-1/assets/js/main.js"></script>
     <script type="text/javascript" src="/sites/modelo-1/assets/vendor/grid-gallery/script.min.js"></script>
-
+    <script>
+        document.getElementById('evento').addEventListener('click', function() {
+            window.open("{{route('meusite.evento', $sigla)}}", '_blank');
+        })
+    </script>
 </body>
 
 </html>

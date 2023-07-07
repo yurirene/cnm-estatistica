@@ -34,4 +34,13 @@ class SiteHelper
         ]);
     }
 
+    public static function secretarias($sinodalId, $campo, $chave)
+    {
+        return view('dashboard.apps.sites.custom.secretarias', [
+            'chave' => $chave,
+            'campos' => $campo,
+            'sinodal_id' => $sinodalId
+        ]);
+    }
+
 }

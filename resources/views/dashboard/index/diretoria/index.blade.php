@@ -253,6 +253,7 @@
 
 <script>
     $(function() {
+        var rotaExport = "{{ route('dashboard.formularios-sinodal.export', ':id') }}";
         $('#sinodal-entregues-table').DataTable({
             dom: 'frtip',
             destroy: true,
@@ -263,6 +264,16 @@
             columns: [
                 {
                     render: function (data, type, result) {
+                        var imprimir = '';
+                        if (result.entregue == 1) {
+                            imprimir = `<a
+                            href="${rotaExport.replace(':id', result.id)}"
+                            class="btn btn-sm btn-primary"
+                            target="_blank"
+                            >
+                                <i class="fas fa-print"></i>
+                            </a>`;
+                        }
                         return `<button
                             type="button"
                             class="btn btn-sm btn-primary"
@@ -270,7 +281,9 @@
                             data-target="#sinodal-modal"
                             data-id="${result.id}">
                                 <i class="fas fa-eye"></i>
-                            </button>`;
+                            </button>
+                            ${imprimir}`;
+
                     }
                 },
                 {data: 'nome'},

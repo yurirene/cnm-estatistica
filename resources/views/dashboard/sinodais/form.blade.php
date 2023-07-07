@@ -5,7 +5,7 @@
 @include('dashboard.partes.head', [
     'titulo' => 'Sinodais'
 ])
-    
+
 <div class="container-fluid mt--7">
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
@@ -72,7 +72,12 @@
                                 {!! Form::select('regiao_id', auth()->user()->regioes->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @else 
+                        @elseif (auth()->user()->admin)
+                            <div class="form-group">
+                                {!! Form::label('regiao_id', 'Região') !!}
+                                {!! Form::select('regiao_id', $regioes, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        @else
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::hidden('regiao_id', auth()->user()->regioes()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
@@ -86,7 +91,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 @endsection

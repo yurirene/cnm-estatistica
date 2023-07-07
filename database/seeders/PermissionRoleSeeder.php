@@ -47,6 +47,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.pesquisas.locais',
                     'dashboard.pesquisas.acompanhar',
                     'dashboard.datatables.formularios-entregues',
+                    'dashboard.formularios-sinodal.export'
                 ]
             ],
             'sinodal' => [
