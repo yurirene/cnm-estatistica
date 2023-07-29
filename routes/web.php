@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\DigestoController;
+use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
 use App\Http\Controllers\Instancias\FederacaoController;
@@ -244,6 +245,13 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])->name('avisos.delete');
         Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])->name('avisos.get-usuarios');
         Route::get('/avisos/lista-visualizados/{id}', [AvisoController::class, 'listarVisualizados'])->name('avisos.listar-visualizados');
+    });
+
+    //DIRETORIA
+
+    Route::group(['modulo' => 'diretoria-sinodal'], function () {
+        Route::get('/diretoria-sinodal', [DiretoriasSinodalController::class, 'index'])->name('diretoria-sinodal.index');
+        Route::put('/diretoria-sinodal/update', [DiretoriasSinodalController::class, 'update'])->name('diretoria-sinodal.update');
     });
 
 });

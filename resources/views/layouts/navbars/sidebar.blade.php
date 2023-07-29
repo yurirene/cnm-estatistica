@@ -64,6 +64,17 @@
                     </a>
                 </li>
                 @endCanAtLeast
+
+                @canAtLeast(['dashboard.diretoria-sinodal.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria-sinodal.index') }}">
+                        <i class="fas fa-users"></i> Diretoria
+                    </a>
+                </li>
+
+                @endCanAtLeast
+
+
                 @canAtLeast(['dashboard.sinodais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
