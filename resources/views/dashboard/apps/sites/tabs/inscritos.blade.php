@@ -75,13 +75,44 @@
         </div>
     </div>
 </div>
-@push('js')
+@push('script')
+<script src="https://cdn.datatables.net/buttons/2.4.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.0/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.0/js/buttons.html5.min.js"></script>
 <script>
     $('#table-inscritos').DataTable({
         language: {
             "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
         },
-        stateSave: true
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: "csv",
+                text: "<em class='fas fa-file'></em> Planilha",
+                title: 'Inscritos do Evento',
+                exportOptions: {
+                    columns: function (idx, data, node) {
+                        if (node.innerHTML == "Ações")
+                            return false;
+                        return true;
+                    }
+                }
+            },
+            {
+                extend: "print",
+                text: "<em class='fas fa-print'></em> Imprimir",
+                title: 'Inscritos do Evento',
+                exportOptions: {
+                    columns: function (idx, data, node) {
+                        if (node.innerHTML == "Ações")
+                            return false;
+                        return true;
+                    }
+                }
+            },
+        ],
+        stateSave: true,
+
     });
 
     $('.confirmar_inscrito').on('click', function() {

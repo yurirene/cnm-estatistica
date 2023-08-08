@@ -318,4 +318,17 @@ class FormularioSinodalService
         }
     }
 
+    public static function getFormularioDaSinodal($sinodal) : ?FormularioSinodal
+    {
+        return FormularioSinodal::where('sinodal_id', $sinodal)
+            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->first();
+    }
+
+    public static function getFormulario($ano)
+    {
+        return FormularioSinodal::where('sinodal_id', auth()->user()->sinodais->first()->id)
+            ->where('ano_referencia', $ano)
+            ->first();
+    }
 }
