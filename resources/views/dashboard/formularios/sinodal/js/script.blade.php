@@ -1,12 +1,12 @@
 <script>
     $(document).ready(function() {
         let link = "{{ route('dashboard.formularios-sinodais.export', ':id') }}";
-        let val = link.replace(':id', $('#ano').text());
+        let val = link.replace(':id', $('#ano option:selected').text());
         $('#link_export').attr('href', val);
     })
     $('#ano').on('change', function() {
         let link = "{{ route('dashboard.formularios-sinodais.export', ':id') }}";
-        let val = link.replace(':id', $('#ano').text());
+        let val = link.replace(':id', $('#ano option:selected').text());
         $('#link_export').attr('href', val);
     })
 
