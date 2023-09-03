@@ -146,6 +146,9 @@ class EstatisticaService
         try {
             return Local::where('sinodal_id', $idSinodal)
             ->where('status', true)
+            ->whereHas('federacao', function ($sql) {
+                return $sql->where('federacoes.status', true);
+            })
             ->get()
             ->map(function ($item) use ($ano) {
                 return [
@@ -187,6 +190,7 @@ class EstatisticaService
     {
         try {
             $federacoes = Federacao::where('sinodal_id', $sinodal)
+                ->where('status', true)
                 ->whereHas('relatorios', function ($sql) use ($ano) {
                     return $sql->where('ano_referencia', $ano);
                 })
@@ -194,6 +198,9 @@ class EstatisticaService
                 ->pluck('id');
             $total_locais = $locais = Local::where('sinodal_id', $sinodal)
                 ->where('status', true)
+                ->whereHas('federacao', function ($sql) {
+                    return $sql->where('federacoes.status', true);
+                })
                 ->get()
                 ->count();
             $locais = Local::where('status', true)

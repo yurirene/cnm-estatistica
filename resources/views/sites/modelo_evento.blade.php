@@ -19,9 +19,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="/sites/evento/css/styles.css" rel="stylesheet" />
         <link rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-                integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
-                crossorigin="anonymous" referrerpolicy="no-referrer" />
+                href="/vendor/datepicker/bootstrap-datepicker.min.css"/>
 
         @php
         $url = $evento->path_arte_1 != 'https://placehold.co/1995x525'
@@ -157,21 +155,14 @@
         <!-- Footer-->
 
         <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/vendor/externo-bootstrap.bundle.min.js"></script>
 
         <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
         <script src="/js/jquery.mask.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/vendor/sweetalert.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
-            integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer">
-        </script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"
-            integrity="sha512-mVkLPLQVfOWLRlC2ZJuyX5+0XrTlbW2cyAwyqgPkLGxhoaHNSWesYMlcUjX8X+k45YB8q90s88O7sos86636NQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer">
-        </script>
+        <script src="/vendor/datepicker/bootstrap-datepicker.min.js"></script>
+        <script src="/vendor/datepicker/ptbr.min.js"></script>
         <script>
             $(document).ready(() => {
 
