@@ -294,7 +294,7 @@ class GraficoEstatisticaService extends AbstractGrafico
             })->toArray();
         $data = [];
         foreach ($estados as $estado) {
-            $totalizador = MapaService::getTotalizador($estado);
+            $totalizador = MapaService::getTotalizador($estado, $request['ano']);
             $data[] = [
                 'hc-key' => $estado,
                 'n_socios' => $totalizador['n_socios'],
