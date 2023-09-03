@@ -119,7 +119,7 @@ class FormularioSinodalService
     public static function getAnosFormulariosRespondidos()
     {
         try {
-            return FormularioSinodal::whereIn('sinodal_id', Auth::user()->sinodais->pluck('id'))
+            return FormularioSinodal::whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'))
                 ->get()
                 ->pluck('ano_referencia', 'id');
         } catch (\Throwable $th) {
