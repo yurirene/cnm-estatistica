@@ -19,9 +19,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="/sites/evento/css/styles.css" rel="stylesheet" />
         <link rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-                integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
-                crossorigin="anonymous" referrerpolicy="no-referrer" />
+                href="/vendor/datepicker/bootstrap-datepicker.min.css"/>
 
         @php
         $url = $evento->path_arte_1 != 'https://placehold.co/1995x525'
