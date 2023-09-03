@@ -46,16 +46,21 @@ class MapaService
         return $data;
     }
 
-    public static function getTotalizador(string $estado) : array
+    public static function getTotalizador(string $estado, string $filtroAno = null) : array
     {
         try {
             $sigla = explode('-', $estado);
             $estado = Estado::where('sigla', strtoupper($sigla[1]))->first();
+            $ano = Parametro::where('nome', 'ano_referencia')->first()->valor;
             $formularios = FormularioLocal::whereHas('local', function ($sql) use ($estado) {
                 return $sql->where('estado_id', $estado->id);
             })
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
-            ->get();
+                ->when(!is_null($filtroAno), function ($sql) use ($filtroAno) {
+                    return $sql->where('ano_referencia', $filtroAno);
+                }, function ($sql) use ($ano) {
+                    return $sql->where('ano_referencia', $ano);
+                })
+                ->get();
             $total = 0;
             foreach ($formularios as $formulario) {
                 $total += (intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']));
