@@ -67,3 +67,14 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+
+    <div class="col-md-3  d-flex flex-column justify-content-end">
+        <div class="form-group{{ $errors->has('escolaridade[desempregado]') ? ' has-error' : '' }}">
+        {!! Form::label('escolaridade[desempregado]', 'Sócios desempregados') !!}
+        {!! Form::number('escolaridade[desempregado]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
+        <small class="text-danger">{{ $errors->first('escolaridade[desempregado]') }}</small>
+        </div>
+    </div>
+</div>

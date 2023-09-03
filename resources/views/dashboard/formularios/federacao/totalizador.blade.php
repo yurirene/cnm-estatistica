@@ -4,17 +4,17 @@
             <div class="progress-info">
                 <div class="progress-percentage">
                     <span class="text-sm font-weight-bold">
-                        {{$qualidade_entrega['porcentagem']}}% dos Formulários Entregues (Ano Referência - {{ $ano_referencia }})</span> - 
+                        {{$qualidade_entrega['porcentagem']}}% dos Formulários Entregues (Ano Referência - {{ $ano_referencia }})</span> -
                         <small>{{$qualidade_entrega['texto']}}</small>
                 </div>
             </div>
             <div class="progress" style="height: 15px;">
-                <div 
-                    class="progress-bar bg-{{$qualidade_entrega['color']}}" 
-                    role="progressbar" 
-                    aria-valuenow="{{$qualidade_entrega['porcentagem']}}" 
-                    aria-valuemin="0" 
-                    aria-valuemax="100" 
+                <div
+                    class="progress-bar bg-{{$qualidade_entrega['color']}}"
+                    role="progressbar"
+                    aria-valuenow="{{$qualidade_entrega['porcentagem']}}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
                     style="width: {{$qualidade_entrega['porcentagem']}}%;">
                 </div>
                 {{$qualidade_entrega['porcentagem']}}%
@@ -64,6 +64,10 @@
                     30 a 35
                     <span class="badge badge-primary badge-pill"><b id="resumo-de30a35"></b></span>
                 </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Desempregados
+                    <span class="badge badge-primary badge-pill"><b id="resumo-desempregado"></b></span>
+                </li>
             </ul>
         </p>
     </div>
@@ -90,10 +94,6 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Com Pós-Graduação
                     <span class="badge badge-primary badge-pill"><b id="resumo-pos"></b></span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Desempregados
-                    <span class="badge badge-primary badge-pill"><b id="resumo-desempregado"></b></span>
                 </li>
             </ul>
         </p>
