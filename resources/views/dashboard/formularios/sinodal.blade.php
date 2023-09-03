@@ -24,13 +24,24 @@
                                 @if(count($anos) > 0)
                                 <div class="form-group mb-2">
                                     {!! Form::label('Ano') !!}
-                                    {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
+                                    {!! Form::select(
+                                        'ano',
+                                        $anos,
+                                        null,
+                                        ['class' => 'form-control ml-1', 'id' => 'ano']
+                                    ) !!}
                                 </div>
-                                <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
-                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">Exportar</a>
+                                <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">
+                                    Visualizar
+                                </button>
+                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">
+                                    Exportar
+                                </a>
                                 @endif
                                 @if($coleta)
-                                    <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
+                                    <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">
+                                        Responder
+                                    </button>
                                 @endif
                             </div>
                         </div>
@@ -57,14 +68,28 @@
                     @enderror
                     <div class="row">
                         <div class="col-md-3">
-                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled />
+                            Ano Referência
+                            <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled />
                         </div>
                     </div>
                     <hr>
                     @if(!is_null($formulario))
-                    {!! Form::model($formulario, ['route' => ['dashboard.formularios-sinodais.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                    {!! Form::model(
+                        $formulario,
+                        [
+                            'route' => ['dashboard.formularios-sinodais.store'],
+                            'method' => 'POST',
+                            'class' => 'form-horizontal'
+                        ]
+                    ) !!}
                     @else
-                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-sinodais.store', 'class' => 'form-horizontal']) !!}
+                    {!! Form::open(
+                        [
+                            'method' => 'POST',
+                            'route' => 'dashboard.formularios-sinodais.store',
+                            'class' => 'form-horizontal'
+                        ]
+                    ) !!}
                     @endif
 
                     <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>
@@ -87,13 +112,27 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('sinodal_id', 'Sinodal') !!}
-                                {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::select(
+                                    'sinodal_id',
+                                    auth()->user()->sinodais->pluck('nome', 'id'),
+                                    null,
+                                    ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']
+                                ) !!}
                             </div>
                         </div>
                         @else
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'id'=>'sinodal_id', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::hidden(
+                                    'sinodal_id',
+                                    auth()->user()->sinodais()->first()->id,
+                                    [
+                                        'class' => 'form-control',
+                                        'id'=>'sinodal_id',
+                                        'required'=>true,
+                                        'autocomplete' => 'off'
+                                    ]
+                                ) !!}
                             </div>
                         </div>
                     @endif
