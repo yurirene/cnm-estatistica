@@ -12,12 +12,15 @@ use Throwable;
 
 class DigestoService
 {
-    
-    public static function store(Request $request) : Digesto 
+
+    public const PATH_DIR = 'storage/disgesto/';
+    public const PATH_SERVER = 'public/disgesto/';
+
+    public static function store(Request $request) : Digesto
     {
         try {
             $path = $request->arquivo->store('public/disgesto');
-            
+
             $digesto = Digesto::create([
                 'tipo_reuniao_id' => $request->tipo_reuniao_id,
                 'titulo' => $request->titulo,
@@ -31,17 +34,23 @@ class DigestoService
             throw $th;
         }
     }
-    
-    public static function update(Digesto $digesto, Request $request) : Digesto 
+
+    public static function update(Digesto $digesto, Request $request) : Digesto
     {
         try {
-            
+
             $digesto->update([
                 'tipo_reuniao_id' => $request->tipo_reuniao_id,
                 'titulo' => $request->titulo,
                 'ano' => $request->ano,
                 'texto' => $request->texto,
             ]);
+            if ($request->has('arquivo')) {
+                $path = $request->arquivo->store('public/disgesto');
+                $digesto->update([
+                    'path' => '/' . str_replace('public', 'storage', $path)
+                ]);
+            }
             return $digesto;
         } catch (Throwable $th) {
             throw $th;
@@ -84,8 +93,29 @@ class DigestoService
                 $texto = substr($item->texto, $inicio, 60);
             }
             $item->texto_formatado = $texto;
+            $item->path = str_replace('/' . self::PATH_DIR, '', $item->path);
             return $item;
         })
         ->toArray();
+    }
+
+    /**
+     * Método que verifica se o arquivo é doc ou docx e ao inves de
+     * exibir (arquivo binário está sendo exibido) força o download
+     *
+     * @param string $path
+     * @return mixed
+     */
+    public static function exibir(string $path)
+    {
+        $posicaoDoc = strpos($path, '.doc');
+        if ($posicaoDoc) {
+            $novoNome = 'digesto_' . date('ymdhis') . substr($path, $posicaoDoc);
+            return response()->download(self::PATH_DIR . $path, $novoNome);
+        }
+        if (! file_exists(self::PATH_DIR.$path)) {
+            abort(404, 'Aquivo não encontrado!');
+        }
+        return response()->file(self::PATH_DIR . $path);
     }
 }
