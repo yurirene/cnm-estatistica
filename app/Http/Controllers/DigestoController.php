@@ -60,7 +60,7 @@ class DigestoController extends Controller
             ->withInput();
         }
     }
-    
+
 
     public function edit(Digesto $digesto)
     {
@@ -80,7 +80,7 @@ class DigestoController extends Controller
     }
 
     public function update(Digesto $digesto, Request $request)
-    {       
+    {
         try {
             DigestoService::update($digesto, $request);
             return redirect()->route('dashboard.digestos.index')->with([
@@ -101,7 +101,7 @@ class DigestoController extends Controller
     }
 
     public function delete(Digesto $digesto)
-    {       
+    {
         try {
             DigestoService::delete($digesto);
             return redirect()->route('dashboard.digestos.index')->with([
@@ -128,5 +128,10 @@ class DigestoController extends Controller
             'tipos' => DigestoService::getTipos(),
             'dados' => $dados
         ]);
+    }
+
+    public function exibir(string $path)
+    {
+        return DigestoService::exibir($path);
     }
 }
