@@ -5,7 +5,7 @@
 @include('dashboard.partes.head', [
     'titulo' => 'Digestos',
 ])
-    
+
 <div class="container-fluid mt--7">
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
@@ -33,25 +33,26 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('ano', 'Ano') !!}
-                                {!! Form::text('ano', date('Y'), ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::text('ano', !isset($digesto) ? date('Y') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     </div>
-                    <div class="row">                        
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('tipo_reuniao_id', 'Tipo Reunião') !!}
                                 {!! Form::select('tipo_reuniao_id', $tipos, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @if(!isset($digesto))
                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('arquivo', 'Arquivo') !!}
                                 {!! Form::file('arquivo', ['class' => 'form-control']) !!}
+                                @if(isset($digesto))
+                                <small class="text-danger">Somente se for alterar o arquivo</small>
+                                @endif
                             </div>
                         </div>
-                        @endif
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -67,7 +68,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 @endsection
