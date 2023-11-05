@@ -115,7 +115,7 @@ class FederacaoController extends Controller
     {
         try {
             FederacaoService::delete($federacao);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            return redirect()->route('dashboard.federacoes.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
