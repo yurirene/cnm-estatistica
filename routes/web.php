@@ -72,23 +72,23 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 
     Route::group(['modulo' => 'sinodais'], function () {
-        Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('delete')->names('sinodais');
+        Route::resource('sinodais', SinodalController::class)->parameters(['sinodais' => 'sinodal'])->except('destroy')->names('sinodais');
         Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])->name('sinodais.delete');
         Route::put('/sinodais/{sinodal}/update-info', [SinodalController::class, 'updateInfo'])->name('sinodais.update-info');
         Route::get('/sinodais/get-ranking', [SinodalController::class, 'getRanking'])->name('sinodais.get-ranking');
     });
     Route::group(['modulo' => 'federacoes'], function () {
-        Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('delete');
+        Route::resource('federacoes', FederacaoController::class)->parameters(['federacoes' => 'federacao'])->names('federacoes')->except('destroy');
         Route::get('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])->name('federacoes.delete');
         Route::put('/federacoes/{federacao}/update-info', [FederacaoController::class, 'updateInfo'])->name('federacoes.update-info');
     });
     Route::group(['modulo' => 'umps-locais'], function () {
-        Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('delete');
+        Route::resource('umps-locais', LocalController::class)->parameters(['umps-locais' => 'local'])->names('locais')->except('destroy');
         Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])->name('locais.delete');
         Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])->name('locais.update-info');
     });
     Route::group(['modulo' => 'atividades'], function () {
-        Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('delete');
+        Route::resource('atividades', AtividadeController::class)->parameters(['atividades' => 'atividade'])->names('atividades')->except('destroy');
         Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])->name('atividades.delete');
         Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])->name('atividades.calendario');
         Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])->name('atividades.confirmar');
@@ -150,19 +150,19 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
     // SECRETARIA DE PRODUTOS
     Route::group(['modulo' => 'secretaria-produtos'], function () {
-        Route::resource('produtos', ProdutoController::class)->parameters(['produtos' => 'produto'])->names('produtos')->except('delete');
+        Route::resource('produtos', ProdutoController::class)->parameters(['produtos' => 'produto'])->names('produtos')->except('destroy');
         Route::get('/produtos/{produto}/delete', [ProdutoController::class, 'delete'])->name('produtos.delete');
         Route::get('/produtos-datatable/produtos', [ProdutoController::class, 'produtoDataTable'])->name('produtos.datatable.produtos');
         Route::get('/produtos-datatable/estoque', [ProdutoController::class, 'estoqueProdutosDataTable'])->name('produtos.datatable.estoque');
         Route::get('/produtos-datatable/consignacao', [ProdutoController::class, 'consignacaoProdutosDataTable'])->name('produtos.datatable.consignacao');
 
-        Route::resource('estoque-produtos', EstoqueProdutoController::class)->parameters(['estoque-produtos' => 'estoque'])->names('estoque-produtos')->except(['index', 'show', 'delete']);
+        Route::resource('estoque-produtos', EstoqueProdutoController::class)->parameters(['estoque-produtos' => 'estoque'])->names('estoque-produtos')->except(['index', 'show', 'destroy']);
         Route::get('/estoque-produtos/{estoque}/delete', [EstoqueProdutoController::class, 'delete'])->name('estoque-produtos.delete');
 
-        Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'delete']);
+        Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)->parameters(['consignacao-produtos' => 'consignado'])->names('consignacao-produtos')->except(['index', 'show', 'destroy']);
         Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])->name('consignacao-produtos.delete');
 
-        Route::resource('produtos/fluxo-caixa', FluxoCaixaController::class)->parameters(['fluxo-caixa' => 'fluxo'])->names('produtos.fluxo-caixa')->except(['index', 'show', 'delete']);
+        Route::resource('produtos/fluxo-caixa', FluxoCaixaController::class)->parameters(['fluxo-caixa' => 'fluxo'])->names('produtos.fluxo-caixa')->except(['index', 'show', 'destroy']);
         Route::get('/produtos/fluxo-caixa/{fluxo}/delete', [FluxoCaixaController::class, 'delete'])->name('produtos.fluxo-caixa.delete');
         Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])->name('produtos.datatable.fluxo-caixa');
 
@@ -175,7 +175,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     //SECRETARIA EXECUTIVA
 
     Route::group(['modulo' => 'demandas'], function () {
-    Route::resource('demandas', DemandaController::class)->parameters(['demandas' => 'demanda'])->names('demandas')->except('delete');
+    Route::resource('demandas', DemandaController::class)->parameters(['demandas' => 'demanda'])->names('demandas')->except('destroy');
         Route::get('/demandas/{demanda}/delete', [DemandaController::class, 'delete'])->name('demandas.delete');
         Route::get('/demandas/{demanda}/lista', [DemandaController::class, 'lista'])->name('demandas.lista');
         Route::get('/demandas/{demanda}/{item}/delete', [DemandaController::class, 'deleteItem'])->name('demandas.delete-item');
@@ -184,7 +184,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])->name('demandas.informacoesAdicionais');
     });
     Route::group(['modulo' => 'digestos'], function () {
-        Route::resource('digestos', DigestoController::class)->parameters(['digestos' => 'digesto'])->names('digestos')->except('delete');
+        Route::resource('digestos', DigestoController::class)->parameters(['digestos' => 'digesto'])->names('digestos')->except('destroy');
         Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])->name('digestos.delete');
     });
 
