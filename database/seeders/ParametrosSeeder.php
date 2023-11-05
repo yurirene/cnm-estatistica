@@ -36,12 +36,26 @@ class ParametrosSeeder extends Seeder
                 'valor' => '24,00',
                 'area' => 'tesouraria',
                 'tipo' => 'text'
+            ],
+            [
+                'nome' => 'min_federacao',
+                'descricao' => 'Porcentagem Mínima de Entrega (Federação)',
+                'valor' => '60',
+                'area' => 'estatistica',
+                'tipo' => 'text'
+            ],
+            [
+                'nome' => 'min_sinodal',
+                'descricao' => 'Porcentagem Mínima de Entrega (Sinodal)',
+                'valor' => '70',
+                'area' => 'estatistica',
+                'tipo' => 'text'
             ]
         ];
         DB::beginTransaction();
         try {
             foreach ($parametros as $parametro) {
-                Parametro::updateOrCreate(['nome' => $parametro['nome']],$parametro);
+                Parametro::firstOrCreate(['nome' => $parametro['nome']],$parametro);
             }
             DB::commit();
         } catch (\Throwable $th) {
