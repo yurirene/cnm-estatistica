@@ -48,48 +48,43 @@ class StoreFormularioLocalRequest extends FormRequest
         if ($this->total == 0) {
             return [
                 'status' => false,
-                'text' => 'Quantidade de Sócios inválida' 
+                'text' => 'Quantidade de Sócios inválida'
             ];
         }
-        
+
         $validacoes['Sexo'] = ValidarFormularioService::somatorio(
-            $this->total, 
-            $this->perfil['homens'], 
+            $this->total,
+            $this->perfil['homens'],
             $this->perfil['mulheres']
         );
         $validacoes['Idade'] = ValidarFormularioService::somatorio(
-            $this->total, 
-            $this->perfil['menor19'], 
+            $this->total,
+            $this->perfil['menor19'],
             $this->perfil['de19a23'],
             $this->perfil['de24a29'],
             $this->perfil['de30a35']
         );
         $validacoes['Escolaridade'] = ValidarFormularioService::somatorio(
-            $this->total, 
-            $this->escolaridade['fundamental'], 
+            $this->total,
+            $this->escolaridade['fundamental'],
             $this->escolaridade['medio'],
             $this->escolaridade['tecnico'],
             $this->escolaridade['superior'],
             $this->escolaridade['pos']
         );
-        
+
         $validacoes['Estado Civil'] = ValidarFormularioService::somatorio(
-            $this->total, 
-            $this->estado_civil['solteiros'], 
+            $this->total,
+            $this->estado_civil['solteiros'],
             $this->estado_civil['casados'],
             $this->estado_civil['divorciados'],
             $this->estado_civil['viuvos']
         );
 
-        
+
         $validacoes['Sócios com Filhos'] = ValidarFormularioService::limite(
-            $this->total, 
+            $this->total,
             $this->estado_civil['filhos']
-        );    
-        
-        $validacoes['Desempregados'] = ValidarFormularioService::limite(
-            $this->total, 
-            $this->escolaridade['desempregado']
         );
 
         foreach ($validacoes as $campo => $v) {
@@ -117,7 +112,7 @@ class StoreFormularioLocalRequest extends FormRequest
         $role = Auth::user()->roles->first()->name;
         $data = [
             'perfil' => ['array', 'required', 'min:8'],
-            'escolaridade' => ['array', 'required', 'min:6'],
+            'escolaridade' => ['array', 'required', 'min:5'],
             'estado_civil' => ['array', 'required', 'min:5'],
             'deficiencias' => ['array', 'required', 'min:9'],
             'programacoes' => ['array', 'required', 'min:5'],
@@ -127,7 +122,7 @@ class StoreFormularioLocalRequest extends FormRequest
             'estado_civil.*' => ['min:0'],
             'deficiencias.*' => ['min:0'],
             'programacoes.*' => ['min:0'],
-            
+
         ];
         if (in_array($role, ['sinodal', 'federacao'])) {
             $data['estrutura'] = ['array', 'required'];
@@ -143,7 +138,7 @@ class StoreFormularioLocalRequest extends FormRequest
 
             'escolaridade.*.required' => 'O :attribute é obrigatório',
             'estado_civil.*.required' => 'O :attribute é obrigatório',
-            
+
             'deficiencia.surdos.required' => 'O :attribute é obrigatório',
             'deficiencia.auditiva.required' => 'O :attribute é obrigatório',
             'deficiencia.cegos.required' => 'O :attribute é obrigatório',
@@ -189,7 +184,6 @@ class StoreFormularioLocalRequest extends FormRequest
             'escolaridade.tecnico' => 'Ensino Técnico',
             'escolaridade.superior' => 'Ensino Superior',
             'escolaridade.pos' => 'Pós-Graduação',
-            'escolaridade.desempregado' => 'Desempregado ',
 
             'estado_civil.solteiros' => 'Solteiro',
             'estado_civil.casados' => 'Casado',

@@ -14,7 +14,7 @@ class TotalizadorFormularioSinodalService
         $federacoes = Federacao::where('sinodal_id', $id)->get()->pluck('id');
         try {
             $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->get();
-            
+
             $totalizador = [
                 'aci' => [
                     'ump_repassaram' => 0,
@@ -44,7 +44,6 @@ class TotalizadorFormularioSinodalService
                     'tecnico' => 0,
                     'superior' => 0,
                     'pos' => 0,
-                    'desempregado' => 0,
                 ],
                 'estado_civil' => [
                     'solteiros' => 0,
@@ -79,7 +78,7 @@ class TotalizadorFormularioSinodalService
                 ]
             ];
 
-            foreach ($formularios as $formulario) {                
+            foreach ($formularios as $formulario) {
                     $totalizador['aci']['ump_repassaram'] += (isset($formulario->aci['ump_repassaram']) ? intval($formulario->aci['ump_repassaram']) : 0);
                     $totalizador['aci']['ump_nao_repassaram'] += (isset($formulario->aci['ump_nao_repassaram']) ? intval($formulario->aci['ump_nao_repassaram']) : 0);
 
@@ -101,20 +100,19 @@ class TotalizadorFormularioSinodalService
                     $totalizador['perfil']['de19a23'] += (isset($formulario->perfil['de19a23']) ? intval($formulario->perfil['de19a23']) : 0);
                     $totalizador['perfil']['de24a29'] += (isset($formulario->perfil['de24a29']) ? intval($formulario->perfil['de24a29']) : 0);
                     $totalizador['perfil']['de30a35'] += (isset($formulario->perfil['de30a35']) ? intval($formulario->perfil['de30a35']) : 0);
-                    
+
                     $totalizador['escolaridade']['fundamental'] += (isset($formulario->escolaridade['fundamental']) ? intval($formulario->escolaridade['fundamental']) : 0);
                     $totalizador['escolaridade']['medio'] += (isset($formulario->escolaridade['medio']) ? intval($formulario->escolaridade['medio']) : 0);
                     $totalizador['escolaridade']['tecnico'] += (isset($formulario->escolaridade['tecnico']) ? intval($formulario->escolaridade['tecnico']) : 0);
                     $totalizador['escolaridade']['superior'] += (isset($formulario->escolaridade['superior']) ? intval($formulario->escolaridade['superior']) : 0);
                     $totalizador['escolaridade']['pos'] += (isset($formulario->escolaridade['pos']) ? intval($formulario->escolaridade['pos']) : 0);
-                    $totalizador['escolaridade']['desempregado'] += (isset($formulario->escolaridade['desempregado']) ? intval($formulario->escolaridade['desempregado']) : 0);
-                    
+
                     $totalizador['estado_civil']['solteiros'] += (isset($formulario->estado_civil['solteiros']) ? intval($formulario->estado_civil['solteiros']) : 0);
                     $totalizador['estado_civil']['casados'] += (isset($formulario->estado_civil['casados']) ? intval($formulario->estado_civil['casados']) : 0);
                     $totalizador['estado_civil']['divorciados'] += (isset($formulario->estado_civil['divorciados']) ? intval($formulario->estado_civil['divorciados']) : 0);
                     $totalizador['estado_civil']['viuvos'] += (isset($formulario->estado_civil['viuvos']) ? intval($formulario->estado_civil['viuvos']) : 0);
                     $totalizador['estado_civil']['filhos'] += (isset($formulario->estado_civil['filhos']) ? intval($formulario->estado_civil['filhos']) : 0);
-                    
+
                     $totalizador['deficiencias']['surdos'] += (isset($formulario->deficiencias['surdos']) ? intval($formulario->deficiencias['surdos']) : 0);
                     $totalizador['deficiencias']['auditiva'] += (isset($formulario->deficiencias['auditiva']) ? intval($formulario->deficiencias['auditiva']) : 0);
                     $totalizador['deficiencias']['cegos'] += (isset($formulario->deficiencias['cegos']) ? intval($formulario->deficiencias['cegos']) : 0);
@@ -124,14 +122,14 @@ class TotalizadorFormularioSinodalService
                     $totalizador['deficiencias']['neurologico'] += (isset($formulario->deficiencias['neurologico']) ? intval($formulario->deficiencias['neurologico']) : 0);
                     $totalizador['deficiencias']['intelectual'] += (isset($formulario->deficiencias['intelectual']) ? intval($formulario->deficiencias['intelectual']) : 0);
 
-                    
+
                     $totalizador['programacoes_federacao']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
                     $totalizador['programacoes_federacao']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
                     $totalizador['programacoes_federacao']['evangelistica'] += (isset($formulario->programacoes['evangelistica']) ? intval($formulario->programacoes['evangelistica']) : 0);
                     $totalizador['programacoes_federacao']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
                     $totalizador['programacoes_federacao']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
-                    
-                    
+
+
                     $totalizador['programacoes_locais']['social'] += (isset($formulario->programacoes_locais['social']) ? intval($formulario->programacoes_locais['social']) : 0);
                     $totalizador['programacoes_locais']['oracao'] += (isset($formulario->programacoes_locais['oracao']) ? intval($formulario->programacoes_locais['oracao']) : 0);
                     $totalizador['programacoes_locais']['evangelistica'] += (isset($formulario->programacoes_locais['evangelistica']) ? intval($formulario->programacoes_locais['evangelistica']) : 0);
@@ -144,7 +142,7 @@ class TotalizadorFormularioSinodalService
             return $totalizador;
         } catch (\Throwable $th) {
             throw new Exception("Erro no Totalizador", 1);
-            
+
         }
     }
 }
