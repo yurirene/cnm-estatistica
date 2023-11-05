@@ -140,7 +140,6 @@ class FormularioFederacaoService
                     'tecnico' => 0,
                     'superior' => 0,
                     'pos' => 0,
-                    'desempregado' => 0,
                 ],
                 'estado_civil' => [
                     'solteiros' => 0,
@@ -183,7 +182,6 @@ class FormularioFederacaoService
                     $totalizador['escolaridade']['tecnico'] += (isset($formulario->escolaridade['tecnico']) ? intval($formulario->escolaridade['tecnico']) : 0);
                     $totalizador['escolaridade']['superior'] += (isset($formulario->escolaridade['superior']) ? intval($formulario->escolaridade['superior']) : 0);
                     $totalizador['escolaridade']['pos'] += (isset($formulario->escolaridade['pos']) ? intval($formulario->escolaridade['pos']) : 0);
-                    $totalizador['escolaridade']['desempregado'] += (isset($formulario->escolaridade['desempregado']) ? intval($formulario->escolaridade['desempregado']) : 0);
                     $totalizador['estado_civil']['solteiros'] += (isset($formulario->estado_civil['solteiros']) ? intval($formulario->estado_civil['solteiros']) : 0);
                     $totalizador['estado_civil']['casados'] += (isset($formulario->estado_civil['casados']) ? intval($formulario->estado_civil['casados']) : 0);
                     $totalizador['estado_civil']['divorciados'] += (isset($formulario->estado_civil['divorciados']) ? intval($formulario->estado_civil['divorciados']) : 0);
@@ -236,16 +234,15 @@ class FormularioFederacaoService
                 $porcentagem = round(($quantidade_entregue * 100) / $locais->where('status', 1)->count(), 2);
             }
 
+            $porcentagem_min = (float) Parametro::where('nome', 'min_federacao')->first()->valor;
             $data = ['porcentagem' => $porcentagem];
-            if ($porcentagem < 50) {
+            $data['minimo'] = $porcentagem_min;
+            if ($porcentagem < $porcentagem_min) {
                 $data['color'] = 'danger';
-                $data['texto'] = 'Quantidade Ruim (Tenha ao Menos 50%)';
-            } else if ($porcentagem >= 50 && $porcentagem <= 75) {
-                $data['color'] = 'Quantidade Mediana, mas pode melhorar';
-                $data['texto'] = 'Ainda não é o ideal, mas você já pode enviar e/ou atualizar depois';
+                $data['texto'] = "Quantidade Ruim (Tenha ao menos {$porcentagem_min}%)";
             } else {
                 $data['color'] = 'success';
-                $data['texto'] = 'Quantidade mínima Ideal';
+                $data['texto'] = 'Quantidade mínima alcançada';
             }
             return $data;
         } catch (\Throwable $th) {

@@ -64,10 +64,6 @@
                     30 a 35
                     <span class="badge badge-primary badge-pill"><b id="resumo-de30a35"></b></span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Desempregados
-                    <span class="badge badge-primary badge-pill"><b id="resumo-desempregado"></b></span>
-                </li>
             </ul>
         </p>
     </div>

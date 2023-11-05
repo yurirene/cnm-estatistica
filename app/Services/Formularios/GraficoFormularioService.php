@@ -24,7 +24,6 @@ class GraficoFormularioService
             'tecnico' => $dados->escolaridade['tecnico'] ?? 0,
             'superior' => $dados->escolaridade['superior'] ?? 0,
             'pos' => $dados->escolaridade['pos'] ?? 0,
-            'desempregado' => $dados->escolaridade['desempregado'] ?? 0,
             'solteiros' => $dados->estado_civil['solteiros'] ?? 0,
             'casados' => $dados->estado_civil['casados'] ?? 0,
             'divorciados' => $dados->estado_civil['divorciados'] ?? 0,
@@ -58,23 +57,23 @@ class GraficoFormularioService
                     [
                         'backgroundColor' => ['#003f5c', '#2f4b7c'],
                         'data' => self::processarDadosPorcentagem([
-                            $dados->perfil['ativos'] ?? 0, 
+                            $dados->perfil['ativos'] ?? 0,
                             $dados->perfil['cooperadores'] ?? 0
                         ])
                     ],
                     [
                         'backgroundColor' => ['#665191', '#a05195'],
                         'data' => self::processarDadosPorcentagem([
-                            $dados->perfil['homens'] ?? 0, 
+                            $dados->perfil['homens'] ?? 0,
                             $dados->perfil['mulheres'] ?? 0
                         ])
                     ],
                     [
                         'backgroundColor' => ['#d45087', '#f95d6a', '#ff7c43', '#ffa600'],
                         'data' => self::processarDadosPorcentagem([
-                            $dados->perfil['menor19'] ?? 0, 
-                            $dados->perfil['de19a23'] ?? 0 , 
-                            $dados->perfil['de24a29'] ?? 0 , 
+                            $dados->perfil['menor19'] ?? 0,
+                            $dados->perfil['de19a23'] ?? 0 ,
+                            $dados->perfil['de24a29'] ?? 0 ,
                             $dados->perfil['de30a35'] ?? 0
                         ])
                     ],
@@ -85,10 +84,10 @@ class GraficoFormularioService
                 'datasets' => [
                     [
                         'data' => self::processarDadosPorcentagem([
-                            $dados->programacoes['oracao'], 
-                            $dados->programacoes['social'], 
-                            $dados->programacoes['evangelistico'], 
-                            $dados->programacoes['espiritual'], 
+                            $dados->programacoes['oracao'],
+                            $dados->programacoes['social'],
+                            $dados->programacoes['evangelistico'],
+                            $dados->programacoes['espiritual'],
                             $dados->programacoes['recreativo']
                         ]),
                         'backgroundColor' => ['#003f5c','#58508d','#bc5090','#ff6361','#ffa600']
@@ -122,7 +121,7 @@ class GraficoFormularioService
             foreach($dados as $valor){
                 $total += $valor;
             }
-            
+
             $retorno = [];
 
             foreach ($dados as $valor) {
