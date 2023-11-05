@@ -164,23 +164,6 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-3 col-xl-3 col-md-6">
-                <div class="card shadow h-100">
-                    <div class="card-header bg-transparent">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Sócios Desempregados</h6>
-                            </div>
-                        </div>
-                    </div>
-                        @include('dashboard.partes.skeleton')
-                    <div class="card-body d-flex align-items-center">
-                        <div class="table-responsive">
-                            <canvas id="desempregados"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
 

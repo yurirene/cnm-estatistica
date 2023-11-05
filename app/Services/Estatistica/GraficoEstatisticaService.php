@@ -53,14 +53,6 @@ class GraficoEstatisticaService extends AbstractGrafico
             'tipo' => 'donut'
         ],
         [
-            'nome' => 'desempregados',
-            'coluna' => 'escolaridade',
-            'titulo' => 'Nº de Sócios',
-            'campos' => ['desempregado'],
-            'labels' => ['Desempregados'],
-            'tipo' => 'bar'
-        ],
-        [
             'nome' => 'deficiencias',
             'coluna' => 'deficiencias',
             'titulo' => 'Nº de Sócios',

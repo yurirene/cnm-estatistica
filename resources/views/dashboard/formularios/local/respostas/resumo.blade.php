@@ -11,7 +11,7 @@
             <div class="card card-body rounded shadow">
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
-                        Ano Referência: <b id="ano_referencia"></b> 
+                        Ano Referência: <b id="ano_referencia"></b>
                     </div>
                 </div>
                 <div class="row">
@@ -77,10 +77,6 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Com Pós-Graduação
                                     <span class="badge badge-primary badge-pill"><b id="pos"></b></span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Desempregados
-                                    <span class="badge badge-primary badge-pill"><b id="desempregado"></b></span>
                                 </li>
                             </ul>
                         </p>

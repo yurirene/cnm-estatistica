@@ -154,15 +154,14 @@ class FormularioSinodalService
             }
 
             $data = ['porcentagem' => $porcentagem];
-            if ($porcentagem < 60) {
+            $porcentagem_min = (float) Parametro::where('nome', 'min_sinodal')->first()->valor;
+            $data['minimo'] = $porcentagem_min;
+            if ($porcentagem < $porcentagem_min) {
                 $data['color'] = 'danger';
-                $data['texto'] = 'Quantidade Ruim (Tenha ao Menos 60%)';
-            } else if ($porcentagem >= 60 && $porcentagem <= 85) {
-                $data['color'] = 'Quantidade Mediana, mas pode melhorar';
-                $data['texto'] = 'Ainda não é o ideal, mas você já pode enviar';
+                $data['texto'] = "Quantidade Ruim (Tenha ao menos {$porcentagem_min}%)";
             } else {
                 $data['color'] = 'success';
-                $data['texto'] = 'Quantidade mínima Ideal';
+                $data['texto'] = 'Quantidade mínima alcançada';
             }
             return $data;
         } catch (\Throwable $th) {
@@ -229,7 +228,6 @@ class FormularioSinodalService
                     'tecnico' => 0,
                     'superior' => 0,
                     'pos' => 0,
-                    'desempregado' => 0,
                 ],
                 'estado_civil' => [
                     'solteiros' => 0,
@@ -279,7 +277,6 @@ class FormularioSinodalService
                 $totalizador['escolaridade']['tecnico'] += (isset($formulario->escolaridade['tecnico']) ? intval($formulario->escolaridade['tecnico']) : 0);
                 $totalizador['escolaridade']['superior'] += (isset($formulario->escolaridade['superior']) ? intval($formulario->escolaridade['superior']) : 0);
                 $totalizador['escolaridade']['pos'] += (isset($formulario->escolaridade['pos']) ? intval($formulario->escolaridade['pos']) : 0);
-                $totalizador['escolaridade']['desempregado'] += (isset($formulario->escolaridade['desempregado']) ? intval($formulario->escolaridade['desempregado']) : 0);
                 $totalizador['estado_civil']['solteiros'] += (isset($formulario->estado_civil['solteiros']) ? intval($formulario->estado_civil['solteiros']) : 0);
                 $totalizador['estado_civil']['casados'] += (isset($formulario->estado_civil['casados']) ? intval($formulario->estado_civil['casados']) : 0);
                 $totalizador['estado_civil']['divorciados'] += (isset($formulario->estado_civil['divorciados']) ? intval($formulario->estado_civil['divorciados']) : 0);

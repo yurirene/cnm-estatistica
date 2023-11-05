@@ -138,7 +138,7 @@
                         </div>
                     @endif
 
-                    @if($qualidade_entrega['porcentagem'] >=60)
+                    @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
                     <div class="btn-group pull-right">
                     {!! Form::submit((!isset($formulario) ? 'Enviar' : 'Atualizar'), ['class' => 'btn btn-success']) !!}
                     </div>

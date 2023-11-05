@@ -36,7 +36,6 @@
                             Até o Ens. Técnino: <b id="tecnico"></b><br>
                             Até o Ens. Superior: <b id="superior"></b><br>
                             Com Pós-Graduação: <b id="pos"></b><br>
-                            Desempregados: <b id="desempregados"></b><br>
                         </p>
                     </div>
                     <div class="col-md-2">

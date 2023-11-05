@@ -38,7 +38,6 @@
                 $('#tecnico').text(json.data.resumo.tecnico)
                 $('#superior').text(json.data.resumo.superior)
                 $('#pos').text(json.data.resumo.pos)
-                $('#desempregado').text(json.data.resumo.desempregado)
                 $('#solteiros').text(json.data.resumo.solteiros)
                 $('#casados').text(json.data.resumo.casados)
                 $('#divorciados').text(json.data.resumo.divorciados)
