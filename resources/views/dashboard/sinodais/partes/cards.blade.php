@@ -1,12 +1,19 @@
 
-<div class="card card-stats mb-4 mb-xl-0 shadow">
-    <div class="card-body">
+<div class="card card-stats mb-4 mb-xl-0 shadow h-100">
+    <div class="card-header h-100">
         <div class="row">
-            <div class="col text-center">
-                <h4 class="card-title text-uppercase text-muted mb-0">{{$sigla}} - <small><span class="badge badge-pill badge-{{ $status ? 'success' : 'danger' }}">{{ $status ? 'Ativo' : 'Inativo' }}</span></small></h4>
-                <span class="h5 font-weight-bold mb-0">{{$nome}}</span>
+                <div class="col text-center">
+                    <h4 class="card-title text-uppercase text-muted mb-0">{{$sigla}} -
+                        <small>
+                            <span class="badge badge-pill badge-{{ $status ? 'success' : 'danger' }}">
+                            {{ $status ? 'Ativo' : 'Inativo' }}
+                            </span>
+                        </small></h4>
+                    <span class="h5 font-weight-bold mb-0">{{$nome}}</span>
+                </div>
             </div>
-        </div>
+    </div>
+    <div class="card-body">
         <div class="row">
             <div class="col">
                 <ul class="list-unstyled ">
@@ -37,9 +44,16 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="card-footer p-2">
         <div class="row">
             <div class="col text-center">
-                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_informacoes_federacoes" data-nome="{{$nome}}" data-id="{{ $id }}">
+                <button type="button" class="btn btn-info btn-sm"
+                    data-toggle="modal"
+                    data-target="#modal_informacoes_federacoes"
+                    data-nome="{{$nome}}"
+                    data-id="{{ $id }}"
+                >
                     <i class="fas fa-plus"></i> Info
                   </button>
             </div>

@@ -53,6 +53,7 @@ class SinodalController extends Controller
             'federacoes' => SinodalService::getInformacoesFederacoesShow($sinodal),
             'informacoes' => SinodalService::getInformacoesOrganizacao($sinodal),
             'sinodal' => $sinodal,
+            'navegacaoSinodais' => SinodalService::navegacaoListaSinodais($sinodal->id)
         ]);
     }
 
