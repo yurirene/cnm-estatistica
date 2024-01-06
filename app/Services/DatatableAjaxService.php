@@ -13,6 +13,7 @@ use App\Models\Regiao;
 use App\Models\RegistroLogin;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\FormularioFederacaoService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -51,14 +52,19 @@ class DatatableAjaxService
             if (!$federacao) {
                 return datatables()::of([])->make();
             }
-            $informacoes = $federacao->locais->map(function($local) {
-                $ultimo_relatorio = $local->relatorios->last();
-                $total_socios = !is_null($ultimo_relatorio) ? $ultimo_relatorio->perfil['ativos'] + $ultimo_relatorio->perfil['cooperadores'] : 'Sem informaÃ§Ã£o';
-                $relatorio_entregue = (!is_null($ultimo_relatorio) && $ultimo_relatorio->ano_referencia == date('Y')) ? 'Entregue' : 'Pendente';
+            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+            $informacoes = $federacao->locais->map(function($local) use ($anoReferencia) {
+                $ultimoRelatorio = $local->relatorios->last();
+                $totalSocios = !is_null($ultimoRelatorio)
+                    ? $ultimoRelatorio->perfil['ativos'] + $ultimoRelatorio->perfil['cooperadores']
+                    : 'Sem informação';
+                $relatorioEntregue = (!is_null($ultimoRelatorio) && $ultimoRelatorio->ano_referencia == $anoReferencia)
+                    ? 'Entregue'
+                    : 'Pendente';
                 return [
                     'nome_ump' => $local->nome,
-                    'nro_socios' => $total_socios,
-                    'status_relatorio' => $relatorio_entregue
+                    'nro_socios' => $totalSocios,
+                    'status_relatorio' => $relatorioEntregue
                 ];
             });
             return datatables()::of($informacoes)->make();

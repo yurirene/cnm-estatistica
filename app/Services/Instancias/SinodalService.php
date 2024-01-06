@@ -301,5 +301,42 @@ class SinodalService
         }
     }
 
+    /**
+     * Retorna a lista de sinodais em sessão vinculadas ao usuário
+     *
+     * @return array
+     */
+    public static function getListaSinodais(): array
+    {
+        if (session()->has('lista_sinodais')) {
+            return session()->get('lista_sinodais');
+        }
+        $sinodais = Sinodal::select(['id', 'nome']);
+        if (!auth()->user()->admin) {
+            $sinodais = $sinodais->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
+        }
+        $listaSinodais = $sinodais->orderBy('nome')->get()->pluck('id')->toArray();
+
+        session()->put('lista_sinodais', $listaSinodais);
+        return $listaSinodais;
+    }
+
+    /**
+     * Retorna o id da próxima sinodal e da anterior para navegação na tela de detalhes
+     *
+     * @param string $sinodalAtual
+     * @return array
+     */
+    public static function navegacaoListaSinodais(string $sinodalAtual): array
+    {
+        $listaSinodais = self::getListaSinodais();
+        $chave = array_search($sinodalAtual, $listaSinodais);
+
+        return [
+            'anterior' => $chave-1 < 0 ? null : $listaSinodais[$chave-1],
+            'proxima' => isset($listaSinodais[$chave+1]) ? $listaSinodais[$chave+1] : null
+        ];
+    }
+
 
 }
