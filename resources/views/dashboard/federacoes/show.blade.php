@@ -4,7 +4,8 @@
 
 @include('dashboard.partes.head', [
     'titulo' => 'Informações da ' .$federacao->sigla,
-    'subtitulo' => $federacao->nome
+    'subtitulo' => $federacao->nome,
+    'botaoRetorno' => route('dashboard.federacoes.index')
 ])
 
 <div class="container-fluid mt--7">
@@ -12,15 +13,41 @@
         <div class="col-xl-5 mb-5 mb-xl-0">
             <div class="card shadow p-3 h-100">
                 <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0">Informações</h3>
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-md-6">
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary btn-sm  {{
+                                        is_null($navegacaoFederacoes['anterior'])
+                                        ? 'disabled'
+                                        : ''
+                                }}"
+                                href="{{route('dashboard.federacoes.show', ($navegacaoFederacoes['anterior'] ?? ''))}}"
+                                >
+                                    <i class="fas fa-arrow-left"></i> Anterior
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary btn-sm {{
+                                        is_null($navegacaoFederacoes['proxima'])
+                                        ? 'disabled'
+                                        : ''
+                                }}"
+                                href="{{route('dashboard.federacoes.show', ($navegacaoFederacoes['proxima'] ?? ''))}}"
+                                >
+                                    <i class="fas fa-arrow-right"></i> Próxima
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body h-100">
-                    <a class="btn btn-primary" href="{{route('dashboard.federacoes.index')}}"><i class="fas fa-arrow-left"></i> Voltar</a>
-                    
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="mb-3 text-center">Informações</h2>
+                        </div>
+                    </div>
                     <div class="row mt-3">
                         <div class="col">
                             <h3><span class="badge badge-primary">Nome:</span> {{ $federacao->nome }}</h3>
@@ -109,6 +136,6 @@
             return data.value + ' Sócios'
         },
     });
-    
+
 </script>
 @endpush
