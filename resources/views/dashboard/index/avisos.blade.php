@@ -65,7 +65,9 @@
                             <div class="col">
                                 <h4 class="card-title text-uppercase text-muted mb-0">{{$aviso['titulo']}}</h4>
                                 {!! Str::limit($aviso['texto'], 50) !!}
-                                <button type="button" class="btn btn-link p-0 abrir_aviso" data-dados="{{json_encode($aviso)}}">
+                                <button type="button" class="btn btn-link p-0 abrir_aviso"
+                                    data-dados="{{json_encode($aviso)}}"
+                                >
                                     Ver mais
                                 </button>
                             </div>
