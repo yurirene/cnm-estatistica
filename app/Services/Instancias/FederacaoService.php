@@ -268,4 +268,42 @@ class FederacaoService
             throw $th;
         }
     }
+
+
+    /**
+     * Retorna a lista de federacao em sessão vinculadas ao usuário
+     *
+     * @return array
+     */
+    public static function getListaFederacoes(): array
+    {
+        if (session()->has('lista_federacoes')) {
+            return session()->get('lista_federacoes');
+        }
+        $federacoes = Federacao::select(['id']);
+        if (!auth()->user()->admin) {
+            $federacoes = $federacoes->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id')->toArray());
+        }
+        $listaFederacoes = $federacoes->orderBy('nome')->get()->pluck('id')->toArray();
+
+        session()->put('lista_federacoes', $listaFederacoes);
+        return $listaFederacoes;
+    }
+
+    /**
+     * Retorna o id da próxima federacao e da anterior para navegação na tela de detalhes
+     *
+     * @param string $sinodalAtual
+     * @return array
+     */
+    public static function navegacaoListaFederacoes(string $sinodalAtual): array
+    {
+        $listaFederacoes = self::getListaFederacoes();
+        $chave = array_search($sinodalAtual, $listaFederacoes);
+
+        return [
+            'anterior' => $chave-1 < 0 ? null : $listaFederacoes[$chave-1],
+            'proxima' => isset($listaFederacoes[$chave+1]) ? $listaFederacoes[$chave+1] : null
+        ];
+    }
 }

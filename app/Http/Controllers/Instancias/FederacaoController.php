@@ -54,6 +54,7 @@ class FederacaoController extends Controller
             'umps' => FederacaoService::getInformacoesLocaisShow($federacao),
             'informacoes' => FederacaoService::getInformacoesFederacaoOrganizacao($federacao),
             'federacao' => $federacao,
+            'navegacaoFederacoes' => FederacaoService::navegacaoListaFederacoes($federacao->id)
         ]);
     }
 
