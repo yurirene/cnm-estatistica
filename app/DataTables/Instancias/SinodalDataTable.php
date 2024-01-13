@@ -52,7 +52,10 @@ class SinodalDataTable extends DataTable
      */
     public function query(Sinodal $model)
     {
-        return $model->newQuery()->query();
+        return $model->newQuery()->query()
+            ->when(request()->filled('organizadas'), function ($sql) {
+                return $sql->where('status', true);
+            });
     }
 
     /**
