@@ -77,6 +77,9 @@ class IgrejasDatatable extends DataTable
             ->when($this->verificarUsuariosDiretoria(), function ($sql) {
                 return $sql->daMinhaRegiao();
             })
+            ->when($this->verificarUsuariosSinodal(), function ($sql) {
+                return $sql->minhaSinodal();
+            })
             ->when(
                 !empty($filtro['status'])
                 && $filtro['status'] != 'T'
@@ -175,7 +178,11 @@ class IgrejasDatatable extends DataTable
      */
     public function filtros(): array
     {
-        $estados = Estado::daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
+        $estados = null;
+
+        if (!$this->verificarUsuariosSinodal()) {
+            $estados = Estado::daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
+        }
         $status = [
             'T' => 'Todos',
             'A' => 'Organizada',

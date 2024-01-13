@@ -61,4 +61,9 @@ class Local extends Model
     {
         return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
     }
+
+    public function scopeMinhaSinodal($query)
+    {
+        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
+    }
 }

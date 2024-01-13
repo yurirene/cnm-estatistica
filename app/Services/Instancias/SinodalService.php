@@ -159,9 +159,8 @@ class SinodalService
                 'total_federacoes' => $federacoes->where('status', true)->count(),
                 'total_umps' => ($total_umps == 0 && $umps->where('status', true)->count() > 0)
                     ? $umps->where('status', true)->count()
-                    : $total_umps . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>',
+                    : $total_umps,
                 'total_socios' => $total_socios
-                    . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
             ];
         } catch (\Throwable $th) {
             throw $th;

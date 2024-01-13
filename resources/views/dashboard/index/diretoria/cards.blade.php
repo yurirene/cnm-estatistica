@@ -236,7 +236,9 @@
                                 </div>
 
                                 <div class="col-6">
-                                    <a href="{{ route('dashboard.detalhamento.index', 'igrejas') }}?organizadas=1" class="btn btn-sm btn-link detalhe" data-tipo="total_umps">
+                                    <a href="{{ route('dashboard.detalhamento.index', 'igrejas') }}?organizadas=1"
+                                        class="btn btn-sm btn-link detalhe" data-tipo="total_umps"
+                                    >
                                         <i class="fas fa-plus"></i> Ver Mais
                                     </a>
                                 </div>

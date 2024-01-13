@@ -57,6 +57,9 @@ class SemSociedadesDatatable extends DataTable
             ->when($this->verificarUsuariosDiretoria(), function ($sql) {
                 return $sql->daMinhaRegiao();
             })
+            ->when($this->verificarUsuariosSinodal(), function ($sql) {
+                return $sql->minhaSinodal();
+            })
             ->when(
                 !empty($filtro['status']) && $filtro['status'] != 'T', function ($sql) use ($filtro){
                 return $sql->where('status', $filtro['status'] == 'A');
@@ -148,7 +151,11 @@ class SemSociedadesDatatable extends DataTable
      */
     public function filtros(): array
     {
-        $estados = Estado::daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
+        $estados = null;
+
+        if (!$this->verificarUsuariosSinodal()) {
+            $estados = Estado::daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
+        }
         $status = [
             'T' => 'Todos',
             'A' => 'Organizada',

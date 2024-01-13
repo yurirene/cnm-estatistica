@@ -56,7 +56,8 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'formularios-sinodais',
                     'tutoriais',
-                    'apps'
+                    'apps',
+                    'detalhamento'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',

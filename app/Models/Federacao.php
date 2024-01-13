@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 class Federacao extends Model
 {
@@ -45,7 +44,7 @@ class Federacao extends Model
 
     public function scopeMinhaSinodal($query)
     {
-        return $query->whereIn('sinodal_id', Auth::user()->sinodais->pluck('id'));
+        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
     }
 
     public function relatorios()

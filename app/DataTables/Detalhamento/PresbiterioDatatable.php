@@ -77,6 +77,9 @@ class PresbiterioDatatable extends DataTable
             ->when($this->verificarUsuariosDiretoria(), function ($sql) {
                 return $sql->daMinhaRegiao();
             })
+            ->when($this->verificarUsuariosSinodal(), function ($sql) {
+                return $sql->minhaSinodal();
+            })
             ->when(
                 !empty($filtro['status'])
                 && $filtro['status'] != 'T'
@@ -106,7 +109,7 @@ class PresbiterioDatatable extends DataTable
      *
      * @return boolean
      */
-    public function verificarUsuariosDiretoria() : bool
+    public function verificarUsuariosDiretoria(): bool
     {
         return auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
     }
@@ -117,9 +120,9 @@ class PresbiterioDatatable extends DataTable
      *
      * @return boolean
      */
-    public function verificarUsuariosSinodal() : bool
+    public function verificarUsuariosSinodal(): bool
     {
-        return auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
+        return auth()->user()->roles->first()->name == User::ROLE_SINODAL;
     }
 
     /**
@@ -180,7 +183,11 @@ class PresbiterioDatatable extends DataTable
      */
     public function filtros(): array
     {
-        $estados = Estado::daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
+        $estados = null;
+
+        if (!$this->verificarUsuariosSinodal()) {
+            $estados = Estado::daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
+        }
         $status = [
             'T' => 'Todos',
             'A' => 'Organizada',
