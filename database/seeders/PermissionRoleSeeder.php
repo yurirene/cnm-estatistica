@@ -36,7 +36,8 @@ class PermissionRoleSeeder extends Seeder
                     'sinodais',
                     'atividades',
                     'minhas-demandas',
-                    'tutoriais'
+                    'tutoriais',
+                    'detalhamento'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
