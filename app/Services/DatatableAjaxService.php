@@ -54,7 +54,7 @@ class DatatableAjaxService
             }
             $anoReferencia = FormularioFederacaoService::getAnoReferencia();
             $informacoes = $federacao->locais->map(function($local) use ($anoReferencia) {
-                $ultimoRelatorio = $local->relatorios->last();
+                $ultimoRelatorio = $local->relatorios->where('ano_referencia', $anoReferencia)->last();
                 $totalSocios = !is_null($ultimoRelatorio)
                     ? $ultimoRelatorio->perfil['ativos'] + $ultimoRelatorio->perfil['cooperadores']
                     : 'Sem informação';
