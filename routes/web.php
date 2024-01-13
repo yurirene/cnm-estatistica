@@ -18,6 +18,7 @@ use App\Http\Controllers\Instancias\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
 use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
+use App\Http\Controllers\HelpdeskController;
 use App\Http\Controllers\Instancias\LocalController;
 use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
@@ -409,4 +410,11 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     });
 
+});
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'helpdesk'], function () {
+        Route::resource('/helpdesk', HelpdeskController::class)
+            ->names('helpdesk')
+            ->except(['update', 'delete']);
+    });
 });

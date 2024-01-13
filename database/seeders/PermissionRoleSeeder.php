@@ -28,7 +28,8 @@ class PermissionRoleSeeder extends Seeder
                     'digestos',
                     'tutoriais',
                     'acesso-apps',
-                    'avisos'
+                    'avisos',
+                    'helpdesk'
                 ]
             ],
             'diretoria' => [
@@ -37,7 +38,8 @@ class PermissionRoleSeeder extends Seeder
                     'atividades',
                     'minhas-demandas',
                     'tutoriais',
-                    'detalhamento'
+                    'detalhamento',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -57,7 +59,8 @@ class PermissionRoleSeeder extends Seeder
                     'formularios-sinodais',
                     'tutoriais',
                     'apps',
-                    'detalhamento'
+                    'detalhamento',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -78,7 +81,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'umps-locais',
                     'formularios-federacoes',
-                    'tutoriais'
+                    'tutoriais',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -95,7 +99,8 @@ class PermissionRoleSeeder extends Seeder
             'local' => [
                 'resources' => [
                     'formularios-locais',
-                    'tutoriais'
+                    'tutoriais',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -109,21 +114,24 @@ class PermissionRoleSeeder extends Seeder
             'tesouraria' => [
                 'resources' => [
                     'comprovante-aci',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ]
             ],
             'executiva' => [
                 'resources' => [
                     'demandas',
                     'minhas-demandas',
-                    'digestos'
+                    'digestos',
+                    'helpdesk'
                 ]
             ],
             'secretaria_eventos' => [
                 'resources' => [
                     'atividades',
                     'eventos',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -136,7 +144,8 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_evangelismo' => [
                 'resources' => [
                     'atividades',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -150,7 +159,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'atividades',
                     'secretaria-produtos',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -163,7 +173,8 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_responsabilidade' => [
                 'resources' => [
                     'atividades',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -176,7 +187,8 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_comunicacao' => [
                 'resources' => [
                     'atividades',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ]
             ],
             'secretaria_estatistica' => [
@@ -184,7 +196,8 @@ class PermissionRoleSeeder extends Seeder
                     'atividades',
                     'secretaria-estatistica',
                     'minhas-demandas',
-                    'avisos'
+                    'avisos',
+                    'helpdesk'
                 ],
                 'permissions' => [
                     'dashboard.datatables.estatistica.formularios-sinodais',
@@ -195,7 +208,8 @@ class PermissionRoleSeeder extends Seeder
             'secretaria_educacao_crista' => [
                 'resources' => [
                     'atividades',
-                    'minhas-demandas'
+                    'minhas-demandas',
+                    'helpdesk'
                 ]
             ],
         ];
