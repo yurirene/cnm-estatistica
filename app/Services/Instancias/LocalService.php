@@ -2,9 +2,7 @@
 
 namespace App\Services\Instancias;
 
-use App\Models\Estado;
 use App\Models\Federacao;
-use App\Models\FormularioLocal;
 use App\Models\Local;
 use App\Services\LogErroService;
 use App\Services\UserService;
@@ -13,7 +11,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class LocalService
 {
@@ -144,7 +141,8 @@ class LocalService
             }
             $total_socios = intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
             return [
-                'total_socios' => $total_socios . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
+                'total_socios' => $total_socios
+                    . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
             ];
         } catch (\Throwable $th) {
             throw $th;
