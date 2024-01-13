@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class Local extends Model
 {
     use GenericTrait, SoftDeletes;
-    
+
     protected $table = 'locais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
@@ -51,9 +51,19 @@ class Local extends Model
     {
         return $this->hasMany(FormularioLocal::class, 'local_id');
     }
-    
+
     public function getDataOrganizacaoFormatadaAttribute()
     {
         return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+    }
+
+    public function scopeDaMinhaRegiao($query)
+    {
+        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
+    }
+
+    public function scopeMinhaSinodal($query)
+    {
+        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
     }
 }

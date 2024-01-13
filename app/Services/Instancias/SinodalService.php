@@ -10,6 +10,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Formularios\FormularioSinodalService;
 use App\Services\LogErroService;
 use App\Services\UserService;
 use Carbon\Carbon;
@@ -128,10 +129,13 @@ class SinodalService
     public static function getTotalizadores()
     {
         try {
-            $sinodal = Auth::user()->sinodais->first();
+            $sinodal = auth()->user()->sinodais->first();
             $federacoes = Federacao::where('sinodal_id', $sinodal->id)->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
-            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->get();
+            $anoReferencia = FormularioSinodalService::getAnoReferencia();
+            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
+                ->where('ano_referencia', $anoReferencia)
+                ->get();
             if (!$formularios) {
                 return [
                     'total_presbiterios' => $federacoes->count(),
@@ -153,8 +157,10 @@ class SinodalService
                 'total_igrejas' => $umps->count(),
                 'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
                 'total_federacoes' => $federacoes->where('status', true)->count(),
-                'total_umps' => ($total_umps == 0 && $umps->where('status', true)->count() > 0) ? $umps->where('status', true)->count() : $total_umps . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>',
-                'total_socios' => $total_socios . ' <small style="font-size: 9px;">(Retirado do Formulário Estatístico)</small>'
+                'total_umps' => ($total_umps == 0 && $umps->where('status', true)->count() > 0)
+                    ? $umps->where('status', true)->count()
+                    : $total_umps,
+                'total_socios' => $total_socios
             ];
         } catch (\Throwable $th) {
             throw $th;
@@ -201,15 +207,27 @@ class SinodalService
     public static function getInformacoesOrganizacao(Sinodal $sinodal) : array
     {
         try {
-            $formulario = FormularioSinodal::where('sinodal_id', $sinodal->id)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->first();
+            $anoReferencia = FormularioSinodalService::getAnoReferencia();
+            $formulario = FormularioSinodal::where('sinodal_id', $sinodal->id)
+                ->where('ano_referencia', $anoReferencia)
+                ->first();
 
             $total_umps_organizada = self::getTotalUmpsOrganizadas($sinodal, $formulario);
             $total_federacoes_organizada = self::getTotalFederacoesOrganizadas($sinodal, $formulario);
 
 
-            $total_umps_organizada = self::getPorcentagem($total_umps_organizada['total'], $total_umps_organizada['organizadas']);
-            $total_federacoes_organizada = self::getPorcentagem($total_federacoes_organizada['total'], $total_federacoes_organizada['organizadas']);
-            $total_igrejas_n_sociedades = self::getPorcentagem($sinodal->locais->count(), $sinodal->locais->where('outro_modelo', true)->count());
+            $total_umps_organizada = self::getPorcentagem(
+                $total_umps_organizada['total'],
+                $total_umps_organizada['organizadas']
+            );
+            $total_federacoes_organizada = self::getPorcentagem(
+                $total_federacoes_organizada['total'],
+                $total_federacoes_organizada['organizadas']
+            );
+            $total_igrejas_n_sociedades = self::getPorcentagem(
+                $sinodal->locais->count(),
+                $sinodal->locais->where('outro_modelo', true)->count()
+            );
 
             return [
                 'total_umps_organizada' => $total_umps_organizada,
@@ -229,7 +247,8 @@ class SinodalService
     public static function getTotalUmpsOrganizadas(Sinodal $sinodal, FormularioSinodal $formulario = null) : array
     {
         if (!is_null($formulario)) {
-            $total = ($formulario->estrutura['ump_organizada'] ?? 0) + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
+            $total = ($formulario->estrutura['ump_organizada'] ?? 0)
+                + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
             return [
                 'total' => $total,
                 'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0
@@ -243,7 +262,8 @@ class SinodalService
     public static function getTotalFederacoesOrganizadas(Sinodal $sinodal, FormularioSinodal $formulario = null) : array
     {
         if (!is_null($formulario)) {
-            $total = ($formulario->estrutura['federacao_organizada'] ?? 0) + ($formulario->estrutura['federacao_nao_organizada'] ?? 0);
+            $total = ($formulario->estrutura['federacao_organizada'] ?? 0)
+                + ($formulario->estrutura['federacao_nao_organizada'] ?? 0);
             return [
                 'total' => $total,
                 'organizadas' => $formulario->estrutura['federacao_organizada'] ?? 0
@@ -268,28 +288,31 @@ class SinodalService
     {
         try {
             $federacoes = $sinodal->federacoes;
-            $info_federacao = [];
+            $infoFederacao = [];
+
+            $anoReferencia = FormularioSinodalService::getAnoReferencia();
             foreach ($federacoes as $federacao) {
-                $formulario = FormularioFederacao::where('federacao_id', $federacao->id)->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)->first();
-                $total_umps_organizada = FederacaoService::getTotalUmpsOrganizadas($federacao, $formulario);;
+                $formulario = FormularioFederacao::where('federacao_id', $federacao->id)
+                    ->where('ano_referencia', $anoReferencia)
+                    ->first();
+                $totalUmpsOrganizada = FederacaoService::getTotalUmpsOrganizadas($federacao, $formulario);
 
-                $utlimo_formulario = $federacao->relatorios->last();
-
-                $total_socios = 0;
-                if (!is_null($utlimo_formulario)) {
-                    $total_socios = intval($utlimo_formulario->perfil['ativos'] ?? 0) + intval($utlimo_formulario->perfil['cooperadores'] ?? 0);
+                $totalSocios = 0;
+                if (!is_null($formulario)) {
+                    $totalSocios = intval($formulario->perfil['ativos'] ?? 0)
+                        + intval($formulario->perfil['cooperadores'] ?? 0);
                 }
 
-                $info_federacao[] = [
+                $infoFederacao[] = [
                     'id' => $federacao->id,
                     'nome' => $federacao->nome,
                     'sigla' => $federacao->sigla,
-                    'numero_umps' => $total_umps_organizada['organizadas'] . ' de ' . $total_umps_organizada['total'],
-                    'numero_socios' => $total_socios,
+                    'numero_umps' => $totalUmpsOrganizada['organizadas'] . ' de ' . $totalUmpsOrganizada['total'],
+                    'numero_socios' => $totalSocios,
                     'status' => $federacao->status
                 ];
             }
-            return $info_federacao;
+            return $infoFederacao;
 
         } catch (\Throwable $th) {
             LogErroService::registrar([

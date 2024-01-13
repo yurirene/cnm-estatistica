@@ -2,18 +2,27 @@
 <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
     <div class="container-fluid">
         <!-- Brand -->
-        <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="{{ route('home') }}">{{ __('Dashboard') }}</a>
+        <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
+            href="{{ route('home') }}"
+        >
+            {{ __('Dashboard') }}
+        </a>
         <!-- Form -->
         <!-- User -->
         <ul class="navbar-nav align-items-center d-none d-md-flex">
             <li class="nav-item dropdown">
-                <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link pr-0"
+                    href="#" role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                >
                     <div class="media align-items-center">
-                        <span class="avatar avatar-sm rounded-circle">
-                            <img alt="Image placeholder" src="/img/azul.jpg">
-                        </span>
                         <div class="media-body ml-2 d-none d-lg-block">
-                            <span class="mb-0 text-sm  font-weight-bold">{{ auth()->user()->name }}</span>
+                            <span class="mb-0 text-sm  font-weight-bold">
+                                <i class="fas fa-user-circle mr-1"></i>
+                                {{ auth()->user()->name }}
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -46,14 +55,20 @@
             <div class="modal-body">
                 <div class="form-group{{ $errors->has('antiga_senha') ? ' has-error' : '' }}">
                     {!! Form::label('antiga_senha', 'Senha Antiga', ['class' => 'control-label']) !!}
-                    {!! Form::password('antiga_senha', ['class' => 'form-control', 'required' => 'required', 'autocomplete' => 'off']) !!}
+                    {!! Form::password(
+                        'antiga_senha',
+                        ['class' => 'form-control', 'required' => 'required', 'autocomplete' => 'off']
+                    ) !!}
                     <small class="text-danger">{{ $errors->first('antiga_senha') }}</small>
                 </div>
                 <div class="form-group{{ $errors->has('nova_senha') ? ' has-error' : '' }}">
                 {!! Form::label('nova_senha', 'Nova Senha', ['class' => 'control-label']) !!}
-                {!! Form::password('nova_senha', ['class' => 'form-control', 'required' => 'required', 'autocomplete' => 'off']) !!}
+                {!! Form::password(
+                    'nova_senha',
+                    ['class' => 'form-control', 'required' => 'required', 'autocomplete' => 'off']
+                ) !!}
                 <small class="text-danger">{{ $errors->first('nova_senha') }}</small>
-                
+
                 </div>
             </div>
             <div class="modal-footer">

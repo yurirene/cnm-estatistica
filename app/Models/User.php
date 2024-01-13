@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pesquisas\Pesquisa;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,12 +36,24 @@ class User extends Authenticatable
     ];
 
     public const ROLES_SECRETARIOS = [
-        'secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade'
+        'secretaria_eventos',
+        'secreatria_produtos',
+        'secretaria_evangelismo',
+        'secretaria_responsabilidade'
     ];
 
+
     public const ROLES_INSTANCIAS = [
-        'sinodal', 'federacao', 'local'
+        self::ROLE_SINODAL,
+        self::ROLE_FEDERACAO,
+        self::ROLE_LOCAL
     ];
+
+    public const ROLE_DIRETORIA = 'diretoria';
+    public const ROLE_SINODAL = 'sinodal';
+    public const ROLE_FEDERACAO = 'federacao';
+    public const ROLE_LOCAL = 'local';
+    public const ROLE_ADMINISTRADOR = 'administrador';
 
     public function regioes()
     {
@@ -79,11 +92,11 @@ class User extends Authenticatable
 
     public function instancia()
     {
-        if ($this->hasRole('sinodal')) {
+        if ($this->hasRole(self::ROLE_SINODAL)) {
             return $this->sinodais();
-        } else if ($this->hasRole('federacao')) {
+        } elseif ($this->hasRole(self::ROLE_FEDERACAO)) {
             return $this->federacoes();
-        } else if ($this->hasRole('local')) {
+        } elseif ($this->hasRole(self::ROLE_LOCAL)) {
             return $this->locais();
         }
     }
@@ -101,19 +114,19 @@ class User extends Authenticatable
         })
         ->when(in_array('diretoria',$perfil_usuario), function($sql) {
             return $sql->whereHas('sinodais', function ($q) {
-                return $q->whereIn('sinodais.regiao_id', Auth::user()->regioes->pluck('id')->toArray());
+                return $q->whereIn('sinodais.regiao_id', auth()->user()->regioes->pluck('id')->toArray());
             })->orWhereHas('roles', function ($q) {
-                return $q->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
+                return $q->whereIn('name', self::ROLES_SECRETARIOS);
             });
         })
         ->when(in_array('sinodal',$perfil_usuario), function($sql) use ($param_busca) {
             return $sql->$param_busca('federacoes', function ($q) {
-                return $q->whereIn('federacoes.sinodal_id', Auth::user()->sinodais->pluck('id')->toArray());
+                return $q->whereIn('federacoes.sinodal_id', auth()->user()->sinodais->pluck('id')->toArray());
             });
         })
         ->when(in_array('federacao',$perfil_usuario), function($sql) use ($param_busca) {
             return $sql->$param_busca('locais', function ($q) {
-                return $q->whereIn('locais.federacao_id', Auth::user()->federacoes->pluck('id')->toArray());
+                return $q->whereIn('locais.federacao_id', auth()->user()->federacoes->pluck('id')->toArray());
             });
         });
 
@@ -121,15 +134,15 @@ class User extends Authenticatable
 
     public function getInstanciaFormatadaAttribute()
     {
-        if ($this->roles->first()->name == 'administrador') {
+        if ($this->roles->first()->name == self::ROLE_ADMINISTRADOR) {
             return 'Administrador';
-        } else if ($this->roles->first()->name == 'diretoria') {
+        } elseif ($this->roles->first()->name == self::ROLE_DIRETORIA) {
             return 'Diretoria';
-        } else if ($this->roles->first()->name == 'sinodal') {
+        } elseif ($this->roles->first()->name == self::ROLE_SINODAL) {
             return 'Sinodal';
-        } else if ($this->roles->first()->name == 'federacao') {
+        } elseif ($this->roles->first()->name == self::ROLE_FEDERACAO) {
             return 'Federação';
-        } else if ($this->roles->first()->name == 'local') {
+        } elseif ($this->roles->first()->name == self::ROLE_LOCAL) {
             return 'Local';
         }
     }

@@ -38,14 +38,20 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <div class="icon icon-shape bg-primary text-white rounded-circle shadow" style="height: 100px; width: 100px">
+                            <div class="icon icon-shape bg-primary text-white rounded-circle shadow"
+                                style="height: 100px; width: 100px"
+                            >
                                 <i class="fas fa-medal" style="font-size: 50px;"></i>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <h2 class="text-center mt-3"><span class="badge badge-primary" style="font-size: 20px;" >{{ $sinodal->ranking ? $sinodal->ranking->posicao : '0' }}°</span></h2>
+                            <h2 class="text-center mt-3">
+                                <span class="badge badge-primary" style="font-size: 20px;" >
+                                    {{ $sinodal->ranking ? $sinodal->ranking->posicao : '0' }}°
+                                </span>
+                            </h2>
                         </div>
                     </div>
                 </div>
@@ -61,7 +67,10 @@
                         <div class="col">
                             <ul class="nav nav-pills justify-content-end">
                                 <li class="nav-item mr-2 mr-md-0">
-                                    <a href="#" class="nav-link py-2 px-3 active"  data-toggle="modal" data-target="#modalEditar">
+                                    <a href="#" class="nav-link py-2 px-3 active"
+                                        data-toggle="modal"
+                                        data-target="#modalEditar"
+                                    >
                                         <span class="d-none d-md-block">Editar</span>
                                     </a>
                                 </li>
@@ -72,10 +81,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h3><span class="badge badge-primary">Nome:</span> {{ $sinodal->nome }}</h3>
-                            <h3><span class="badge badge-primary">Sínodo:</span> {{ $sinodal->sinodo }}</h3>
-                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $sinodal->data_organizacao_formatada }}</h3>
-                            <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $sinodal->midias_sociais }}</h3>
+                            <h3>
+                                <span class="badge badge-primary">Nome:</span>
+                                {{ $sinodal->nome }}
+                            </h3>
+                            <h3>
+                                <span class="badge badge-primary">Sínodo:</span>
+                                {{ $sinodal->sinodo }}
+                            </h3>
+                            <h3>
+                                <span class="badge badge-primary">Data de Organização:</span>
+                                {{ $sinodal->data_organizacao_formatada }}
+                            </h3>
+                            <h3>
+                                <span class="badge badge-primary">Redes Sociais:</span>
+                                {{ $sinodal->midias_sociais }}
+                            </h3>
                         </div>
                     </div>
                 </div>
@@ -129,7 +150,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {!! Form::model($sinodal, ['url' => route('dashboard.sinodais.update-info', $sinodal->id), 'method' => 'PUT']) !!}
+            {!! Form::model($sinodal, [
+                'url' => route('dashboard.sinodais.update-info', $sinodal->id),
+                'method' => 'PUT'
+            ]) !!}
             <div class="modal-body">
                 <div class="form-group{{ $errors->has('nome') ? ' has-error' : '' }}">
                     {!! Form::label('nome', 'Nome') !!}
@@ -143,7 +167,11 @@
                 </div>
                 <div class="form-group{{ $errors->has('data_organizacao') ? ' has-error' : '' }}">
                     {!! Form::label('data_organizacao', 'Data da Organização') !!}
-                    {!! Form::text('data_organizacao', null, ['class' => 'form-control isDate', 'required' => 'required']) !!}
+                    {!! Form::text(
+                        'data_organizacao',
+                        null,
+                        ['class' => 'form-control isDate', 'required' => 'required']
+                    ) !!}
                     <small class="text-danger">{{ $errors->first('data_organizacao') }}</small>
                 </div>
                 <div class="form-group{{ $errors->has('midias_sociais') ? ' has-error' : '' }}">

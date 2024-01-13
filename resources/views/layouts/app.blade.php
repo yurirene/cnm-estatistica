@@ -259,6 +259,7 @@
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
         })(jQuery)
+        $('.isTelefone').mask('(99)99999-9999');
     </script>
     <script>
         $(document).ready(function() {
