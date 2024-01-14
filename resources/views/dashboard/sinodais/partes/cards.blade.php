@@ -53,6 +53,8 @@
                     data-target="#modal_informacoes_federacoes"
                     data-nome="{{$nome}}"
                     data-id="{{ $id }}"
+                    data-usuario="{{ $usuario }}"
+                    data-usuarioid="{{ $usuarioId }}"
                 >
                     <i class="fas fa-plus"></i> Info
                   </button>

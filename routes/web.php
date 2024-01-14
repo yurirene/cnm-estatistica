@@ -81,6 +81,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->names('usuarios');
         Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])
             ->name('usuarios.reset-senha');
+
+        Route::get('/usuarios-senha-resetar/{usuario}', [UserController::class, 'resetarSenha'])
+            ->name('usuarios.resetar-senha');
         Route::post('/check-usuario', [UserController::class, 'checkUser'])
             ->name('usuarios.check-usuario');
     });

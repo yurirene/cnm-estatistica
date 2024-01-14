@@ -54,17 +54,20 @@ class DatatableAjaxService
             }
             $anoReferencia = FormularioFederacaoService::getAnoReferencia();
             $informacoes = $federacao->locais->map(function($local) use ($anoReferencia) {
-                $ultimoRelatorio = $local->relatorios->where('ano_referencia', $anoReferencia)->last();
+                $ultimoRelatorio = $local->relatorios->last();
                 $totalSocios = !is_null($ultimoRelatorio)
                     ? $ultimoRelatorio->perfil['ativos'] + $ultimoRelatorio->perfil['cooperadores']
                     : 'Sem informação';
                 $relatorioEntregue = (!is_null($ultimoRelatorio) && $ultimoRelatorio->ano_referencia == $anoReferencia)
                     ? 'Entregue'
                     : 'Pendente';
+                $usuario = $local->usuario->first();
                 return [
                     'nome_ump' => $local->nome,
                     'nro_socios' => $totalSocios,
-                    'status_relatorio' => $relatorioEntregue
+                    'status_relatorio' => $relatorioEntregue,
+                    'usuario_email' => $usuario->email,
+                    'usuario_id' => $usuario->id
                 ];
             });
             return datatables()::of($informacoes)->make();

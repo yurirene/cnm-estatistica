@@ -303,13 +303,17 @@ class SinodalService
                         + intval($formulario->perfil['cooperadores'] ?? 0);
                 }
 
+                $usuario = $federacao->usuario->first();
+
                 $infoFederacao[] = [
                     'id' => $federacao->id,
                     'nome' => $federacao->nome,
                     'sigla' => $federacao->sigla,
                     'numero_umps' => $totalUmpsOrganizada['organizadas'] . ' de ' . $totalUmpsOrganizada['total'],
                     'numero_socios' => $totalSocios,
-                    'status' => $federacao->status
+                    'status' => $federacao->status,
+                    'usuario' => $usuario->email,
+                    'usuarioId' => $usuario->id
                 ];
             }
             return $infoFederacao;
