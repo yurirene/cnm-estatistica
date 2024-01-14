@@ -174,13 +174,22 @@
             </button>
         </div>
         <div class="modal-body">
-            <div class="table-responsive">
-                <table id="informacoes-federacao-table" class="table-striped" style="width: 100%">
+            <b>Usuário:</b> <span id="usuario_federacao"></span>
+            <a href="#"
+                id="botao_modal_resetar_senha"
+                class="btn btn-danger btn-sm text-center"
+            >
+                <i class="fas fa-key"></i> Resetar
+            </a>
+            <div class="table-responsive mt-3">
+                <table id="informacoes-federacao-table" class="table table-striped" style="width: 100%">
                     <thead>
                         <tr>
                             <th class="text-center">UMP</th>
                             <th class="text-center">Nº Sócios</th>
                             <th class="text-center">Relatório</th>
+                            <th class="text-center">Usuário</th>
+                            <th class="text-center">Senha</th>
                         </tr>
                     </thead>
                 </table>
@@ -196,17 +205,22 @@
 
 @push('js')
 <script>
+    const ROTA_RESET_SENHA = "{{ route('dashboard.usuarios.resetar-senha', ':id') }}";
     $(function() {
         var url = '{{ route("dashboard.datatables.informacao-federacoes", ":id") }}'
         $('#modal_informacoes_federacoes').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var id = button.data('id')
             var nome = button.data('nome')
+            var usuario = button.data('usuario')
+            var usuarioId = button.data('usuarioid')
             var modal = $(this)
 
             let rota = url.replace(':id', id);
 
             modal.find('#sigla_federacao').text(nome);
+            modal.find('#usuario_federacao').text(usuario);
+            modal.find('#botao_modal_resetar_senha').attr('href', ROTA_RESET_SENHA.replace(':id', usuarioId))
 
             carregarDatatable(rota);
 
@@ -224,6 +238,16 @@
                 {data: 'nome_ump'},
                 {data: 'nro_socios'},
                 {data: 'status_relatorio'},
+                {data: 'usuario_email'},
+                {
+                    render: function (data, type, result) {
+                        return `<a href="${ROTA_RESET_SENHA.replace(':id', result.usuario_id)}"
+                            class="btn btn-danger btn-sm text-center"
+                        >
+                            <i class="fas fa-key"></i> Resetar
+                        </a>`;
+                    }
+                },
             ]
         });
         datatable.ajax.url(url).load();

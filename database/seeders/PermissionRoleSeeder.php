@@ -50,7 +50,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.pesquisas.locais',
                     'dashboard.pesquisas.acompanhar',
                     'dashboard.datatables.formularios-entregues',
-                    'dashboard.formularios-sinodal.export'
+                    'dashboard.formularios-sinodal.export',
+                    'dashboard.usuarios.resetar-senha'
                 ]
             ],
             'sinodal' => [
@@ -218,9 +219,15 @@ class PermissionRoleSeeder extends Seeder
 
             foreach ($roles_permissions as $role_slug => $permissions_array) {
                 $role = Role::where('slug', $role_slug)->first();
-                $permissions = Permission::whereIn('resource', $permissions_array['resources'])->get()->pluck('id')->toArray();
+                $permissions = Permission::whereIn('resource', $permissions_array['resources'])
+                    ->get()
+                    ->pluck('id')
+                    ->toArray();
                 if (isset($permissions_array['permissions'])) {
-                    $array_permission = Permission::whereIn('slug', $permissions_array['permissions'])->get()->pluck('id')->toArray();
+                    $array_permission = Permission::whereIn('slug', $permissions_array['permissions'])
+                        ->get()
+                        ->pluck('id')
+                        ->toArray();
                     array_push($permissions, ...$array_permission);
                 }
                 $role->syncPermissions($permissions);
