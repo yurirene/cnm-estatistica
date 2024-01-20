@@ -30,6 +30,7 @@
         </div>
         @endif
         @canAtLeast(['dashboard.federacoes.index'])
+        @if(!DashboardHelper::entregouComprovante())
         <div class="row mt-3">
             <div class="col">
                 <div class="card card-stats mb-4 mb-xl-0">
@@ -50,6 +51,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @endCanAtLeast
         @foreach(DashboardHelper::getAvisosUsuario() as $aviso)
         <div class="row mt-3">
