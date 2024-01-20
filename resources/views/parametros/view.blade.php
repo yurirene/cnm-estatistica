@@ -1,5 +1,5 @@
 @if ($parametro['tipo'] == 'switch')
-<div class="col-md-3">
+<div class="col-md-6">
 
     <span>{{ $parametro['label'] }}</span><br>
     <input type="checkbox"
@@ -15,10 +15,14 @@
 </div>
 @endif
 @if ($parametro['tipo'] == 'text')
-<div class="col-md-3">
+<div class="col-md-6">
     <label>{{ $parametro['label'] }}</label>
     <div class="input-group mb-3">
-        <input class="form-control parametro-valor" type="text" value="{{ $parametro['valor'] }}" data-id="{{ $parametro['id'] }}">
+        <input class="form-control parametro-valor"
+            type="text"
+            value="{{ $parametro['valor'] }}"
+            data-id="{{ $parametro['id'] }}"
+        >
         <div class="input-group-append">
             <span class="input-group-text">
                 <button class="btn btn-success btn-parametro m-0 py-0 px-2" >
