@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instancias;
 
 use App\DataTables\Instancias\FederacaoDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreFederacaoRequest;
 use App\Models\Federacao;
 use App\Services\Instancias\FederacaoService;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class FederacaoController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreFederacaoRequest $request)
     {
         try {
             FederacaoService::store($request);
