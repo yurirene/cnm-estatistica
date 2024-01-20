@@ -2,25 +2,17 @@
 
 namespace App\Services\Formularios;
 
-use App\Imports\FormularioSinodalImport;
-use App\Models\Estado;
+use App\Helpers\FormHelper;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
-use App\Models\FormularioLocal;
-use App\Models\Local;
 use App\Models\Parametro;
-use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Facades\Excel;
 
 class FormularioSinodalService
 {
@@ -263,7 +255,7 @@ class FormularioSinodalService
             ];
 
             foreach ($formularios as $formulario) {
-                $totalizador['aci'] += isset($formulario->aci['valor']) ? floatval($formulario->aci['valor']) : 0;
+                $totalizador['aci'] += isset($formulario->aci['valor']) ? FormHelper::converterParaFloat($formulario->aci['valor']) : 0;
                 $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
                 $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
                 $totalizador['perfil']['homens'] += (isset($formulario->perfil['homens']) ? intval($formulario->perfil['homens']) : 0);
