@@ -2,10 +2,12 @@
 
 namespace App\Helpers;
 
+use App\Models\ComprovanteACI;
 use App\Models\Parametro;
 use App\Services\AdministradorService;
 use App\Services\Instancias\DiretoriaService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\FormularioFederacaoService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\SinodalService;
@@ -75,6 +77,23 @@ class DashboardHelper
         return $instancia->relatorios()->where('ano_referencia', $ano)->get()->isNotEmpty();
     }
 
+    /**
+     * Verifica se anexou o comprovante de ACI
+     * usado em avisos
+     *
+     * @return boolean
+     */
+    public static function entregouComprovante(): bool
+    {
+        $instancia = auth()->user()->instancia() ? auth()->user()->instancia()->first() : null;
+        if (!$instancia) {
+            return true;
+        }
+        $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+        return ComprovanteACI::where('sinodal_id', $instancia->id)
+            ->where('ano', $anoReferencia)
+            ->count();
+    }
 
     public static function getAvisosUsuario(): array
     {
