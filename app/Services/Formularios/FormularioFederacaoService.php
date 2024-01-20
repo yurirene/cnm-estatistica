@@ -2,6 +2,7 @@
 
 namespace App\Services\Formularios;
 
+use App\Helpers\FormHelper;
 use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
@@ -119,7 +120,9 @@ class FormularioFederacaoService
     {
         $locais = Local::where('federacao_id', $id)->get()->pluck('id');
         try {
-            $formularios = FormularioLocal::whereIn('local_id', $locais)->where('ano_referencia', self::getAnoReferencia())->get();
+            $formularios = FormularioLocal::whereIn('local_id', $locais)
+                ->where('ano_referencia', self::getAnoReferencia())
+                ->get();
 
             $totalizador = [
                 'total_formularios' => $formularios->count(),
@@ -168,7 +171,7 @@ class FormularioFederacaoService
             ];
 
             foreach ($formularios as $formulario) {
-                    $totalizador['aci'] += isset($formulario->aci['valor']) ? floatval($formulario->aci['valor']) : 0;
+                    $totalizador['aci'] += isset($formulario->aci['valor']) ? FormHelper::converterParaFloat($formulario->aci['valor']) : 0;
                     $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
                     $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
                     $totalizador['perfil']['homens'] += (isset($formulario->perfil['homens']) ? intval($formulario->perfil['homens']) : 0);
