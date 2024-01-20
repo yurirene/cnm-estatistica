@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instancias;
 
 use App\DataTables\Instancias\LocalDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreLocalRequest;
 use App\Models\Local;
 use App\Services\Instancias\LocalService;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class LocalController extends Controller
         return view('dashboard.locais.form');
     }
 
-    public function store(Request $request)
+    public function store(StoreLocalRequest $request)
     {
         try {
             LocalService::store($request);
