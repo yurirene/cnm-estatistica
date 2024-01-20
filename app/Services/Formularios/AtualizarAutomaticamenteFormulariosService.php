@@ -15,8 +15,9 @@ class AtualizarAutomaticamenteFormulariosService
     {
         try {
             $local = $model->local;
+            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
             $formulario_federacao = FormularioFederacao::where('federacao_id', $local->federacao_id)
-                ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                ->where('ano_referencia', $anoReferencia)
                 ->get();
             if ($formulario_federacao->isEmpty()) {
                 return;
@@ -31,6 +32,7 @@ class AtualizarAutomaticamenteFormulariosService
             ]);
             self::atualizarSinodal($formulario_federacao->first());
         } catch (\Throwable $th) {
+            dd($local, $model);
             throw $th;
         }
     }

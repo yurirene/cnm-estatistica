@@ -223,6 +223,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('estatistica.exportarExcel');
         Route::get('/estatistica/atualizar-ranking', [EstatisticaController::class, 'atualizarRanking'])
             ->name('estatistica.atualizar-ranking');
+        Route::get('/estatistica/atualizar-tudo', [EstatisticaController::class, 'atualizarTodosOsDados'])
+            ->name('estatistica.atualizar-tudo');
     });
     // SECRETARIA DE PRODUTOS
     Route::group(['modulo' => 'secretaria-produtos'], function () {

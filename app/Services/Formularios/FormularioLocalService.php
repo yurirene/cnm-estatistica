@@ -43,9 +43,11 @@ class FormularioLocalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+
+            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
             $formulario = FormularioLocal::updateOrCreate(
                 [
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => $anoReferencia,
                     'local_id' => $request->local_id
                 ],
                 [
@@ -55,7 +57,7 @@ class FormularioLocalService
                     'deficiencias' => $deficiencias,
                     'programacoes' => $programacoes,
                     'aci' => $request->aci,
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => $anoReferencia,
                     'local_id' => $request->local_id
                 ]
             );
