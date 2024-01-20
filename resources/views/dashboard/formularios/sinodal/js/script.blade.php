@@ -3,7 +3,25 @@
         let link = "{{ route('dashboard.formularios-sinodais.export', ':id') }}";
         let val = link.replace(':id', $('#ano option:selected').text());
         $('#link_export').attr('href', val);
+
+        Number.prototype.formatMoney = function(places, symbol, thousand, decimal) {
+            places = !isNaN(places = Math.abs(places)) ? places : 2;
+            symbol = symbol !== undefined ? symbol : "$";
+            thousand = thousand || ",";
+            decimal = decimal || ".";
+            var number = this,
+                negative = number < 0 ? "-" : "",
+                i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+                j = (j = i.length) > 3 ? j % 3 : 0;
+            return symbol
+                + negative
+                + (j ? i.substr(0, j)
+                + thousand : "")
+                + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand)
+                + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+        };
     })
+
     $('#ano').on('change', function() {
         let link = "{{ route('dashboard.formularios-sinodais.export', ':id') }}";
         let val = link.replace(':id', $('#ano option:selected').text());
@@ -26,7 +44,7 @@
                 id: $('#sinodal_id').val()
             },
             success: function(json) {
-                $('#aci-recebida').text(json.data.aci)
+                $('#aci-recebida').text(json.data.aci?.formatMoney(2, "", ".", ","))
                 $('#resumo-ativos').text(json.data.perfil.ativos)
                 $('#resumo-cooperadores').text(json.data.perfil.cooperadores)
                 $('#resumo-homens').text(json.data.perfil.homens)
@@ -67,9 +85,8 @@
                 id: $('#ano').val()
             },
             success: function(json) {
-                console.log(json);
                 $('#ano_referencia').text(json.data.resumo.ano_referencia)
-                $('#aci').text(json.data.resumo.aci)
+                $('#aci').text(json.data.resumo.aci?.formatMoney(2, "", ".", ","))
                 $('#ativos').text(json.data.resumo.ativos)
                 $('#cooperadores').text(json.data.resumo.cooperadores)
                 $('#homens').text(json.data.resumo.homens)
