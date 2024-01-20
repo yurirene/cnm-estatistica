@@ -212,27 +212,40 @@ class SinodalService
                 ->where('ano_referencia', $anoReferencia)
                 ->first();
 
-            $total_umps_organizada = self::getTotalUmpsOrganizadas($sinodal, $formulario);
-            $total_federacoes_organizada = self::getTotalFederacoesOrganizadas($sinodal, $formulario);
+            $totalUmpsOrganizada = self::getTotalUmpsOrganizadas($sinodal, $formulario);
+            $totalFederacoesOrganizada = self::getTotalFederacoesOrganizadas($sinodal, $formulario);
 
+            $totalUmpsOrganizadasString = "{$totalUmpsOrganizada['organizadas']} / {$totalUmpsOrganizada['total']}";
+            $totalFederacoesOrganizadasString = $totalFederacoesOrganizada['organizadas']
+                . "/"
+                . $totalFederacoesOrganizada['total'];
 
-            $total_umps_organizada = self::getPorcentagem(
-                $total_umps_organizada['total'],
-                $total_umps_organizada['organizadas']
+            $totalUmpsOrganizada = self::getPorcentagem(
+                $totalUmpsOrganizada['total'],
+                $totalUmpsOrganizada['organizadas']
             );
-            $total_federacoes_organizada = self::getPorcentagem(
-                $total_federacoes_organizada['total'],
-                $total_federacoes_organizada['organizadas']
+            $totalFederacoesOrganizada = self::getPorcentagem(
+                $totalFederacoesOrganizada['total'],
+                $totalFederacoesOrganizada['organizadas']
             );
-            $total_igrejas_n_sociedades = self::getPorcentagem(
-                $sinodal->locais->count(),
-                $sinodal->locais->where('outro_modelo', true)->count()
+            $totalLocais = $sinodal->locais->count();
+            $totalOutroModelo = $sinodal->locais->where('outro_modelo', true)->count();
+            $totalIgrejasNSociedades = self::getPorcentagem(
+                $totalLocais,
+                $totalOutroModelo
             );
+
+            $totalNSociedadesString = $totalOutroModelo
+                . "/"
+                . $totalLocais;
 
             return [
-                'total_umps_organizada' => $total_umps_organizada,
-                'total_federacoes_organizada' => $total_federacoes_organizada,
-                'total_igrejas_n_sociedades' => $total_igrejas_n_sociedades
+                'total_umps_organizada' => $totalUmpsOrganizada,
+                'total_federacoes_organizada' => $totalFederacoesOrganizada,
+                'total_igrejas_n_sociedades' => $totalIgrejasNSociedades,
+                'total_umps_detalhe' => $totalUmpsOrganizadasString,
+                'total_federacoes_detalhe' => $totalFederacoesOrganizadasString,
+                'total_n_si_detalhe' => $totalNSociedadesString
             ];
         } catch (\Throwable $th) {
             LogErroService::registrar([

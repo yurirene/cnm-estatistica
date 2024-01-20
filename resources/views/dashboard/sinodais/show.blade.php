@@ -80,13 +80,14 @@
                                         <span>{{ $informacoes['total_federacoes_organizada'] }}%</span>
                                     </div>
                                 </div>
-                                <div class="progress">
+                                <div class="progress" style="height: 15px">
                                     <div class="progress-bar bg-default" role="progressbar"
                                         aria-valuenow="{{ $informacoes['total_federacoes_organizada'] }}"
                                         aria-valuemin="0"
                                         aria-valuemax="100"
                                         style="width: {{ $informacoes['total_federacoes_organizada'] }}%;">
                                     </div>
+                                    <span class="px-2">{{ $informacoes['total_federacoes_detalhe'] }}</span>
                                 </div>
                             </div>
 
@@ -99,13 +100,14 @@
                                         <span>{{ $informacoes['total_umps_organizada'] }}%</span>
                                     </div>
                                 </div>
-                                <div class="progress">
+                                <div class="progress" style="height: 15px">
                                     <div class="progress-bar bg-default" role="progressbar"
                                         aria-valuenow="{{ $informacoes['total_umps_organizada'] }}"
                                         aria-valuemin="0"
                                         aria-valuemax="100"
                                         style="width: {{ $informacoes['total_umps_organizada'] }}%;">
                                     </div>
+                                    <span class="px-2">{{ $informacoes['total_umps_detalhe'] }}</span>
                                 </div>
                             </div>
 
@@ -118,13 +120,14 @@
                                         <span>{{ $informacoes['total_igrejas_n_sociedades'] }}%</span>
                                     </div>
                                 </div>
-                                <div class="progress">
+                                <div class="progress" style="height: 15px">
                                     <div class="progress-bar bg-default" role="progressbar"
                                         aria-valuenow="{{ $informacoes['total_igrejas_n_sociedades'] }}"
                                         aria-valuemin="0"
                                         aria-valuemax="100"
                                         style="width: {{ $informacoes['total_igrejas_n_sociedades'] }}%;">
                                     </div>
+                                    <span class="px-2">{{ $informacoes['total_n_si_detalhe'] }}</span>
                                 </div>
                             </div>
                         </div>
