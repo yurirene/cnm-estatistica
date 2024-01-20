@@ -55,7 +55,9 @@ class ComprovanteAciDataTable extends DataTable
         if (is_null($formulario)) {
             return 'Formulário não respondido';
         }
-        return isset($formulario['aci']['valor_repassado']) ? 'R$' .$formulario['aci']['valor_repassado'] : 'Não Informado' ;
+        return isset($formulario['aci']['valor_repassado'])
+            ? 'R$' . $formulario['aci']['valor_repassado']
+            : 'Não Informado';
     }
 
     public function valorPrevisto($sql)
@@ -78,7 +80,11 @@ class ComprovanteAciDataTable extends DataTable
      */
     public function query(ComprovanteACI $model)
     {
-        return $model->newQuery()->meusComprovantes();
+        return $model->newQuery()->meusComprovantes()
+            ->when(request()->has('ano_referencia'), function($sql) {
+                $sql->where('ano', request()->get('ano_referencia'));
+            })
+            ->orderBy('ano', 'desc');
     }
 
     /**
