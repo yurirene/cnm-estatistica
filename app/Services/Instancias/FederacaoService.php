@@ -5,8 +5,6 @@ namespace App\Services\Instancias;
 use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
-use App\Models\FormularioLocal;
-use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use App\Services\Estatistica\EstatisticaService;
@@ -17,7 +15,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class FederacaoService
 {
