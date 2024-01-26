@@ -196,12 +196,14 @@ class FederacaoService
                 + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
             return [
                 'total' => $total,
-                'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0
+                'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'relatorio' => true
             ];
         }
         return [
             'total' => $federacao->locais->count(),
-            'organizadas' => $federacao->locais->where('status', true)->count()
+            'organizadas' => $federacao->locais->where('status', true)->count(),
+            'relatorio' => false
         ];
     }
 

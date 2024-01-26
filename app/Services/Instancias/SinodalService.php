@@ -327,7 +327,8 @@ class SinodalService
                     'numero_socios' => $totalSocios,
                     'status' => $federacao->status,
                     'usuario' => $usuario->email,
-                    'usuarioId' => $usuario->id
+                    'usuarioId' => $usuario->id,
+                    'origemRelatorio' => $totalUmpsOrganizada['relatorio']
                 ];
             }
             return $infoFederacao;

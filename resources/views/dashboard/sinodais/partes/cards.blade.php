@@ -25,7 +25,21 @@
                                 </div>
                             </div>
                             <div>
-                                <h6 class="mb-1">Nº UMPs: {{$numero_umps}}</h6>
+                                <h6 class="mb-1">
+                                    Nº UMPs: {{$numero_umps}}
+                                    <sup>
+                                        <em
+                                            class="fas fa-1x fa-info-circle"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{
+                                                $origemRelatorio
+                                                    ? 'Informação retirada do último relatório estatístico preenchido'
+                                                    : 'Informação retirada dos dados cadastrados'
+                                            }}"
+                                        ></em>
+                                    </sup>
+                                </h6>
                             </div>
                         </div>
                     </li>
