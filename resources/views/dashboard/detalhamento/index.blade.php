@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @include('dashboard.detalhamento.filtros')
+                    @include('includes.filtros-datatable', ['tableId' => 'detalhamento-table'])
                     <div class="table-responsive">
                         {!! $dataTable->table() !!}
                     </div>
