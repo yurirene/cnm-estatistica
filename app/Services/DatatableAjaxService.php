@@ -240,7 +240,11 @@ class DatatableAjaxService
             $dados = EstatisticaService::getDadosQualidadeEstatistica()->toArray();
             return datatables()::of($dados)->make();
         } catch (\Throwable $th) {
-            throw $th;
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
         }
 
     }
