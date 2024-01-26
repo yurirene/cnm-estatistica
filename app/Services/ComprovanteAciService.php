@@ -37,6 +37,11 @@ class ComprovanteAciService
 
             return $comprovante;
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             throw $th;
         }
     }
