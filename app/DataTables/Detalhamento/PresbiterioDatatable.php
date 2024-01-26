@@ -8,6 +8,7 @@ use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioFederacaoService;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -26,7 +27,7 @@ class PresbiterioDatatable extends DataTable
             $this->titulo = 'Federações';
             $this->subtitulo = 'Lista de Federações Organizadas';
         }
-        $this->anoReferencia = FormularioFederacaoService::getAnoReferencia();
+        $this->anoReferencia = EstatisticaService::getAnoReferencia();
     }
 
     /**

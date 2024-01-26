@@ -274,7 +274,7 @@ class EstatisticaService
      */
     public static function getDadosQualidadeEstatistica(): Collection
     {
-        $ano = FormularioFederacaoService::getAnoReferencia();
+        $ano = EstatisticaService::getAnoReferencia();
         return Sinodal::where('status', true)
             ->orderBy('regiao_id')
             ->orderBy('nome')
@@ -738,7 +738,7 @@ class EstatisticaService
      */
     public static function atualizarTodosOsDados(): void
     {
-        $anoReferncia = FormularioFederacaoService::getAnoReferencia();
+        $anoReferncia = EstatisticaService::getAnoReferencia();
         $formulariosLocais = FormularioLocal::where('ano_referencia', $anoReferncia)
             ->whereHas('local')
             ->get();
@@ -760,6 +760,17 @@ class EstatisticaService
             ->where('ano_referencia', $anoReferencia - 1)
             ->first();
         return ($ranking->pontuacao ?? '0') . " (" . ($ranking->posicao ?? '0') .")";
+    }
+
+
+    /**
+     * Método centralizador do Ano de Referência dos dados
+     *
+     * @return integer
+     */
+    public static function getAnoReferencia() : int
+    {
+        return Parametro::where('nome', 'ano_referencia')->first()->valor;
     }
 
 }

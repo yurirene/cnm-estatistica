@@ -8,7 +8,8 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive"> 
+            @include('includes.filtros-datatable')
+            <div class="table-responsive">
                 {!! $dataTable->table(['class' => 'table w-100']) !!}
             </div>
         </div>

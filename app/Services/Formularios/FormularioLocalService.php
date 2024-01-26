@@ -44,7 +44,7 @@ class FormularioLocalService
                 return intval($item);
             }, $request->programacoes);
 
-            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $formulario = FormularioLocal::updateOrCreate(
                 [
                     'ano_referencia' => $anoReferencia,

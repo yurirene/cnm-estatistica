@@ -89,7 +89,7 @@ class DashboardHelper
         if (!$instancia) {
             return true;
         }
-        $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+        $anoReferencia = EstatisticaService::getAnoReferencia();
         return ComprovanteACI::where('sinodal_id', $instancia->id)
             ->where('ano', $anoReferencia)
             ->count();

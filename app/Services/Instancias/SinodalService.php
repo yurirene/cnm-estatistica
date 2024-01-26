@@ -10,6 +10,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioSinodalService;
 use App\Services\LogErroService;
 use App\Services\UserService;
@@ -132,7 +133,7 @@ class SinodalService
             $sinodal = auth()->user()->sinodais->first();
             $federacoes = Federacao::where('sinodal_id', $sinodal->id)->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
-            $anoReferencia = FormularioSinodalService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
                 ->where('ano_referencia', $anoReferencia)
                 ->get();
@@ -207,7 +208,7 @@ class SinodalService
     public static function getInformacoesOrganizacao(Sinodal $sinodal) : array
     {
         try {
-            $anoReferencia = FormularioSinodalService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $formulario = FormularioSinodal::where('sinodal_id', $sinodal->id)
                 ->where('ano_referencia', $anoReferencia)
                 ->first();
@@ -303,7 +304,7 @@ class SinodalService
             $federacoes = $sinodal->federacoes;
             $infoFederacao = [];
 
-            $anoReferencia = FormularioSinodalService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             foreach ($federacoes as $federacao) {
                 $formulario = FormularioFederacao::where('federacao_id', $federacao->id)
                     ->where('ano_referencia', $anoReferencia)

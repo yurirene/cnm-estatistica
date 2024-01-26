@@ -5,6 +5,7 @@ namespace App\Services\Formularios;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
 use App\Models\Parametro;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,7 @@ class AtualizarAutomaticamenteFormulariosService
     {
         try {
             $local = $model->local;
-            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $formulario_federacao = FormularioFederacao::where('federacao_id', $local->federacao_id)
                 ->where('ano_referencia', $anoReferencia)
                 ->get();

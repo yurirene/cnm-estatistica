@@ -7,6 +7,8 @@ use App\Models\AcessoExterno;
 use App\Models\ComprovanteACI;
 use App\Models\FormularioSinodal;
 use App\Models\Parametro;
+use App\Models\User;
+use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -84,6 +86,12 @@ class ComprovanteAciDataTable extends DataTable
             ->when(request()->has('ano_referencia'), function($sql) {
                 $sql->where('ano', request()->get('ano_referencia'));
             })
+            ->when(request()->has('data_criacao'), function($sql) {
+                $datas = explode(' - ', request('periodo'));
+                $periodo[0] = Carbon::createFromFormat('d/m/Y', $datas[0]);
+                $periodo[1] = Carbon::createFromFormat('d/m/Y', $datas[1]);
+                return $sql->whereBetween('created_at', $periodo);
+            })
             ->orderBy('ano', 'desc');
     }
 
@@ -140,5 +148,37 @@ class ComprovanteAciDataTable extends DataTable
     protected function filename()
     {
         return 'Comprovante_ACI_' . date('YmdHis');
+    }
+
+
+    /**
+     * Retorna os dados dos filtros da tabela
+     *
+     * @return array
+     */
+    public function filtros(): array
+    {
+        if (!$this->verificaSeUsarioTesouraria()) {
+            return [];
+        }
+        $status = [
+            'T' => 'Todos',
+            'P' => 'Pendentes',
+            'C' => 'Confirmados'
+        ];
+        return [
+            'data_criacao' => true,
+            'status' => $status
+        ];
+    }
+
+    /**
+     * Verifica se o usário é do perfil tesouraria
+     *
+     * @return boolean
+     */
+    public function verificaSeUsarioTesouraria(): bool
+    {
+        return auth()->user()->roles->first()->name == User::ROLE_TESOURARIA;
     }
 }

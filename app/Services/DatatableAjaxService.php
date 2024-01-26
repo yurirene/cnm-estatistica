@@ -52,7 +52,7 @@ class DatatableAjaxService
             if (!$federacao) {
                 return datatables()::of([])->make();
             }
-            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $informacoes = $federacao->locais->map(function($local) use ($anoReferencia) {
                 $ultimoRelatorio = $local->relatorios->last();
                 $totalSocios = !is_null($ultimoRelatorio)
