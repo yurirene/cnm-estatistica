@@ -53,6 +53,7 @@ class User extends Authenticatable
     public const ROLE_SINODAL = 'sinodal';
     public const ROLE_FEDERACAO = 'federacao';
     public const ROLE_LOCAL = 'local';
+    public const ROLE_TESOURARIA = 'tesouraria';
     public const ROLE_ADMINISTRADOR = 'administrador';
 
     public function regioes()

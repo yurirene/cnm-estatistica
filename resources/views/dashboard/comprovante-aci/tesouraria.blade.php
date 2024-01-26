@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="card-body">
-            @include('includes.filtros-datatable')
+            @include('includes.filtros-datatable', ['tableId' => 'comprovantes-table'])
             <div class="table-responsive">
                 {!! $dataTable->table(['class' => 'table w-100']) !!}
             </div>
