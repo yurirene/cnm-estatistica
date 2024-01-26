@@ -49,10 +49,10 @@ class Sinodal extends Model
 
     public function scopeQuery($query)
     {
-        if (Auth::user()->admin == true) {
+        if (auth()->user()->admin) {
             return $query;
         }
-        return $query->whereIn('regiao_id', Auth::user()->regioes->pluck('id')->toArray());
+        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
     }
 
     public function getDataOrganizacaoFormatadaAttribute()
