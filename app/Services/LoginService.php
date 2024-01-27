@@ -35,6 +35,7 @@ class LoginService
             $registro->update([
                 'logout_at' => Carbon::now()
             ]);
+            session()->put('ultimo_usuario', $usuario->email);
         } catch (\Throwable $th) {
             throw new Exception("Error Processing Request", 1);
         }

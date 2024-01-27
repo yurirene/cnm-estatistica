@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Formularios;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFormularioLocalRequest;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioSinodalService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -18,7 +19,7 @@ class FormularioSinodalController extends Controller
             'coleta' => FormularioSinodalService::verificarColeta(),
             'anos' => $formulario_respondido_ano,
             'formulario' => $formulario_esse_ano,
-            'ano_referencia' => FormularioSinodalService::getAnoReferencia(),
+            'ano_referencia' => EstatisticaService::getAnoReferencia(),
             'qualidade_entrega' =>  FormularioSinodalService::qualidadeEntrega(),
             'estrutura_sinodal' => FormularioSinodalService::getEstrutura(),
         ]);

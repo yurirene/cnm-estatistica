@@ -52,7 +52,7 @@ class DatatableAjaxService
             if (!$federacao) {
                 return datatables()::of([])->make();
             }
-            $anoReferencia = FormularioFederacaoService::getAnoReferencia();
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $informacoes = $federacao->locais->map(function($local) use ($anoReferencia) {
                 $ultimoRelatorio = $local->relatorios->last();
                 $totalSocios = !is_null($ultimoRelatorio)
@@ -240,7 +240,11 @@ class DatatableAjaxService
             $dados = EstatisticaService::getDadosQualidadeEstatistica()->toArray();
             return datatables()::of($dados)->make();
         } catch (\Throwable $th) {
-            throw $th;
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
         }
 
     }

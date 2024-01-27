@@ -121,7 +121,7 @@ class FormularioFederacaoService
         $locais = Local::where('federacao_id', $id)->get()->pluck('id');
         try {
             $formularios = FormularioLocal::whereIn('local_id', $locais)
-                ->where('ano_referencia', self::getAnoReferencia())
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->get();
 
             $totalizador = [
@@ -228,7 +228,7 @@ class FormularioFederacaoService
         try {
             $locais = Auth::user()->federacoes->first()->locais;
             $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
-                ->where('ano_referencia', self::getAnoReferencia())
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
 
             if ($quantidade_entregue == 0 && $locais->where('status', 1)->count() == 0) {
@@ -259,7 +259,7 @@ class FormularioFederacaoService
         try {
             $locais = Auth::user()->federacoes->first()->locais;
             $formularios_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
-                ->where('ano_referencia', self::getAnoReferencia())
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->get();
             $data = [
                 'quantidade_umps' => $locais->where('status', 1)->count(),

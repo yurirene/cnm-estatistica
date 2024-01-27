@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Formularios;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFormularioLocalRequest;
 use App\Models\Parametro;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioLocalService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -18,7 +19,7 @@ class FormularioLocalController extends Controller
         return view('dashboard.formularios.local', [
             'coleta' => FormularioLocalService::verificarColeta(),
             'anos' => $formulario_respondido_ano,
-            'ano_referencia' => FormularioLocalService::getAnoReferencia(),
+            'ano_referencia' => EstatisticaService::getAnoReferencia(),
             'formulario' => $formulario_coleta_atual
         ]);
     }
@@ -67,7 +68,7 @@ class FormularioLocalController extends Controller
                     ]
                 ]);
             }
-            
+
             return view('dashboard.formularios.local.export', [
                 'formulario' => FormularioLocalService::getFormulario($ano)
             ]);

@@ -26,13 +26,40 @@
         </div>
     </div>
     @endif
+
+    @if(isset($filtros['ano_referencia']))
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label('ano_referencia', 'Ano Referência') !!}
+            {!! Form::select(
+                'ano_referencia',
+                $filtros['ano_referencia'],
+                null,
+                ['class' => 'form-control filtro']
+            ) !!}
+        </div>
+    </div>
+    @endif
+
+    @if(isset($filtros['data_criacao']))
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label('data_criacao', 'Data de Cadastro') !!}
+            {!! Form::text(
+                'data_criacao',
+                null,
+                ['class' => 'form-control filtro isDateRange']
+            ) !!}
+        </div>
+    </div>
+    @endif
 </div>
 
 @push('js')
 <script>
 
 
-const table = $('#detalhamento-table');
+const table = $('#{{$tableId}}');
 
 table.on('preXhr.dt', function(e, settings, data){
     data.filtro = buscarDados();
@@ -40,6 +67,13 @@ table.on('preXhr.dt', function(e, settings, data){
 
 $('.filtro').on('change', function() {
     table.DataTable().ajax.reload();
+    return false;
+});
+
+$('.filtro.isDateRange').on('apply.daterangepicker', function() {
+    setTimeout(() => {
+        table.DataTable().ajax.reload();
+    }, 200)
     return false;
 })
 

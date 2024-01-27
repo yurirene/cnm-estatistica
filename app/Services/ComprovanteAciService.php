@@ -37,6 +37,11 @@ class ComprovanteAciService
 
             return $comprovante;
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             throw $th;
         }
     }
@@ -52,9 +57,22 @@ class ComprovanteAciService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw $th;
         }
+    }
 
+    /**
+     * Retorna um array contendo os anos de envio do comprovante de aci
+     *
+     * @return array
+     */
+    public static function getAnosCadastrados() : array
+    {
+        return ComprovanteACI::selectRaw('DISTINCT(ano) as ano')
+            ->groupBy('ano')
+            ->get()
+            ->pluck('ano', 'ano')
+            ->toArray();
     }
 }
