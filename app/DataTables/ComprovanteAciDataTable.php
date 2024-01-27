@@ -7,6 +7,9 @@ use App\Models\AcessoExterno;
 use App\Models\ComprovanteACI;
 use App\Models\FormularioSinodal;
 use App\Models\Parametro;
+use App\Models\User;
+use App\Services\ComprovanteAciService;
+use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -42,6 +45,9 @@ class ComprovanteAciDataTable extends DataTable
             ->addColumn('valor_informado', function($sql) {
                 return $this->valorInformado($sql);
             })
+            ->addColumn('created_at', function($sql) {
+                return $sql->created_at->format('d/m/Y H:i:s');
+            })
             ->addColumn('valor_previsto', function($sql) {
                 return $this->valorPrevisto($sql);
             })
@@ -67,9 +73,10 @@ class ComprovanteAciDataTable extends DataTable
         if (is_null($formulario)) {
             return 'Formulário não respondido';
         }
-        $total_de_socios = intval($formulario['perfil']['ativos']) + intval($formulario['perfil']['cooperadores']);
-        $param_valor_aci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
-        return 'R$' . $total_de_socios * $param_valor_aci * 0.25;
+        $totalSocios = intval($formulario['perfil']['ativos']) + intval($formulario['perfil']['cooperadores']);
+        $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+        $valorPrevisto = $totalSocios * $paramValorAci * 0.25;
+        return 'R$' . number_format($valorPrevisto, 2, ',', '.');
     }
 
     /**
@@ -80,9 +87,19 @@ class ComprovanteAciDataTable extends DataTable
      */
     public function query(ComprovanteACI $model)
     {
+        $filtro = json_decode(request()->get('filtro'), true);
         return $model->newQuery()->meusComprovantes()
-            ->when(request()->has('ano_referencia'), function($sql) {
-                $sql->where('ano', request()->get('ano_referencia'));
+            ->when(!empty($filtro['ano_referencia']), function($sql) use ($filtro) {
+                $sql->where('ano', $filtro['ano_referencia']);
+            })
+            ->when(!empty($filtro['data_criacao']), function($sql) use ($filtro) {
+                $datas = explode(' - ', $filtro['data_criacao']);
+                $periodo[0] = Carbon::createFromFormat('d/m/Y', $datas[0]);
+                $periodo[1] = Carbon::createFromFormat('d/m/Y', $datas[1]);
+                return $sql->whereBetween('created_at', $periodo);
+            })
+            ->when(!empty($filtro['status']) && $filtro['status'] != 'T', function($sql) use ($filtro) {
+                return $sql->where('status', $filtro['status'] == 'C');
             })
             ->orderBy('ano', 'desc');
     }
@@ -98,7 +115,7 @@ class ComprovanteAciDataTable extends DataTable
             ->setTableId('comprovantes-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->dom('Bfrtip')
+            ->dom('Bfrtipl')
             ->orderBy(2)
             ->parameters([
                 "language" => [
@@ -129,6 +146,7 @@ class ComprovanteAciDataTable extends DataTable
             Column::make('valor_informado')->title('Valor Informado'),
             Column::make('valor_previsto')->title('Valor Previsto'),
             Column::make('status')->title('Status'),
+            Column::make('created_at')->title('Cadastrado em'),
         ];
     }
 
@@ -140,5 +158,39 @@ class ComprovanteAciDataTable extends DataTable
     protected function filename()
     {
         return 'Comprovante_ACI_' . date('YmdHis');
+    }
+
+
+    /**
+     * Retorna os dados dos filtros da tabela
+     *
+     * @return array
+     */
+    public function filtros(): array
+    {
+        if (!$this->verificaSeUsarioTesouraria()) {
+            return [];
+        }
+        $status = [
+            'T' => 'Todos',
+            'P' => 'Pendentes',
+            'C' => 'Confirmados'
+        ];
+        $anosCadastrados = ComprovanteAciService::getAnosCadastrados();
+        return [
+            'data_criacao' => true,
+            'ano_referencia' => ["" => "Todos"] + $anosCadastrados,
+            'status' => $status
+        ];
+    }
+
+    /**
+     * Verifica se o usário é do perfil tesouraria
+     *
+     * @return boolean
+     */
+    public function verificaSeUsarioTesouraria(): bool
+    {
+        return auth()->user()->roles->first()->name == User::ROLE_TESOURARIA;
     }
 }

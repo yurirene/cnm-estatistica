@@ -14,7 +14,8 @@ class ComprovanteACIController extends Controller
     public function index(ComprovanteAciDataTable $dataTable)
     {
         return $dataTable->render('dashboard.comprovante-aci.index', [
-            'ano' => Parametro::where('nome', 'ano_referencia')->first()->valor
+            'ano' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+            'filtros' => $dataTable->filtros()
         ]);
     }
 

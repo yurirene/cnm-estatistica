@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Formularios;
 
 use App\Http\Controllers\Controller;
 use App\Models\Parametro;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioFederacaoService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -17,7 +18,7 @@ class FormularioFederacaoController extends Controller
         return view('dashboard.formularios.federacao', [
             'coleta' => FormularioFederacaoService::verificarColeta(),
             'anos' => $formulario_respondido_ano,
-            'ano_referencia' => FormularioFederacaoService::getAnoReferencia(),
+            'ano_referencia' => EstatisticaService::getAnoReferencia(),
             'qualidade_entrega' =>  FormularioFederacaoService::qualidadeEntrega(),
             'estrutura_federacao' => FormularioFederacaoService::getEstrutura(),
             'formulario' => $formulario_coleta_atual

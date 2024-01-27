@@ -136,7 +136,7 @@ class FormularioSinodalService
         try {
             $federacoes = Auth::user()->sinodais->first()->federacoes;
             $quantidade_entregue  = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
-                ->where('ano_referencia', self::getAnoReferencia())
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
 
             if ($quantidade_entregue == 0 && $federacoes->where('status', 1)->count() == 0) {
@@ -167,7 +167,7 @@ class FormularioSinodalService
         try {
             $federacoes = Auth::user()->sinodais->first()->federacoes;
             $formularios_entregue  = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
-                ->where('ano_referencia', self::getAnoReferencia())
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->get();
 
             $totalizador = self::totalizador(Auth::user()->sinodais->first()->id);
@@ -193,7 +193,9 @@ class FormularioSinodalService
     {
         $federacoes = Federacao::where('sinodal_id', $id)->get()->pluck('id');
         try {
-            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes)->where('ano_referencia', self::getAnoReferencia())->get();
+            $formularios = FormularioFederacao::whereIn('federacao_id', $federacoes)
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                ->get();
 
             $totalizador = [
                 'total_formularios' => $formularios->count(),
