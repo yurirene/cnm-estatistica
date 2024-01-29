@@ -139,10 +139,15 @@ class FormularioSinodalService
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
 
-            if ($quantidade_entregue == 0 && $federacoes->where('status', 1)->count() == 0) {
+            $quantidadeFederacoesAtivas = $federacoes->where('status', 1)->count();
+            if ($quantidade_entregue == 0 && $quantidadeFederacoesAtivas == 0) {
                 $porcentagem = 0;
+            } elseif ($quantidade_entregue != 0 && $quantidadeFederacoesAtivas == 0) {
+                // nos casos de federações não organizadas que o vice conseguiu que preenchessem o formulário
+                $quantidadeFederacoes = $federacoes->count() ?: 1;
+                $porcentagem = round(($quantidade_entregue * 100) / $quantidadeFederacoes , 2);
             } else {
-                $porcentagem = round(($quantidade_entregue * 100) / $federacoes->where('status', 1)->count(), 2);
+                $porcentagem = round(($quantidade_entregue * 100) / $quantidadeFederacoesAtivas , 2);
             }
 
             $data = ['porcentagem' => $porcentagem];
