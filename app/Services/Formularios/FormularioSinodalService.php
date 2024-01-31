@@ -159,7 +159,10 @@ class FormularioSinodalService
     {
 
         try {
-            $federacoes = auth()->user()->sinodais->first()->federacoes;
+            $federacoes = auth()->user()->sinodais->first()
+                ->federacoes()
+                ->where('status', true)
+                ->get();
             $quantidade_entregue  = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
