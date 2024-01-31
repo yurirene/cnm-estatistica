@@ -13,12 +13,15 @@ use App\Models\Parametro;
 use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
 use App\Services\Formularios\AtualizarAutomaticamenteFormulariosService;
-use App\Services\Formularios\FormularioFederacaoService;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EstatisticaService
 {
+
+    public const FORMULARIO_ENTREGUE = 1;
+    public const FORMULARIO_RESPOSTA_PARCIAL = 0;
+    public const FORMULARIO_NAO_RESPONDIDO = -1;
 
     public static function atualizarParametro(array $request) : void
     {
@@ -314,7 +317,7 @@ class EstatisticaService
     public static function atualizarRelatorioGeral()
     {
 
-        $anoReferencia = Parametro::where('nome', 'ano_referencia')->first()->valor;
+        $anoReferencia = EstatisticaService::getAnoReferencia();
         $totalizador = self::getDadosRelatorioGeral($anoReferencia);
         EstatisticaGeral::updateOrCreate(
             [
@@ -771,6 +774,83 @@ class EstatisticaService
     public static function getAnoReferencia() : int
     {
         return Parametro::where('nome', 'ano_referencia')->first()->valor;
+    }
+
+
+    /**
+     * Método centralizador do parâmetro de quantidade mínima de relatórios
+     *
+     * @param string $instancia
+     *
+     * @return integer
+     */
+    public static function getPorcentagemMinimaEntrega(string $instancia) : int
+    {
+        return Parametro::where('nome', "min_{$instancia}")->first()->valor;
+    }
+
+    /**
+     * Retorna o valor float da porcentagem de entraga dos formulários da ump local buscados pelo
+     * id da federação e ano de referência
+     *
+     * @param string $idFederacao
+     * @param integer $anoReferencia
+     * @return float
+     */
+    public static function getValorPorcentagemEntregaFormularioUMPLocal(string $idFederacao, int $anoReferencia): float
+    {
+        $locais = Local::where('federacao_id', $idFederacao)
+            ->where('status', true)
+            ->get()
+            ->map(function ($item) use ($anoReferencia) {
+                return [
+                    'id' => $item->id,
+                    'formulario' => $item->relatorios()
+                        ->where('ano_referencia', $anoReferencia)
+                        ->get()
+                        ->count(),
+                ];
+            });
+
+        $formulariosEntregues = $locais->where('formulario', '!=', 0)->count();
+        $porcentagem = 0;
+
+        if ($locais->count() != 0) {
+            $porcentagem = round(($formulariosEntregues * 100) / $locais->count(), 2);
+        }
+        return $porcentagem;
+    }
+
+    /**
+     * Retorna o valor float da porcentagem de entraga dos formulários da federação buscados pelo
+     * id da sinodal e ano de referência
+     *
+     * @param string $idSinodal
+     * @param integer $anoReferencia
+     * @return float
+     */
+    public static function getValorPorcentagemEntregaFormularioFederacao(string $idSinodal, int $anoReferencia): float
+    {
+        $locais = Local::where('federacao_id', $idSinodal)
+            ->where('status', true)
+            ->get()
+            ->map(function ($item) use ($anoReferencia) {
+                return [
+                    'id' => $item->id,
+                    'formulario' => $item->relatorios()
+                        ->where('ano_referencia', $anoReferencia)
+                        ->get()
+                        ->count(),
+                ];
+            });
+
+        $formulariosEntregues = $locais->where('formulario', '!=', 0)->count();
+        $porcentagem = 0;
+
+        if ($locais->count() != 0) {
+            $porcentagem = round(($formulariosEntregues * 100) / $locais->count(), 2);
+        }
+        return $porcentagem;
     }
 
 }
