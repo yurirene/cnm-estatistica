@@ -124,6 +124,7 @@ class EstatisticaService
                     'id' => $item->id,
                     'formulario' => $item->relatorios()
                         ->where('ano_referencia', $ano)
+                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                         ->get()
                         ->count(),
                 ];
@@ -158,20 +159,20 @@ class EstatisticaService
     {
         try {
             return Local::where('sinodal_id', $idSinodal)
-            ->where('status', true)
-            ->whereHas('federacao', function ($sql) {
-                return $sql->where('federacoes.status', true);
-            })
-            ->get()
-            ->map(function ($item) use ($ano) {
-                return [
-                    'id' => $item->id,
-                    'formulario' => $item->relatorios()
-                        ->where('ano_referencia', $ano)
-                        ->get()
-                        ->count(),
-                ];
-            });
+                ->where('status', true)
+                ->whereHas('federacao', function ($sql) {
+                    return $sql->where('federacoes.status', true);
+                })
+                ->get()
+                ->map(function ($item) use ($ano) {
+                    return [
+                        'id' => $item->id,
+                        'formulario' => $item->relatorios()
+                            ->where('ano_referencia', $ano)
+                            ->get()
+                            ->count(),
+                    ];
+                });
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -292,6 +293,7 @@ class EstatisticaService
                     'nome' => $nome,
                     'entregue' =>  $item->relatorios()
                         ->where('ano_referencia', $ano)
+                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                         ->get()
                         ->count(),
                     'federacoes' => self::getPorcentagemFormularioFederacao($item->id, $ano),
@@ -831,7 +833,8 @@ class EstatisticaService
      */
     public static function getValorPorcentagemEntregaFormularioFederacao(string $idSinodal, int $anoReferencia): float
     {
-        $locais = Local::where('federacao_id', $idSinodal)
+
+        $federacoes = Federacao::where('sinodal_id', $idSinodal)
             ->where('status', true)
             ->get()
             ->map(function ($item) use ($anoReferencia) {
@@ -839,17 +842,19 @@ class EstatisticaService
                     'id' => $item->id,
                     'formulario' => $item->relatorios()
                         ->where('ano_referencia', $anoReferencia)
+                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                         ->get()
                         ->count(),
                 ];
             });
 
-        $formulariosEntregues = $locais->where('formulario', '!=', 0)->count();
+        $formulariosEntregues = $federacoes->where('formulario', '!=', 0)->count();
         $porcentagem = 0;
 
-        if ($locais->count() != 0) {
-            $porcentagem = round(($formulariosEntregues * 100) / $locais->count(), 2);
+        if ($federacoes->count() != 0) {
+            $porcentagem = round(($formulariosEntregues * 100) / $federacoes->count(), 2);
         }
+
         return $porcentagem;
     }
 
