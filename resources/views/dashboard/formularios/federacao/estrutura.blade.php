@@ -4,7 +4,9 @@
         {!! Form::label('estrutura[ump_organizada]', 'Quantidade de UMPs organizadas na Federação:') !!}
         {!! Form::number(
             'estrutura[ump_organizada]',
-            isset($formulario) && !empty($formulario->estrutura) ? null : $estrutura_federacao['quantidade_umps'],
+            isset($formulario) && !empty($formulario->estrutura)
+                ? null
+                : $estrutura_federacao['quantidade_umps'],
             ['class' => 'form-control', 'required' => 'required', 'readonly' => true]
         ) !!}
         <small class="text-danger">{{ $errors->first('estrutura[ump_organizada]') }}</small>
@@ -18,7 +20,9 @@
         ) !!}
         {!! Form::number(
             'estrutura[ump_nao_organizada]',
-            isset($formulario) ? null : $estrutura_federacao['quantidade_sem_ump'],
+            isset($formulario) && !empty($formulario->estrutura)
+                ? null
+                : $estrutura_federacao['quantidade_sem_ump'],
             ['class' => 'form-control', 'required' => 'required']
         ) !!}
         <small class="text-danger">{{ $errors->first('estrutura[ump_nao_organizada]') }}</small>
@@ -32,7 +36,9 @@
         ) !!}
         {!! Form::number(
             'estrutura[nro_repasse]',
-            isset($formulario) ? null : $estrutura_federacao['nro_repasse'],
+            isset($formulario) && !empty($formulario->estrutura)
+                ? null
+                : $estrutura_federacao['nro_repasse'],
             ['class' => 'form-control', 'required' => 'required']
         ) !!}
         <small class="text-danger">{{ $errors->first('estrutura[nro_repasse]') }}</small>
@@ -46,7 +52,9 @@
         ) !!}
         {!! Form::number(
             'estrutura[nro_sem_repasse]',
-            isset($formulario) ? null : $estrutura_federacao['nro_sem_repasse'],
+            isset($formulario) && !empty($formulario->estrutura)
+                ? null
+                : $estrutura_federacao['nro_sem_repasse'],
             ['class' => 'form-control', 'required' => 'required']
         ) !!}
         <small class="text-danger">{{ $errors->first('estrutura[nro_sem_repasse]') }}</small>
