@@ -328,4 +328,16 @@ class FormularioSinodalService
             ->where('ano_referencia', $ano)
             ->first();
     }
+
+    public static function getFederacoes()
+    {
+        try {
+            $federacoes = Auth::user()->sinodais->pluck('id');
+            return Federacao::whereIn('sinodal_id', $federacoes)->get()->map(function($federacao) {
+                return ['id' => $federacao->id, 'text' => $federacao->sigla];
+            });
+        } catch (\Throwable $th) {
+            throw new Exception("Error durante a busca de estados", 1);
+        }
+    }
 }
