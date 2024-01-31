@@ -17,10 +17,35 @@ use Illuminate\Support\Facades\Auth;
 class FormularioSinodalService
 {
 
-    public static function store(Request $request)
+    /**
+     * Método responsável por salvar o formulário estatística da sinodal
+     * Caso o parâmetro apenasSalvar seja verdadeiro o status será FORMULARIO_RESPOSTA_PARCIAL
+     * e não será contabilizado como entregue
+     *
+     * @param Request $request
+     * @param boolean $apenasSalvar
+     * @return void
+     */
+    public static function store(Request $request, bool $apenasSalvar = false)
     {
         try {
 
+            // VALIDAÇÃO
+            $anoReferencia = EstatisticaService::getAnoReferencia();
+            $porcentagem = EstatisticaService::getValorPorcentagemEntregaFormularioFederacao(
+                $request->sinodal_id,
+                $anoReferencia
+            );
+
+            if  (
+                !$apenasSalvar
+                && $porcentagem < EstatisticaService::getPorcentagemMinimaEntrega('sinodal')
+            ) {
+                throw new Exception(
+                    "Sinodal está tentando burlar o sistema ao submter um formulário sem a quantidade mínima",
+                    500
+                );
+            }
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
@@ -30,25 +55,28 @@ class FormularioSinodalService
 
             $totalizador = TotalizadorFormularioSinodalService::totalizador($request->sinodal_id);
 
-
             FormularioSinodal::updateOrCreate(
                 [
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => $anoReferencia,
                     'sinodal_id' => $request->sinodal_id
                 ],
                 [
-                'perfil' => $totalizador['perfil'],
-                'estado_civil' => $totalizador['estado_civil'],
-                'escolaridade' => $totalizador['escolaridade'],
-                'deficiencias' => $totalizador['deficiencias'],
-                'estrutura' => $estrutura,
-                'programacoes_federacoes' => $totalizador['programacoes_federacao'],
-                'programacoes_locais' => $totalizador['programacoes_locais'],
-                'programacoes' => $programacoes,
-                'aci' => $request->aci,
-                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
-                'sinodal_id' => $request->sinodal_id
-            ]);
+                    'perfil' => $totalizador['perfil'],
+                    'estado_civil' => $totalizador['estado_civil'],
+                    'escolaridade' => $totalizador['escolaridade'],
+                    'deficiencias' => $totalizador['deficiencias'],
+                    'estrutura' => $estrutura,
+                    'programacoes_federacoes' => $totalizador['programacoes_federacao'],
+                    'programacoes_locais' => $totalizador['programacoes_locais'],
+                    'programacoes' => $programacoes,
+                    'aci' => $request->aci,
+                    'ano_referencia' => $anoReferencia,
+                    'sinodal_id' => $request->sinodal_id,
+                    'status' => $apenasSalvar
+                        ? EstatisticaService::FORMULARIO_RESPOSTA_PARCIAL
+                        : EstatisticaService::FORMULARIO_ENTREGUE
+                ]
+            );
 
             EstatisticaService::atualizarRelatorioGeral();
         } catch (\Throwable $th) {
@@ -86,10 +114,15 @@ class FormularioSinodalService
         }
     }
 
-    public static function getFormularioAnoCorrente()
+    /**
+     * Retorna o formulário da sinodal do ano corrente
+     *
+     * @return FormularioSinodal|null
+     */
+    public static function getFormularioAnoCorrente(): ?FormularioSinodal
     {
         return FormularioSinodal::where('sinodal_id', Auth::user()->sinodais->first()->id)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
@@ -112,6 +145,7 @@ class FormularioSinodalService
     {
         try {
             return FormularioSinodal::whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'))
+                ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                 ->get()
                 ->pluck('ano_referencia', 'id');
         } catch (\Throwable $th) {
@@ -120,23 +154,18 @@ class FormularioSinodalService
     }
 
 
-    public static function getAnoReferencia() : int
-    {
-        try {
-            return Parametro::where('nome', 'ano_referencia')->first()->valor;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
 
     public static function qualidadeEntrega() : array
     {
 
         try {
-            $federacoes = Auth::user()->sinodais->first()->federacoes;
+            $federacoes = auth()->user()->sinodais->first()
+                ->federacoes()
+                ->where('status', true)
+                ->get();
             $quantidade_entregue  = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                 ->count();
 
             $quantidadeFederacoesAtivas = $federacoes->where('status', 1)->count();
@@ -309,6 +338,11 @@ class FormularioSinodalService
             }
             return $totalizador;
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             throw new Exception("Erro no Totalizador", 1);
 
         }
@@ -317,7 +351,7 @@ class FormularioSinodalService
     public static function getFormularioDaSinodal($sinodal) : ?FormularioSinodal
     {
         return FormularioSinodal::where('sinodal_id', $sinodal)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
@@ -326,5 +360,17 @@ class FormularioSinodalService
         return FormularioSinodal::where('sinodal_id', auth()->user()->sinodais->first()->id)
             ->where('ano_referencia', $ano)
             ->first();
+    }
+
+    public static function getFederacoes()
+    {
+        try {
+            $federacoes = Auth::user()->sinodais->pluck('id');
+            return Federacao::whereIn('sinodal_id', $federacoes)->get()->map(function($federacao) {
+                return ['id' => $federacao->id, 'text' => $federacao->sigla];
+            });
+        } catch (\Throwable $th) {
+            throw new Exception("Error durante a busca de estados", 1);
+        }
     }
 }

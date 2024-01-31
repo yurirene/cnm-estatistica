@@ -162,6 +162,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('formularios-sinodais.export');
         Route::get('/formularios-sinodal-export/{sinodal}', [FormularioSinodalController::class, 'sinodalExport'])
             ->name('formularios-sinodal.export');
+        Route::post('/formularios-sinodais-salvar', [FormularioSinodalController::class, 'salvarPreenchimento'])
+            ->name('formularios-sinodais.apenas-salvar');
     });
 
     Route::group(['modulo' => 'formularios-federacoes'], function () {
@@ -179,6 +181,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             '/formularios-federacao-export/{federacao}',
             [FormularioFederacaoController::class, 'federacaoExport']
         )->name('formularios-federacao.export');
+        Route::post('/formularios-federacoes-salvar', [FormularioFederacaoController::class, 'salvarPreenchimento'])
+            ->name('formularios-federacoes.apenas-salvar');
     });
 
     Route::group(['modulo' => 'pesquisas'], function () {

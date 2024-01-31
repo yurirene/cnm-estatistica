@@ -105,7 +105,7 @@
     const ROUTE_ATUALIZAR_LISTA = "{{ route('dashboard.estatistica.atualizar-ranking') }}";
     $(function() {
         $('#formularios-table').DataTable({
-            dom: 'Bfrtip',
+            dom: 'Bfrtipl',
             buttons: [
                 {
                     text: 'Atualizar Lista',

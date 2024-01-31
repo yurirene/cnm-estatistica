@@ -9,6 +9,7 @@ use App\Models\FormularioLocal;
 use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use Illuminate\Support\Facades\Auth;
 
 class MapaService
@@ -51,7 +52,7 @@ class MapaService
         try {
             $sigla = explode('-', $estado);
             $estado = Estado::where('sigla', strtoupper($sigla[1]))->first();
-            $ano = Parametro::where('nome', 'ano_referencia')->first()->valor;
+            $ano = EstatisticaService::getAnoReferencia();
             $formularios = FormularioLocal::whereHas('local', function ($sql) use ($estado) {
                 return $sql->where('estado_id', $estado->id);
             })
