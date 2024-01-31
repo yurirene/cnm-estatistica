@@ -139,26 +139,10 @@ class AtualizarAutomaticamenteFormulariosService
             return;
         }
 
-        $federacoes = Federacao::where('sinodal_id', $idSinodal)
-            ->where('status', true)
-            ->get()
-            ->map(function ($item) use ($anoReferencia) {
-                return [
-                    'id' => $item->id,
-                    'formulario' => $item->relatorios()
-                        ->where('ano_referencia', $anoReferencia)
-                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
-                        ->get()
-                        ->count(),
-                ];
-            });
-
-        $formulariosEntregues = $federacoes->where('formulario', '!=', 0)->count();
-        $porcentagem = 0;
-
-        if ($federacoes->count() != 0) {
-            $porcentagem = round(($formulariosEntregues * 100) / $federacoes->count(), 2);
-        }
+        $porcentagem = EstatisticaService::getValorPorcentagemEntregaFormularioFederacao(
+            $idSinodal,
+            $anoReferencia
+        );
 
         if  ($porcentagem >= EstatisticaService::getPorcentagemMinimaEntrega('sinodal')) {
             $formularioSinodal->status = EstatisticaService::FORMULARIO_RESPOSTA_PARCIAL;
