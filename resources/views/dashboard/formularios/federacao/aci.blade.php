@@ -3,8 +3,8 @@
         <div class="form-group{{ $errors->has('aci[repasse]') ? ' has-error' : '' }}">
         {!! Form::label('aci[repasse]', 'A Federação fez o repasse da ACI para a Sinodal') !!}
         {!! Form::select(
-            'aci[repasse]'
-            ['S' => 'Sim', 'N' => 'Não'],
+            'aci[repasse]',
+            ['N' => 'Não', 'S' => 'Sim'],
             null,
             ['id' => 'aci[repasse]',
             'class' => 'form-control', 'required' => 'required']
