@@ -22,6 +22,7 @@ class CreateDiretoriasTable extends Migration
             $table->string('secretario_executivo')->nullable();
             $table->string('tesoureiro')->nullable();
             $table->string('secretario_causas')->nullable();
+            $table->year('ano');
 
             $table->uuid('sinodal_id')->nullable();
             $table->uuid('federacao_id')->nullable();

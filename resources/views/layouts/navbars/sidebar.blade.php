@@ -80,6 +80,15 @@
                         <i class="fas fa-home"></i> Início
                     </a>
                 </li>
+
+                @canAtLeast(['dashboard.diretoria.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria.index') }}">
+                        <i class="fas fa-bullhorn"></i> Diretoria
+                    </a>
+                </li>
+                @endCanAtLeast
+
                 @canAtLeast(['dashboard.usuarios.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.usuarios.index') }}">
