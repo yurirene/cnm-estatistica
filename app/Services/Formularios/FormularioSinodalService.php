@@ -33,7 +33,7 @@ class FormularioSinodalService
 
             FormularioSinodal::updateOrCreate(
                 [
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => EstatisticaService::getAnoReferencia(),
                     'sinodal_id' => $request->sinodal_id
                 ],
                 [
@@ -46,7 +46,7 @@ class FormularioSinodalService
                 'programacoes_locais' => $totalizador['programacoes_locais'],
                 'programacoes' => $programacoes,
                 'aci' => $request->aci,
-                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                'ano_referencia' => EstatisticaService::getAnoReferencia(),
                 'sinodal_id' => $request->sinodal_id
             ]);
 
@@ -86,10 +86,15 @@ class FormularioSinodalService
         }
     }
 
-    public static function getFormularioAnoCorrente()
+    /**
+     * Retorna o formulário da sinodal do ano corrente
+     *
+     * @return FormularioSinodal|null
+     */
+    public static function getFormularioAnoCorrente(): ?FormularioSinodal
     {
         return FormularioSinodal::where('sinodal_id', Auth::user()->sinodais->first()->id)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
@@ -119,15 +124,6 @@ class FormularioSinodalService
         }
     }
 
-
-    public static function getAnoReferencia() : int
-    {
-        try {
-            return Parametro::where('nome', 'ano_referencia')->first()->valor;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
 
 
     public static function qualidadeEntrega() : array
@@ -309,6 +305,11 @@ class FormularioSinodalService
             }
             return $totalizador;
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             throw new Exception("Erro no Totalizador", 1);
 
         }
@@ -317,7 +318,7 @@ class FormularioSinodalService
     public static function getFormularioDaSinodal($sinodal) : ?FormularioSinodal
     {
         return FormularioSinodal::where('sinodal_id', $sinodal)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 

@@ -36,7 +36,7 @@ class FormularioFederacaoService
             }, $request->estrutura);
             $formulario = FormularioFederacao::updateOrCreate(
                 [
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => EstatisticaService::getAnoReferencia(),
                     'federacao_id' => $request->federacao_id
                 ],[
                 'perfil' => $totalizador['perfil'],
@@ -46,7 +46,7 @@ class FormularioFederacaoService
                 'programacoes_locais' => $totalizador['programacoes'],
                 'programacoes' => $programacoes,
                 'aci' => $request->aci,
-                'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                'ano_referencia' => EstatisticaService::getAnoReferencia(),
                 'federacao_id' => $request->federacao_id,
                 'estrutura' => $estrutura
             ]);
@@ -212,16 +212,6 @@ class FormularioFederacaoService
         }
     }
 
-
-    public static function getAnoReferencia() : int
-    {
-        try {
-            return Parametro::where('nome', 'ano_referencia')->first()->valor;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
     public static function qualidadeEntrega() : array
     {
 
@@ -277,7 +267,7 @@ class FormularioFederacaoService
     public static function getFormularioAnoCorrente()
     {
         return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
@@ -291,7 +281,7 @@ class FormularioFederacaoService
     public static function getFormularioDaFederacao($federacao) : ?FormularioFederacao
     {
         return FormularioFederacao::where('federacao_id', $federacao)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 }

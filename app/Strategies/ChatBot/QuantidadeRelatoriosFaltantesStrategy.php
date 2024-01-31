@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Strategies\ChatBot;
 
@@ -14,6 +14,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\IClaudiaService;
 use Illuminate\Support\Facades\Log;
 
@@ -33,7 +34,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             app()->make(MessageFactory::class)->makeMessage('ListaOpcoes')->process($cliente, $mensagem);
         }  catch (\Throwable $th) {
             Log::error([
-                'message' => $th->getMessage(), 
+                'message' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
             ]);
@@ -43,7 +44,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     public static function getTotalizador(BotCliente $cliente)
     {
         try {
-            
+
             $usuario = $cliente->usuario;
             $texto = '';
             if ($usuario->hasRole('diretoria')) {
@@ -65,7 +66,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
             return $texto;
         }  catch (\Throwable $th) {
             Log::error([
-                'message' => $th->getMessage(), 
+                'message' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'file' => $th->getFile()
             ]);
@@ -76,7 +77,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     {
         $relatorios = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })
             ->get()
             ->count();
@@ -87,7 +88,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     {
         $relatorios = Federacao::whereIn('sinodal_id', $sinodais)
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })
             ->get()
             ->count();
@@ -97,7 +98,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     {
         $relatorios = Local::whereIn('federacao_id', $federacoes)
             ->whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })
             ->get()
             ->count();

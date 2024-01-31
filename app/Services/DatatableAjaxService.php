@@ -213,7 +213,7 @@ class DatatableAjaxService
                         'id' => $item->id,
                         'nome' => $item->nome,
                         'entregue' => $item->relatorios()
-                            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                             ->get()
                             ->count(),
                     ];
@@ -261,7 +261,7 @@ class DatatableAjaxService
                         'id' => $item->id,
                         'nome' => $item->nome,
                         'entregue' => $item->relatorios()
-                            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                             ->get()
                             ->count(),
                     ];
