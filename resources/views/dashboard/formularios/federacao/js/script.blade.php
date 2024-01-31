@@ -129,4 +129,11 @@
             },
         });
     });
+
+    const ROUTE_APENAS_SALVAR = "{{ route('dashboard.formularios-federacoes.apenas-salvar') }}"
+    $('#apenas-salvar').on('click', function () {
+        let form = $(this).parents('form:first');
+        $(form).attr('action', ROUTE_APENAS_SALVAR);
+        $(form).submit();
+    })
 </script>

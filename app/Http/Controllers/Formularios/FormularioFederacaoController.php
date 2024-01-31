@@ -13,15 +13,17 @@ class FormularioFederacaoController extends Controller
 {
     public function index()
     {
-        $formulario_respondido_ano = FormularioFederacaoService::getAnosFormulariosRespondidos();
-        $formulario_coleta_atual = FormularioFederacaoService::getFormularioAnoCorrente();
+        $listaAnosFormulariosRespondidos = FormularioFederacaoService::getAnosFormulariosRespondidos();
+        $formularioDesseAno = FormularioFederacaoService::getFormularioAnoCorrente();
         return view('dashboard.formularios.federacao', [
             'coleta' => FormularioFederacaoService::verificarColeta(),
-            'anos' => $formulario_respondido_ano,
+            'anos' => $listaAnosFormulariosRespondidos,
             'ano_referencia' => EstatisticaService::getAnoReferencia(),
+            'formularioEntregue' => isset($formularioDesseAno)
+                && $formularioDesseAno->status == EstatisticaService::FORMULARIO_ENTREGUE,
             'qualidade_entrega' =>  FormularioFederacaoService::qualidadeEntrega(),
             'estrutura_federacao' => FormularioFederacaoService::getEstrutura(),
-            'formulario' => $formulario_coleta_atual
+            'formulario' => $formularioDesseAno
         ]);
     }
 
@@ -33,6 +35,28 @@ class FormularioFederacaoController extends Controller
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+
+    public function salvarPreenchimento(Request $request)
+    {
+        try {
+            FormularioFederacaoService::store($request, true);
+            return redirect()->route('dashboard.formularios-federacoes.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Formulário Salvo com sucesso!'
                 ]
             ]);
         } catch (Throwable $th) {
