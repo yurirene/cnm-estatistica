@@ -208,12 +208,15 @@ class DatatableAjaxService
             $formulariosEntregues = $query
                 ->where('status', true)
                 ->get()
-                ->map(function ($item) {
+                ->map(function ($item) use ($instancia){
                     return [
                         'id' => $item->id,
                         'nome' => $item->nome,
                         'entregue' => $item->relatorios()
                             ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                            ->when($instancia != 'Local', function ($sql) {
+                                return $sql->where('status', EstatisticaService::FORMULARIO_ENTREGUE);
+                            })
                             ->get()
                             ->count(),
                     ];
