@@ -79,7 +79,7 @@ class DiretoriaService
 
         if ($instancia == 'Local') {
             $campos['secretario_causas'] = 'Conselheiro';
-            unset($campos['secretario_executvo']);
+            unset($campos['secretario_executivo']);
         }
         return $campos;
     }
