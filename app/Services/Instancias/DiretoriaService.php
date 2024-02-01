@@ -12,6 +12,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use Illuminate\Support\Facades\Auth;
 
 class DiretoriaService
@@ -61,7 +62,7 @@ class DiretoriaService
         $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
         foreach ($sinodais as $sinodal) {
             $status = true;
-            $formulario = FormularioSinodal::where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            $formulario = FormularioSinodal::where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->where('sinodal_id', $sinodal->id)
                 ->first();
             if (!$formulario) {
@@ -86,7 +87,7 @@ class DiretoriaService
             $formularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
                 $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
             })
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->get();
 
             $totalSocios = 0;
@@ -120,7 +121,7 @@ class DiretoriaService
             $quantidadeFormularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
                     $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
                 })
-                ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
             $restante = $quantidadeUmps - $quantidadeFormularios;
             return [

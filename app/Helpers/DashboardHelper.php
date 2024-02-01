@@ -73,7 +73,7 @@ class DashboardHelper
         if (!$instancia) {
             return true;
         }
-        $ano = Parametro::where('nome', 'ano_referencia')->first()->valor;
+        $ano = EstatisticaService::getAnoReferencia();
         return $instancia->relatorios()->where('ano_referencia', $ano)->get()->isNotEmpty();
     }
 

@@ -150,7 +150,7 @@ class SinodalService
             $total_socios = 0;
             $total_umps = 0;
             foreach ($formularios as $formulario) {
-                $total_umps += intval($formulario->estrutura['ump_organizada']);
+                $total_umps += isset($formulario->estrutura) ? intval($formulario->estrutura['ump_organizada']) : 0;
                 $total_socios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
             }
             return [

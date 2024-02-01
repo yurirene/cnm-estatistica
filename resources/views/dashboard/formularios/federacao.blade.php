@@ -152,6 +152,9 @@
                     @else
                     <button class="btn btn-danger" disabled>Enviar</button>
                     @endif
+                    @if(!$formularioEntregue)
+                    <button class="btn btn-warning" id="apenas-salvar" type="button">Apenas Salvar</button>
+                    @endif
                     {!! Form::close() !!}
                 </div>
             </div>
