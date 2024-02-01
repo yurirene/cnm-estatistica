@@ -158,7 +158,6 @@
     $('.abrir_aviso').on('click', function(e) {
         let botao = $(e.currentTarget)
         let dados = botao.data('dados');
-        console.log(dados);
         $('#corpo_modal_show').html(dados.texto);
         $('#titulo_modal_show').text(dados.titulo);
         $('#modal-aviso-show').modal('show');
