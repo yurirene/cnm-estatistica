@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Diretoria;
 use App\Models\DiretoriaInformacao;
 use App\Services\DiretoriaService;
+use App\Services\SecretarioService;
 use App\Services\UserService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -16,54 +17,12 @@ class DiretoriaController extends Controller
 {
     public function index(): View
     {
-        $diretoria = DiretoriaService::getDiretoriaVigente();
+        $diretoria = DiretoriaService::getDadosDiretoria();
+        $secretarios = SecretarioService::getSecretariosDaDiretoria($diretoria['id']);
         return view('dashboard.diretoria.index', [
-            'cargos' => Diretoria::LABELS,
-            'diretoria' => $diretoria
+            'diretoria' => $diretoria,
+            'secretarios' => $secretarios
         ]);
-    }
-
-    public function salvar()
-    {
-        DB::beginTransaction();
-        try {
-            $di = Diretoria::create([
-                'presidente' => 'teste_presidente',
-                'vice_presidente' => 'teste_vice_presidente',
-                'primeiro_secretario' => 'teste_primeiro_secretario',
-                'segundo_secretario' => 'teste_segundo_secretario',
-                'secretario_executivo' => 'teste_secretario_executivo',
-                'tesoureiro' => 'teste_tesoureiro',
-                'secretario_causas' => 'teste_secretario_causas',
-                'sinodal_id' => 'b3201496-329d-43b4-82ba-8ead42f25b1f',
-                'ano' => 2023
-            ]);
-            $i= 1;
-            $retorno = [];
-            foreach (array_keys(Diretoria::LABELS) as $chave) {
-                $retorno["contato_$chave"] = '(92)99990999' . $i;
-                $retorno["path_$chave"] = "https://picsum.photos/300/300?image=" . $i;
-                $i++;
-            }
-            $retorno['diretoria_id'] = $di->id;
-            DiretoriaInformacao::create($retorno);
-            DB::commit();
-            return redirect()->route('dashboard.diretoria.index')->with([
-                'mensagem' => [
-                    'status' => true,
-                    'texto' => 'Operação realizada com Sucesso!'
-                ]
-            ]);
-        } catch (Throwable $th) {
-            DB::rollBack();
-            return redirect()->route('dashboard.diretoria.index')->with([
-                'mensagem' => [
-                    'status' => false,
-                    'texto' => 'Algo deu Errado!'
-                ]
-            ])
-            ->withInput();
-        }
     }
 
     /**
@@ -110,7 +69,6 @@ class DiretoriaController extends Controller
                 'aba' => 'diretoria'
             ]);
         } catch (Throwable $th) {
-            dd($th->getMessage(), $th->getLine(), $th->getFile());
             return redirect()->route('dashboard.diretoria.index')->with([
                 'mensagem' => [
                     'status' => false,

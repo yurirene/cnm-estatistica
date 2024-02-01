@@ -5,43 +5,83 @@ namespace App\Services;
 use App\Models\Diretoria;
 use App\Models\DiretoriaHistorico;
 use App\Models\DiretoriaInformacao;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class DiretoriaService
 {
-    public static function getDiretoriaVigente(): array
+    /**
+     * Retorna o registro da diretoria
+     *
+     * @return App\Model\Diretoria
+     */
+    public static function getDiretoriaVigente(): ?Diretoria
     {
-        $diretoria = Diretoria::with('informacoes')
+        return Diretoria::with('informacoes')
             ->daMinhaInstancia()
             ->first();
-        if ($diretoria) {
-            $diretoria = $diretoria->toArray();
-        }
-        $novo = empty($diretoria);
-        return self::normalizar($diretoria, $novo);
     }
 
-    public static function normalizar(?array $diretoria, bool $novo = false): array
+    /**
+     * Retorna os dados formtados da diretoria e caso não haja diretoria
+     * cadastra uma
+     *
+     * @return array
+     */
+    public static function getDadosDiretoria(): array
+    {
+        $diretoria = self::getDiretoriaVigente();
+
+        if (empty($diretoria)) {
+            DiretoriaService::gerarDiretoria();
+            $diretoria = self::getDiretoriaVigente();
+
+        }
+        $diretoria = $diretoria->toArray();
+        return self::agruparInformacoes($diretoria);
+    }
+
+    /**
+     * Método responsável por agrupar informações da diretoria
+     *
+     * @param array|null $diretoria
+     * @return array
+     */
+    public static function agruparInformacoes(array $diretoria): array
     {
         $retorno = [];
-        foreach (array_keys(Diretoria::LABELS) as $campo) {
-            $retorno[$campo]['nome'] = $novo
-                ? 'Não Informado'
-                : $diretoria[$campo];
-            $retorno[$campo]['path'] = $novo
-                ? Diretoria::IMAGEM_PADRAO
-                : $diretoria['informacoes']["path_$campo"];
-            $retorno[$campo]['contato'] = $novo
-                ? '(xx) xxxxx-xxxx'
-                : $diretoria['informacoes']["contato_$campo"];
+        $campos = self::getCamposDaInstancia();
+
+        foreach (array_keys($campos) as $campo) {
+            $retorno['membros'][$campo]['nome'] = $diretoria[$campo];
+            $retorno['membros'][$campo]['path'] = $diretoria['informacoes']["path_$campo"] ?? Diretoria::IMAGEM_PADRAO;
+            $retorno['membros'][$campo]['contato'] = $diretoria['informacoes']["contato_$campo"];
+            $retorno['membros'][$campo]['cargo'] = $campos[$campo];
         }
 
-        $retorno['id'] = !$novo ? $diretoria['id'] : null;
+        $retorno['id'] = $diretoria['id'];
 
         return $retorno;
+    }
+
+    public static function getCamposDaInstancia(): array
+    {
+        $campos = Diretoria::LABELS;
+        $instancia = auth()->user()->instancia_formatada;
+        if ($instancia == 'Sinodal') {
+            $campos['secretario_causas'] = 'Secretário Sinodal';
+        }
+
+        if ($instancia == 'Federação') {
+            $campos['secretario_causas'] = 'Secretário Presbiterial';
+        }
+
+        if ($instancia == 'Local') {
+            $campos['secretario_causas'] = 'Conselheiro';
+            unset($campos['secretario_executvo']);
+        }
+        return $campos;
     }
 
     /**
@@ -143,7 +183,32 @@ class DiretoriaService
 
             DB::commit();
         } catch (Throwable $th) {
-            dd($th->getMessage());
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public static function gerarDiretoria(): void
+    {
+        DB::beginTransaction();
+        try {
+            $campo = UserService::getCampoInstanciaDB();
+            $diretoria = Diretoria::create([
+                'presidente' => 'Não Informado',
+                'vice_presidente' => 'Não Informado',
+                'primeiro_secretario' => 'Não Informado',
+                'segundo_secretario' => 'Não Informado',
+                'secretario_executivo' => 'Não Informado',
+                'tesoureiro' => 'Não Informado',
+                'secretario_causas' => 'Não Informado',
+                $campo['campo'] => $campo['id'],
+                'ano' => date('Y')
+            ]);
+            DiretoriaInformacao::create([
+                'diretoria_id' => $diretoria->id
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }

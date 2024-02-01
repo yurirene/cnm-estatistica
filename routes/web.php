@@ -505,9 +505,9 @@ Route::group(
             Route::post('/diretoria/validar-ano-diretoria', [DiretoriaController::class, 'validarAnoDaNovaDiretoria'])
                 ->name('diretoria.validar-ano-diretoria');
 
-            Route::post('/secretarios/store', [SecretarioController::class, 'store'])
-                ->name('secretario.store');
-            Route::post('/secretarios/delete/{$secretario}', [SecretarioController::class, 'delete'])
+            Route::post('/secretarios/store-update', [SecretarioController::class, 'storeUpdate'])
+                ->name('secretario.store-update');
+            Route::get('/secretarios/delete/{secretario}', [SecretarioController::class, 'delete'])
                 ->name('secretario.delete');
 
         });

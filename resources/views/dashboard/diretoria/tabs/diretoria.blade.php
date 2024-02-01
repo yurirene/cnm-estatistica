@@ -8,11 +8,10 @@
     </div>
 </div>
 <div class="row">
-    @foreach ($cargos as $chave => $cargo)
+    @foreach ($diretoria['membros'] as $chave => $membro)
         @include('dashboard.diretoria.card-diretoria', [
-            'cargo' => $cargo,
-            'diretoria' => $diretoria,
-            'chave' => $chave,
+            'membro' => $membro,
+            'chave' => $chave
         ])
     @endforeach
 </div>
@@ -56,6 +55,11 @@
                                 'autocomplete' => 'off',
                                 'placeholder' => '(XX) XXXXX-XXXX, email@email.com',
                             ]) !!}
+                            <small class="text-muted">
+                                Os dados informados são de uso exclusivo da UMP,
+                                não será disponibilizado nem acessado fora da plataforma
+                                sem a sua permissão
+                            </small>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -146,6 +150,7 @@
                                             title: 'Diretoria cadastrada com sucesso!',
                                             icon: 'success'
                                         });
+                                        setTimeout(() => {location.reload();}, 1000)
                                     },
                                     error: (error) => {
                                         Swal.hideLoading();

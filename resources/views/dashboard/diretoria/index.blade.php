@@ -13,7 +13,7 @@
                         <ul class="nav nav-pills" id="custom-tabs-four-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link {{
-                                    !session()->get('aba') || session()->get('aba') == 'diretoria' ? 'active' : ''
+                                    !session('aba') || session()->get('aba') == 'diretoria' ? 'active' : ''
                                 }}"
                                     id="custom-tabs-four-home-tab"
                                     data-toggle="pill"
@@ -35,25 +35,13 @@
                                     Secretários
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ session()->get('aba') == 'historico' ? 'active' : '' }}"
-                                    id="custom-tabs-five-profile-tab"
-                                    data-toggle="pill"
-                                    href="#custom-tabs-five-profile"
-                                    role="tab"
-                                    aria-controls="custom-tabs-five-profile"
-                                    aria-selected="false">
-                                    Histórico
-                                </a>
-                            </li>
-
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content" id="custom-tabs-four-tabContent">
                             <div
                                 class="tab-pane fade  {{
-                                    !session()->get('aba') || session()->get('aba') == 'diretoria' ? 'show active' : ''
+                                    !session('aba') || session()->get('aba') == 'diretoria' ? 'show active' : ''
                                 }}"
                                 id="custom-tabs-four-home"
                                 role="tabpanel"
@@ -68,16 +56,6 @@
                                 aria-labelledby="custom-tabs-four-profile-tab"
                             >
                                 @include('dashboard.diretoria.tabs.secretarios')
-                            </div>
-                            <div
-                                class="tab-pane fade {{ session()->get('aba') == 'historico' ? 'show active' : '' }}"
-                                id="custom-tabs-five-profile"
-                                role="tabpanel"
-                                aria-labelledby="custom-tabs-five-profile-tab"
-                            >
-                                <div class="table-responsive">
-                                ccc
-                                </div>
                             </div>
                         </div>
                     </div>

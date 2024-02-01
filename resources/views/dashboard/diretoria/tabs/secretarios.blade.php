@@ -13,11 +13,9 @@
     </div>
 </div>
 <div class="row">
-    @forelse ([] as $chave => $cargo)
-        @include('dashboard.diretoria.card', [
-            'cargo' => $cargo,
-            'diretoria' => $diretoria,
-            'chave' => $chave,
+    @forelse ($secretarios as $secretario)
+        @include('dashboard.diretoria.card-secretario', [
+            'secretario' => $secretario,
         ])
     @empty
         <p>Sem secretários cadastrados<p>
@@ -45,7 +43,7 @@
             </div>
             {!! Form::open([
                 'method' => 'POST',
-                'route' => ['dashboard.secretario.store'],
+                'route' => ['dashboard.secretario.store-update'],
                 'files' => true
             ]) !!}
 
@@ -53,7 +51,15 @@
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            {!! Form::label('nome_secretario', 'Nome') !!}
+                            {!! Form::label('secretaria', 'Secretaria de Atividade') !!}
+                            {!! Form::text('secretaria', null, [
+                                'class' => 'form-control',
+                                'autocomplete' => 'off',
+                                'placeholder' => 'Estatística, Espiritualidade ...',
+                            ]) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('nome_secretario', 'Nome do(a) Secretário(a)') !!}
                             {!! Form::text('nome_secretario', null, [
                                 'class' => 'form-control',
                                 'autocomplete' => 'off',
@@ -65,15 +71,6 @@
                                 'class' => 'form-control',
                                 'autocomplete' => 'off',
                                 'placeholder' => '(XX) XXXXX-XXXX, email@email.com',
-                            ]) !!}
-                        </div>
-
-                        <div class="form-group">
-                            {!! Form::label('secretaria', 'Nome da Secretaria') !!}
-                            {!! Form::text('secretaria', null, [
-                                'class' => 'form-control',
-                                'autocomplete' => 'off',
-                                'placeholder' => 'Estatística, Espiritualidade ...',
                             ]) !!}
                         </div>
                     </div>
@@ -89,7 +86,8 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="secretaria_id" name="secretaria_id" />
+            <input type="hidden" id="secretario_id" name="secretario_id" />
+            <input type="hidden" id="diretoria_id" name="diretoria_id" value="{{$diretoria['id']}}" />
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="subtm" class="btn btn-primary">Atualizar</button>
@@ -101,6 +99,7 @@
 </div>
 @push('js')
     <script>
+        const ROTA_REMOVE_SECRETARIO = "{{ route('dashboard.secretario.delete', ':id') }}"
 
         $('#modal-edicao-secretario').on('show.bs.modal', function(event) {
             let button = $(event.relatedTarget)
@@ -110,6 +109,7 @@
                 $('#img_modal_editar_secretario').hide();
                 $('#modal-edicao-secretarioLabel1').hide();
                 $('#modal-edicao-secretarioLabel2').show();
+                $('#secretario_id').val('')
                 return;
             }
 
@@ -118,15 +118,26 @@
             let nome = button.data('nome')
             let contato = button.data('contato')
             let path = button.data('path')
-            let cargo = button.data('cargo')
-            let chave = button.data('chave')
+            let id = button.data('id')
+            let secretaria = button.data('secretaria')
 
             $('#img_modal_editar_secretario').attr('src', `/${path}`);
             $('#contato_secretario').val(contato);
             $('#nome_secretario').val(nome);
-            $('#secretario_id').text(cargo)
+            $('#secretaria').val(secretaria);
+            $('#secretario_id').val(id)
 
 
         })
+
+        $('.remover-secretario').on('click', function () {
+            let button = $(this);
+            let secretaria = button.data('secretaria')
+            let id = button.data('id')
+            let rota = ROTA_REMOVE_SECRETARIO.replace(':id', id);
+            alertConfirmar(rota, `Deseja remover a Secretaria ${secretaria}?`);
+
+            console.log('a');
+        });
     </script>
 @endpush

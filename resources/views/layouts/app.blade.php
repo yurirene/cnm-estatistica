@@ -12,7 +12,7 @@
     <!-- Favicon -->
     <link href="{{ asset('argon') }}/img/favicon.ico" rel="icon" type="image/png">
     <!-- Fonts -->
-    <link href="/vendor/open-sans.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <!-- Extra details for Live View on GitHub Pages -->
 
     <!-- Icons -->
@@ -134,10 +134,20 @@
             padding: 0.65rem 1rem;
         }
     </style>
+    <script>
+
+    </script>
 </head>
 
 <body class="{{ $class ?? '' }}">
 
+    <div class="overlay_init" id="overlay_init">
+        <div class="overlay_init__inner">
+            <div class="overlay_init__content">
+                <span class="spinner"></span>
+            </div>
+        </div>
+    </div>
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
@@ -496,6 +506,14 @@
 
     @stack('script')
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            $('#overlay_init').hide();
+        }, 500)
+    }, false);
+</script>
 
 
 </body>
