@@ -190,7 +190,6 @@
                         }
 
                         if ($(this).parents().closest('.nav-item').length > 1) {
-                            console.log($(this).parents().closest('.nav-item'));
                             $(this).parents()
                                 .closest('.nav-item')
                                 .first()

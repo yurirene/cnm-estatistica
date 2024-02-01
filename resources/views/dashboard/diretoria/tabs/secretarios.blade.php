@@ -136,8 +136,6 @@
             let id = button.data('id')
             let rota = ROTA_REMOVE_SECRETARIO.replace(':id', id);
             alertConfirmar(rota, `Deseja remover a Secretaria ${secretaria}?`);
-
-            console.log('a');
         });
     </script>
 @endpush
