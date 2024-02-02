@@ -263,4 +263,23 @@ class UserService
         return $retorno;
     }
 
+    /**
+     * Retorna a model da instancia do usuário
+     *
+     * @param User $usuario
+     * @return Model|null
+     */
+    public static function getInstanciaUsuarioLogado(User $usuario): ?Model
+    {
+        $instancia = null;
+        if ($usuario->roles->first()->name == User::ROLE_SINODAL) {
+            $instancia = $usuario->sinodais->first();
+        } elseif ($usuario->roles->first()->name == User::ROLE_FEDERACAO) {
+            $instancia = $usuario->federacoes->first();
+        } elseif ($usuario->roles->first()->name == User::ROLE_LOCAL) {
+            $instancia = $usuario->locais->first();
+        }
+        return $instancia;
+    }
+
 }

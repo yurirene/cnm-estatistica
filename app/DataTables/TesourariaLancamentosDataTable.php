@@ -4,13 +4,14 @@ namespace App\DataTables;
 
 use App\Helpers\FormHelper;
 use App\Helpers\BootstrapHelper;
+use App\Models\Apps\Tesouraria\Lancamento;
 use App\Models\User;
 use App\Services\UserService;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class UserDataTable extends DataTable
+class TesourariaLancamentosDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -22,29 +23,21 @@ class UserDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
-                return view('includes.actions', [
-                    'route' => 'dashboard.usuarios',
-                    'id' => $sql->id,
-                    'delete' => false
-                ]);
+            // ->addColumn('action', function($sql) {
+            //     return view('includes.actions', [
+            //         'route' => 'dashboard.usuarios',
+            //         'id' => $sql->id,
+            //         'delete' => false
+            //     ]);
+            // })
+            ->editColumn('tipo', function($sql) {
+                return FormHelper::statusFormatado($sql->tipo, 'Entrada', 'Saída');
             })
-            ->editColumn('status', function($sql) {
-                return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
-            })
-            ->addColumn('perfil', function($sql) {
-                $roles = '';
-                foreach ($sql->roles as $role) {
-                    $roles .= BootstrapHelper::badge('primary', $role->description, true);
+            ->editColumn('categoria_id', function ($sql) {
+                if (!is_null($sql->categoria_id)) {
+                    return BootstrapHelper::badge('primary', $sql->categoria->nome, true);
                 }
-                return $roles;
-            })
-            ->addColumn('administrando', function($sql) {
-                $administrando = '';
-                foreach (UserService::getAdministrados($sql->id) as $adm) {
-                    $administrando .= BootstrapHelper::badge('primary', $adm['texto'], true);
-                }
-                return $administrando;
+                return '';
             })
             ->rawColumns(['status', 'perfil', 'administrando']);
     }
@@ -52,12 +45,12 @@ class UserDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\User $model
+     * @param \App\Models\Tesouraria\Lancamento $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(User $model)
+    public function query(Lancamento $model)
     {
-        return $model->newQuery()->query();
+        return $model->newQuery()->daMinhaInstancia();
     }
 
     /**
@@ -68,13 +61,14 @@ class UserDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('usuario-table')
+                    ->setTableId('lancamento-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(2)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Usuário')->enabled(auth()->user()->canAtLeast(['dashboard.usuarios.create']))
+                        Button::make('create')
+                            ->text('<i class="fas fa-plus"></i> Novo Lançamento')
                     )
                     ->parameters([
                         "language" => [
@@ -90,20 +84,19 @@ class UserDataTable extends DataTable
      */
     protected function getColumns()
     {
-        $colunas = [
+        return [
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('name')->title('Nome'),
-            Column::make('email')->title('E-mail'),
-            Column::make('perfil')->title('Perfil'),
-            Column::make('administrando')->title('Administrando'),
-            Column::make('status')->title('Status'),
+            Column::make('data_lancamento')->title('Data Lançamento'),
+            Column::make('tipo')->title('Tipo'),
+            Column::make('descricao')->title('Descrição'),
+            Column::make('valor')->title('Valor'),
+            Column::make('categoria_id')->title('Categoria'),
         ];
-        return $colunas;
     }
 
     /**
@@ -113,6 +106,6 @@ class UserDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'USUARIOS_' . date('YmdHis');
+        return 'TESOURARIA_' . date('YmdHis');
     }
 }

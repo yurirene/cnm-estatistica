@@ -3,6 +3,7 @@
 use App\Http\Controllers\Apps\AppController;
 use App\Http\Controllers\Apps\EventoController;
 use App\Http\Controllers\Apps\SiteController;
+use App\Http\Controllers\Apps\TesourariaController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ComprovanteACIController;
@@ -444,6 +445,11 @@ Route::group(
             )->name('apps.sites.remover-inscrito');
             Route::get('/apps/sites/{evento_id}/limpar-lista',[EventoController::class, 'limparLista'])
                 ->name('apps.sites.limpar-lista');
+
+            //TESOURARIA
+
+            Route::get('/apps/tesouraria/index',[TesourariaController::class, 'index'])
+                ->name('apps.tesouraria.index');
         });
     }
 );

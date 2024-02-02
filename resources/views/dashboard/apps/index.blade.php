@@ -58,6 +58,7 @@
                 </div>
             </div>
             <input type="hidden" id="sinodal_id" name="sinodal_id" />
+            <input type="hidden" id="sinodais" name="sinodais" />
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="subtm" class="btn btn-primary">Liberar</button>
@@ -90,5 +91,50 @@
             }
         })
     });
+
+    function botoes()
+    {
+        return '<button class="btn btn-secondary" type="button" id="botao_editar"  onclick="editarEmBloco()">'
+                        +'<i class="fas fa-pen"></i> Editar em Bloco'
+                    +'</button>';
+    }
+
+    function checkboxAction()
+    {
+        var checkboxs = [];
+        var botao = botoes();
+        $("input:checkbox[name=linhas]:checked").each(function () {
+            checkboxs.push($(this).val());
+        });
+        if (checkboxs.length > 0) {
+            if (!$('.dt-buttons.btn-group.flex-wrap').find('#botao_editar').length){
+                $('.dt-buttons.btn-group.flex-wrap').append(botao);
+            }
+        } else {
+            $('#botao_editar').remove();
+        }
+    }
+
+    $(document).on('click','#checkbox-master', function(){
+        $('.isCheck').prop('checked', $(this).prop('checked'));
+        checkboxAction();
+    });
+
+    $(document).on('click','#checkbox', function(){
+        checkboxAction();
+    });
+
+
+    function editarEmBloco()
+    {
+        var ids = [];
+        $("input:checkbox[name=linhas]:checked").each(function () {
+            ids.push($(this).val());
+        });
+        console.log(ids);
+        $('[name="sinodais"]').val(ids);
+
+        $('#liberar-app').modal('show');
+    }
 </script>
 @endpush
