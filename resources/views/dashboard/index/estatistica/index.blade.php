@@ -23,6 +23,7 @@
                                     <label>Ano</label>
                                     <select class="form-control" id="ano">
                                         <option value="2022">2022</option>
+                                        <option value="2023" selected>2023</option>
                                     <select>
                                 </div>
                             </div>
