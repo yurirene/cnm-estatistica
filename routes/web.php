@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Apps\AppController;
+use App\Http\Controllers\Apps\CategoriaController;
 use App\Http\Controllers\Apps\EventoController;
 use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\Apps\TesourariaController;
@@ -448,8 +449,18 @@ Route::group(
 
             //TESOURARIA
 
-            Route::get('/apps/tesouraria/index',[TesourariaController::class, 'index'])
-                ->name('apps.tesouraria.index');
+            Route::resource('/apps/tesouraria', TesourariaController::class)
+                ->names('apps.tesouraria')
+                ->except(['destroy']);
+            Route::get('/apps/tesouraria/remover/{lancamento}',[TesourariaController::class, 'delete'])
+                ->name('apps.tesouraria.delete');
+
+            Route::resource('/apps/tesouraria/categoria', CategoriaController::class)
+                ->names('apps.tesouraria.categoria')
+                ->except(['destroy', 'index']);
+
+            Route::get('/apps/tesouraria/remover-categoria/{categoria}',[CategoriaController::class, 'delete'])
+                ->name('apps.tesouraria.categoria.delete');
         });
     }
 );

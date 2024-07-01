@@ -27,6 +27,7 @@ class CreateLancamentosTable extends Migration
             $table->uuid('local_id')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('sinodal_id')->references('id')->on('sinodais')->onDelete('cascade');
             $table->foreign('federacao_id')->references('id')->on('federacoes')->onDelete('cascade');

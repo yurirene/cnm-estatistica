@@ -18,52 +18,88 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @if (!isset($digesto))
-                    {!! Form::open(['url' => route('dashboard.digestos.store'), 'method' => 'POST', 'files' => true]) !!}
+                    @if (!isset($lancamento))
+                    {!! Form::open(['url' => route('dashboard.apps.tesouraria.store'), 'method' => 'POST', 'files' => true]) !!}
                     @else
-                    {!! Form::model($digesto, ['url' => route('dashboard.digestos.update', $digesto->id), 'method' => 'PUT', 'files' => true]) !!}
+                    {!! Form::model($lancamento, ['url' => route('dashboard.apps.tesouraria.update', $lancamento->id), 'method' => 'PUT', 'files' => true]) !!}
                     @endif
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="form-group">
-                                {!! Form::label('titulo', 'Título') !!}
-                                {!! Form::text('titulo', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('descricao', 'Descrição') !!}
+                                {!! Form::text('descricao', null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('ano', 'Ano') !!}
-                                {!! Form::text('ano', !isset($digesto) ? date('Y') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('tipo', 'Tipo') !!}
+                                {!! Form::select('tipo', $tipos, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('tipo_reuniao_id', 'Tipo Reunião') !!}
-                                {!! Form::select('tipo_reuniao_id', $tipos, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('valor', 'Valor') !!}
+                                {!! Form::text('valor', null, ['class' => 'form-control isMoney', 'required' => true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('descricao', 'Descrição') !!}
+                                {!! Form::date('data_lancamento', null,  ['class' => 'form-control', 'required'=>true]) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('categoria_id', 'Categoria') !!}
+                                {!! Form::select(
+                                    'categoria_id',
+                                    ["" => 'Sem categoria'] + $categorias,
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'required' => false,
+                                        'autocomplete' => 'off'
+                                    ]
+                                ) !!}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('arquivo', 'Arquivo') !!}
-                                {!! Form::file('arquivo', ['class' => 'form-control']) !!}
-                                @if(isset($digesto))
+                                {!! Form::label('comprovante', 'Comprovante') !!}
+
+                                <div class="custom-file">
+                                    <input type="file"
+                                        class="custom-file-input"
+                                        id="comprovante"
+                                        aria-describedby="inputenviarimg"
+                                        name="comprovante"
+                                    >
+                                    <label class="custom-file-label" for="image">Buscar Comprovante</label>
+                                </div>
+
+                                @if(!empty($lancamento->comprovante))
                                 <small class="text-danger">Somente se for alterar o arquivo</small>
+                                <br>
+                                <a href="/{{ $lancamento->comprovante }}" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Visualizar comprovante
+                                </a>
                                 @endif
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                {!! Form::label('texto', 'Texto') !!}
-                                {!! Form::textarea('texto', null, ['class' => 'form-control', 'rows' => 10 , 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($digesto) ? 'Atualizar' : 'Cadastrar')}}</button>
-                    <a href="{{ route('dashboard.digestos.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                    <button class="btn btn-success">
+                        <i class='fas fa-save'></i>
+                        {{(isset($lancamento) ? 'Atualizar' : 'Cadastrar')}}
+                    </button>
+                    <a href="{{ route('dashboard.apps.tesouraria.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
                     {!! Form::close() !!}
                 </div>
             </div>
@@ -72,3 +108,8 @@
     </div>
 </div>
 @endsection
+@push('js')
+<script>
+
+</script>
+@endpush

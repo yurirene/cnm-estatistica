@@ -63,16 +63,21 @@ class AuthServiceProvider extends ServiceProvider
             if (empty($apps)) {
                 $apps = ['sites', 'tesouraria'];
             }
+
             $instancia = UserService::getInstanciaUsuarioLogado($user);
+
             if (empty($instancia)) {
                 return false;
             }
+
             $retorno = false;
+
             foreach ($apps as $app) {
                 if ($instancia->apps()->where('name', $app)->get()->isNotEmpty()) {
                     $retorno = true;
                 }
             }
+
             return $retorno;
         });
 

@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Models\Tesouraria;
+namespace App\Models\Apps\Tesouraria;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Categoria extends Model
 {
-    use HasFactory;
+    use GenericTrait;
+
+    protected $table = 'tesouraria_categorias';
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 }

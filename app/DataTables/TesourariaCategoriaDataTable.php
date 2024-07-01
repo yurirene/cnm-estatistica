@@ -2,17 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Helpers\FormHelper;
-use App\Helpers\BootstrapHelper;
 use App\Models\Apps\Tesouraria\Lancamento;
-use App\Models\User;
-use App\Services\UserService;
-use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class TesourariaLancamentosDataTable extends DataTable
+class TesourariaCategoriaDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -24,26 +19,14 @@ class TesourariaLancamentosDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function($sql) {
-                return view('includes.actions', [
-                    'route' => 'dashboard.apps.tesouraria',
-                    'id' => $sql->id,
-                    'delete' => false
-                ]);
-            })
-            ->editColumn('tipo', function($sql) {
-                return FormHelper::statusFormatado($sql->tipo, 'Entrada', 'Saída');
-            })
-            ->editColumn('data_lancamento', function($sql) {
-                return Carbon::parse($sql->data_lancamento)->format('d/m/Y');
-            })
-            ->editColumn('categoria_id', function ($sql) {
-                if (!is_null($sql->categoria_id)) {
-                    return BootstrapHelper::badge('primary', $sql->categoria->nome, true);
-                }
-                return BootstrapHelper::badge('info', 'Sem Categoria', true);
-            })
-            ->rawColumns(['action', 'tipo', 'categoria_id']);
+            // ->addColumn('action', function($sql) {
+            //     return view('includes.actions', [
+            //         'route' => 'dashboard.usuarios',
+            //         'id' => $sql->id,
+            //         'delete' => false
+            //     ]);
+            // })
+            ->rawColumns(['action']);
     }
 
     /**
@@ -65,14 +48,14 @@ class TesourariaLancamentosDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('lancamento-table')
+                    ->setTableId('categoria-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
-                    ->orderBy(1)
+                    ->orderBy(2)
                     ->buttons(
                         Button::make('create')
-                            ->text('<i class="fas fa-plus"></i> Novo Lançamento')
+                            ->text('<i class="fas fa-plus"></i> Nova Categoria')
                     )
                     ->parameters([
                         "language" => [
@@ -95,11 +78,7 @@ class TesourariaLancamentosDataTable extends DataTable
                   ->width(60)
                   ->addClass('text-center')
                   ->title('Ação'),
-            Column::make('data_lancamento')->title('Data Lançamento'),
-            Column::make('tipo')->title('Tipo'),
-            Column::make('descricao')->title('Descrição'),
-            Column::make('valor')->title('Valor'),
-            Column::make('categoria_id')->title('Categoria'),
+            Column::make('nome')->title('Nome'),
         ];
     }
 
