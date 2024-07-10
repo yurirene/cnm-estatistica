@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Apps;
 
 use App\DataTables\TesourariaLancamentosDataTable;
+use App\Exports\TesourariaExport;
 use App\Http\Controllers\Controller;
 use App\Models\Apps\Tesouraria\Lancamento;
 use App\Services\Apps\TesourariaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Excel as ExcelExcel;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\RedirectResponse as HttpFoundationRedirectResponse;
 use Throwable;
 
@@ -26,7 +29,8 @@ class TesourariaController extends Controller
         return $dataTable->render('dashboard.apps.tesouraria.index', [
             'categorias' => TesourariaService::categoriaToSelect(),
             'totalizadores' => TesourariaService::totalizadores(),
-            'mesPassado' => Carbon::now()->subMonth()->format('m/Y')
+            'mesPassado' => Carbon::now()->subMonth()->format('m/Y'),
+            'tipos' => TesourariaService::getTipos()
         ]);
     }
 
@@ -152,5 +156,15 @@ class TesourariaController extends Controller
             ])
             ->withInput();
         }
+    }
+
+    /**
+     * /dashboard/apps/tesouraria/gerar-relatorio
+     *
+     * @return void
+     */
+    public function gerarRelatorio(Request $request)
+    {
+        return Excel::download(new TesourariaExport($request->all()), 'relatorio.csv', ExcelExcel::CSV);
     }
 }

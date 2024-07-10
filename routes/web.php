@@ -461,6 +461,9 @@ Route::group(
 
             Route::get('/apps/tesouraria/remover-categoria/{categoria}',[CategoriaController::class, 'delete'])
                 ->name('apps.tesouraria.categoria.delete');
+
+            Route::post('/apps/tesouraria/gerar-relatorio',[TesourariaController::class, 'gerarRelatorio'])
+                ->name('apps.tesouraria.gerar-relatorio');
         });
     }
 );

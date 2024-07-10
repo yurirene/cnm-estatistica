@@ -56,7 +56,44 @@
                             role="tabpanel"
                             aria-labelledby="custom-tabs-four-home-tab"
                         >
-                            <div class="table-responsive">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5><i class="fas fa-filter"></i> Filtros</h5>
+                                    <div class="row mb-2">
+                                        <div class="col-lg-3 col-md-6">
+                                            <label>Data Lançamento</label>
+                                            {!! Form::text(
+                                                'dt_lancamento_filtro',
+                                                null,
+                                                ['class' => 'form-control isDateRange','id' => 'dt_lancamento_filtro']
+                                            ) !!}
+                                        </div>
+                                        <div class="col-lg-3 col-md-6">
+                                            <label>Tipo</label>
+                                            {!! Form::select(
+                                                'tipo_filtro',
+                                                ["" => "Selecione um tipo"] + $tipos,
+                                                null,
+                                                ['class' => 'form-control', 'id' => 'tipo_filtro']
+                                            ) !!}
+                                        </div>
+                                        <div class="col-lg-3 col-md-6">
+                                            <label>Categoria</label>
+                                            {!! Form::select(
+                                                'categoria_filtro',
+                                                ["" => "Selecione uma categoria"] + $categorias,
+                                                null,
+                                                ['class' => 'form-control', 'id' => 'categorias_filtro']
+                                            ) !!}
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-primary" type="button" id="filtrar">Filtrar</button>
+                                            <button class="btn btn-secondary" type="button" id="resetar">Limpar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-3">
                                 {!! $dataTable->table(['class' => 'table w-100']) !!}
                             </div>
                         </div>
@@ -67,6 +104,14 @@
                             aria-labelledby="custom-tabs-four-profile-tab"
                         >
                             @include('dashboard.apps.tesouraria.categoria')
+                        </div>
+                        <div
+                            class="tab-pane fade"
+                            id="custom-tabs-four-relatorio"
+                            role="tabpanel"
+                            aria-labelledby="custom-tabs-four-relatorio-tab"
+                        >
+                            @include('dashboard.apps.tesouraria.relatorio')
                         </div>
                     </div>
                 </div>
@@ -87,5 +132,32 @@ $('#table-categorias').DataTable({
     responsive: true,
     processing: true,
 });
+
+</script>
+<script>
+    const table = $('#lancamento-table');
+
+    table.on('preXhr.dt', function(e, settings, data){
+        data.dt_lancamento = $('#dt_lancamento_filtro').val();
+        data.tipo = $('#tipo_filtro').val();
+        data.categoria = $('#categorias_filtro').val();
+    });
+
+    $('#filtrar').on('click', function (){
+        table.DataTable().ajax.reload();
+        return false;
+    });
+
+    $('#resetar').on('click', function (){
+
+        $('#nivel_filtro').val(null).trigger('change');
+        $('#usuario_filtro').val(null).trigger('change');
+        $('#status_filtro').val(null).trigger('change');
+        table.DataTable().ajax.reload();
+        return false;
+    });
+
+
+
 </script>
 @endpush

@@ -195,20 +195,32 @@ class TesourariaService
 
     public static function totalizadores(?array $filtro = []): array
     {
-        $ultimoDiaDoMes = Carbon::now()->subMonth()->lastOfMonth();
-        $saldoInicial = self::getTotalAte($ultimoDiaDoMes);
+        $ultimoDiaDoMesAnterior = !empty($filtro['dataInicio'])
+            ? Carbon::createFromFormat('d/m/Y', $filtro['dataInicio'])
+            : Carbon::now()->subMonth()->lastOfMonth();
+
+        $primeiroDia = !empty($filtro['dataInicio'])
+            ? Carbon::createFromFormat('d/m/Y', $filtro['dataInicio'])
+            : Carbon::now()->firstOfMonth();
+
+        $ultimoDia = !empty($filtro['dataFim'])
+            ? Carbon::createFromFormat('d/m/Y', $filtro['dataFim'])
+            : Carbon::now()->lastOfMonth();
+
+        $saldoInicial = self::getTotalAte($ultimoDiaDoMesAnterior);
+
         $entradas = self::getTotalAte(
-            Carbon::now()->lastOfMonth(),
-            Carbon::now()->firstOfMonth(),
+            $ultimoDia,
+            $primeiroDia,
             Lancamento::TIPO_ENTRADA
         );
         $saidas = self::getTotalAte(
-            Carbon::now()->lastOfMonth(),
-            Carbon::now()->firstOfMonth(),
+            $ultimoDia,
+            $primeiroDia,
             Lancamento::TIPO_SAIDA
         );
 
-        $saldoFinal = $saldoInicial + $entradas - $saidas;
+        $saldoFinal = $saldoInicial + $entradas + $saidas;
 
         return [
             'saldoInicial' => number_format($saldoInicial, 2, ',', '.'),

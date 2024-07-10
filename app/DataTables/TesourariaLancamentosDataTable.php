@@ -54,7 +54,21 @@ class TesourariaLancamentosDataTable extends DataTable
      */
     public function query(Lancamento $model)
     {
-        return $model->newQuery()->daMinhaInstancia();
+        return $model->newQuery()
+            ->daMinhaInstancia()
+            ->when(request()->filled('dt_lancamento'), function ($sql) {
+                $dataLancamento = request()->get('dt_lancamento');
+                $datas = explode(' - ', $dataLancamento);
+                $periodo[0] = Carbon::createFromFormat('d/m/Y', $datas[0]);
+                $periodo[1] = Carbon::createFromFormat('d/m/Y', $datas[1]);
+                return $sql->whereBetween('data_lancamento', $periodo);
+            })
+            ->when(request()->filled('tipo'), function ($sql) {
+                return $sql->where('tipo', request()->get('tipo'));
+            })
+            ->when(request()->filled('categoria'), function ($sql) {
+                return $sql->where('categoria_id', request()->get('categoria'));
+            });
     }
 
     /**
@@ -65,20 +79,20 @@ class TesourariaLancamentosDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('lancamento-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')
-                            ->text('<i class="fas fa-plus"></i> Novo Lançamento')
-                    )
-                    ->parameters([
-                        "language" => [
-                            "url" => "/vendor/datatables/portugues.json"
-                        ]
-                    ]);
+            ->setTableId('lancamento-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(1)
+            ->buttons(
+                Button::make('create')
+                    ->text('<i class="fas fa-plus"></i> Novo Lançamento')
+            )
+            ->parameters([
+                "language" => [
+                    "url" => "/vendor/datatables/portugues.json"
+                ]
+            ]);
     }
 
     /**
