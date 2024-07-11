@@ -140,7 +140,7 @@
 
                     @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
                     <div class="btn-group pull-right">
-                    {!! Form::submit((!isset($formulario) ? 'Enviar' : 'Atualizar'), ['class' => 'btn btn-success']) !!}
+                    {!! Form::submit((!isset($formulario) || !$formularioEntregue ? 'Enviar' : 'Atualizar'), ['class' => 'btn btn-success']) !!}
                     </div>
                     @else
                     <button class="btn btn-danger" disabled>Enviar</button>
