@@ -145,8 +145,8 @@ class SinodalService
             $total_socios = 0;
             $total_umps = 0;
             foreach ($formularios as $formulario) {
-                $total_umps += intval($formulario->estrutura['ump_organizada']);
-                $total_socios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
+                $total_umps += intval($formulario->estrutura['ump_organizada'] ?? 0);
+                $total_socios += intval($formulario->perfil['ativos'] ?? 0) + intval($formulario->perfil['cooperadores'] ?? 0);
             }
             return [
                 'total_presbiterios' => $federacoes->count(),
