@@ -94,12 +94,13 @@ class User extends Authenticatable
     public function instancia()
     {
         if ($this->hasRole(self::ROLE_SINODAL)) {
-            return $this->sinodais();
+            $relation = $this->sinodais();
         } elseif ($this->hasRole(self::ROLE_FEDERACAO)) {
-            return $this->federacoes();
+            $relation = $this->federacoes();
         } elseif ($this->hasRole(self::ROLE_LOCAL)) {
-            return $this->locais();
+            $relation = $this->locais();
         }
+        return $relation;
     }
 
     public function scopeQuery($query)

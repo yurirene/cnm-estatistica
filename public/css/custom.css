@@ -9,6 +9,11 @@
     z-index: 4;
 }
 
+.form-checkbox {
+    height: 17px !important;
+    width: 17px !important;
+}
+
 .overlay_init__inner {
     left: 0;
     top: 0;

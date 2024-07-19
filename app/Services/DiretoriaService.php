@@ -65,6 +65,11 @@ class DiretoriaService
         return $retorno;
     }
 
+    /**
+     * Retorna os cargos ajustados de acordo com a instância
+     *
+     * @return array
+     */
     public static function getCamposDaInstancia(): array
     {
         $campos = Diretoria::LABELS;
@@ -188,6 +193,11 @@ class DiretoriaService
         }
     }
 
+    /**
+     * Cadastra uma nova diretoria se não existir
+     *
+     * @return void
+     */
     public static function gerarDiretoria(): void
     {
         DB::beginTransaction();

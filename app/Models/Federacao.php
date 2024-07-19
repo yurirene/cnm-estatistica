@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Apps\App;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -57,6 +58,11 @@ class Federacao extends Model
     public function relatorios()
     {
         return $this->hasMany(FormularioFederacao::class, 'federacao_id');
+    }
+
+    public function apps()
+    {
+        return $this->belongsToMany(App::class, 'app_federacao');
     }
 
     public function scopeMinhaSinodal($query)
