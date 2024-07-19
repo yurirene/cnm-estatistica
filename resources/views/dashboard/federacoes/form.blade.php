@@ -5,7 +5,7 @@
 @include('dashboard.partes.head',[
     'titulo' => 'Federações'
 ])
-    
+
 <div class="container-fluid mt--7">
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
@@ -79,7 +79,7 @@
                                 {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @else 
+                        @else
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 
@@ -108,15 +108,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
 <script>
 
-const isNovo = document.getElementById('isNovo').value === "true"; 
+const isNovo = document.getElementById('isNovo').value === "true";
 const idUsuario = document.getElementById('idUsuario').value;
 
 $('#sigla').keyup($.debounce(500, function(e) {
-    verificarUsuario($('#email_usuario').val());   
+    verificarUsuario($('#email_usuario').val());
 }));
 
 function verificarUsuario(email) {
-    console.log('verificando...');
     $.ajax({
         url: "{{route('dashboard.usuarios.check-usuario')}}",
         type: 'POST',

@@ -6,6 +6,7 @@ use App\DataTables\RankingDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Apps\App;
 use App\Models\Sinodal;
+use App\Services\LogErroService;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
@@ -22,8 +23,18 @@ class AppController extends Controller
     public function liberar(Request $request)
     {
         try {
-            $sinodal = Sinodal::find($request->sinodal_id);
-            $sinodal->apps()->sync($request->apps);
+            if (
+                $request->filled('sinodal_id')
+                && !$request->filled('sinodais')
+            ) {
+                $sinodais = [$request->sinodal_id];
+            } else {
+                $sinodais = explode(',', $request->sinodais);
+            }
+            foreach ($sinodais as $sinodal) {
+                $sinodal = Sinodal::find($sinodal);
+                $sinodal->apps()->sync($request->apps);
+            }
 
             return redirect()->route('dashboard.apps.liberar')->with([
                 'mensagem' => [
@@ -32,6 +43,11 @@ class AppController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'msg' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

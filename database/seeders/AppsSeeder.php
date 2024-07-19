@@ -23,8 +23,8 @@ class AppsSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'nome' => 'Livro Caixa',
-                'name' => 'livro_caixa'
+                'nome' => 'Tesouraria',
+                'name' => 'tesouraria'
             ],
             [
                 'id' => 3,

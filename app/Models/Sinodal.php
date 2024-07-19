@@ -11,6 +11,7 @@ use App\Traits\Auditable;
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,11 @@ class Sinodal extends Model
     protected $table = 'sinodais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $dates = ['data_organizacao'];
+
+    public function getDataOrganizacaoFormatadaAttribute()
+    {
+        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+    }
 
     public function regiao()
     {
@@ -47,17 +53,9 @@ class Sinodal extends Model
         return $this->hasMany(FormularioSinodal::class, 'sinodal_id');
     }
 
-    public function scopeQuery($query)
+    public function diretoria(): HasOne
     {
-        if (auth()->user()->admin) {
-            return $query;
-        }
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
-    }
-
-    public function getDataOrganizacaoFormatadaAttribute()
-    {
-        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+        return $this->hasOne(Diretoria::class, 'sinodal_id');
     }
 
     public function ranking()
@@ -83,5 +81,13 @@ class Sinodal extends Model
     public function apps()
     {
         return $this->belongsToMany(App::class, 'app_sinodal');
+    }
+
+    public function scopeQuery($query)
+    {
+        if (auth()->user()->admin) {
+            return $query;
+        }
+        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
     }
 }

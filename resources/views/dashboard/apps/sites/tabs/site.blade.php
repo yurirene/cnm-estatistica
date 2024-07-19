@@ -84,7 +84,6 @@ $(document).ready(function() {
         var chave = $(this).data('chave');
         var cargo = $(this).data('cargo');
         var valor = $('#' + config).val();
-        console.log(config, chave, cargo, valor);
         atualizarConfig(config, chave, valor, cargo);
     });
 

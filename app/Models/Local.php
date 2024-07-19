@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,14 +43,19 @@ class Local extends Model
         return $this->belongsToMany(User::class, 'usuario_local');
     }
 
-    public function scopeMinhaFederacao($query)
-    {
-        return $query->whereIn('federacao_id', Auth::user()->federacoes->pluck('id'));
-    }
-
     public function relatorios()
     {
         return $this->hasMany(FormularioLocal::class, 'local_id');
+    }
+
+    public function diretoria(): HasOne
+    {
+        return $this->hasOne(Diretoria::class, 'local_id');
+    }
+
+    public function scopeMinhaFederacao($query)
+    {
+        return $query->whereIn('federacao_id', Auth::user()->federacoes->pluck('id'));
     }
 
     public function getDataOrganizacaoFormatadaAttribute()

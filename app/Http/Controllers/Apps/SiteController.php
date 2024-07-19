@@ -15,7 +15,7 @@ class SiteController extends Controller
 {
     public function index()
     {
-        $sinodal = auth()->user()->sinodais()->first();
+        $sinodal = auth()->user()->sinodais->first();
         $site = Site::where('sinodal_id', $sinodal->id)->first();
         $evento = Evento::where('sinodal_id', $sinodal->id)->first();
         if (!$site) {
@@ -57,11 +57,19 @@ class SiteController extends Controller
                 ->whereHas('apps', function ($sql) {
                     $sql->where('name', 'sites');
                 })->first();
+            if (!$sinodal) {
+                return abort(410, 'A sinodal não encontrada ou não tem essa funcionalidade habilitada');
+            }
             $site = $sinodal->site;
             $variaveis = SiteService::montar($sinodal, $site->configuracoes);
             return view("sites.modelo_{$site->modelo_id}", $variaveis);
         } catch (\Throwable $th) {
-            throw $th;
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
         }
     }
 

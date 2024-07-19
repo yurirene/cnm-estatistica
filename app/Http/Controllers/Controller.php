@@ -10,4 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public const MSG_ERRO = 'Algo deu Errado';
+    public const MSG_SUCESSO = 'Operação Realizada com Sucesso!';
 }
