@@ -25,10 +25,10 @@ class TesourariaLancamentosDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function($sql) {
-                return view('includes.actions', [
+                return view('dashboard.apps.tesouraria.actions', [
                     'route' => 'dashboard.apps.tesouraria',
                     'id' => $sql->id,
-                    'delete' => false
+                    'comprovante' => $sql->comprovante
                 ]);
             })
             ->editColumn('tipo', function($sql) {
@@ -87,6 +87,7 @@ class TesourariaLancamentosDataTable extends DataTable
             ->buttons(
                 Button::make('create')
                     ->text('<i class="fas fa-plus"></i> Novo Lançamento')
+                    ->addClass('bg-secondary')
             )
             ->parameters([
                 "language" => [

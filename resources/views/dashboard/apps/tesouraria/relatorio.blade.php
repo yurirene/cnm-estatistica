@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <h5><i class="fas fa-filter"></i> Filtros</h5>
+        <h5>Selecione o Período do Relatório</h5>
         {!! Form::open(
             [
                 'url' => route('dashboard.apps.tesouraria.gerar-relatorio'),
@@ -10,20 +10,21 @@
         ) !!}
         <div class="row mb-2">
             <div class="col-lg-3 col-md-6">
-                <label>Data Lançamento</label>
-                {!! Form::text(
-                    'periodo',
+                <label>Período</label>
+                {!! Form::select(
+                    'ano',
+                    $anos,
                     null,
-                    ['class' => 'form-control isDateRange','id' => 'periodo']
+                    ['class' => 'form-control isDateRange','id' => 'ano']
                 ) !!}
             </div>
             <div class="col-lg-3 col-md-6">
-                <label>Tipo</label>
+                <label>Listar Comprovante?</label>
                 {!! Form::select(
-                    'tipo_relatorio',
-                    ['relatorio' => 'Relatório CSV', 'comprovantes' => 'Baixar Comprovantes'],
+                    'comprovante',
+                    ['N' => 'Não', 'S' => 'Sim'],
                     null,
-                    ['class' => 'form-control', 'id' => 'tipo_relatorio']
+                    ['class' => 'form-control ','id' => 'comprovante']
                 ) !!}
             </div>
             <div class="col-lg-3 col-md-6 d-flex align-items-end">

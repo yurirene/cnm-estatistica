@@ -30,7 +30,8 @@ class TesourariaController extends Controller
             'categorias' => TesourariaService::categoriaToSelect(),
             'totalizadores' => TesourariaService::totalizadores(),
             'mesPassado' => Carbon::now()->subMonth()->format('m/Y'),
-            'tipos' => TesourariaService::getTipos()
+            'tipos' => TesourariaService::getTipos(),
+            'anos' => TesourariaService::getAnosTesouraria()
         ]);
     }
 
@@ -165,6 +166,13 @@ class TesourariaController extends Controller
      */
     public function gerarRelatorio(Request $request)
     {
-        return Excel::download(new TesourariaExport($request->all()), 'relatorio.csv', ExcelExcel::CSV);
+        return Excel::download(
+            new TesourariaExport(
+                $request->get('ano'),
+                $request->get('comprovante') == 'S'
+            ),
+            'relatorio.xls',
+            ExcelExcel::XLS
+        );
     }
 }

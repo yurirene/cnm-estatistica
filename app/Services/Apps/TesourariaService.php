@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -267,4 +268,12 @@ class TesourariaService
         return (float) $total;
     }
 
+    public static function getAnosTesouraria(): array
+    {
+        return Lancamento::select(DB::raw('YEAR(data_lancamento)'))
+            ->groupBy('YEAR(data_lancamento)')
+            ->get()
+            ->pluck('YEAR(data_lancamento)', 'YEAR(data_lancamento)')
+            ->toArray();
+    }
 }
