@@ -24,7 +24,36 @@ class FormHelper
 
     public static function removerAcentos($string)
     {
-        return preg_replace(array("/(á|à|ã|â|ä)/", "/(Á|À|Ã|Â|Ä)/", "/(é|è|ê|ë)/", "/(É|È|Ê|Ë)/", "/(í|ì|î|ï)/", "/(Í|Ì|Î|Ï)/", "/(ó|ò|õ|ô|ö)/", "/(Ó|Ò|Õ|Ô|Ö)/", "/(ú|ù|û|ü)/", "/(Ú|Ù|Û|Ü)/", "/(ñ)/", "/(Ñ)/", "/(ç)/", "/(Ç)/"), explode(" ", "a A e E i I o O u U n N c C"), $string);
+        return preg_replace(
+            [
+                "/(á|à|ã|â|ä)/",
+                "/(Á|À|Ã|Â|Ä)/",
+                "/(é|è|ê|ë)/",
+                "/(É|È|Ê|Ë)/",
+                "/(í|ì|î|ï)/",
+                "/(Í|Ì|Î|Ï)/",
+                "/(ó|ò|õ|ô|ö)/",
+                "/(Ó|Ò|Õ|Ô|Ö)/",
+                "/(ú|ù|û|ü)/",
+                "/(Ú|Ù|Û|Ü)/",
+                "/(ñ)/",
+                "/(Ñ)/",
+                "/(ç)/",
+                "/(Ç)/"
+            ],
+            explode(" ", "a A e E i I o O u U n N c C"), $string);
+    }
+
+    /**
+     * Converte o valor no formato BRL X.XXX,XX para float XXXX.XX
+     *
+     * @param string $valor
+     * @return float
+     */
+    public static function converterParaFloat(string $valor): float
+    {
+        $valorSemFormatacao = str_replace(',', '.', str_replace('.', '', $valor));
+        return floatval($valorSemFormatacao);
     }
 
 }

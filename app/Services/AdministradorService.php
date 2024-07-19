@@ -7,6 +7,7 @@ use App\Models\Parametro;
 use App\Models\Regiao;
 use App\Models\RegistroLogin;
 use App\Models\Sinodal;
+use App\Services\Estatistica\EstatisticaService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class AdministradorService
             'grafico_acesso_trinta_dias' => self::getAcessosTrintaDias(),
             'grafico_entrega_formulario_por_regiao' => self::getGraficoEntregaRelatorioPorRegiao(),
         ];
-            
+
     }
 
     public static function getMapa()
@@ -52,17 +53,17 @@ class AdministradorService
     public static function getTotalRelatoriosPendentes()
     {
         return Sinodal::whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })
             ->where('status', 1)
             ->get()
             ->count();
-    
+
         }
     public static function getTotalRelatoriosEntregues()
     {
         return Sinodal::whereHas('relatorios', function($sql) {
-                return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })
             ->get()
             ->count();
@@ -81,7 +82,7 @@ class AdministradorService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
     }
     public static function getTotalAcessosTrintaDias()
@@ -98,7 +99,7 @@ class AdministradorService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
     }
 
@@ -125,13 +126,13 @@ class AdministradorService
                         'tension' => 0.4
                     ],
                 ]
-            ];            
+            ];
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
 
 
@@ -145,10 +146,10 @@ class AdministradorService
         }
         return array_values($retorno);
     }
-    
+
     public static function getGraficoEntregaRelatorioPorRegiao()
     {
-        
+
         try {
             $regioes = Regiao::get();
             $total_regiao = [
@@ -170,7 +171,7 @@ class AdministradorService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
     }
 
@@ -179,7 +180,7 @@ class AdministradorService
         try {
             $total_sinodais = Sinodal::where('regiao_id', $regiao->id)->get()->count();
             $total_entregue = Sinodal::where('regiao_id', $regiao->id)->whereHas('relatorios', function($sql) {
-                    return $sql->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor);
+                    return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
                 })
                 ->get()
                 ->count();
@@ -190,7 +191,7 @@ class AdministradorService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
     }
 

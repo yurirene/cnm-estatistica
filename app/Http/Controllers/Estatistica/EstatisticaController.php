@@ -67,4 +67,29 @@ class EstatisticaController extends Controller
             'externo' => true
         ]);
     }
+
+    /**
+     * Responsável por atualizar todos os dados estatísticos nas sinodais e federações
+     *
+     * @return void
+     */
+    public function atualizarTodosOsDados()
+    {
+        try {
+            EstatisticaService::atualizarTodosOsDados();
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Todos os formulários foram atualizados com Sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
 }

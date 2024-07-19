@@ -13,6 +13,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use Illuminate\Support\Facades\Auth;
 
 class DiretoriaService

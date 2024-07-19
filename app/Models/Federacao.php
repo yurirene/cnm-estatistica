@@ -5,15 +5,14 @@ namespace App\Models;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 class Federacao extends Model
 {
     use GenericTrait, SoftDeletes;
-    
+
     protected $table = 'federacoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    
+
     protected $dates = ['data_organizacao'];
 
 
@@ -32,7 +31,7 @@ class Federacao extends Model
     {
         return $this->hasMany(Local::class);
     }
-    
+
     public function estado()
     {
         return $this->belongsTo(Estado::class);
@@ -45,7 +44,7 @@ class Federacao extends Model
 
     public function scopeMinhaSinodal($query)
     {
-        return $query->whereIn('sinodal_id', Auth::user()->sinodais->pluck('id'));
+        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
     }
 
     public function relatorios()
@@ -56,5 +55,10 @@ class Federacao extends Model
     public function getDataOrganizacaoFormatadaAttribute()
     {
         return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+    }
+
+    public function scopeDaMinhaRegiao($query)
+    {
+        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
     }
 }

@@ -23,6 +23,7 @@
                                     <label>Ano</label>
                                     <select class="form-control" id="ano">
                                         <option value="2022">2022</option>
+                                        <option value="2023" selected>2023</option>
                                     <select>
                                 </div>
                             </div>
@@ -160,23 +161,6 @@
                         @include('dashboard.partes.skeleton')
                         <div class="table-responsive">
                             <canvas id="escolaridade"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3 col-xl-3 col-md-6">
-                <div class="card shadow h-100">
-                    <div class="card-header bg-transparent">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h6 class="text-uppercase text-muted ls-1 mb-1">Sócios Desempregados</h6>
-                            </div>
-                        </div>
-                    </div>
-                        @include('dashboard.partes.skeleton')
-                    <div class="card-body d-flex align-items-center">
-                        <div class="table-responsive">
-                            <canvas id="desempregados"></canvas>
                         </div>
                     </div>
                 </div>

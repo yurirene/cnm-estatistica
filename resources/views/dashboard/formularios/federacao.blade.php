@@ -24,13 +24,25 @@
                                 @if(count($anos) > 0)
                                 <div class="form-group mb-2">
                                     {!! Form::label('Ano') !!}
-                                    {!! Form::select('ano', $anos, null, ['class' => 'form-control ml-1', 'id' => 'ano']) !!}
+                                    {!! Form::select(
+                                        'ano',
+                                        $anos,
+                                        null,
+                                        ['class' => 'form-control ml-1', 'id' => 'ano']
+                                    ) !!}
                                 </div>
-                                <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">Visualizar</button>
-                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">Exportar</a>
+                                <button type="button" id="visualizar" class="btn btn-primary mb-2 ml-3">
+                                    Visualizar
+                                </button>
+                                <a href="#" id="link_export" target="_blank" class="btn btn-primary mb-2 ml-1">
+                                    Exportar
+                                </a>
                                 @endif
                                 @if($coleta)
-                                    <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">Responder</button>
+                                    <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">
+                                        <span>Responder</span>
+                                        <span class="badge bg-danger blob">{{$ano_referencia}}</span>
+                                    </button>
                                 @endif
                             </div>
                         </div>
@@ -56,16 +68,29 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            Ano Referência <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled /> 
+                            Ano Referência
+                            <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled />
                         </div>
                     </div>
                     <hr>
 
 
                     @if(!is_null($formulario))
-                    {!! Form::model($formulario, ['route' => ['dashboard.formularios-federacoes.store'], 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                    {!! Form::model(
+                        $formulario,
+                        [
+                            'route' => ['dashboard.formularios-federacoes.store'],
+                            'method' => 'POST',
+                            'class' => 'form-horizontal'
+                        ]) !!}
                     @else
-                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.formularios-federacoes.store', 'class' => 'form-horizontal']) !!}
+                    {!! Form::open(
+                        [
+                            'method' => 'POST',
+                            'route' => 'dashboard.formularios-federacoes.store',
+                            'class' => 'form-horizontal'
+                        ]
+                    ) !!}
                     @endif
 
 
@@ -73,7 +98,7 @@
                     @include('dashboard.formularios.federacao.totalizador')
 
                     <hr class="my-3">
-                    
+
                     <h3>Estrutura</h3>
                     @include('dashboard.formularios.federacao.estrutura')
 
@@ -91,23 +116,44 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('federacao_id', 'Federação') !!}
-                                {!! Form::select('federacao_id', auth()->user()->federacoes->pluck('sigla', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::select(
+                                    'federacao_id',
+                                    auth()->user()->federacoes->pluck('sigla', 'id'),
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'required'=>true,
+                                        'autocomplete' => 'off'
+                                    ]
+                                ) !!}
                             </div>
                         </div>
-                        @else 
+                        @else
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::hidden('federacao_id', auth()->user()->federacoes()->first()->id ,['id' => 'federacao_id', 'class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::hidden(
+                                    'federacao_id',
+                                    auth()->user()->federacoes()->first()->id ,
+                                    [
+                                        'id' => 'federacao_id',
+                                        'class' => 'form-control',
+                                        'required'=>true,
+                                        'autocomplete' => 'off'
+                                    ]
+                                ) !!}
                             </div>
                         </div>
                     @endif
 
-                    @if($qualidade_entrega['porcentagem'] >=50)
+                    @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
                     </div>
-                    @else 
+                    @else
                     <button class="btn btn-danger" disabled>Enviar</button>
+                    @endif
+                    @if(!$formularioEntregue)
+                    <button class="btn btn-warning" id="apenas-salvar" type="button">Apenas Salvar</button>
                     @endif
                     {!! Form::close() !!}
                 </div>
@@ -115,7 +161,7 @@
         </div>
     </div>
     @endif
-</div>  
+</div>
 @endsection
 
 @push('js')

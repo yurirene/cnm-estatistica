@@ -13,6 +13,7 @@ use App\Models\Regiao;
 use App\Models\RegistroLogin;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\FormularioFederacaoService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -51,14 +52,22 @@ class DatatableAjaxService
             if (!$federacao) {
                 return datatables()::of([])->make();
             }
-            $informacoes = $federacao->locais->map(function($local) {
-                $ultimo_relatorio = $local->relatorios->last();
-                $total_socios = !is_null($ultimo_relatorio) ? $ultimo_relatorio->perfil['ativos'] + $ultimo_relatorio->perfil['cooperadores'] : 'Sem informaÃ§Ã£o';
-                $relatorio_entregue = (!is_null($ultimo_relatorio) && $ultimo_relatorio->ano_referencia == date('Y')) ? 'Entregue' : 'Pendente';
+            $anoReferencia = EstatisticaService::getAnoReferencia();
+            $informacoes = $federacao->locais->map(function($local) use ($anoReferencia) {
+                $ultimoRelatorio = $local->relatorios->last();
+                $totalSocios = !is_null($ultimoRelatorio)
+                    ? $ultimoRelatorio->perfil['ativos'] + $ultimoRelatorio->perfil['cooperadores']
+                    : 'Sem informação';
+                $relatorioEntregue = (!is_null($ultimoRelatorio) && $ultimoRelatorio->ano_referencia == $anoReferencia)
+                    ? 'Entregue'
+                    : 'Pendente';
+                $usuario = $local->usuario->first();
                 return [
                     'nome_ump' => $local->nome,
-                    'nro_socios' => $total_socios,
-                    'status_relatorio' => $relatorio_entregue
+                    'nro_socios' => $totalSocios,
+                    'status_relatorio' => $relatorioEntregue,
+                    'usuario_email' => $usuario->email,
+                    'usuario_id' => $usuario->id
                 ];
             });
             return datatables()::of($informacoes)->make();
@@ -199,12 +208,15 @@ class DatatableAjaxService
             $formulariosEntregues = $query
                 ->where('status', true)
                 ->get()
-                ->map(function ($item) {
+                ->map(function ($item) use ($instancia){
                     return [
                         'id' => $item->id,
                         'nome' => $item->nome,
                         'entregue' => $item->relatorios()
-                            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                            ->when($instancia != 'Local', function ($sql) {
+                                return $sql->where('status', EstatisticaService::FORMULARIO_ENTREGUE);
+                            })
                             ->get()
                             ->count(),
                     ];
@@ -231,7 +243,11 @@ class DatatableAjaxService
             $dados = EstatisticaService::getDadosQualidadeEstatistica()->toArray();
             return datatables()::of($dados)->make();
         } catch (\Throwable $th) {
-            throw $th;
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
         }
 
     }
@@ -248,7 +264,7 @@ class DatatableAjaxService
                         'id' => $item->id,
                         'nome' => $item->nome,
                         'entregue' => $item->relatorios()
-                            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+                            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                             ->get()
                             ->count(),
                     ];

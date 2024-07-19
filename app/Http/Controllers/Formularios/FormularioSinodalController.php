@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Formularios;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreFormularioLocalRequest;
+use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioSinodalService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -12,15 +12,17 @@ class FormularioSinodalController extends Controller
 {
     public function index()
     {
-        $formulario_respondido_ano = FormularioSinodalService::getAnosFormulariosRespondidos();
-        $formulario_esse_ano = FormularioSinodalService::getFormularioAnoCorrente();
+        $formularioRespondidoAno = FormularioSinodalService::getAnosFormulariosRespondidos();
+        $formularioDesseAno = FormularioSinodalService::getFormularioAnoCorrente();
         return view('dashboard.formularios.sinodal', [
             'coleta' => FormularioSinodalService::verificarColeta(),
-            'anos' => $formulario_respondido_ano,
-            'formulario' => $formulario_esse_ano,
-            'ano_referencia' => FormularioSinodalService::getAnoReferencia(),
+            'anos' => $formularioRespondidoAno,
+            'formulario' => $formularioDesseAno,
+            'ano_referencia' => EstatisticaService::getAnoReferencia(),
             'qualidade_entrega' =>  FormularioSinodalService::qualidadeEntrega(),
             'estrutura_sinodal' => FormularioSinodalService::getEstrutura(),
+            'formularioEntregue' => isset($formularioDesseAno)
+                && $formularioDesseAno->status == EstatisticaService::FORMULARIO_ENTREGUE
         ]);
     }
 
@@ -32,6 +34,28 @@ class FormularioSinodalController extends Controller
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+
+    public function salvarPreenchimento(Request $request)
+    {
+        try {
+            FormularioSinodalService::store($request, true);
+            return redirect()->route('dashboard.formularios-sinodais.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Formulário Salvo com sucesso!'
                 ]
             ]);
         } catch (Throwable $th) {

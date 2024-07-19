@@ -21,11 +21,11 @@ class ComprovanteACI extends Model
 
     public function scopeMeusComprovantes($query)
     {
-        return $query->when(Auth::user()->roles->first()->name == 'tesouraria', function($sql) {
+        return $query->when(auth()->user()->roles->first()->name == 'tesouraria', function($sql) {
             return $sql;
         },
         function($sql) {
-            return $sql->where('sinodal_id', Auth::user()->sinodais->first()->id);
+            return $sql->where('sinodal_id', auth()->user()->sinodais->first()->id);
         });
     }
 }

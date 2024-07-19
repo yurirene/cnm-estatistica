@@ -98,7 +98,28 @@ class UserController extends Controller
         }
     }
 
-    public function checkUser(Request $request) 
+    public function resetarSenha(User $usuario)
+    {
+        try {
+            UserService::resetarSenha($usuario);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function checkUser(Request $request)
     {
         return response()->json(UserService::checkUser($request->all()), 200);
     }

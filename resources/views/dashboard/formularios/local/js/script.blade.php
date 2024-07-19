@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function() {
         let link = "{{ route('dashboard.formularios-locais.export', ':id') }}";
-        let val = link.replace(':id', $('#ano').text());
+        let val = link.replace(':id', $('#ano option:selected').text());
         $('#link_export').attr('href', val);
     })
     $('#responder').on('click', function() {
@@ -10,7 +10,7 @@
     });
     $('#ano').on('change', function() {
         let link = "{{ route('dashboard.formularios-locais.export', ':id') }}";
-        let val = link.replace(':id', $('#ano').text());
+        let val = link.replace(':id', $('#ano option:selected').text());
         $('#link_export').attr('href', val);
     })
     $('#visualizar').on('click', function() {
@@ -38,7 +38,6 @@
                 $('#tecnico').text(json.data.resumo.tecnico)
                 $('#superior').text(json.data.resumo.superior)
                 $('#pos').text(json.data.resumo.pos)
-                $('#desempregado').text(json.data.resumo.desempregado)
                 $('#solteiros').text(json.data.resumo.solteiros)
                 $('#casados').text(json.data.resumo.casados)
                 $('#divorciados').text(json.data.resumo.divorciados)

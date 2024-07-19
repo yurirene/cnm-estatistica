@@ -43,9 +43,11 @@ class FormularioLocalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+
+            $anoReferencia = EstatisticaService::getAnoReferencia();
             $formulario = FormularioLocal::updateOrCreate(
                 [
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => $anoReferencia,
                     'local_id' => $request->local_id
                 ],
                 [
@@ -55,7 +57,7 @@ class FormularioLocalService
                     'deficiencias' => $deficiencias,
                     'programacoes' => $programacoes,
                     'aci' => $request->aci,
-                    'ano_referencia' => Parametro::where('nome', 'ano_referencia')->first()->valor,
+                    'ano_referencia' => $anoReferencia,
                     'local_id' => $request->local_id
                 ]
             );
@@ -115,7 +117,7 @@ class FormularioLocalService
     public static function getAnosFormulariosRespondidos()
     {
         try {
-            return $formularios = FormularioLocal::whereIn('local_id', Auth::user()->locais->pluck('id'))
+            return FormularioLocal::whereIn('local_id', Auth::user()->locais->pluck('id'))
                 ->get()
                 ->pluck('ano_referencia', 'id');
         } catch (\Throwable $th) {
@@ -123,19 +125,10 @@ class FormularioLocalService
         }
     }
 
-    public static function getAnoReferencia() : int
-    {
-        try {
-            return Parametro::where('nome', 'ano_referencia')->first()->valor;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
     public static function getFormularioAnoCorrente()
     {
         return FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
@@ -149,7 +142,7 @@ class FormularioLocalService
     public static function getFormularioLocal($local)
     {
         return FormularioLocal::where('local_id', $local)
-            ->where('ano_referencia', Parametro::where('nome', 'ano_referencia')->first()->valor)
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 }

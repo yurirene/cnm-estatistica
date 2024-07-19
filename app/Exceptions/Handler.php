@@ -51,12 +51,13 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         try {
-            if (env('APP_ENV') == 'local') {
+            if (
+                env('APP_ENV') == 'local'
+                || in_array(get_class($exception), $this->dontReport)
+            ) {
                 return parent::render($request, $exception);
             }
-            if (in_array(get_class($exception), $this->dontReport)) {
-                return parent::render($request, $exception);
-            }
+
             LogErroService::registrar([
                 'message'    => $exception->getMessage(),
                 'line'       => $exception->getLine(),
@@ -65,12 +66,12 @@ class Handler extends ExceptionHandler
                 'tipo_erro'  => get_class($exception),
                 'IP'         => $request->ip(),
                 'uri'        => $request->fullUrl(),
-		'body'	     => var_dump(json_encode($request->all()))
+		        'body'	     => json_encode($request->all()),
+                'trace'      => $exception->getTraceAsString()
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
-            return parent::render($request, $exception);
         }
 
         return parent::render($request, $exception);

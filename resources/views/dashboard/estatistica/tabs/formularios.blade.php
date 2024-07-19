@@ -19,9 +19,13 @@
                                                     class="fas fa-1x fa-info-circle"
                                                     data-toggle="tooltip"
                                                     data-placement="top"
-                                                    title="Representa a porcentagem de UMPs Locais das Federações que enviaram o relatório para a Sinodal"
+                                                    title="Representa a porcentagem de UMPs Locais das
+                                                     Federações que enviaram o relatório para a Sinodal"
                                                 ></em>
                                             </sup>
+                                        </th>
+                                        <th class="text-center">
+                                            Última Posição
                                         </th>
                                         <th class="text-center">Região</th>
                                     </tr>
@@ -101,7 +105,7 @@
     const ROUTE_ATUALIZAR_LISTA = "{{ route('dashboard.estatistica.atualizar-ranking') }}";
     $(function() {
         $('#formularios-table').DataTable({
-            dom: 'Bfrtip',
+            dom: 'Bfrtipl',
             buttons: [
                 {
                     text: 'Atualizar Lista',
@@ -156,6 +160,7 @@
                     }
                 },
                 {data: 'qualidade'},
+                {data: 'ultima_pontuacao'},
                 {data: 'regiao'},
             ]
         });
