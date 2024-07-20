@@ -9,6 +9,7 @@ class DiretoriaSinodal extends Model
 {
     protected $table = 'diretorias_sinodal';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $dates = ['updated_at', 'created_at'];
     protected $casts = [
         'presidente' => Encryptable::class,
         'vice_presidente' => Encryptable::class,

@@ -424,7 +424,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
     Route::group(['modulo' => 'diretoria-sinodal'], function () {
         Route::get('/diretoria-sinodal', [DiretoriasSinodalController::class, 'index'])->name('diretoria-sinodal.index');
-        Route::put('/diretoria-sinodal/update', [DiretoriasSinodalController::class, 'update'])->name('diretoria-sinodal.update');
+        Route::put('/diretoria-sinodal/{diretoria}/update', [DiretoriasSinodalController::class, 'update'])->name('diretoria-sinodal.update');
     });
 
 });

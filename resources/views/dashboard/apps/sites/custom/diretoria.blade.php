@@ -28,37 +28,21 @@
                                     <img class="img-fluid" src="/{{ !empty($valor['path']) ? $valor['path'] : 'img/team-1.jpg' }}" />
                                 </div>
 
-                                <div class="card-footer d-flex justify-content-between p-1">
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <button
-                                                data-chave="{{ $chave }}"
-                                                data-cargo="{{ $key }}"
-                                                class="btn btn-outline-warning p-0 px-2"
-                                                data-toggle="modal" data-target="#alterar-foto"
-                                                type="button"
-                                            >
-                                                <em class="fas fa-camera"></em>
-                                            </button>
-                                        </div>
-                                        {!! Form::text(
-                                            $valor['cargo'],
-                                            $valor['nome'],
-                                            [
-                                                'class' => 'px-2 form-control',
-                                                'id' => "campo_{$key}"
-                                            ]
-                                        ) !!}
-                                        <div class="input-group-append">
-                                            <button
-                                                data-chave="{{ $chave }}"
-                                                data-id="{{"campo_{$key}"}}"
-                                                data-cargo="{{$key}}"
-                                                class="btn btn-outline-success update-cargo p-0 px-2"
-                                                type="button"
-                                            >
-                                                <i class="fas fa-save"></i>
-                                            </button>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-grid gap-2">
+                                                <button
+                                                    data-chave="{{ $chave }}"
+                                                    data-cargo="{{ $key }}"
+                                                    class="btn btn-outline-warning"
+                                                    data-toggle="modal" data-target="#alterar-foto"
+                                                    type="button"
+                                                >
+                                                    <em class="fas fa-camera"></em>
+                                                    Alterar Foto
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

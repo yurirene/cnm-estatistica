@@ -37,30 +37,81 @@ class DiretoriaService
         6 => 'Secretário Sinodal'
     ];
 
-    public static function getDiretoria(): array
+    /**
+     * Retorna a diretoria da sinodal e se ainda não tiver um cadastrada, cadastra uma
+     *
+     * @return DiretoriaSinodal|null
+     */
+    public static function getDiretoria(?string $sinodalId = null): ?DiretoriaSinodal
     {
-        $diretoria = DiretoriaSinodal::where('sinodal_id', auth()->user()->sinodais->first()->id)->first();
-        if (!is_null($diretoria)) {
-            self::criarDiretoria();
+        $diretoria = DiretoriaSinodal::where(
+            'sinodal_id',
+            $sinodalId ?? auth()->user()->sinodais->first()->id
+        )
+            ->first();
+
+        if (is_null($diretoria)) {
+            $diretoria = self::criarDiretoria($sinodalId);
         }
+
+        return $diretoria;
+    }
+
+    /**
+     * Cria uma diretoria automaticamente se não houver
+     *
+     * @return DiretoriaSinodal|null
+     */
+    public static function criarDiretoria(?string $sinodalId): ?DiretoriaSinodal
+    {
+        return DiretoriaSinodal::create([
+            'sinodal_id' => $sinodalId ?? auth()->user()->sinodais->first()->id
+        ]);
+    }
+
+    /**
+     * Retorna os campos e o nome formatado dos cargos
+     *
+     * @return array
+     */
+    public static function getCargos(): array
+    {
         $retorno = [];
-        foreach (self::CAMPOS_CARGOS as $key => $campo) {
-            $retorno[] = [
-                'key' => $key,
-                'cargo' => self::CARGOS[$key],
-                'nome' => $diretoria->{$campo},
-                'contato' => $diretoria->{'contato_' . $campo},
-                'foto' => $diretoria->{'path_' . $campo}
-            ];
+
+        foreach (self::CAMPOS_CARGOS as $indice => $campo) {
+            $retorno[$campo] = self::CARGOS[$indice];
         }
+
         return $retorno;
     }
 
-    public static function criarDiretoria()
+    public static function getDiretoriaTabela(?string $sinodalId = null): array
     {
-        DiretoriaSinodal::create([
-            'sinodal_id' => auth()->user()->sinodais->first()->id
-        ]);
+        $retorno = [];
+        $diretoria = self::getDiretoria($sinodalId);
+
+        foreach (self::CAMPOS_CARGOS as $indice => $campo) {
+            $contato = "contato_{$campo}";
+            $retorno['cargos'][self::CARGOS[$indice]]['nome'] = $diretoria->$campo;
+            $retorno['cargos'][self::CARGOS[$indice]]['contato'] = $diretoria->$contato;
+        }
+
+        $retorno['atualizacao'] = $diretoria->updated_at->format('d/m/Y') ?? 'Nunca atualizado';
+
+        return $retorno;
+    }
+
+    /**
+     * Atualiza os dados da diretoria
+     *
+     * @param array $dados
+     * @param DiretoriaSinodal $diretoria
+     *
+     * @return void
+     */
+    public static function update(array $dados, DiretoriaSinodal $diretoria): void
+    {
+        $diretoria->update($dados);
     }
 
 }

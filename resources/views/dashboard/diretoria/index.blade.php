@@ -18,48 +18,53 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    {!! Form::model(
+                        $diretoria,
+                        [
+                            'url' => route('dashboard.diretoria-sinodal.update', ['diretoria' => $diretoria->id]),
+                            'method' => 'PUT'
+                        ]
+                    ) !!}
                     <div class="row">
-                        @foreach($cargos as $cargo)
+                        @foreach($cargos as $campo => $cargo)
                         <div class="col-lg-6 col-md-12">
                             <div class="card mb-3 border-0">
                                 <div class="row g-0 d-flex align-items-center">
-                                    <div class="col-md-4 text-center">
-                                        <img src="https://picsum.photos/200"
-                                            class="img-fluid rounded-circle" style="min-width:100px;" alt="..."
-                                        >
-                                        <h5 class="">{{ $cargo['cargo'] }}</h5>
+                                    <div class="col-md-12 text-center">
+                                        <h5 class="">{{ $cargo }}</h5>
                                     </div>
-                                    <div class="col-md-8">
-                                        <div class="card-body">
-                                            <div class="input-group input-group-sm">
-                                                {!! Form::text('nome_' . $cargo['key'], $cargo['nome'], [
-                                                    'class' => 'form-control float-right',
-                                                    'required'=>true,
-                                                    'autocomplete' => 'off',
-                                                    'placeholder' => 'Nome'
-                                                ]) !!}
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-success"><i class='fas fa-save'></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="input-group input-group-sm mt-3">
-                                                {!! Form::text('contato_' . $cargo['key'], $cargo['contato'], [
-                                                    'class' => 'form-control float-right',
-                                                    'required'=>true,
-                                                    'autocomplete' => 'off',
-                                                    'placeholder' => 'Contato'
-                                                ]) !!}
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-success"><i class='fas fa-save'></i></button>
-                                                </div>
-                                            </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::text($campo, null, [
+                                                'class' => 'form-control float-right',
+                                                'required'=>true,
+                                                'autocomplete' => 'off',
+                                                'placeholder' => 'Nome'
+                                            ]) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::text("contato_{$campo}", null, [
+                                                'class' => 'form-control float-right',
+                                                'required'=>true,
+                                                'autocomplete' => 'off',
+                                                'placeholder' => 'Contato'
+                                            ]) !!}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @endforeach
+                        <div class="col-md-12">
+                            <button class="btn btn-success">
+                                <i class='fas fa-save'></i>
+                                Atualizar
+                            </button>
+                        </div>
                     </div>
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>

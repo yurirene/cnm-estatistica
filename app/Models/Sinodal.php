@@ -6,6 +6,7 @@ use App\Models\Apps\App;
 use App\Models\Apps\Site\Evento;
 use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
+use App\Models\Diretorias\DiretoriaSinodal;
 use App\Models\Estatistica\Ranking;
 use App\Traits\Auditable;
 use App\Traits\GenericTrait;
@@ -83,5 +84,10 @@ class Sinodal extends Model
     public function apps()
     {
         return $this->belongsToMany(App::class, 'app_sinodal');
+    }
+
+    public function diretoria()
+    {
+        return $this->hasOne(DiretoriaSinodal::class, 'sinodal_id');
     }
 }

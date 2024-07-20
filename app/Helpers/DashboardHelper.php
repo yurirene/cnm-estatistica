@@ -5,9 +5,8 @@ namespace App\Helpers;
 use App\Models\ComprovanteACI;
 use App\Models\Parametro;
 use App\Services\AdministradorService;
-use App\Services\Instancias\DiretoriaService;
+use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
-use App\Services\Formularios\FormularioFederacaoService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\SinodalService;
@@ -24,7 +23,7 @@ class DashboardHelper
         } else if (auth()->user()->hasRole(['federacao'])) {
             return app()->make(FederacaoService::class);
         } else if (auth()->user()->hasRole(['diretoria'])) {
-            return app()->make(DiretoriaService::class);
+            return app()->make(DiretoriaNacionalService::class);
         } else if (auth()->user()->hasRole(['administrador'])) {
             return app()->make(AdministradorService::class);
         } else if (auth()->user()->hasRole(['local'])) {
@@ -122,7 +121,7 @@ class DashboardHelper
 
     public static function getQualidadeEntregaRelatorios(): array
     {
-        return DiretoriaService::getQualidadeEntregaRelatorios();
+        return DiretoriaNacionalService::getQualidadeEntregaRelatorios();
     }
 
 }
