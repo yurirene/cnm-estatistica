@@ -12,13 +12,16 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
-use Illuminate\Database\Eloquent\Model;
+use App\Services\Formularios\AtualizarAutomaticamenteFormulariosService;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EstatisticaService
 {
+
+    public const FORMULARIO_ENTREGUE = 1;
+    public const FORMULARIO_RESPOSTA_PARCIAL = 0;
+    public const FORMULARIO_NAO_RESPONDIDO = -1;
 
     public static function atualizarParametro(array $request) : void
     {
@@ -56,15 +59,18 @@ class EstatisticaService
     public static function getAnoReferenciaFormularios() : array
     {
         return FormularioSinodal::selectRaw('DISTINCT(ano_referencia) as ano_referencia')
-        ->groupBy('ano_referencia')
-        ->get()
-        ->pluck('ano_referencia', 'ano_referencia')
-        ->toArray();
+            ->groupBy('ano_referencia')
+            ->get()
+            ->pluck('ano_referencia', 'ano_referencia')
+            ->toArray();
     }
 
     public static function exportarExcel(array $request)
     {
-        $formulario_base = FormularioSinodal::with(['sinodal', 'sinodal.regiao'])->where('ano_referencia', $request['ano_referencia'])->first()->toArray();
+        $formulario_base = FormularioSinodal::with(['sinodal', 'sinodal.regiao'])
+            ->where('ano_referencia', $request['ano_referencia'])
+            ->first()
+            ->toArray();
         $dados = collect($formulario_base)->except([
             'id',
             'created_at',
@@ -93,7 +99,14 @@ class EstatisticaService
             $campos[$coluna_master] = array_keys($coluna);
             array_push($somente_colunas, ...array_keys($coluna));
         }
-        return Excel::download(new BaseDadosFormularioExport($campos, $somente_colunas, $request['ano_referencia']), 'base_dados_' . date('d_m_Y') . '.xlsx');
+        return Excel::download(
+            new BaseDadosFormularioExport(
+                $campos,
+                $somente_colunas,
+                $request['ano_referencia']
+            ),
+            'base_dados_' . date('d_m_Y') . '.xlsx'
+        );
 
     }
 
@@ -111,6 +124,7 @@ class EstatisticaService
                     'id' => $item->id,
                     'formulario' => $item->relatorios()
                         ->where('ano_referencia', $ano)
+                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                         ->get()
                         ->count(),
                 ];
@@ -145,17 +159,20 @@ class EstatisticaService
     {
         try {
             return Local::where('sinodal_id', $idSinodal)
-            ->where('status', true)
-            ->get()
-            ->map(function ($item) use ($ano) {
-                return [
-                    'id' => $item->id,
-                    'formulario' => $item->relatorios()
-                        ->where('ano_referencia', $ano)
-                        ->get()
-                        ->count(),
-                ];
-            });
+                ->where('status', true)
+                ->whereHas('federacao', function ($sql) {
+                    return $sql->where('federacoes.status', true);
+                })
+                ->get()
+                ->map(function ($item) use ($ano) {
+                    return [
+                        'id' => $item->id,
+                        'formulario' => $item->relatorios()
+                            ->where('ano_referencia', $ano)
+                            ->get()
+                            ->count(),
+                    ];
+                });
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -187,6 +204,7 @@ class EstatisticaService
     {
         try {
             $federacoes = Federacao::where('sinodal_id', $sinodal)
+                ->where('status', true)
                 ->whereHas('relatorios', function ($sql) use ($ano) {
                     return $sql->where('ano_referencia', $ano);
                 })
@@ -194,6 +212,9 @@ class EstatisticaService
                 ->pluck('id');
             $total_locais = $locais = Local::where('sinodal_id', $sinodal)
                 ->where('status', true)
+                ->whereHas('federacao', function ($sql) {
+                    return $sql->where('federacoes.status', true);
+                })
                 ->get()
                 ->count();
             $locais = Local::where('status', true)
@@ -257,7 +278,7 @@ class EstatisticaService
      */
     public static function getDadosQualidadeEstatistica(): Collection
     {
-        $ano = Parametro::where('nome', 'ano_referencia')->first()->valor;
+        $ano = EstatisticaService::getAnoReferencia();
         return Sinodal::where('status', true)
             ->orderBy('regiao_id')
             ->orderBy('nome')
@@ -272,13 +293,19 @@ class EstatisticaService
                     'nome' => $nome,
                     'entregue' =>  $item->relatorios()
                         ->where('ano_referencia', $ano)
+                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                         ->get()
                         ->count(),
                     'federacoes' => self::getPorcentagemFormularioFederacao($item->id, $ano),
                     'locais' => self::getPorcentagemFormularioLocal($item->id, $ano),
-                    'qtd_fomr_fed' => self::getDadosFormularioFederacao($item->id, $ano)->where('formulario', '!=', 0)->count(),
-                    'qtd_fomr_local' => self::getDadosFormularioLocal($item->id, $ano)->where('formulario', '!=', 0)->count(),
+                    'qtd_fomr_fed' => self::getDadosFormularioFederacao($item->id, $ano)
+                        ->where('formulario', '!=', 0)
+                        ->count(),
+                    'qtd_fomr_local' => self::getDadosFormularioLocal($item->id, $ano)
+                        ->where('formulario', '!=', 0)
+                        ->count(),
                     'qualidade' => self::calcularQualidade($item->id, $ano),
+                    'ultima_pontuacao' => self::getPontuacaoUltimaAtualizacao($item->id, $ano),
                     'regiao' => $item->regiao->nome
                 ];
             });
@@ -292,11 +319,11 @@ class EstatisticaService
     public static function atualizarRelatorioGeral()
     {
 
-        $ano_referencia = Parametro::where('nome', 'ano_referencia')->first()->valor;
-        $totalizador = self::getDadosRelatorioGeral($ano_referencia);
+        $anoReferencia = EstatisticaService::getAnoReferencia();
+        $totalizador = self::getDadosRelatorioGeral($anoReferencia);
         EstatisticaGeral::updateOrCreate(
             [
-                'ano_referencia' => $ano_referencia,
+                'ano_referencia' => $anoReferencia,
             ],
             [
                 'perfil' => $totalizador['perfil'],
@@ -317,16 +344,19 @@ class EstatisticaService
     /**
      * Função que retorna os dados estatísticos gerais, independente de entrega
      *
-     * @param [type] $ano_referencia
+     * @param int $anoReferencia
+     * @param int $regiaoId
      * @return array
      */
-    public static function getDadosRelatorioGeral($ano_referencia, $regiao_id = null): array
-    {
+    public static function getDadosRelatorioGeral(
+        int $anoReferencia,
+        $regiaoId = null
+    ): array {
         try {
-            $formularios_locais = FormularioLocal::where('ano_referencia', $ano_referencia)
-                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
-                    return $sql->whereHas('local', function ($q) use ($regiao_id) {
-                        return $q->where('regiao_id', $regiao_id);
+            $formularios_locais = FormularioLocal::where('ano_referencia', $anoReferencia)
+                ->when(!is_null($regiaoId), function ($sql) use ($regiaoId) {
+                    return $sql->whereHas('local', function ($q) use ($regiaoId) {
+                        return $q->where('regiao_id', $regiaoId);
                     });
                 })
                 ->get();
@@ -356,8 +386,7 @@ class EstatisticaService
                     'medio' => 0,
                     'tecnico' => 0,
                     'superior' => 0,
-                    'pos' => 0,
-                    'desempregado' => 0,
+                    'pos' => 0
                 ],
                 'estado_civil' => [
                     'solteiros' => 0,
@@ -402,96 +431,283 @@ class EstatisticaService
             ];
 
             foreach ($formularios_locais as $formulario) {
-                $totalizador['aci']['locais'] += isset($formulario->aci['valor']) && $formulario->aci['repasse'] == 'S' ? 1 : 0;
-                $totalizador['aci']['locais_nao'] += isset($formulario->aci['valor']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
-                $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
-                $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
-                $totalizador['perfil']['homens'] += (isset($formulario->perfil['homens']) ? intval($formulario->perfil['homens']) : 0);
-                $totalizador['perfil']['mulheres'] += (isset($formulario->perfil['mulheres']) ? intval($formulario->perfil['mulheres']) : 0);
-                $totalizador['perfil']['menor19'] += (isset($formulario->perfil['menor19']) ? intval($formulario->perfil['menor19']) : 0);
-                $totalizador['perfil']['de19a23'] += (isset($formulario->perfil['de19a23']) ? intval($formulario->perfil['de19a23']) : 0);
-                $totalizador['perfil']['de24a29'] += (isset($formulario->perfil['de24a29']) ? intval($formulario->perfil['de24a29']) : 0);
-                $totalizador['perfil']['de30a35'] += (isset($formulario->perfil['de30a35']) ? intval($formulario->perfil['de30a35']) : 0);
+                $totalizador['aci']['locais'] += (
+                    isset($formulario->aci['valor']) && $formulario->aci['repasse'] == 'S'
+                        ? 1
+                        : 0
+                );
+                $totalizador['aci']['locais_nao'] += (
+                    isset($formulario->aci['valor']) && $formulario->aci['repasse'] == 'N'
+                        ? 1
+                        : 0
+                );
+                $totalizador['perfil']['ativos'] += (
+                    isset($formulario->perfil['ativos'])
+                        ? intval($formulario->perfil['ativos'])
+                        : 0
+                );
+                $totalizador['perfil']['cooperadores'] += (
+                    isset($formulario->perfil['cooperadores'])
+                        ? intval($formulario->perfil['cooperadores'])
+                        : 0
+                );
+                $totalizador['perfil']['homens'] += (
+                    isset($formulario->perfil['homens'])
+                        ? intval($formulario->perfil['homens'])
+                        : 0
+                );
+                $totalizador['perfil']['mulheres'] += (
+                    isset($formulario->perfil['mulheres'])
+                        ? intval($formulario->perfil['mulheres'])
+                        : 0
+                );
+                $totalizador['perfil']['menor19'] += (
+                    isset($formulario->perfil['menor19'])
+                        ? intval($formulario->perfil['menor19'])
+                        : 0
+                );
+                $totalizador['perfil']['de19a23'] += (
+                    isset($formulario->perfil['de19a23'])
+                        ? intval($formulario->perfil['de19a23'])
+                        : 0
+                );
+                $totalizador['perfil']['de24a29'] += (
+                    isset($formulario->perfil['de24a29'])
+                        ? intval($formulario->perfil['de24a29'])
+                        : 0
+                );
+                $totalizador['perfil']['de30a35'] += (
+                    isset($formulario->perfil['de30a35'])
+                        ? intval($formulario->perfil['de30a35'])
+                        : 0
+                );
 
-                $totalizador['escolaridade']['fundamental'] += (isset($formulario->escolaridade['fundamental']) ? intval($formulario->escolaridade['fundamental']) : 0);
-                $totalizador['escolaridade']['medio'] += (isset($formulario->escolaridade['medio']) ? intval($formulario->escolaridade['medio']) : 0);
-                $totalizador['escolaridade']['tecnico'] += (isset($formulario->escolaridade['tecnico']) ? intval($formulario->escolaridade['tecnico']) : 0);
-                $totalizador['escolaridade']['superior'] += (isset($formulario->escolaridade['superior']) ? intval($formulario->escolaridade['superior']) : 0);
-                $totalizador['escolaridade']['pos'] += (isset($formulario->escolaridade['pos']) ? intval($formulario->escolaridade['pos']) : 0);
-                $totalizador['escolaridade']['desempregado'] += (isset($formulario->escolaridade['desempregado']) ? intval($formulario->escolaridade['desempregado']) : 0);
+                $totalizador['escolaridade']['fundamental'] += (
+                    isset($formulario->escolaridade['fundamental'])
+                        ? intval($formulario->escolaridade['fundamental'])
+                        : 0
+                );
+                $totalizador['escolaridade']['medio'] += (
+                    isset($formulario->escolaridade['medio'])
+                        ? intval($formulario->escolaridade['medio'])
+                        : 0
+                );
+                $totalizador['escolaridade']['tecnico'] += (
+                    isset($formulario->escolaridade['tecnico'])
+                        ? intval($formulario->escolaridade['tecnico'])
+                        : 0
+                );
+                $totalizador['escolaridade']['superior'] += (
+                    isset($formulario->escolaridade['superior'])
+                        ? intval($formulario->escolaridade['superior'])
+                        : 0
+                );
+                $totalizador['escolaridade']['pos'] += (
+                    isset($formulario->escolaridade['pos'])
+                        ? intval($formulario->escolaridade['pos'])
+                        : 0
+                );
 
-                $totalizador['estado_civil']['solteiros'] += (isset($formulario->estado_civil['solteiros']) ? intval($formulario->estado_civil['solteiros']) : 0);
-                $totalizador['estado_civil']['casados'] += (isset($formulario->estado_civil['casados']) ? intval($formulario->estado_civil['casados']) : 0);
-                $totalizador['estado_civil']['divorciados'] += (isset($formulario->estado_civil['divorciados']) ? intval($formulario->estado_civil['divorciados']) : 0);
-                $totalizador['estado_civil']['viuvos'] += (isset($formulario->estado_civil['viuvos']) ? intval($formulario->estado_civil['viuvos']) : 0);
-                $totalizador['estado_civil']['filhos'] += (isset($formulario->estado_civil['filhos']) ? intval($formulario->estado_civil['filhos']) : 0);
+                $totalizador['estado_civil']['solteiros'] += (
+                    isset($formulario->estado_civil['solteiros'])
+                        ? intval($formulario->estado_civil['solteiros'])
+                        : 0
+                );
+                $totalizador['estado_civil']['casados'] += (
+                    isset($formulario->estado_civil['casados'])
+                        ? intval($formulario->estado_civil['casados'])
+                        : 0
+                );
+                $totalizador['estado_civil']['divorciados'] += (
+                    isset($formulario->estado_civil['divorciados'])
+                        ? intval($formulario->estado_civil['divorciados'])
+                        : 0
+                );
+                $totalizador['estado_civil']['viuvos'] += (
+                    isset($formulario->estado_civil['viuvos'])
+                        ? intval($formulario->estado_civil['viuvos'])
+                        : 0
+                );
+                $totalizador['estado_civil']['filhos'] += (
+                    isset($formulario->estado_civil['filhos'])
+                        ? intval($formulario->estado_civil['filhos'])
+                        : 0
+                );
 
-                $totalizador['deficiencias']['surdos'] += (isset($formulario->deficiencias['surdos']) ? intval($formulario->deficiencias['surdos']) : 0);
-                $totalizador['deficiencias']['auditiva'] += (isset($formulario->deficiencias['auditiva']) ? intval($formulario->deficiencias['auditiva']) : 0);
-                $totalizador['deficiencias']['cegos'] += (isset($formulario->deficiencias['cegos']) ? intval($formulario->deficiencias['cegos']) : 0);
-                $totalizador['deficiencias']['baixa_visao'] += (isset($formulario->deficiencias['baixa_visao']) ? intval($formulario->deficiencias['baixa_visao']) : 0);
-                $totalizador['deficiencias']['fisica_inferior'] += (isset($formulario->deficiencias['fisica_inferior']) ? intval($formulario->deficiencias['fisica_inferior']) : 0);
-                $totalizador['deficiencias']['fisica_superior'] += (isset($formulario->deficiencias['fisica_superior']) ? intval($formulario->deficiencias['fisica_superior']) : 0);
-                $totalizador['deficiencias']['neurologico'] += (isset($formulario->deficiencias['neurologico']) ? intval($formulario->deficiencias['neurologico']) : 0);
-                $totalizador['deficiencias']['intelectual'] += (isset($formulario->deficiencias['intelectual']) ? intval($formulario->deficiencias['intelectual']) : 0);
+                $totalizador['deficiencias']['surdos'] += (
+                    isset($formulario->deficiencias['surdos'])
+                        ? intval($formulario->deficiencias['surdos'])
+                        : 0
+                );
+                $totalizador['deficiencias']['auditiva'] += (
+                    isset($formulario->deficiencias['auditiva'])
+                        ? intval($formulario->deficiencias['auditiva'])
+                        : 0
+                );
+                $totalizador['deficiencias']['cegos'] += (
+                    isset($formulario->deficiencias['cegos'])
+                        ? intval($formulario->deficiencias['cegos'])
+                        : 0
+                );
+                $totalizador['deficiencias']['baixa_visao'] += (
+                    isset($formulario->deficiencias['baixa_visao'])
+                        ? intval($formulario->deficiencias['baixa_visao'])
+                        : 0
+                );
+                $totalizador['deficiencias']['fisica_inferior'] += (
+                    isset($formulario->deficiencias['fisica_inferior'])
+                        ? intval($formulario->deficiencias['fisica_inferior'])
+                        : 0
+                );
+                $totalizador['deficiencias']['fisica_superior'] += (
+                    isset($formulario->deficiencias['fisica_superior'])
+                        ? intval($formulario->deficiencias['fisica_superior'])
+                        : 0
+                );
+                $totalizador['deficiencias']['neurologico'] += (
+                    isset($formulario->deficiencias['neurologico'])
+                        ? intval($formulario->deficiencias['neurologico'])
+                        : 0
+                );
+                $totalizador['deficiencias']['intelectual'] += (
+                    isset($formulario->deficiencias['intelectual'])
+                        ? intval($formulario->deficiencias['intelectual'])
+                        : 0
+                );
 
-                $totalizador['programacoes']['locais']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
-                $totalizador['programacoes']['locais']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
-                $totalizador['programacoes']['locais']['evangelistico'] += (isset($formulario->programacoes['evangelistico']) ? intval($formulario->programacoes['evangelistico']) : 0);
-                $totalizador['programacoes']['locais']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
-                $totalizador['programacoes']['locais']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
+                $totalizador['programacoes']['locais']['social'] += (
+                    isset($formulario->programacoes['social'])
+                        ? intval($formulario->programacoes['social'])
+                        : 0
+                );
+                $totalizador['programacoes']['locais']['oracao'] += (
+                    isset($formulario->programacoes['oracao'])
+                        ? intval($formulario->programacoes['oracao'])
+                        : 0
+                );
+                $totalizador['programacoes']['locais']['evangelistico'] += (
+                    isset($formulario->programacoes['evangelistico'])
+                        ? intval($formulario->programacoes['evangelistico'])
+                        : 0
+                );
+                $totalizador['programacoes']['locais']['espiritual'] += (
+                    isset($formulario->programacoes['espiritual'])
+                        ? intval($formulario->programacoes['espiritual'])
+                        : 0
+                );
+                $totalizador['programacoes']['locais']['recreativo'] += (
+                    isset($formulario->programacoes['recreativo'])
+                        ? intval($formulario->programacoes['recreativo'])
+                        : 0
+                );
             }
 
-            $formularios_federacoes = FormularioFederacao::where('ano_referencia', $ano_referencia)
-                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
-                    return $sql->whereHas('federacao', function ($q) use ($regiao_id) {
-                        return $q->where('regiao_id', $regiao_id);
+            $formularios_federacoes = FormularioFederacao::where('ano_referencia', $anoReferencia)
+                ->when(!is_null($regiaoId), function ($sql) use ($regiaoId) {
+                    return $sql->whereHas('federacao', function ($q) use ($regiaoId) {
+                        return $q->where('regiao_id', $regiaoId);
                     });
                 })
                 ->get();
 
             foreach ($formularios_federacoes as $formulario) {
-                $totalizador['aci']['federacoes'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S' ? 1 : 0;
-                $totalizador['aci']['federacoes_nao'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
-                $totalizador['programacoes']['federacoes']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
-                $totalizador['programacoes']['federacoes']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
-                $totalizador['programacoes']['federacoes']['evangelistico'] += (isset($formulario->programacoes['evangelistico']) ? intval($formulario->programacoes['evangelistico']) : 0);
-                $totalizador['programacoes']['federacoes']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
-                $totalizador['programacoes']['federacoes']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
+                $totalizador['aci']['federacoes'] += (
+                    isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S'
+                        ? 1
+                        : 0
+                );
+                $totalizador['aci']['federacoes_nao'] += (
+                    isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N'
+                    ? 1
+                    : 0
+                );
+                $totalizador['programacoes']['federacoes']['social'] += (
+                    isset($formulario->programacoes['social'])
+                        ? intval($formulario->programacoes['social'])
+                        : 0
+                    );
+                $totalizador['programacoes']['federacoes']['oracao'] += (
+                    isset($formulario->programacoes['oracao'])
+                        ? intval($formulario->programacoes['oracao'])
+                        : 0
+                    );
+                $totalizador['programacoes']['federacoes']['evangelistico'] += (
+                    isset($formulario->programacoes['evangelistico'])
+                        ? intval($formulario->programacoes['evangelistico'])
+                        : 0
+                    );
+                $totalizador['programacoes']['federacoes']['espiritual'] += (
+                    isset($formulario->programacoes['espiritual'])
+                        ? intval($formulario->programacoes['espiritual'])
+                        : 0
+                );
+                $totalizador['programacoes']['federacoes']['recreativo'] += (
+                    isset($formulario->programacoes['recreativo'])
+                        ? intval($formulario->programacoes['recreativo'])
+                        : 0
+                );
             }
 
 
-            $formularios_sinodais = FormularioSinodal::where('ano_referencia', $ano_referencia)
-                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
-                    return $sql->whereHas('sinodal', function ($q) use ($regiao_id) {
-                        return $q->where('regiao_id', $regiao_id);
+            $formularios_sinodais = FormularioSinodal::where('ano_referencia', $anoReferencia)
+                ->when(!is_null($regiaoId), function ($sql) use ($regiaoId) {
+                    return $sql->whereHas('sinodal', function ($q) use ($regiaoId) {
+                        return $q->where('regiao_id', $regiaoId);
                     });
                 })
                 ->get();
 
             foreach ($formularios_sinodais as $formulario) {
-                $totalizador['aci']['sinodais'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S' ? 1 : 0;
-                $totalizador['aci']['sinodais_nao'] += isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N' ? 1 : 0;
-                $totalizador['programacoes']['sinodais']['social'] += (isset($formulario->programacoes['social']) ? intval($formulario->programacoes['social']) : 0);
-                $totalizador['programacoes']['sinodais']['oracao'] += (isset($formulario->programacoes['oracao']) ? intval($formulario->programacoes['oracao']) : 0);
-                $totalizador['programacoes']['sinodais']['evangelistico'] += (isset($formulario->programacoes['evangelistico']) ? intval($formulario->programacoes['evangelistico']) : 0);
-                $totalizador['programacoes']['sinodais']['espiritual'] += (isset($formulario->programacoes['espiritual']) ? intval($formulario->programacoes['espiritual']) : 0);
-                $totalizador['programacoes']['sinodais']['recreativo'] += (isset($formulario->programacoes['recreativo']) ? intval($formulario->programacoes['recreativo']) : 0);
+                $totalizador['aci']['sinodais'] += (
+                    isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S'
+                        ? 1
+                        : 0
+                );
+                $totalizador['aci']['sinodais_nao'] += (
+                    isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N'
+                        ? 1
+                        : 0
+                );
+                $totalizador['programacoes']['sinodais']['social'] += (
+                    isset($formulario->programacoes['social'])
+                        ? intval($formulario->programacoes['social'])
+                        : 0
+                );
+                $totalizador['programacoes']['sinodais']['oracao'] += (
+                    isset($formulario->programacoes['oracao'])
+                        ? intval($formulario->programacoes['oracao'])
+                        : 0
+                );
+                $totalizador['programacoes']['sinodais']['evangelistico'] += (
+                    isset($formulario->programacoes['evangelistico'])
+                        ? intval($formulario->programacoes['evangelistico'])
+                        : 0
+                );
+                $totalizador['programacoes']['sinodais']['espiritual'] += (
+                    isset($formulario->programacoes['espiritual'])
+                        ? intval($formulario->programacoes['espiritual'])
+                        : 0
+                );
+                $totalizador['programacoes']['sinodais']['recreativo'] += (
+                    isset($formulario->programacoes['recreativo'])
+                        ? intval($formulario->programacoes['recreativo'])
+                        : 0
+                );
             }
 
             $totalizador['estrutura']['umps_organizadas'] = Local::where('status', true)
-                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
-                    return $sql->where('regiao_id', $regiao_id);
+                ->when(!is_null($regiaoId), function ($sql) use ($regiaoId) {
+                    return $sql->where('regiao_id', $regiaoId);
                 })
                 ->count();
             $totalizador['estrutura']['federacoes_organizadas'] = Federacao::where('status', true)
-                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
-                    return $sql->where('regiao_id', $regiao_id);
+                ->when(!is_null($regiaoId), function ($sql) use ($regiaoId) {
+                    return $sql->where('regiao_id', $regiaoId);
                 })
                 ->count();
             $totalizador['estrutura']['sinodais_organizadas'] = Sinodal::where('status', true)
-                ->when(!is_null($regiao_id), function ($sql) use ($regiao_id) {
-                    return $sql->where('regiao_id', $regiao_id);
+                ->when(!is_null($regiaoId), function ($sql) use ($regiaoId) {
+                    return $sql->where('regiao_id', $regiaoId);
                 })
                 ->count();
 
@@ -510,12 +726,136 @@ class EstatisticaService
                 'total' => $totalizador['estrutura']['umps_organizadas']
             ];
 
-            $totalizador['qualidade'] = ($formularios_locais->count() * 100) / $totalizador['estrutura']['umps_organizadas'];
+            $totalizador['qualidade'] = (
+                ($formularios_locais->count() * 100) / $totalizador['estrutura']['umps_organizadas']
+            );
 
             return $totalizador;
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    /**
+     * Responsável por listar todas as federações e atualizar seus resultados estatísticos
+     *
+     * @return void
+     */
+    public static function atualizarTodosOsDados(): void
+    {
+        $anoReferncia = EstatisticaService::getAnoReferencia();
+        $formulariosLocais = FormularioLocal::where('ano_referencia', $anoReferncia)
+            ->whereHas('local')
+            ->get();
+        foreach ($formulariosLocais as $formulario) {
+            AtualizarAutomaticamenteFormulariosService::atualizarFederacao($formulario);
+        }
+    }
+
+    /**
+     * Retorna a posição da última atualização de ranking da sinodal
+     *
+     * @param string $sinodalId
+     * @param integer $anoReferencia
+     * @return string
+     */
+    public static function getPontuacaoUltimaAtualizacao(string $sinodalId, int $anoReferencia): string
+    {
+        $ranking = Ranking::where('sinodal_id', $sinodalId)
+            ->where('ano_referencia', $anoReferencia - 1)
+            ->first();
+        return ($ranking->pontuacao ?? '0') . " (" . ($ranking->posicao ?? '0') .")";
+    }
+
+
+    /**
+     * Método centralizador do Ano de Referência dos dados
+     *
+     * @return integer
+     */
+    public static function getAnoReferencia() : int
+    {
+        return Parametro::where('nome', 'ano_referencia')->first()->valor;
+    }
+
+
+    /**
+     * Método centralizador do parâmetro de quantidade mínima de relatórios
+     *
+     * @param string $instancia
+     *
+     * @return integer
+     */
+    public static function getPorcentagemMinimaEntrega(string $instancia) : int
+    {
+        return Parametro::where('nome', "min_{$instancia}")->first()->valor;
+    }
+
+    /**
+     * Retorna o valor float da porcentagem de entraga dos formulários da ump local buscados pelo
+     * id da federação e ano de referência
+     *
+     * @param string $idFederacao
+     * @param integer $anoReferencia
+     * @return float
+     */
+    public static function getValorPorcentagemEntregaFormularioUMPLocal(string $idFederacao, int $anoReferencia): float
+    {
+        $locais = Local::where('federacao_id', $idFederacao)
+            ->where('status', true)
+            ->get()
+            ->map(function ($item) use ($anoReferencia) {
+                return [
+                    'id' => $item->id,
+                    'formulario' => $item->relatorios()
+                        ->where('ano_referencia', $anoReferencia)
+                        ->get()
+                        ->count(),
+                ];
+            });
+
+        $formulariosEntregues = $locais->where('formulario', '!=', 0)->count();
+        $porcentagem = 0;
+
+        if ($locais->count() != 0) {
+            $porcentagem = round(($formulariosEntregues * 100) / $locais->count(), 2);
+        }
+        return $porcentagem;
+    }
+
+    /**
+     * Retorna o valor float da porcentagem de entraga dos formulários da federação buscados pelo
+     * id da sinodal e ano de referência
+     *
+     * @param string $idSinodal
+     * @param integer $anoReferencia
+     * @return float
+     */
+    public static function getValorPorcentagemEntregaFormularioFederacao(string $idSinodal, int $anoReferencia): float
+    {
+
+        $federacoes = Federacao::where('sinodal_id', $idSinodal)
+            ->where('status', true)
+            ->get()
+            ->map(function ($item) use ($anoReferencia) {
+                return [
+                    'id' => $item->id,
+                    'formulario' => $item->relatorios()
+                        ->where('ano_referencia', $anoReferencia)
+                        ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+                        ->get()
+                        ->count(),
+                ];
+            });
+
+        $formulariosEntregues = $federacoes->where('formulario', '!=', 0)->count();
+        $porcentagem = 0;
+
+        if ($federacoes->count() != 0) {
+            $porcentagem = round(($formulariosEntregues * 100) / $federacoes->count(), 2);
+        }
+
+        return $porcentagem;
     }
 
 }

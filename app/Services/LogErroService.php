@@ -9,20 +9,24 @@ use Throwable;
 
 class LogErroService
 {
-    
-    public static function registrar(array $informacoes) 
+
+    public static function registrar(array $informacoes)
     {
         try {
             Log::error($informacoes);
-            
+
             if (env('APP_ENV') == 'local') {
                 return;
             }
             LogErro::create([
-                'user_id' => Auth::user()->id ?? null,
+                'user_id' => auth()->id() ?? null,
                 'log' => $informacoes
             ]);
-            
+            Log::error([
+                'user_id' => auth()->id() ?? null,
+                'log' => $informacoes
+            ]);
+
 
             self::sendTelegram($informacoes);
 
@@ -39,14 +43,18 @@ class LogErroService
     public static function sendTelegram(array $informacoes)
     {
         try {
+            $usuarioLogado = auth()->user()->email
+                ?? session()->get('ultimo_usuario')
+                ?? 'Não encontrado';
+
             $mensagem = '';
-            $mensagem .= 'ERRO NO iCLAUDIA ' . PHP_EOL . PHP_EOL;
+            $mensagem .= 'ERRO NA PLATAFORMA ' . PHP_EOL . PHP_EOL;
             $mensagem .= date('d/m/y h:i:s') . PHP_EOL;
-            $mensagem .= 'Usuário: ' . (Auth::user()->name ?? 'Não encontrado') . PHP_EOL;
+            $mensagem .= 'Usuário: ' . $usuarioLogado . PHP_EOL;
             foreach ($informacoes as $campo => $info) {
                 $mensagem .= ucfirst($campo) . ': ' . $info . PHP_EOL;
             }
-            
+
             TelegramService::sendMessage($mensagem);
 
         } catch (\Throwable $th) {
@@ -58,6 +66,6 @@ class LogErroService
             ]);
         }
     }
-    
-    
+
+
 }

@@ -52,7 +52,10 @@ class SinodalDataTable extends DataTable
      */
     public function query(Sinodal $model)
     {
-        return $model->newQuery()->query();
+        return $model->newQuery()->query()
+            ->when(request()->filled('organizadas'), function ($sql) {
+                return $sql->where('status', true);
+            });
     }
 
     /**
@@ -73,7 +76,7 @@ class SinodalDataTable extends DataTable
                     )
                     ->parameters([
                         "language" => [
-                            "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                            "url" => "/vendor/datatables/portugues.json"
                         ]
                     ]);
     }

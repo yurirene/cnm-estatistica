@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instancias;
 
 use App\DataTables\Instancias\FederacaoDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreFederacaoRequest;
 use App\Models\Federacao;
 use App\Services\Instancias\FederacaoService;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class FederacaoController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreFederacaoRequest $request)
     {
         try {
             FederacaoService::store($request);
@@ -54,6 +55,7 @@ class FederacaoController extends Controller
             'umps' => FederacaoService::getInformacoesLocaisShow($federacao),
             'informacoes' => FederacaoService::getInformacoesFederacaoOrganizacao($federacao),
             'federacao' => $federacao,
+            'navegacaoFederacoes' => FederacaoService::navegacaoListaFederacoes($federacao->id)
         ]);
     }
 
@@ -115,7 +117,7 @@ class FederacaoController extends Controller
     {
         try {
             FederacaoService::delete($federacao);
-            return redirect()->route('dashboard.sinodais.index')->with([
+            return redirect()->route('dashboard.federacoes.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'

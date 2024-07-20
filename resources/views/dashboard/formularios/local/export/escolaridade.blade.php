@@ -19,8 +19,4 @@
         <td>Pós-Graduação</td>
         <td align="right"><span class="badge bg-primary">{{ $formulario->escolaridade['pos'] }}</span></td>
     </tr>
-    <tr>
-        <td>Desempregados</td>
-        <td align="right"><span class="badge bg-primary">{{ $formulario->escolaridade['desempregado'] }}</span></td>
-    </tr>
 </table>

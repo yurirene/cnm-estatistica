@@ -6,6 +6,7 @@ use App\DataTables\ComprovanteAciDataTable;
 use App\Models\ComprovanteACI;
 use App\Models\Parametro;
 use App\Services\ComprovanteAciService;
+use App\Services\Estatistica\EstatisticaService;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -14,7 +15,8 @@ class ComprovanteACIController extends Controller
     public function index(ComprovanteAciDataTable $dataTable)
     {
         return $dataTable->render('dashboard.comprovante-aci.index', [
-            'ano' => Parametro::where('nome', 'ano_referencia')->first()->valor
+            'ano' => EstatisticaService::getAnoReferencia(),
+            'filtros' => $dataTable->filtros()
         ]);
     }
 

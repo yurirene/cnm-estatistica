@@ -58,20 +58,24 @@
                                 <ul class="list-group">
                                     @forelse ($dados as $dado)
                                         <li class="list-group-item ">
-                                            
-                                            <a href="{{ $dado['path'] }}" target="_blank" class="btn btn-sm btn-primary">
+
+                                            <a href="{{ route('digesto.exibir', $dado['path']) }}"
+                                                target="_blank" class="btn btn-sm btn-primary"
+                                            >
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <span class="badge badge-primary badge-pill">{{ $dado['tipo_formatado'] }}</span>
+                                            <span class="badge badge-primary badge-pill">
+                                                {{ $dado['tipo_formatado'] }}
+                                            </span>
                                             {{ $dado['titulo'] }} - <i>{{ $dado['texto_formatado'] }}</i>
-                                        </li>    
+                                        </li>
                                     @empty
                                     <li class="list-group-item ">
                                         Sem Resultados
                                       </li>
                                     @endforelse
-                                    
-                                    
+
+
                                 </ul>
                             </div>
                         </div>

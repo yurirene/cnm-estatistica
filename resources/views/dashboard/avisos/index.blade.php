@@ -194,7 +194,6 @@
     });
 
     $('#tipo').on('change', function() {
-        console.log($(this).val());
         if ($(this).val() == CUSTOM) {
             $('#usuarios-div').show();
         }

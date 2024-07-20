@@ -1,7 +1,15 @@
 <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
     <div class="container-fluid">
         <!-- Toggler -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#sidenav-collapse-main"
+            aria-controls="sidenav-main"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
             <span class="navbar-toggler-icon"></span>
         </button>
         <!-- Brand -->
@@ -11,10 +19,17 @@
         <!-- User -->
         <ul class="nav align-items-center d-md-none">
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a
+                    class="nav-link"
+                    href="#"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                >
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
-                        <img src="/img/azul.jpg">
+                            <i class="fas fa-user-circle mr-1"></i>
                         </span>
                     </div>
                 </a>
@@ -42,7 +57,15 @@
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
+                        <button
+                            type="button"
+                            class="navbar-toggler"
+                            data-toggle="collapse"
+                            data-target="#sidenav-collapse-main"
+                            aria-controls="sidenav-main"
+                            aria-expanded="false"
+                            aria-label="Toggle sidenav"
+                        >
                             <span></span>
                             <span></span>
                         </button>
@@ -57,6 +80,15 @@
                         <i class="fas fa-home"></i> Início
                     </a>
                 </li>
+
+                @canAtLeast(['dashboard.diretoria.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria.index') }}">
+                        <i class="fas fa-bullhorn"></i> Diretoria
+                    </a>
+                </li>
+                @endCanAtLeast
+
                 @canAtLeast(['dashboard.usuarios.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.usuarios.index') }}">
@@ -64,6 +96,17 @@
                     </a>
                 </li>
                 @endCanAtLeast
+
+                @canAtLeast(['dashboard.diretoria-sinodal.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria-sinodal.index') }}">
+                        <i class="fas fa-users"></i> Diretoria
+                    </a>
+                </li>
+
+                @endCanAtLeast
+
+
                 @canAtLeast(['dashboard.sinodais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
@@ -90,7 +133,7 @@
                 @canAtLeast(['dashboard.comprovante-aci.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.comprovante-aci.index') }}">
-                        <i class="fas fa-file"></i> Comprovante de ACI
+                        <i class="fas fa-file-invoice-dollar"></i> Comprovante de ACI
                     </a>
                 </li>
                 @endCanAtLeast
@@ -205,19 +248,40 @@
                 </li>
                 @endCanAtLeast
 
-                @can('apps', 'sites')
-                <a class="nav-link" href="#meusapps" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                @can('apps', [])
+                <a class="nav-link"
+                    href="#meusapps"
+                    data-toggle="collapse"
+                    aria-expanded="false"
+                >
                     <i class="fas fa-tablet-alt"></i> Meus Apps
                 </a>
                 <ul class="collapse list-unstyled" id="meusapps" >
+                    @can('apps', 'sites')
                     <li class="nav-item ml-3">
                         <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
                             <i class="fab fa-chrome"></i>
                             Site
                         </a>
                     </li>
+                    @endcan
+                    @can('apps', 'tesouraria')
+                    <li class="nav-item ml-3">
+                        <a  class="nav-link" href="{{ route('dashboard.apps.tesouraria.index') }}">
+                            <i class="fas fa-dollar-sign"></i>
+                            Tesouraria
+                        </a>
+                    </li>
+                    @endcan
                 </ul>
                 @endcan
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.helpdesk.index') }}">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Problemas e Sugestões
+                    </a>
+                </li>
             </ul>
             <hr class="my-3">
 

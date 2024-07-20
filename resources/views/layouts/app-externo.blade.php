@@ -49,9 +49,12 @@
                 color: black !important;
                 min-width: 40px;
             }
-            /* @page {
-               size: A4 landscape;
-            } */
+            @page{
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                margin-top: 0px !important;
+                margin-bottom: 0px !important;
+            }
         }
         @media (max-width: 767.98px) {
             .fc .fc-toolbar.fc-header-toolbar {
@@ -178,7 +181,6 @@
                         }
 
                         if ($(this).parents().closest('.nav-item').length > 1) {
-                            console.log($(this).parents().closest('.nav-item'));
                             $(this).parents().closest('.nav-item').first().find('a').first().addClass('active text-primary');
                         }
                     }

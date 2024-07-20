@@ -5,11 +5,13 @@ return [
     'version' => env('APP_VERSION', '1.0.0'),
 
 
-    
+
     'telegram_token' => env('TELEGRAM_BOT_API_TOKEN'),
     'telegram_chat_id' => env('TELEGRAM_BOT_API_CHAT_ID'),
     'iclaudia_telegram_token' => env('TELEGRAM_API_ICLAUDIA_TOKEN'),
 
+    'cipher' => env('APP_CIPHER'),
+    'key-crypter' => env('APP_CIPHER'),
 
     /*
     |--------------------------------------------------------------------------
@@ -61,7 +63,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://ump.app.br'),
 
     'asset_url' => env('ASSET_URL', null),
 
@@ -76,7 +78,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Sao_Paulo',
 
     /*
     |--------------------------------------------------------------------------
@@ -89,7 +91,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'pt-BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -174,7 +176,7 @@ return [
         /*
          * Package Service Providers...
          */
-        
+
         /*
         * Application Service Providers...
         */

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Instancias;
 
 use App\DataTables\Instancias\SinodalDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSinodalRequest;
 use App\Models\Regiao;
 use App\Models\Sinodal;
+use App\Services\Instancias\DiretoriaService;
 use App\Services\Instancias\SinodalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +28,7 @@ class SinodalController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreSinodalRequest $request)
     {
         try {
             SinodalService::store($request);
@@ -53,6 +55,8 @@ class SinodalController extends Controller
             'federacoes' => SinodalService::getInformacoesFederacoesShow($sinodal),
             'informacoes' => SinodalService::getInformacoesOrganizacao($sinodal),
             'sinodal' => $sinodal,
+            'navegacaoSinodais' => SinodalService::navegacaoListaSinodais($sinodal->id),
+            'diretoria' => DiretoriaService::getDiretoriaTabela($sinodal->id)
         ]);
     }
 

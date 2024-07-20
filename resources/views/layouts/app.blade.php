@@ -19,25 +19,21 @@
     <link href="{{ asset('argon') }}/vendor/nucleo/css/nucleo.css" rel="stylesheet">
     <link href="{{ asset('argon') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <!-- Argon CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="/vendor/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" href="{{ asset('argon') }}/css/argon.css?v=1.0.1" rel="stylesheet">
     <link rel="stylesheet" href="/css/custom.css">
 
     <link rel="stylesheet" href="/datatables/datatables.min.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/vendor/datepicker/bootstrap-datepicker.min.css"/>
+    <link href="/vendor/select2/estilo.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link rel="stylesheet" href="/vendor/charts/morris.css">
 
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <link rel="stylesheet" href="/vendor/calendario/main.min.css">
+    <script src="/vendor/calendario/main.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/vendor/font_bootstrap-icons.css">
 
     <style>
         @media (max-width: 767.98px) {
@@ -138,10 +134,20 @@
             padding: 0.65rem 1rem;
         }
     </style>
+    <script>
+
+    </script>
 </head>
 
 <body class="{{ $class ?? '' }}">
 
+    <div class="overlay_init" id="overlay_init">
+        <div class="overlay_init__inner">
+            <div class="overlay_init__content">
+                <span class="spinner"></span>
+            </div>
+        </div>
+    </div>
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
@@ -156,7 +162,7 @@
         @auth
             <footer class="footer">
                 <div class="copyright text-center text-muted">
-                    <img class="text-center" src="/img/logos/ump.png" style="height: 60px;" />
+                    <img class="text-center" src="/img/logos/ump.png" style="height: 60px;" alt="" />
                     Confederação Nacional de Mocidade
                 </div>
             </footer>
@@ -184,8 +190,12 @@
                         }
 
                         if ($(this).parents().closest('.nav-item').length > 1) {
-                            console.log($(this).parents().closest('.nav-item'));
-                            $(this).parents().closest('.nav-item').first().find('a').first().addClass('active text-primary');
+                            $(this).parents()
+                                .closest('.nav-item')
+                                .first()
+                                .find('a')
+                                .first()
+                                .addClass('active text-primary');
                         }
                     }
                 });
@@ -193,43 +203,34 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
+    <script src="/vendor/bootstrap.bundle.min.js"></script>
 
     <script src="/datatables/datatables.min.js"></script>
 
     <script src="/js/jquery.mask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
-        integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"
-        integrity="sha512-mVkLPLQVfOWLRlC2ZJuyX5+0XrTlbW2cyAwyqgPkLGxhoaHNSWesYMlcUjX8X+k45YB8q90s88O7sos86636NQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/vendor/datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/vendor/datepicker/ptbr.min.js"></script>
     <script src="/vendor/datatables/buttons.server-side.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css"
-        integrity="sha512-O03ntXoVqaGUTAeAmvQ2YSzkCvclZEcPQu1eqloPaHfJ5RuNGiS4l+3duaidD801P50J28EHyonCV06CUlTSag=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <link rel="stylesheet" href="/vendor/iziToast/estilo.min.css" />
+    <script type="text/javascript" src="/vendor/moment.min.js"></script>
+    <script type="text/javascript" src="/vendor/datepicker/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="/vendor/datepicker/daterangepicker.css" />
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="/vendor/select2/script.min.js"></script>
 
 
-    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="/vendor/charts/highmaps.js"></script>
+    <script src="/vendor/charts/highmaps-export.js"></script>
     <script src="/js/arquivo-mapa-regiao.js"></script>
 
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="/vendor/charts/raphael.min.js"></script>
+    <script src="/vendor/charts/morris.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="/vendor/popper.min.js" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/vendor/sweetalert.min.js"></script>
 
     <!-- SUMMERNOTE -->
     <link href="/vendor/summernote/summernote-lite.min.css" rel="stylesheet">
@@ -267,6 +268,7 @@
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
         })(jQuery)
+        $('.isTelefone').mask('(99)99999-9999');
     </script>
     <script>
         $(document).ready(function() {
@@ -382,9 +384,7 @@
 
     <!-- Argon JS -->
     <script src="{{ asset('argon') }}/js/argon.js?v=1.0.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"
-        integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/vendor/iziToast/iziToast.min.js"></script>
     @if(session()->has('mensagem') && session('mensagem')['status'] == true)
     <script>
         iziToast.show({
@@ -455,39 +455,64 @@
         })
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/vendor/chart.js"></script>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="/vendor/jquery-ui.min.js"></script>
 <script src="/js/form-builder.min.js"></script>
 <script src="/js/form-render.min.js"></script>
 
 <script>
     function deleteRegistro(url) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: "Deseja apagar o registro?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            })
-        }
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: "Deseja apagar o registro?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        })
+    }
+
+    function alertConfirmar(url, texto = 'Você confirma a ação?') {
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: texto,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        })
+    }
 </script>
 
 
 
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<link href="/vendor/bootstrap-toggle/estilo.min.css" rel="stylesheet">
+<script src="/vendor/bootstrap-toggle/script.min.js"></script>
 
     @stack('script')
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            $('#overlay_init').hide();
+        }, 500)
+    }, false);
+</script>
 
 
 </body>

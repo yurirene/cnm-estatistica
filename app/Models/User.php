@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pesquisas\Pesquisa;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,12 +36,25 @@ class User extends Authenticatable
     ];
 
     public const ROLES_SECRETARIOS = [
-        'secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade'
+        'secretaria_eventos',
+        'secreatria_produtos',
+        'secretaria_evangelismo',
+        'secretaria_responsabilidade'
     ];
 
+
     public const ROLES_INSTANCIAS = [
-        'sinodal', 'federacao', 'local'
+        self::ROLE_SINODAL,
+        self::ROLE_FEDERACAO,
+        self::ROLE_LOCAL
     ];
+
+    public const ROLE_DIRETORIA = 'diretoria';
+    public const ROLE_SINODAL = 'sinodal';
+    public const ROLE_FEDERACAO = 'federacao';
+    public const ROLE_LOCAL = 'local';
+    public const ROLE_TESOURARIA = 'tesouraria';
+    public const ROLE_ADMINISTRADOR = 'administrador';
 
     public function regioes()
     {
@@ -79,13 +93,14 @@ class User extends Authenticatable
 
     public function instancia()
     {
-        if ($this->hasRole('sinodal')) {
-            return $this->sinodais();
-        } else if ($this->hasRole('federacao')) {
-            return $this->federacoes();
-        } else if ($this->hasRole('local')) {
-            return $this->locais();
+        if ($this->hasRole(self::ROLE_SINODAL)) {
+            $relation = $this->sinodais();
+        } elseif ($this->hasRole(self::ROLE_FEDERACAO)) {
+            $relation = $this->federacoes();
+        } elseif ($this->hasRole(self::ROLE_LOCAL)) {
+            $relation = $this->locais();
         }
+        return $relation;
     }
 
     public function scopeQuery($query)
@@ -101,19 +116,19 @@ class User extends Authenticatable
         })
         ->when(in_array('diretoria',$perfil_usuario), function($sql) {
             return $sql->whereHas('sinodais', function ($q) {
-                return $q->whereIn('sinodais.regiao_id', Auth::user()->regioes->pluck('id')->toArray());
+                return $q->whereIn('sinodais.regiao_id', auth()->user()->regioes->pluck('id')->toArray());
             })->orWhereHas('roles', function ($q) {
-                return $q->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
+                return $q->whereIn('name', self::ROLES_SECRETARIOS);
             });
         })
         ->when(in_array('sinodal',$perfil_usuario), function($sql) use ($param_busca) {
             return $sql->$param_busca('federacoes', function ($q) {
-                return $q->whereIn('federacoes.sinodal_id', Auth::user()->sinodais->pluck('id')->toArray());
+                return $q->whereIn('federacoes.sinodal_id', auth()->user()->sinodais->pluck('id')->toArray());
             });
         })
         ->when(in_array('federacao',$perfil_usuario), function($sql) use ($param_busca) {
             return $sql->$param_busca('locais', function ($q) {
-                return $q->whereIn('locais.federacao_id', Auth::user()->federacoes->pluck('id')->toArray());
+                return $q->whereIn('locais.federacao_id', auth()->user()->federacoes->pluck('id')->toArray());
             });
         });
 
@@ -121,17 +136,19 @@ class User extends Authenticatable
 
     public function getInstanciaFormatadaAttribute()
     {
-        if ($this->roles->first()->name == 'administrador') {
-            return 'Administrador';
-        } else if ($this->roles->first()->name == 'diretoria') {
-            return 'Diretoria';
-        } else if ($this->roles->first()->name == 'sinodal') {
-            return 'Sinodal';
-        } else if ($this->roles->first()->name == 'federacao') {
-            return 'Federação';
-        } else if ($this->roles->first()->name == 'local') {
-            return 'Local';
+        $instancia = '';
+        if ($this->roles->first()->name == self::ROLE_ADMINISTRADOR) {
+            $instancia = 'Administrador';
+        } elseif ($this->roles->first()->name == self::ROLE_DIRETORIA) {
+            $instancia = 'Diretoria';
+        } elseif ($this->roles->first()->name == self::ROLE_SINODAL) {
+            $instancia = 'Sinodal';
+        } elseif ($this->roles->first()->name == self::ROLE_FEDERACAO) {
+            $instancia = 'Federação';
+        } elseif ($this->roles->first()->name == self::ROLE_LOCAL) {
+            $instancia = 'Local';
         }
+        return $instancia;
     }
 
     public function avisos()

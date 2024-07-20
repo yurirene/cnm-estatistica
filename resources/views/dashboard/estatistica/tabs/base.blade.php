@@ -10,8 +10,17 @@
                                     Exportar Base de Dados Excel
                                 </div>
                                 <div class="card-body">
-                                    {!! Form::open(['method' => 'POST', 'route' => 'dashboard.estatistica.exportarExcel', 'class' => 'form-horizontal']) !!}
-                                    {!! Form::select('ano_referencia', $anos_referencias, null, ['class' => 'form-control']) !!}
+                                    {!! Form::open([
+                                        'method' => 'POST',
+                                        'route' => 'dashboard.estatistica.exportarExcel',
+                                        'class' => 'form-horizontal'
+                                    ]) !!}
+                                    {!! Form::select(
+                                        'ano_referencia',
+                                        $anos_referencias,
+                                        null,
+                                        ['class' => 'form-control']
+                                    ) !!}
                                     <button class="btn btn-primary mt-2">
                                         <i class="fas fa-file-excel"></i> Exportar
                                     </button>
@@ -20,7 +29,20 @@
                             </div>
                         </div>
 
-
+                        <div class="col-md-4">
+                            <div class="card shadow h-100">
+                                <div class="card-header">
+                                    Atualizar Tudo
+                                </div>
+                                <div class="card-body">
+                                    <a href="{{ route('dashboard.estatistica.atualizar-tudo') }}"
+                                        class="btn btn-primary mt-2"
+                                    >
+                                        <i class="fas fa-sync"></i> Atualizar Tudo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

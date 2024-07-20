@@ -46,11 +46,8 @@ class SiteService
             $sinodal = Sinodal::find($id);
             $site = $sinodal->site;
             $config = $site->configuracoes;
-            if (isset($request['cargo'])) {
-                $config['editaveis'][$request['chave']]['diretoria'][$request['cargo']]['nome'] = $request['valor'];
-            } else {
-                $config['editaveis'][$request['chave']][$request['config']] = $request['valor'];
-            }
+            $config['editaveis'][$request['chave']][$request['config']] = $request['valor'];
+
             $site->update([
                 'configuracoes' => $config
             ]);
@@ -77,6 +74,7 @@ class SiteService
             $galeria  = $sinodal->galeria->map(function ($item) {
                 return $item->path;
             });
+            $diretoria = self::montarDiretoria($editaveis, $sinodal);
 
             return array_merge(
                 $editaveis,
@@ -86,10 +84,10 @@ class SiteService
                     'federacoes' => $federacoes,
                     'totalizador' => $totalizador,
                     'evento_url' => $sinodal->site->url . '/evento',
-                    'evento_status' => $sinodal->evento->status ?? false
+                    'evento_status' => $sinodal->evento->status ?? false,
+                    'diretoria' => $diretoria
                 ]
             );
-
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -245,6 +243,19 @@ class SiteService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public static function montarDiretoria(array $editaveis, Sinodal $sinodal): array
+    {
+        $diretoria = $sinodal->diretoria;
+        $retorno = [];
+        foreach ($editaveis['diretoria'] as $key => $dado) {
+            $campo = $dado['cargo'];
+            $retorno[$key] = $dado;
+            $retorno[$key]['nome'] = $diretoria->$campo ?? '';
+        }
+
+        return $retorno;
     }
 
 }

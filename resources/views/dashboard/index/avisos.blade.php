@@ -30,6 +30,7 @@
         </div>
         @endif
         @canAtLeast(['dashboard.federacoes.index'])
+        @if(!DashboardHelper::entregouComprovante())
         <div class="row mt-3">
             <div class="col">
                 <div class="card card-stats mb-4 mb-xl-0">
@@ -50,6 +51,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @endCanAtLeast
         @foreach(DashboardHelper::getAvisosUsuario() as $aviso)
         <div class="row mt-3">
@@ -64,7 +66,12 @@
                             </div>
                             <div class="col">
                                 <h4 class="card-title text-uppercase text-muted mb-0">{{$aviso['titulo']}}</h4>
-                                {!! $aviso['texto'] !!}
+                                {!! Str::limit($aviso['texto'], 50) !!}
+                                <button type="button" class="btn btn-link p-0 abrir_aviso"
+                                    data-dados="{{json_encode($aviso)}}"
+                                >
+                                    Ver mais
+                                </button>
                             </div>
 
                         </div>
@@ -109,6 +116,34 @@
     </div>
 </div>
 @endif
+
+<div class="modal fade" id="modal-aviso-show"
+    tabindex="-1" role="dialog"
+    aria-labelledby="modal-aviso" aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-aviso">Atenção</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="py-3 text-center">
+                    <i class="fas fa-3x fa-bullhorn text-danger shadow"></i>
+                    <h3 class="text-gradient text-white mt-4 mb-3" id="titulo_modal_show"></h3>
+                    <div id="corpo_modal_show"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary ml-auto" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @push('js')
 <script>
     $('.ciente').on('click', function() {
@@ -118,6 +153,14 @@
         $.ajax({
             url: route
         });
+    })
+
+    $('.abrir_aviso').on('click', function(e) {
+        let botao = $(e.currentTarget)
+        let dados = botao.data('dados');
+        $('#corpo_modal_show').html(dados.texto);
+        $('#titulo_modal_show').text(dados.titulo);
+        $('#modal-aviso-show').modal('show');
     })
 
 </script>
