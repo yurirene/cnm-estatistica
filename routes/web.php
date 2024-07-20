@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Apps\AppController;
+use App\Http\Controllers\Apps\CategoriaController;
 use App\Http\Controllers\Apps\EventoController;
 use App\Http\Controllers\Apps\SiteController;
+use App\Http\Controllers\Apps\TesourariaController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ComprovanteACIController;
@@ -26,6 +28,7 @@ use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
+use App\Http\Controllers\SecretarioController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -66,17 +69,22 @@ Route::group(['prefix' => 'site'], function () {
         ->name('meusite.evento.inscricao');
 });
 
+
 Route::group(['prefix' => 'graficos'], function () {
     Route::post('/', [EstatisticaController::class, 'graficos'])
         ->name('graficos.index');
 });
+
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::get('/home', [DashboardController::class, 'index'])
         ->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])
         ->name('trocar-senha');
+});
 
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'usuarios'], function () {
         Route::resource('usuarios', UserController::class)
             ->names('usuarios');
@@ -88,7 +96,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/check-usuario', [UserController::class, 'checkUser'])
             ->name('usuarios.check-usuario');
     });
+});
 
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'sinodais'], function () {
         Route::resource('sinodais', SinodalController::class)
             ->parameters(['sinodais' => 'sinodal'])
@@ -101,7 +112,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/sinodais/get-ranking', [SinodalController::class, 'getRanking'])
             ->name('sinodais.get-ranking');
     });
+});
 
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'federacoes'], function () {
         Route::resource('federacoes', FederacaoController::class)
             ->parameters(['federacoes' => 'federacao'])
@@ -111,7 +125,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::put('/federacoes/{federacao}/update-info', [FederacaoController::class, 'updateInfo'])
             ->name('federacoes.update-info');
     });
+});
 
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'umps-locais'], function () {
         Route::resource('umps-locais', LocalController::class)
             ->parameters(['umps-locais' => 'local'])
@@ -121,7 +138,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])
             ->name('locais.update-info');
     });
+});
 
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'atividades'], function () {
         Route::resource('atividades', AtividadeController::class)
             ->parameters(['atividades' => 'atividade'])
@@ -133,7 +153,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])
             ->name('atividades.confirmar');
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'formularios-locais'], function () {
         Route::get('/formularios-locais', [FormularioLocalController::class, 'index'])
             ->name('formularios-locais.index');
@@ -145,9 +167,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('formularios-locais.export');
         Route::get('/formularios-local-export/{local}', [FormularioLocalController::class, 'localExport'])
             ->name('formularios-local.export');
-
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'formularios-sinodais'], function () {
         Route::get('/formularios-sinodais', [FormularioSinodalController::class, 'index'])
             ->name('formularios-sinodais.index');
@@ -166,7 +189,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-sinodais-salvar', [FormularioSinodalController::class, 'salvarPreenchimento'])
             ->name('formularios-sinodais.apenas-salvar');
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'formularios-federacoes'], function () {
         Route::get('/formularios-federacoes', [FormularioFederacaoController::class, 'index'])
             ->name('formularios-federacoes.index');
@@ -185,7 +210,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/formularios-federacoes-salvar', [FormularioFederacaoController::class, 'salvarPreenchimento'])
             ->name('formularios-federacoes.apenas-salvar');
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'pesquisas'], function () {
         Route::resource('/pesquisas', PesquisaController::class)
             ->names('pesquisas');
@@ -208,7 +235,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/pesquisas-acompanhar/{pesquisa}', [PesquisaController::class, 'acompanhar'])
             ->name('pesquisas.acompanhar');
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'comprovante-aci'], function () {
         Route::get('/comprovante-aci', [ComprovanteACIController::class, 'index'])
             ->name('comprovante-aci.index');
@@ -217,8 +246,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])
             ->name('comprovante-aci.status');
     });
+});
 
-    // PAINEL ESTATISTICA
+// PAINEL ESTATISTICA
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'secretaria-estatistica'], function () {
         Route::get('/estatistica', [EstatisticaController::class, 'index'])
             ->name('estatistica.index');
@@ -231,7 +262,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/estatistica/atualizar-tudo', [EstatisticaController::class, 'atualizarTodosOsDados'])
             ->name('estatistica.atualizar-tudo');
     });
-    // SECRETARIA DE PRODUTOS
+});
+
+// SECRETARIA DE PRODUTOS
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'secretaria-produtos'], function () {
         Route::resource('produtos', ProdutoController::class)
             ->parameters(['produtos' => 'produto'])
@@ -253,27 +287,32 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
         Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)
             ->parameters(['consignacao-produtos' => 'consignado'])
-                ->names('consignacao-produtos')->except(['index', 'show', 'destroy']);
+            ->names('consignacao-produtos')
+            ->except(['index', 'show', 'destroy']);
         Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])
             ->name('consignacao-produtos.delete');
 
         Route::resource('produtos/fluxo-caixa', FluxoCaixaController::class)
             ->parameters(['fluxo-caixa' => 'fluxo'])
-                ->names('produtos.fluxo-caixa')->except(['index', 'show', 'destroy']);
+            ->names('produtos.fluxo-caixa')
+            ->except(['index', 'show', 'destroy']);
         Route::get('/produtos/fluxo-caixa/{fluxo}/delete', [FluxoCaixaController::class, 'delete'])
             ->name('produtos.fluxo-caixa.delete');
         Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])
             ->name('produtos.datatable.fluxo-caixa');
     });
+});
 
-    // MINHAS DEMANDAS
+// MINHAS DEMANDAS
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'minhas-demandas'], function () {
         Route::get('minhas-demandas', [MinhasDemandasController::class, 'index'])
             ->name('minhas-demandas.index');
     });
+});
 
-    //SECRETARIA EXECUTIVA
-
+//SECRETARIA EXECUTIVA
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'demandas'], function () {
         Route::resource('demandas', DemandaController::class)
             ->parameters(['demandas' => 'demanda'])
@@ -291,7 +330,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])
             ->name('demandas.informacoesAdicionais');
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'digestos'], function () {
         Route::resource('digestos', DigestoController::class)
             ->parameters(['digestos' => 'digesto'])
@@ -299,13 +340,17 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])
             ->name('digestos.delete');
     });
+});
 
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'tutoriais'], function () {
         Route::get('/tutoriais', [TutorialController::class, 'index'])
             ->name('tutoriais.index');
     });
+});
 
-    // DATATABLES
+// DATATABLES
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'datatables'], function () {
         Route::get(
             '/datatables/log-erro',
@@ -340,9 +385,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             [DatatableAjaxController::class, 'estatisticaFormulariosLocais']
         )->name('datatables.estatistica.formularios-locais');
     });
+});
 
-
-    //ACESSO APPS
+//ACESSO APPS
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'acesso-apps'], function () {
         Route::get('/apps/liberar', [AppController::class, 'index'])
             ->name('apps.liberacao');
@@ -351,50 +397,79 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/apps/get-sinodal-apps/{id}', [AppController::class, 'getSinodalApps'])
             ->name('apps.get-sinodal-apps');
     });
+});
 
+// APPS
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(['modulo' => 'apps'], function () {
+            Route::get('/apps/sites', [SiteController::class, 'index'])
+                ->name('apps.sites.index');
+            Route::post('/apps/sites/{sinodal_id}/atualizar-config',[SiteController::class, 'atualizar'])
+                ->name('apps.sites.atualizar-config');
+            Route::post('/apps/sites/{sinodal_id}/adicionar-galeria',[SiteController::class, 'adicionarGaleria'])
+                ->name('apps.sites.adicionar-galeria');
+            Route::get('/apps/sites/{sinodal_id}/remover-galeria/{id}',[SiteController::class, 'removerGaleria'])
+                ->name('apps.sites.remover-galeria');
+            Route::post(
+                '/apps/sites/{sinodal_id}/atualizar-foto-diretoria',
+                [SiteController::class, 'atualizarFotoDiretoria']
+            )->name('apps.sites.atualizar-foto-diretoria');
+            Route::post('/apps/sites/{sinodal_id}/nova-secretaria',[SiteController::class, 'novaSecretaria'])
+                ->name('apps.sites.nova-secretaria');
+            Route::get(
+                '/apps/sites/{sinodal_id}/remover-secretaria/{config}/{chave}',
+                [SiteController::class, 'removerSecretaria']
+            )->name('apps.sites.remover-secretaria');
+            Route::get('/apps/sites/{sinodal_id}/status',[EventoController::class, 'status'])
+                ->name('apps.sites.eventos.status');
+            Route::get('/apps/sites/{sinodal_id}/update',[EventoController::class, 'update'])
+                ->name('apps.sites.eventos.update');
+            Route::put('/apps/sites/{evento_id}/atualizar-config-evento',[EventoController::class, 'atualizar'])
+                ->name('apps.sites.atualizar-config-evento');
+            Route::get('/apps/sites/{evento_id}/status-evento',[EventoController::class, 'status'])
+                ->name('apps.sites.status-evento');
+            Route::get('/apps/sites/{evento_id}/limpar-config',[EventoController::class, 'limparConfig'])
+                ->name('apps.sites.limpar-config');
+            Route::get(
+                '/apps/sites/{evento_id}/status-inscrito/{inscrito_id}',
+                [EventoController::class, 'statusInscrito']
+            )->name('apps.sites.status-inscrito');
+            Route::get(
+                '/apps/sites/{evento_id}/remover-inscrito/{inscrito_id}',
+                [EventoController::class, 'removerInscrito']
+            )->name('apps.sites.remover-inscrito');
+            Route::get('/apps/sites/{evento_id}/limpar-lista',[EventoController::class, 'limparLista'])
+                ->name('apps.sites.limpar-lista');
 
-    // APPS
-    Route::group(['modulo' => 'apps'], function () {
-        Route::get('/apps/sites', [SiteController::class, 'index'])
-            ->name('apps.sites.index');
-        Route::post('/apps/sites/{sinodal_id}/atualizar-config',[SiteController::class, 'atualizar'])
-            ->name('apps.sites.atualizar-config');
-        Route::post('/apps/sites/{sinodal_id}/adicionar-galeria',[SiteController::class, 'adicionarGaleria'])
-            ->name('apps.sites.adicionar-galeria');
-        Route::get('/apps/sites/{sinodal_id}/remover-galeria/{id}',[SiteController::class, 'removerGaleria'])
-            ->name('apps.sites.remover-galeria');
-        Route::post(
-            '/apps/sites/{sinodal_id}/atualizar-foto-diretoria',
-            [SiteController::class, 'atualizarFotoDiretoria']
-        )->name('apps.sites.atualizar-foto-diretoria');
-        Route::post('/apps/sites/{sinodal_id}/nova-secretaria',[SiteController::class, 'novaSecretaria'])
-            ->name('apps.sites.nova-secretaria');
-        Route::get(
-            '/apps/sites/{sinodal_id}/remover-secretaria/{config}/{chave}',
-            [SiteController::class, 'removerSecretaria']
-        )->name('apps.sites.remover-secretaria');
-        Route::get('/apps/sites/{sinodal_id}/status',[EventoController::class, 'status'])
-            ->name('apps.sites.eventos.status');
-        Route::get('/apps/sites/{sinodal_id}/update',[EventoController::class, 'update'])
-            ->name('apps.sites.eventos.update');
-        Route::put('/apps/sites/{evento_id}/atualizar-config-evento',[EventoController::class, 'atualizar'])
-            ->name('apps.sites.atualizar-config-evento');
-        Route::get('/apps/sites/{evento_id}/status-evento',[EventoController::class, 'status'])
-            ->name('apps.sites.status-evento');
-        Route::get('/apps/sites/{evento_id}/limpar-config',[EventoController::class, 'limparConfig'])
-            ->name('apps.sites.limpar-config');
-        Route::get('/apps/sites/{evento_id}/status-inscrito/{inscrito_id}',[EventoController::class, 'statusInscrito'])
-            ->name('apps.sites.status-inscrito');
-        Route::get(
-            '/apps/sites/{evento_id}/remover-inscrito/{inscrito_id}',
-            [EventoController::class, 'removerInscrito']
-        )->name('apps.sites.remover-inscrito');
-        Route::get('/apps/sites/{evento_id}/limpar-lista',[EventoController::class, 'limparLista'])
-            ->name('apps.sites.limpar-lista');
-    });
+            //TESOURARIA
 
+            Route::resource('/apps/tesouraria', TesourariaController::class)
+                ->names('apps.tesouraria')
+                ->except(['destroy']);
+            Route::get('/apps/tesouraria/remover/{lancamento}',[TesourariaController::class, 'delete'])
+                ->name('apps.tesouraria.delete');
 
-    //AVISOS
+            Route::resource('/apps/tesouraria/categoria', CategoriaController::class)
+                ->names('apps.tesouraria.categoria')
+                ->except(['destroy', 'index']);
+
+            Route::get('/apps/tesouraria/remover-categoria/{categoria}',[CategoriaController::class, 'delete'])
+                ->name('apps.tesouraria.categoria.delete');
+
+            Route::post('/apps/tesouraria/gerar-relatorio',[TesourariaController::class, 'gerarRelatorio'])
+                ->name('apps.tesouraria.gerar-relatorio');
+        });
+    }
+);
+
+//AVISOS
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'avisos'], function () {
         Route::get('/avisos', [AvisoController::class, 'index'])
             ->name('avisos.index');
@@ -411,13 +486,13 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/avisos/lista-visualizados/{id}', [AvisoController::class, 'listarVisualizados'])
             ->name('avisos.listar-visualizados');
     });
+});
 
-
-    //DETALHAMENTO
+//DETALHAMENTO
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'detalhamento'], function () {
         Route::get('/detalhamento/{tipo}', [DetalhamentoController::class, 'index'])
             ->name('detalhamento.index');
-
     });
 
     //DIRETORIA
@@ -428,6 +503,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 
 });
+
+//HELPDESK
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'helpdesk'], function () {
         Route::resource('/helpdesk', HelpdeskController::class)
@@ -435,3 +512,32 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->except(['update', 'delete']);
     });
 });
+
+//DIRETORIA
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(['modulo' => 'diretoria'], function () {
+            Route::get('/diretoria', [DiretoriaController::class, 'index'])
+                ->name('diretoria.index');
+            Route::get('/diretoria-salvar', [DiretoriaController::class, 'salvar'])
+                ->name('diretoria.salvar');
+            Route::post('/diretoria/store', [DiretoriaController::class, 'store'])
+                ->name('diretoria.store');
+            Route::post('/diretoria/update', [DiretoriaController::class, 'update'])
+                ->name('diretoria.update');
+            Route::post('/diretoria/validar-ano-diretoria', [DiretoriaController::class, 'validarAnoDaNovaDiretoria'])
+                ->name('diretoria.validar-ano-diretoria');
+
+            Route::post('/secretarios/store-update', [SecretarioController::class, 'storeUpdate'])
+                ->name('secretario.store-update');
+            Route::get('/secretarios/delete/{secretario}', [SecretarioController::class, 'delete'])
+                ->name('secretario.delete');
+
+        });
+    }
+);

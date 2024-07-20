@@ -57,8 +57,10 @@
                             <label>Comprovante</label>
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input"
-                                    id="comprovante" aria-describedby="inputenviarimg"
+                                    id="comprovante"
+                                    aria-describedby="inputenviarimg"
                                     name="comprovante"
+                                    accept="application/pdf"
                                 >
                                 <label class="custom-file-label" for="image">Buscar Comprovante</label>
                             </div>

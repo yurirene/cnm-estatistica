@@ -56,4 +56,15 @@ class FormHelper
         return floatval($valorSemFormatacao);
     }
 
+    /**
+     * Converte o valor no formato de float XXXX.XX para X.XXX,XX
+     *
+     * @param string $valor
+     * @return string
+     */
+    public static function converterParaReal(string $valor): string
+    {
+        return number_format($valor, 2, ',', '.');
+    }
+
 }

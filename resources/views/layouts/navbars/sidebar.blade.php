@@ -80,6 +80,15 @@
                         <i class="fas fa-home"></i> Início
                     </a>
                 </li>
+
+                @canAtLeast(['dashboard.diretoria.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria.index') }}">
+                        <i class="fas fa-bullhorn"></i> Diretoria
+                    </a>
+                </li>
+                @endCanAtLeast
+
                 @canAtLeast(['dashboard.usuarios.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.usuarios.index') }}">
@@ -232,7 +241,7 @@
                 </li>
                 @endCanAtLeast
 
-                @can('apps', 'sites')
+                @can('apps', [])
                 <a class="nav-link"
                     href="#meusapps"
                     data-toggle="collapse"
@@ -241,12 +250,22 @@
                     <i class="fas fa-tablet-alt"></i> Meus Apps
                 </a>
                 <ul class="collapse list-unstyled" id="meusapps" >
+                    @can('apps', 'sites')
                     <li class="nav-item ml-3">
                         <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
                             <i class="fab fa-chrome"></i>
                             Site
                         </a>
                     </li>
+                    @endcan
+                    @can('apps', 'tesouraria')
+                    <li class="nav-item ml-3">
+                        <a  class="nav-link" href="{{ route('dashboard.apps.tesouraria.index') }}">
+                            <i class="fas fa-dollar-sign"></i>
+                            Tesouraria
+                        </a>
+                    </li>
+                    @endcan
                 </ul>
                 @endcan
 

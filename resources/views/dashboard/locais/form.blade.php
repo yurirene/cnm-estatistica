@@ -5,7 +5,7 @@
 @include('dashboard.partes.head', [
     'titulo' => 'UMP Local'
 ])
-    
+
 <div class="container-fluid mt--7">
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
@@ -83,7 +83,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 <input hidden id="isNovo" value="{{ isset($local) ? 'true' : 'false'}}"/>
@@ -97,15 +97,14 @@
 <script>
 
 
-const isNovo = document.getElementById('isNovo').value === "true"; 
+const isNovo = document.getElementById('isNovo').value === "true";
 const idUsuario = document.getElementById('idUsuario').value;
 
 $('#nome').keyup($.debounce(500, function(e) {
-    verificarUsuario($('#email_usuario').val());   
+    verificarUsuario($('#email_usuario').val());
 }));
 
 function verificarUsuario(email) {
-    console.log('verificando...');
     $.ajax({
         url: "{{route('dashboard.usuarios.check-usuario')}}",
         type: 'POST',
