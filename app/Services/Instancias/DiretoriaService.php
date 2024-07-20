@@ -2,19 +2,7 @@
 
 namespace App\Services\Instancias;
 
-use App\Helpers\FormHelper;
-use App\Models\Atividade;
 use App\Models\Diretorias\DiretoriaSinodal;
-use App\Models\Estado;
-use App\Models\Federacao;
-use App\Models\FormularioLocal;
-use App\Models\FormularioSinodal;
-use App\Models\Local;
-use App\Models\Parametro;
-use App\Models\Sinodal;
-use App\Models\User;
-use App\Services\Estatistica\EstatisticaService;
-use Illuminate\Support\Facades\Auth;
 
 class DiretoriaService
 {

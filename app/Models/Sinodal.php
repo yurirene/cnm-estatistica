@@ -54,11 +54,6 @@ class Sinodal extends Model
         return $this->hasMany(FormularioSinodal::class, 'sinodal_id');
     }
 
-    public function diretoria(): HasOne
-    {
-        return $this->hasOne(Diretoria::class, 'sinodal_id');
-    }
-
     public function ranking()
     {
         return $this->hasOne(Ranking::class, 'sinodal_id');
