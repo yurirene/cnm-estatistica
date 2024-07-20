@@ -1,66 +1,79 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('dashboard.partes.head', [
-        'titulo' => 'Diretoria',
-    ])
 
-    <div class="container-fluid mt--7">
-        <div class="row mt-5">
-            <div class="col-xl-12 mb-5 mb-xl-0">
-                <div class="card shadow p-3">
-                    <div class="card-header p-0 border-bottom-0">
-                        <ul class="nav nav-pills" id="custom-tabs-four-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link {{
-                                    !session('aba') || session()->get('aba') == 'diretoria' ? 'active' : ''
-                                }}"
-                                    id="custom-tabs-four-home-tab"
-                                    data-toggle="pill"
-                                    href="#custom-tabs-four-home"
-                                    role="tab"
-                                    aria-controls="custom-tabs-four-home"
-                                    aria-selected="true">
-                                    Diretoria
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ session()->get('aba') == 'secretarios' ? 'active' : '' }}"
-                                    id="custom-tabs-four-profile-tab"
-                                    data-toggle="pill"
-                                    href="#custom-tabs-four-profile"
-                                    role="tab"
-                                    aria-controls="custom-tabs-four-profile"
-                                    aria-selected="false">
-                                    Secretários
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content" id="custom-tabs-four-tabContent">
-                            <div
-                                class="tab-pane fade  {{
-                                    !session('aba') || session()->get('aba') == 'diretoria' ? 'show active' : ''
-                                }}"
-                                id="custom-tabs-four-home"
-                                role="tabpanel"
-                                aria-labelledby="custom-tabs-four-home-tab"
-                            >
-                                @include('dashboard.diretoria.tabs.diretoria')
-                            </div>
-                            <div
-                                class="tab-pane fade {{ session()->get('aba') == 'secretarios' ? 'show active' : '' }}"
-                                id="custom-tabs-four-profile"
-                                role="tabpanel"
-                                aria-labelledby="custom-tabs-four-profile-tab"
-                            >
-                                @include('dashboard.diretoria.tabs.secretarios')
-                            </div>
+@include('dashboard.partes.head', [
+'titulo' => 'Diretoria ' . $tipo
+])
+
+<div class="container-fluid mt--7">
+    <div class="row mt-5">
+        <div class="col-xl-12 mb-5 mb-xl-0">
+            <div class="card shadow p-3">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">Diretoria {{$tipo}}</h3>
                         </div>
                     </div>
+                </div>
+                <div class="card-body">
+                    {!! Form::model(
+                        $diretoria,
+                        [
+                            'url' => route('dashboard.diretoria-sinodal.update', ['diretoria' => $diretoria->id]),
+                            'method' => 'PUT'
+                        ]
+                    ) !!}
+                    <div class="row">
+                        @foreach($cargos as $campo => $cargo)
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card mb-3 border-0">
+                                <div class="row g-0 d-flex align-items-center">
+                                    <div class="col-md-12 text-center">
+                                        <h5 class="">{{ $cargo }}</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::text($campo, null, [
+                                                'class' => 'form-control float-right',
+                                                'required'=>true,
+                                                'autocomplete' => 'off',
+                                                'placeholder' => 'Nome'
+                                            ]) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {!! Form::text("contato_{$campo}", null, [
+                                                'class' => 'form-control float-right',
+                                                'required'=>true,
+                                                'autocomplete' => 'off',
+                                                'placeholder' => 'Contato'
+                                            ]) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        <div class="col-md-12">
+                            <button class="btn btn-success">
+                                <i class='fas fa-save'></i>
+                                Atualizar
+                            </button>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
+
+@push('js')
+<script>
+
+</script>
+@endpush

@@ -6,6 +6,7 @@ use App\Models\Apps\App;
 use App\Models\Apps\Site\Evento;
 use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
+use App\Models\Diretorias\DiretoriaSinodal;
 use App\Models\Estatistica\Ranking;
 use App\Traits\Auditable;
 use App\Traits\GenericTrait;
@@ -53,11 +54,6 @@ class Sinodal extends Model
         return $this->hasMany(FormularioSinodal::class, 'sinodal_id');
     }
 
-    public function diretoria(): HasOne
-    {
-        return $this->hasOne(Diretoria::class, 'sinodal_id');
-    }
-
     public function ranking()
     {
         return $this->hasOne(Ranking::class, 'sinodal_id');
@@ -89,5 +85,10 @@ class Sinodal extends Model
             return $query;
         }
         return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
+    }
+
+    public function diretoria()
+    {
+        return $this->hasOne(DiretoriaSinodal::class, 'sinodal_id');
     }
 }

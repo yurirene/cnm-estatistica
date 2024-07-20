@@ -10,6 +10,8 @@ return [
     'telegram_chat_id' => env('TELEGRAM_BOT_API_CHAT_ID'),
     'iclaudia_telegram_token' => env('TELEGRAM_API_ICLAUDIA_TOKEN'),
 
+    'cipher' => env('APP_CIPHER'),
+    'key-crypter' => env('APP_CIPHER'),
 
     /*
     |--------------------------------------------------------------------------

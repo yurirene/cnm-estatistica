@@ -43,44 +43,37 @@ class ModeloSiteSeeder extends Seeder
                                 0 => [
                                     'titulo' => 'Presidente',
                                     'cargo' => 'presidente',
-                                    'path' => '',
-                                    'nome' => 'Nome do Presidente'
+                                    'path' => ''
                                 ],
                                 1 => [
                                     'cargo' => 'vice_presidente',
                                     'titulo' => 'Vice-Presidente',
-                                    'path' => '',
-                                    'nome' => 'Nome do Vice'
+                                    'path' => ''
                                 ],
                                 2 => [
                                     'cargo' => 'secretaria_executiva',
                                     'titulo' => 'Secretário-Executivo',
-                                    'path' => '',
-                                    'nome' => 'Nome do Secretário-Executivo'
+                                    'path' => ''
                                 ],
                                 3 => [
                                     'cargo' => 'primeiro_secretario',
                                     'titulo' => 'Primeiro(a) Secretário(a)',
-                                    'path' => '',
-                                    'nome' => 'Nome do(a) Secretário'
+                                    'path' => ''
                                 ],
                                 4 => [
                                     'cargo' => 'segundo_secretario',
                                     'titulo' => 'Segundo(a) Secretário(a)',
-                                    'path' => '',
-                                    'nome' => 'Nome do(a) Secretário(a)'
+                                    'path' => ''
                                 ],
                                 5 => [
                                     'cargo' => 'tesoureiro',
                                     'titulo' => 'Tesoureiro',
-                                    'path' => '',
-                                    'nome' => 'Nome do Tesourerio(a)'
+                                    'path' => ''
                                 ],
                                 6 => [
                                     'cargo' => 'secretario_sinodal',
                                     'titulo' => 'Secretário Sinodal',
-                                    'path' => '',
-                                    'nome' => 'Nome do Secretário Sinodal'
+                                    'path' => ''
                                 ]
                             ],
                         ],
