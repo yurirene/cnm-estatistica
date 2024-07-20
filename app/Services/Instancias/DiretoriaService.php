@@ -21,7 +21,7 @@ class DiretoriaService
     public const CAMPOS_CARGOS = [
         0 => 'presidente',
         1 => 'vice_presidente',
-        2 => 'secretario_executivo',
+        2 => 'secretaria_executiva',
         3 => 'primeiro_secretario',
         4 => 'segundo_secretario',
         5 => 'tesoureiro',
