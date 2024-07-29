@@ -3,12 +3,12 @@
         <div class="card-header border-0">
             <div class="row align-items-center">
                 <div class="col">
-                    <h3 class="mb-0">Lista de Comprovantes ACI</h3>
+                    <h3 class="mb-0">Comissão Executiva</h3>
                 </div>
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive"> 
+            <div class="table-responsive">
                 {!! $dataTable->table(['class' => 'table w-100']) !!}
             </div>
         </div>

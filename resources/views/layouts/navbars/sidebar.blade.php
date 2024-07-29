@@ -168,9 +168,16 @@
                     </a>
                 </li>
                 @endCanAtLeast
-                @canAtLeast(['dashboard.ce.index'])
+                @canAtLeast(['dashboard.comissao-executiva.index'])
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.ce.index') }}">
+                    <a class="nav-link" href="{{ route('dashboard.comissao-executiva.index') }}">
+                        <i class="fas fa-gavel"></i> Comissão Executiva
+                    </a>
+                </li>
+                @endCanAtLeast
+                @canAtLeast(['dashboard.ce-sinodal.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.ce-sinodal.index') }}">
                         <i class="fas fa-gavel"></i> Comissão Executiva
                     </a>
                 </li>

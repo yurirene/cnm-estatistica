@@ -21,7 +21,7 @@ class FluxoCaixa extends Model
         'data_lancamento' => DateCast::class
     ];
     protected $dates = ['created_at', 'updated_at'];
-    public $path = 'public/produtos/comprovantes';
+    public $caminho = 'public/produtos/comprovantes';
 
     public const SALDO_INICIAL = 0;
     public const ENTRADA = 1;

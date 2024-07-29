@@ -62,7 +62,8 @@ class PermissionRoleSeeder extends Seeder
                     'apps',
                     'detalhamento',
                     'helpdesk',
-                    'diretoria-sinodal'
+                    'diretoria-sinodal',
+                    'ce-sinodal'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -76,8 +77,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado',
-                    'dashboard.ce.index'
+                    'dashboard.avisos.visualizado'
                 ]
             ],
             'federacao' => [
@@ -128,7 +128,8 @@ class PermissionRoleSeeder extends Seeder
                     'demandas',
                     'minhas-demandas',
                     'digestos',
-                    'helpdesk'
+                    'helpdesk',
+                    'comissao-executiva'
                 ]
             ],
             'secretaria_eventos' => [

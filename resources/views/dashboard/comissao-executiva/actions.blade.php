@@ -3,13 +3,9 @@
         Ações
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        @if(!isset($edit) || (isset($edit) && $edit == true))
         <a class="dropdown-item" href="{{ route($route.'.show', $id) }}">Abrir</a>
-        @endif
-        @if(!isset($edit) || (isset($edit) && $edit == true))
         <a class="dropdown-item" href="{{ route($route.'.edit', $id) }}">Editar</a>
-        @endif
-        @if(!isset($delete) || (isset($delete) && $delete == true))
+        @if($delete)
         <button class="dropdown-item" href="#" onclick="deleteRegistro('{{ route($route.'.delete', $id) }}')">Apagar</button>
         @endif
     </div>

@@ -14,11 +14,27 @@ class CreateDocumentosComissaoExecutivaRecebidosTable extends Migration
     public function up()
     {
         Schema::create('comissao_executiva_documentos_recebidos', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('documento_id')->unsigned();
-            $table->bigInteger('reuniao_id')->unsigned();
-            $table->bigInteger('sinodal_id')->unsigned();
+            $table->uuid('id')->primary();
+            $table->uuid('reuniao_id');
+            $table->uuid('sinodal_id');
+            $table->string('titulo')->nullable();
+            $table->tinyInteger('tipo')
+                ->default(3)
+                ->comment("3 - Documento Proveniente da Sinodal (SIGCE)");
+            $table->tinyInteger('status')
+                ->default(0)
+                ->comment("0 - Pendente, 1 - Visto, 2 - Recebido, 3 - Não Recebido");
+            $table->string('path');
             $table->timestamps();
+
+            $table->foreign('reuniao_id')
+                ->references('id')
+                ->on('comissao_executiva_reunioes')
+                ->cascadeOnDelete();
+            $table->foreign('sinodal_id')
+                ->references('id')
+                ->on('sinodais')
+                ->cascadeOnDelete();
         });
     }
 

@@ -8,10 +8,10 @@
 
 <div class="container-fluid mt--7">
     <div class="row mt-5">
-        @if(auth()->user()->roles->first()->name == 'sinodal')
+        @if($isSinodal)
             @include('dashboard.comissao-executiva.sinodal')
         @else
-            @include('dashboard.comprovante-aci.sinodal')
+            @include('dashboard.comissao-executiva.executiva')
         @endif
     </div>
 </div>

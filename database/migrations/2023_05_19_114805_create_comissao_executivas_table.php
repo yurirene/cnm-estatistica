@@ -14,10 +14,11 @@ class CreateComissaoExecutivasTable extends Migration
     public function up()
     {
         Schema::create('comissao_executiva_reunioes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->year('ano');
             $table->string('local');
             $table->tinyInteger('aberto');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
