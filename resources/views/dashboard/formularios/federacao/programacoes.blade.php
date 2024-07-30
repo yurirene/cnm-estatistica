@@ -5,7 +5,7 @@
             'programacoes[social]',
             'Programações de cunho social realizadas'
         ) !!}
-        <br><small class="text-muted">Incluindo os projetos da Secretaria de Responsabilidade Social</small>
+        <br><small class="text-muted">Ex: Entrega de cestas básicas, visita a orfanatos, incluindo os projetos da Secretaria de Responsabilidade Social</small>
         {!! Form::number(
             'programacoes[social]',
             isset($formulario) && !empty($formulario->programacoes)
@@ -22,7 +22,7 @@
             'programacoes[evangelistico]',
             'Programações de cunho evangelístico e missional realizadas'
         ) !!}
-        <br><small class="text-muted">Incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
+        <br><small class="text-muted">Ex: Viagem missionária, culto em praças, distrubição de folhetos, incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
         {!! Form::number(
             'programacoes[evangelistico]',
             isset($formulario) && !empty($formulario->programacoes)

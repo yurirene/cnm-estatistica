@@ -66,7 +66,10 @@ class AuthServiceProvider extends ServiceProvider
 
             $instancia = UserService::getInstanciaUsuarioLogado($user);
 
-            if (empty($instancia)) {
+            if (
+                empty($instancia)
+                || $user->roles->first()->name != User::ROLE_SINODAL
+            ) {
                 return false;
             }
 

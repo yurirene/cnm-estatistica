@@ -1,14 +1,14 @@
 <div class="row">
     <div class="col-md-3  d-flex flex-column justify-content-end form-group">
         <div class="form-group{{ $errors->has('programacoes[social]') ? ' has-error' : '' }}">
-        {!! Form::label('programacoes[social]', 'Programações de cunho social realizadas') !!} <br><small class="text-muted">Incluindo os projetos da Secretaria de Responsabilidade Social</small>
+        {!! Form::label('programacoes[social]', 'Programações de cunho social realizadas') !!} <br><small class="text-muted">Ex: Entrega de cestas básicas, visita a orfanatos, incluindo os projetos da Secretaria de Responsabilidade Social</small>
         {!! Form::number('programacoes[social]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
         <small class="text-danger">{{ $errors->first('programacoes[social]') }}</small>
         </div>
     </div>
     <div class="col-md-3  d-flex flex-column justify-content-end form-group">
         <div class="form-group{{ $errors->has('programacoes[evangelistico]') ? ' has-error' : '' }}">
-        {!! Form::label('programacoes[evangelistico]', 'Programações de cunho evangelístico e missional realizadas') !!} <br><small class="text-muted">Incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
+        {!! Form::label('programacoes[evangelistico]', 'Programações de cunho evangelístico e missional realizadas') !!} <br><small class="text-muted">Ex: Viagem missionária, culto em praças, distrubição de folhetos, incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
         {!! Form::number('programacoes[evangelistico]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
         <small class="text-danger">{{ $errors->first('programacoes[evangelistico]') }}</small>
         </div>
