@@ -34,7 +34,7 @@
             'programacoes[espiritual]',
             'Programações de cunho espiritual realizadas pela Sinodal'
         ) !!}
-        <br><small class="text-muted">Estudo bíblico / Estudo de livro / Pequenos grupos / Cultos</small>
+        <br><small class="text-muted">Ex: Estudo bíblico / Estudo de livro / Pequenos grupos / Cultos</small>
         {!! Form::number(
             'programacoes[espiritual]',
             isset($formulario) && !empty($formulario->programacoes) ? null : 0,
@@ -48,7 +48,7 @@
         {!! Form::label(
             'programacoes[recreativo]',
             'Programações de cunho recreativo realizadas pela Sinodal') !!}
-            <br><small class="text-muted">Gincanas / Torneio / Passeios / Piquenique</small>
+            <br><small class="text-muted">Ex: Gincanas / Torneio / Passeios / Piquenique</small>
         {!! Form::number(
             'programacoes[recreativo]',
             isset($formulario) && !empty($formulario->programacoes) ? null : 0,

@@ -15,14 +15,14 @@
     </div>
     <div class="col-md-3  d-flex flex-column justify-content-end form-group">
         <div class="form-group{{ $errors->has('programacoes[espiritual]') ? ' has-error' : '' }}">
-        {!! Form::label('programacoes[espiritual]', 'Programações de cunho espiritual realizadas') !!} <br><small class="text-muted">Estudo bíblico / Estudo de livro / Pequenos grupos / Cultos</small>
+        {!! Form::label('programacoes[espiritual]', 'Programações de cunho espiritual realizadas') !!} <br><small class="text-muted">Ex: Estudo bíblico / Estudo de livro / Pequenos grupos / Cultos</small>
         {!! Form::number('programacoes[espiritual]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
         <small class="text-danger">{{ $errors->first('programacoes[espiritual]') }}</small>
         </div>
     </div>
     <div class="col-md-3  d-flex flex-column justify-content-end form-group">
         <div class="form-group{{ $errors->has('programacoes[recreativo]') ? ' has-error' : '' }}">
-        {!! Form::label('programacoes[recreativo]', 'Programações de cunho recreativo realizadas') !!} <br><small class="text-muted">Gincanas / Torneio / Passeios / Piquenique</small>
+        {!! Form::label('programacoes[recreativo]', 'Programações de cunho recreativo realizadas') !!} <br><small class="text-muted">Ex: Gincanas / Torneio / Passeios / Piquenique</small>
         {!! Form::number('programacoes[recreativo]', isset($formulario) ? null : 0, ['class' => 'form-control', 'required' => 'required']) !!}
         <small class="text-danger">{{ $errors->first('programacoes[recreativo]') }}</small>
         </div>
