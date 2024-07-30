@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Demandas'
+    'titulo' => 'Comissão Executiva'
 ])
 
 <div class="container-fluid mt--7">

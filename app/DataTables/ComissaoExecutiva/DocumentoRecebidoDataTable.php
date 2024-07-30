@@ -52,6 +52,9 @@ class DocumentoRecebidoDataTable extends DataTable
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
+            ->editColumn('sinodal_id', function ($sql) {
+                return $sql->sinodal->nome;
+            })
             ->editColumn('tipo', function ($sql) {
                 $tipo = DocumentoRecebido::TIPOS_DOCUMENTOS[$sql->tipo];
 
@@ -123,6 +126,7 @@ class DocumentoRecebidoDataTable extends DataTable
                   ->title('Ação'),
             Column::make('titulo')->title('Título/Nome'),
             Column::make('tipo')->title('Tipo'),
+            Column::make('sinodal_id')->title('Sinodal')->orderable(false),
             Column::make('status')->title('Status'),
             Column::make('reuniao')->title('Reunião'),
             Column::make('created_at')->title('Enviado em'),

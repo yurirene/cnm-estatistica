@@ -3,6 +3,7 @@
 namespace App\Models\ComissaoExecutiva;
 
 use App\Casts\FileCast;
+use App\Models\Sinodal;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,5 +44,10 @@ class DocumentoRecebido extends Model
     public function reuniao(): BelongsTo
     {
         return $this->belongsTo(Reuniao::class, 'reuniao_id');
+    }
+
+    public function sinodal(): BelongsTo
+    {
+        return $this->belongsTo(Sinodal::class, 'sinodal_id');
     }
 }

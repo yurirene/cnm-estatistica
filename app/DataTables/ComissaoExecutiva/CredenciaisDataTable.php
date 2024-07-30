@@ -48,6 +48,9 @@ class CredenciaisDataTable extends DataTable
             ->editColumn('updated_at', function ($sql) {
                 return $sql->updated_at->format('d/m/Y H:i:s');
             })
+            ->editColumn('sinodal_id', function ($sql) {
+                return $sql->sinodal->nome;
+            })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
@@ -113,6 +116,7 @@ class CredenciaisDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('titulo')->title('Nome'),
+            Column::make('sinodal_id')->title('Sinodal'),
             Column::make('status')->title('Status'),
             Column::make('created_at')->title('Enviado em'),
             Column::make('updated_at')->title('Atualizado em'),

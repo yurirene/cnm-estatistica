@@ -3,10 +3,8 @@
 @section('content')
 
 
-{{-- @include('dashboard.produtos.cards') --}}
 @include('dashboard.partes.head', [
-    'remover' => true,
-    'titulo' => 'Produtos'
+    'titulo' => 'Comissão Executiva'
 ])
 
 <div class="container-fluid mt--7">
