@@ -11,6 +11,13 @@ use Yajra\DataTables\Services\DataTable;
 class CredenciaisDataTable extends DataTable
 {
 
+    protected bool $perfilSinodal = false;
+
+    public function __construct()
+    {
+        $this->perfilSinodal = auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA;
+    }
+
     /**
      * Build DataTable class.
      *
@@ -25,6 +32,10 @@ class CredenciaisDataTable extends DataTable
                 return view('dashboard.comissao-executiva.actions-doc', [
                     'id' => $sql->id,
                     'url' => $sql->path,
+                    'confirmar' => [
+                        'permissao' => !$this->perfilSinodal,
+                        'status' => $sql->status
+                    ],
                     'delete' => auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA
                         && $sql->status != DocumentoRecebido::STATUS_DOCUMENTO_RECEBIDO,
                 ]);

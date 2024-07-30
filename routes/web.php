@@ -533,6 +533,9 @@ Route::group(
                 ->name('comissao-executiva.encerrar');
             Route::get('comissao-executiva-credenciais-datatable', [ComissaoExecutivaController::class, 'credenciaisDatatable'])
                 ->name('comissao-executiva.credenciais-datatable');
+
+            Route::get('comissao-executiva/{documento}/confirmar', [ComissaoExecutivaController::class, 'confirmarDocumento'])
+                ->name('comissao-executiva.confirmar');
         });
     }
 );

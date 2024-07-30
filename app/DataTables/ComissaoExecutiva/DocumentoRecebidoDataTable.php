@@ -11,10 +11,12 @@ use Yajra\DataTables\Services\DataTable;
 class DocumentoRecebidoDataTable extends DataTable
 {
     protected ?string $reuniao = null;
+    protected bool $perfilSinodal = false;
 
     public function __construct(?string $reuniao = null)
     {
         $this->reuniao = $reuniao;
+        $this->perfilSinodal = auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA;
     }
 
     /**
@@ -31,7 +33,11 @@ class DocumentoRecebidoDataTable extends DataTable
                 return view('dashboard.comissao-executiva.actions-doc', [
                     'id' => $sql->id,
                     'url' => $sql->path,
-                    'delete' => auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA
+                    'confirmar' => [
+                        'permissao' => !$this->perfilSinodal,
+                        'status' => $sql->status
+                    ],
+                    'delete' => $this->perfilSinodal
                         && $sql->status != DocumentoRecebido::STATUS_DOCUMENTO_RECEBIDO,
                 ]);
             })

@@ -200,6 +200,26 @@ class ComissaoExecutivaController extends Controller
         }
     }
 
+    public function confirmarDocumento(string $documento): RedirectResponse
+    {
+        try {
+            ComissaoExecutivaService::confirmarDocumento($documento);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Alteração de Recebimento realizado!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage()
+                ]
+            ]);
+        }
+    }
+
     public function credenciaisDataTable(CredenciaisDataTable $credenciaisDataTable)
     {
         return $credenciaisDataTable->render('dashboard.comissao-executiva.show');
