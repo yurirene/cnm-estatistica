@@ -269,8 +269,12 @@ class UserService
      * @param User $usuario
      * @return Model|null
      */
-    public static function getInstanciaUsuarioLogado(User $usuario): ?Model
+    public static function getInstanciaUsuarioLogado(User $usuario = null): ?Model
     {
+        if (is_null($usuario)) {
+            $usuario = auth()->user();
+        }
+
         $instancia = null;
         if ($usuario->roles->first()->name == User::ROLE_SINODAL) {
             $instancia = $usuario->sinodais->first();

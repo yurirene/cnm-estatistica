@@ -7,6 +7,7 @@ use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\Apps\TesourariaController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
+use App\Http\Controllers\ComissaoExecutivaController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
@@ -513,7 +514,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 });
 
-//DIRETORIA
+//COMISSAO EXECUTIVA
 Route::group(
     [
         'middleware' => ['auth', 'auth-sistema'],
@@ -521,23 +522,42 @@ Route::group(
         'as' => 'dashboard.'
     ],
     function () {
-        Route::group(['modulo' => 'diretoria'], function () {
-            Route::get('/diretoria', [DiretoriaController::class, 'index'])
-                ->name('diretoria.index');
-            Route::get('/diretoria-salvar', [DiretoriaController::class, 'salvar'])
-                ->name('diretoria.salvar');
-            Route::post('/diretoria/store', [DiretoriaController::class, 'store'])
-                ->name('diretoria.store');
-            Route::post('/diretoria/update', [DiretoriaController::class, 'update'])
-                ->name('diretoria.update');
-            Route::post('/diretoria/validar-ano-diretoria', [DiretoriaController::class, 'validarAnoDaNovaDiretoria'])
-                ->name('diretoria.validar-ano-diretoria');
+        Route::group(['modulo' => 'comissao-executiva'], function () {
+            Route::resource('comissao-executiva', ComissaoExecutivaController::class)
+                ->names('comissao-executiva')
+                ->parameter('comissao-executiva', 'reuniao')
+                ->except(['destroy']);
+            Route::get('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
+                ->name('comissao-executiva.delete');
+            Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])
+                ->name('comissao-executiva.encerrar');
+            Route::get('comissao-executiva-credenciais-datatable', [ComissaoExecutivaController::class, 'credenciaisDatatable'])
+                ->name('comissao-executiva.credenciais-datatable');
 
-            Route::post('/secretarios/store-update', [SecretarioController::class, 'storeUpdate'])
-                ->name('secretario.store-update');
-            Route::get('/secretarios/delete/{secretario}', [SecretarioController::class, 'delete'])
-                ->name('secretario.delete');
-
+            Route::get('comissao-executiva/{documento}/confirmar', [ComissaoExecutivaController::class, 'confirmarDocumento'])
+                ->name('comissao-executiva.confirmar');
         });
+    }
+);
+//COMISSAO EXECUTIVA - ACESSO SINODAL
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+
+        Route::group(
+            ['modulo' => 'ce-sinodal'],
+            function () {
+                Route::get('ce/sinodal', [ComissaoExecutivaController::class, 'sinodal'])
+                    ->name('ce-sinodal.index');
+                Route::post('ce/enviar-documentos', [ComissaoExecutivaController::class, 'enviarDocumento'])
+                    ->name('ce-sinodal.enviar-documento');
+                Route::get('ce/remover-documentos/{documento}', [ComissaoExecutivaController::class, 'removerDocumento'])
+                    ->name('ce-sinodal.remover-documento');
+            }
+        );
     }
 );

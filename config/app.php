@@ -13,6 +13,10 @@ return [
     'cipher' => env('APP_CIPHER'),
     'key-crypter' => env('APP_CIPHER'),
 
+    'url_integracao_sigce' => env('URL_INTEGRACAO_SIGCE'),
+    'chave_integracao_sigce' => env('CHAVE_INTEGRACAO_SIGCE'),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

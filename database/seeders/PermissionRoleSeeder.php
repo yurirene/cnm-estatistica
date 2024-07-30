@@ -62,7 +62,8 @@ class PermissionRoleSeeder extends Seeder
                     'apps',
                     'detalhamento',
                     'helpdesk',
-                    'diretoria-sinodal'
+                    'diretoria-sinodal',
+                    'ce-sinodal'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -127,7 +128,8 @@ class PermissionRoleSeeder extends Seeder
                     'demandas',
                     'minhas-demandas',
                     'digestos',
-                    'helpdesk'
+                    'helpdesk',
+                    'comissao-executiva'
                 ]
             ],
             'secretaria_eventos' => [
