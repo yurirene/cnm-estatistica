@@ -2,141 +2,104 @@
 
 namespace App\Services\Instancias;
 
-use App\Helpers\FormHelper;
-use App\Models\Atividade;
-use App\Models\Estado;
-use App\Models\Federacao;
-use App\Models\FormularioLocal;
-use App\Models\FormularioSinodal;
-use App\Models\Local;
-use App\Models\Parametro;
-use App\Models\Sinodal;
-use App\Models\User;
-use App\Services\Estatistica\EstatisticaService;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Diretorias\DiretoriaSinodal;
 
 class DiretoriaService
 {
+    public const CAMPOS_CARGOS = [
+        0 => 'presidente',
+        1 => 'vice_presidente',
+        2 => 'secretaria_executiva',
+        3 => 'primeiro_secretario',
+        4 => 'segundo_secretario',
+        5 => 'tesoureiro',
+        6 => 'secretario_sinodal'
+    ];
+    public const CARGOS = [
+        0 => 'Presidente',
+        1 => 'Vice-Presidente',
+        2 => 'Secretário-Executivo',
+        3 => 'Primeiro(a) Secretário(a)',
+        4 => 'Segundo(a) Secretário(a)',
+        5 => 'Tesoureiro(a)',
+        6 => 'Secretário Sinodal'
+    ];
 
-    public static function getGraficoAtividades() : array
+    /**
+     * Retorna a diretoria da sinodal e se ainda não tiver um cadastrada, cadastra uma
+     *
+     * @return DiretoriaSinodal|null
+     */
+    public static function getDiretoria(?string $sinodalId = null): ?DiretoriaSinodal
     {
-        $usuario = Auth::id();
-        $total_programacoes = Atividade::where('user_id', $usuario)
-            ->where('start', '>=', date('Y').'-01-01')
-            ->where('status', 1)
-            ->count();
-        $retorno = [
-            'labels' => [],
-            'datasets' => [
-                [
-                    'label' => 'Tipo de Atividades',
-                    'data' => [],
-                    'borderColor' => '#ccc',
-                    'backgroundColor' => '#ffa600'
-                ]
-            ]
-        ];
-        foreach (Atividade::TIPOS as $tipo => $texto) {
-            $quantidade = Atividade::where('tipo', $tipo)
-                ->where('user_id', $usuario)
-                ->where('start', '>=', date('Y').'-01-01')
-                ->where('status', 1)
-                ->count();
-            $retorno['labels'][] = $texto;
-            $retorno['datasets'][0]['data'][] =  self::porcentagem($total_programacoes, $quantidade);
+        $diretoria = DiretoriaSinodal::where(
+            'sinodal_id',
+            $sinodalId ?? auth()->user()->sinodais->first()->id
+        )
+            ->first();
+
+        if (is_null($diretoria)) {
+            $diretoria = self::criarDiretoria($sinodalId);
         }
-        return $retorno;
+
+        return $diretoria;
     }
 
-    public static function porcentagem(int $total, int $valor) : float
+    /**
+     * Cria uma diretoria automaticamente se não houver
+     *
+     * @return DiretoriaSinodal|null
+     */
+    public static function criarDiretoria(?string $sinodalId): ?DiretoriaSinodal
     {
-        if ($total == 0) {
-            return  0;
-        }
-        return round(($valor * 100) / $total, 2);
+        return DiretoriaSinodal::create([
+            'sinodal_id' => $sinodalId ?? auth()->user()->sinodais->first()->id
+        ]);
     }
 
-    public static function getFormularioEntregue() : array
+    /**
+     * Retorna os campos e o nome formatado dos cargos
+     *
+     * @return array
+     */
+    public static function getCargos(): array
     {
         $retorno = [];
-        $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
-        foreach ($sinodais as $sinodal) {
-            $status = true;
-            $formulario = FormularioSinodal::where('ano_referencia', EstatisticaService::getAnoReferencia())
-                ->where('sinodal_id', $sinodal->id)
-                ->first();
-            if (!$formulario) {
-                $status = false;
-            }
-            $retorno[] = [
-                'id' => $sinodal->id,
-                'sinodal' => $sinodal->nome,
-                'status' => FormHelper::statusFormatado($status, 'Entregue', 'Pendente')
-            ];
+
+        foreach (self::CAMPOS_CARGOS as $indice => $campo) {
+            $retorno[$campo] = self::CARGOS[$indice];
         }
+
         return $retorno;
     }
 
-
-    public static function getTotalizadores()
+    public static function getDiretoriaTabela(?string $sinodalId = null): array
     {
-        try {
-            $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
-            $federacoes = Federacao::whereIn('sinodal_id', $sinodais->pluck('id'))->get();
-            $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
-            $formularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
-                $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
-            })
-            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
-            ->get();
+        $retorno = [];
+        $diretoria = self::getDiretoria($sinodalId);
 
-            $totalSocios = 0;
-            $totalUmps = $umps->where('status', '=', 1)->count();
-            foreach ($formularios as $formulario) {
-                $totalSocios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
-            }
-            return [
-                'total_sinodos' => $sinodais->count(),
-                'total_presbiterios' => $federacoes->count(),
-                'total_igrejas' => $umps->count(),
-                'total_n_sociedades_internas' => $umps->where('outro_modelo', true)->count(),
-                'total_sinodais' => $sinodais->where('status', true)->count(),
-                'total_federacoes' => $federacoes->where('status', true)->count(),
-                'total_umps' => $totalUmps,
-                'total_socios' => $totalSocios
-            ];
-        } catch (\Throwable $th) {
-            throw $th;
+        foreach (self::CAMPOS_CARGOS as $indice => $campo) {
+            $contato = "contato_{$campo}";
+            $retorno['cargos'][self::CARGOS[$indice]]['nome'] = $diretoria->$campo;
+            $retorno['cargos'][self::CARGOS[$indice]]['contato'] = $diretoria->$contato;
         }
+
+        $retorno['atualizacao'] = $diretoria->updated_at->format('d/m/Y') ?? 'Nunca atualizado';
+
+        return $retorno;
     }
 
-    public static function getQualidadeEntregaRelatorios()
+    /**
+     * Atualiza os dados da diretoria
+     *
+     * @param array $dados
+     * @param DiretoriaSinodal $diretoria
+     *
+     * @return void
+     */
+    public static function update(array $dados, DiretoriaSinodal $diretoria): void
     {
-        try {
-            $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->get();
-            $quantidadeUmps = Local::whereIn('sinodal_id', $sinodais->pluck('id'))
-                ->where('status', true)
-                ->count();
-
-            $quantidadeFormularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
-                    $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
-                })
-                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
-                ->count();
-            $restante = $quantidadeUmps - $quantidadeFormularios;
-            return [
-                "labels" => ['Entregue', 'Pendente'],
-                "datasets" => [
-                    [
-                        "label" => 'Formulários',
-                        "data" => [$quantidadeFormularios, $restante],
-                        "backgroundColor" => ["#ffa322", "#22054e"],
-                        'borderColor' => "#ffa9001f"
-                    ]
-                ]
-            ];
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        $diretoria->update($dados);
     }
+
 }

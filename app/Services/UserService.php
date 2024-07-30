@@ -39,7 +39,7 @@ class UserService
         foreach (Auth::user()->roles as $role) {
             $roles[] = self::HIERARQUIA[$role->id];
         }
-        
+
         return Role::whereIn('id', $roles)->get();
     }
 
@@ -82,9 +82,9 @@ class UserService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Salvar");
-            
+
         }
     }
 
@@ -114,12 +114,12 @@ class UserService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao Atualizar");
-            
+
         }
     }
-    
+
     public static function getAdministrados($usuario) : array
     {
         $usuario = User::find($usuario);
@@ -150,7 +150,7 @@ class UserService
     {
         try {
             $usuario = $instancia->usuario->first();
-            
+
             $perfil = Role::where('name', $perfil)->first();
 
             $new_request = (new Request([
@@ -165,7 +165,7 @@ class UserService
             } else {
                 $usuario = self::store($new_request);
             }
-            
+
             if (!in_array($instancia->id, $usuario->$relacao->pluck('id')->toArray())) {
                 $novo_vinculo = $usuario->$relacao->pluck('id')->toArray();
                 $novo_vinculo[] = $instancia->id;
@@ -178,9 +178,9 @@ class UserService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao processar usuário vinculado");
-            
+
         }
     }
 
@@ -195,9 +195,9 @@ class UserService
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
             throw new Exception("Erro ao resetar senha");
-            
+
         }
     }
 
@@ -227,7 +227,63 @@ class UserService
                 'status' => true,
                 'msg' => 'E-mail disponível'
             ];
+    }
 
+    /**
+     * Os registros da plataforma utilizam o id da sinodal, federação e local
+     * Este método é responsavel por retornar o campo do banco de dados e o id da instância
+     *
+     * @return array
+     */
+    public static function getCampoInstanciaDB(): array
+    {
+        $retorno = [];
+        $perfil = auth()->user()->roles->first()->name;
+
+        if ($perfil == User::ROLE_SINODAL) {
+            $retorno = [
+                'campo' => 'sinodal_id',
+                'id' => auth()->user()->sinodais->first()->id
+            ];
+        }
+
+        if ($perfil == User::ROLE_FEDERACAO) {
+            $retorno = [
+                'campo' => 'federacao_id',
+                'id' => auth()->user()->federacoes->first()->id
+            ];
+        }
+
+        if ($perfil == User::ROLE_LOCAL) {
+            $retorno = [
+                'campo' => 'local_id',
+                'id' => auth()->user()->locais->first()->id
+            ];
+        }
+        return $retorno;
+    }
+
+    /**
+     * Retorna a model da instancia do usuário
+     *
+     * @param User $usuario
+     * @return Model|null
+     */
+    public static function getInstanciaUsuarioLogado(User $usuario = null): ?Model
+    {
+        if (is_null($usuario)) {
+            $usuario = auth()->user();
+        }
+
+        $instancia = null;
+        if ($usuario->roles->first()->name == User::ROLE_SINODAL) {
+            $instancia = $usuario->sinodais->first();
+        } elseif ($usuario->roles->first()->name == User::ROLE_FEDERACAO) {
+            $instancia = $usuario->federacoes->first();
+        } elseif ($usuario->roles->first()->name == User::ROLE_LOCAL) {
+            $instancia = $usuario->locais->first();
+        }
+        return $instancia;
     }
 
 }

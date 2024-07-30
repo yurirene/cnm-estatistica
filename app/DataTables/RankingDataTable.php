@@ -2,11 +2,8 @@
 
 namespace App\DataTables;
 
-use App\Helpers\FormHelper;
-use App\Models\AcessoExterno;
 use App\Models\Estatistica\Ranking;
-use App\Models\Sinodal;
-use Yajra\DataTables\Html\Button;
+use App\Services\Estatistica\EstatisticaService;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
@@ -22,6 +19,11 @@ class RankingDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
+            ->editColumn('checkbox', function($query) {
+                return "<input type='checkbox' class='isCheck form-checkbox' name='linhas' value='"
+                    . $query->sinodal->id
+                    . "'>";
+            })
             ->addColumn('action', function ($sql) {
                 return view('dashboard.apps.actions', [
                     'sinodal_id' => $sql->sinodal_id,
@@ -30,14 +32,14 @@ class RankingDataTable extends DataTable
             ->editColumn('nome', function ($sql) {
                 return $sql->sinodal->nome;
             })
-	    ->editColumn('sigla', function ($sql) {
+	        ->editColumn('sigla', function ($sql) {
                 return $sql->sinodal->sigla;
             })
             ->editColumn('apps', function ($sql) {
                 $apps = $sql->sinodal->apps->pluck('nome')->toArray();
                 return  empty($apps) ? 'Sem apps' : $apps;
             })
-            ->rawColumns([]);
+            ->rawColumns(['checkbox']);
     }
 
     /**
@@ -48,9 +50,15 @@ class RankingDataTable extends DataTable
      */
     public function query(Ranking $model)
     {
+        $busca = request()->get('search.value');
         return $model->newQuery()
-            ->when(request()->has('ano_referencia'), function ($sql) {
-                return $sql->Where('ano_referencia', request('ano_referencia'));
+            ->with('sinodal.regiao')
+            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+            ->when(!empty($busca), function ($sql) use ($busca) {
+                return $sql->where(function($q) use ($busca) {
+                    return $q->where('sinodal.sigla', $busca)
+                        ->orWhere('sinodal.nome', $busca);
+                });
             });
     }
 
@@ -65,7 +73,7 @@ class RankingDataTable extends DataTable
                     ->setTableId('ranking-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->dom('Bfrtip')
+                    ->dom('Bfrtipl')
                     ->pageLength(20)
                     ->orderBy(1, 'asc')
                     ->parameters([
@@ -84,17 +92,23 @@ class RankingDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            Column::make('checkbox')->title('<input type="checkbox"  id="checkbox-master" />')
+                ->orderable(false)
+                ->exportable(false)
+                ->printable(false)
+                ->searchable(false),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center')
-                  ->title('Ação'),
-            Column::make('posicao')->title('Posição'),
-            Column::make('sigla')->title('Sigla'),
-            Column::make('nome')->title('Sinodal'),
-            Column::make('apps')->title('Apps Liberados'),
-            Column::make('ano_referencia')->title('Ano Referência'),
+                  ->title('Ação')->searchable(false),
+            Column::make('posicao')->title('Posição')->searchable(false),
+            Column::make('sinodal.sigla')->title('Sigla'),
+            Column::make('sinodal.nome')->title('Sinodal'),
+            Column::make('sinodal.regiao.nome')->title('Regiao'),
+            Column::make('apps')->title('Apps Liberados')->searchable(false)->orderable(false),
+            Column::make('ano_referencia')->title('Ano Referência')->searchable(false),
         ];
     }
 

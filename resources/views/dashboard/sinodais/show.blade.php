@@ -69,6 +69,16 @@
                             </h3>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col d-flex gap-2">
+                            <button type="button" class="btn btn-primary mt-3"
+                                data-toggle="modal"
+                                data-target="#modal_diretoria"
+                            >
+                                <i class="fas fa-users"></i> Diretoria
+                            </button>
+                        </div>
+                    </div>
                     <div class="row mt-3">
                         <div class="col">
                             <div class="progress-wrapper">
@@ -203,7 +213,48 @@
         </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="modal_diretoria"
+    data-backdrop="static"
+    data-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="modal_diretoriaLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_diretoriaLabel">
+                    Diretoria
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Informação atualizada em: {{ $diretoria['atualizacao'] }}</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Cargo</th>
+                        <th>Nome</th>
+                        <th>Contato</th>
+                    </tr>
+                    @foreach($diretoria['cargos'] as $cargo => $dado)
+                    <tr>
+                        <td>{{ $cargo }}</td>
+                        <td>{{ $dado['nome'] }}</td>
+                        <td>{{ $dado['contato'] }}</td>
+                    </tr>
+                    @endforeach
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
     </div>
+</div>
 @endsection
 
 @push('js')

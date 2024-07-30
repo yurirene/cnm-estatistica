@@ -61,7 +61,9 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'apps',
                     'detalhamento',
-                    'helpdesk'
+                    'helpdesk',
+                    'diretoria-sinodal',
+                    'ce-sinodal'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -83,7 +85,8 @@ class PermissionRoleSeeder extends Seeder
                     'umps-locais',
                     'formularios-federacoes',
                     'tutoriais',
-                    'helpdesk'
+                    'helpdesk',
+                    'diretoria'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -101,7 +104,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'formularios-locais',
                     'tutoriais',
-                    'helpdesk'
+                    'helpdesk',
+                    'diretoria'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -124,7 +128,8 @@ class PermissionRoleSeeder extends Seeder
                     'demandas',
                     'minhas-demandas',
                     'digestos',
-                    'helpdesk'
+                    'helpdesk',
+                    'comissao-executiva'
                 ]
             ],
             'secretaria_eventos' => [

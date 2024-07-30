@@ -12,7 +12,7 @@
     <!-- Favicon -->
     <link href="{{ asset('argon') }}/img/favicon.ico" rel="icon" type="image/png">
     <!-- Fonts -->
-    <link href="/vendor/open-sans.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <!-- Extra details for Live View on GitHub Pages -->
 
     <!-- Icons -->
@@ -134,10 +134,20 @@
             padding: 0.65rem 1rem;
         }
     </style>
+    <script>
+
+    </script>
 </head>
 
 <body class="{{ $class ?? '' }}">
 
+    <div class="overlay_init" id="overlay_init">
+        <div class="overlay_init__inner">
+            <div class="overlay_init__content">
+                <span class="spinner"></span>
+            </div>
+        </div>
+    </div>
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
@@ -180,7 +190,6 @@
                         }
 
                         if ($(this).parents().closest('.nav-item').length > 1) {
-                            console.log($(this).parents().closest('.nav-item'));
                             $(this).parents()
                                 .closest('.nav-item')
                                 .first()
@@ -258,6 +267,7 @@
             });
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
+            $('.isYear').mask('0000');
         })(jQuery)
         $('.isTelefone').mask('(99)99999-9999');
     </script>
@@ -455,21 +465,38 @@
 
 <script>
     function deleteRegistro(url) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: "Deseja apagar o registro?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            })
-        }
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: "Deseja apagar o registro?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        })
+    }
+
+    function alertConfirmar(url, texto = 'Você confirma a ação?') {
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: texto,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        })
+    }
 </script>
 
 
@@ -479,6 +506,14 @@
 
     @stack('script')
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            $('#overlay_init').hide();
+        }, 500)
+    }, false);
+</script>
 
 
 </body>

@@ -5,7 +5,7 @@
         {!! Form::label(
             'programacoes[social]',
             'Programações de cunho social realizadas pela Sinodal'
-        ) !!}<small class="text-muted">Incluindo os projetos da Secretaria de Responsabilidade Social</small>
+        ) !!}<small class="text-muted">Ex: Entrega de cestas básicas, visita a orfanatos, incluindo os projetos da Secretaria de Responsabilidade Social</small>
         {!! Form::number(
             'programacoes[social]',
             isset($formulario) && !empty($formulario->programacoes) ? null : 0,
@@ -19,7 +19,7 @@
         {!! Form::label(
             'programacoes[evangelistico]',
             'Programações de cunho evangelístico e missional realizadas pela Sinodal') !!}
-            <br><small class="text-muted">Incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
+            <br><small class="text-muted">Ex: Viagem missionária, culto em praças, distrubição de folhetos, incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
         {!! Form::number(
             'programacoes[evangelistico]',
             isset($formulario) && !empty($formulario->programacoes) ? null : 0,
@@ -34,7 +34,7 @@
             'programacoes[espiritual]',
             'Programações de cunho espiritual realizadas pela Sinodal'
         ) !!}
-        <br><small class="text-muted">Estudo bíblico / Estudo de livro / Pequenos grupos / Cultos</small>
+        <br><small class="text-muted">Ex: Estudo bíblico / Estudo de livro / Pequenos grupos / Cultos</small>
         {!! Form::number(
             'programacoes[espiritual]',
             isset($formulario) && !empty($formulario->programacoes) ? null : 0,
@@ -48,7 +48,7 @@
         {!! Form::label(
             'programacoes[recreativo]',
             'Programações de cunho recreativo realizadas pela Sinodal') !!}
-            <br><small class="text-muted">Gincanas / Torneio / Passeios / Piquenique</small>
+            <br><small class="text-muted">Ex: Gincanas / Torneio / Passeios / Piquenique</small>
         {!! Form::number(
             'programacoes[recreativo]',
             isset($formulario) && !empty($formulario->programacoes) ? null : 0,

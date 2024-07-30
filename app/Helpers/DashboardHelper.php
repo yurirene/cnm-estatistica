@@ -5,9 +5,8 @@ namespace App\Helpers;
 use App\Models\ComprovanteACI;
 use App\Models\Parametro;
 use App\Services\AdministradorService;
-use App\Services\Instancias\DiretoriaService;
+use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
-use App\Services\Formularios\FormularioFederacaoService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\SinodalService;
@@ -18,22 +17,25 @@ class DashboardHelper
 
     public static function make()
     {
+        $service = null;
 
         if (auth()->user()->hasRole(['sinodal'])) {
-            return app()->make(SinodalService::class);
-        } else if (auth()->user()->hasRole(['federacao'])) {
-            return app()->make(FederacaoService::class);
-        } else if (auth()->user()->hasRole(['diretoria'])) {
-            return app()->make(DiretoriaService::class);
-        } else if (auth()->user()->hasRole(['administrador'])) {
-            return app()->make(AdministradorService::class);
-        } else if (auth()->user()->hasRole(['local'])) {
-            return app()->make(LocalService::class);
-        } else if (auth()->user()->hasRole(['secretaria_estatistica'])) {
-            return app()->make(EstatisticaService::class);
-        } else if (auth()->user()->hasRole(['secreatria_produtos'])) {
-            return app()->make(ProdutoService::class);
+            $service = app()->make(SinodalService::class);
+        } elseif (auth()->user()->hasRole(['federacao'])) {
+            $service = app()->make(FederacaoService::class);
+        } elseif (auth()->user()->hasRole(['diretoria'])) {
+            $service = app()->make(DiretoriaNacionalService::class);
+        } elseif (auth()->user()->hasRole(['administrador'])) {
+            $service = app()->make(AdministradorService::class);
+        } elseif (auth()->user()->hasRole(['local'])) {
+            $service = app()->make(LocalService::class);
+        } elseif (auth()->user()->hasRole(['secretaria_estatistica'])) {
+            $service = app()->make(EstatisticaService::class);
+        } elseif (auth()->user()->hasRole(['secreatria_produtos'])) {
+            $service = app()->make(ProdutoService::class);
         }
+
+        return $service;
     }
 
     public static function getTotalizadores()
@@ -122,7 +124,7 @@ class DashboardHelper
 
     public static function getQualidadeEntregaRelatorios(): array
     {
-        return DiretoriaService::getQualidadeEntregaRelatorios();
+        return DiretoriaNacionalService::getQualidadeEntregaRelatorios();
     }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -58,12 +59,29 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
-        Gate::define('apps', function (User $user, string $app) {
-            $sinodal = $user->sinodais()->first();
-            if (!$sinodal) {
+        Gate::define('apps', function (User $user, ...$apps) {
+            if (empty($apps)) {
+                $apps = ['sites', 'tesouraria'];
+            }
+
+            $instancia = UserService::getInstanciaUsuarioLogado($user);
+
+            if (
+                empty($instancia)
+                || $user->roles->first()->name != User::ROLE_SINODAL
+            ) {
                 return false;
             }
-            return $sinodal->apps()->where('name', $app)->get()->isNotEmpty();
+
+            $retorno = false;
+
+            foreach ($apps as $app) {
+                if ($instancia->apps()->where('name', $app)->get()->isNotEmpty()) {
+                    $retorno = true;
+                }
+            }
+
+            return $retorno;
         });
 
     }

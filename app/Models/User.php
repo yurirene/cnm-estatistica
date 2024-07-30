@@ -55,6 +55,7 @@ class User extends Authenticatable
     public const ROLE_LOCAL = 'local';
     public const ROLE_TESOURARIA = 'tesouraria';
     public const ROLE_ADMINISTRADOR = 'administrador';
+    public const ROLE_SEC_EXECUTIVA = 'executiva';
 
     public function regioes()
     {
@@ -94,12 +95,13 @@ class User extends Authenticatable
     public function instancia()
     {
         if ($this->hasRole(self::ROLE_SINODAL)) {
-            return $this->sinodais();
+            $relation = $this->sinodais();
         } elseif ($this->hasRole(self::ROLE_FEDERACAO)) {
-            return $this->federacoes();
+            $relation = $this->federacoes();
         } elseif ($this->hasRole(self::ROLE_LOCAL)) {
-            return $this->locais();
+            $relation = $this->locais();
         }
+        return $relation;
     }
 
     public function scopeQuery($query)
@@ -135,17 +137,19 @@ class User extends Authenticatable
 
     public function getInstanciaFormatadaAttribute()
     {
+        $instancia = '';
         if ($this->roles->first()->name == self::ROLE_ADMINISTRADOR) {
-            return 'Administrador';
+            $instancia = 'Administrador';
         } elseif ($this->roles->first()->name == self::ROLE_DIRETORIA) {
-            return 'Diretoria';
+            $instancia = 'Diretoria';
         } elseif ($this->roles->first()->name == self::ROLE_SINODAL) {
-            return 'Sinodal';
+            $instancia = 'Sinodal';
         } elseif ($this->roles->first()->name == self::ROLE_FEDERACAO) {
-            return 'Federação';
+            $instancia = 'Federação';
         } elseif ($this->roles->first()->name == self::ROLE_LOCAL) {
-            return 'Local';
+            $instancia = 'Local';
         }
+        return $instancia;
     }
 
     public function avisos()

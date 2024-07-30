@@ -41,6 +41,9 @@ class FileCast implements CastsAttributes
         }
 
         $filename = $key . '_' . time() . '.' . $value->getClientOriginalExtension();
-        return $value->storeAs($model->path, $filename);
+
+        // $model->caminho tem que ser uma propriedade publica
+        // dentro da model contendo os caminho que será salvo
+        return $value->storeAs($model->caminho, $filename);
     }
 }

@@ -10,6 +10,12 @@ return [
     'telegram_chat_id' => env('TELEGRAM_BOT_API_CHAT_ID'),
     'iclaudia_telegram_token' => env('TELEGRAM_API_ICLAUDIA_TOKEN'),
 
+    'cipher' => env('APP_CIPHER'),
+    'key-crypter' => env('APP_CIPHER'),
+
+    'url_integracao_sigce' => env('URL_INTEGRACAO_SIGCE'),
+    'chave_integracao_sigce' => env('CHAVE_INTEGRACAO_SIGCE'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -61,7 +67,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://ump.app.br'),
 
     'asset_url' => env('ASSET_URL', null),
 
@@ -89,7 +95,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'pt-BR',
 
     /*
     |--------------------------------------------------------------------------
