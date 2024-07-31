@@ -90,6 +90,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4 col-sm-12 p-2">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    Módulo Financeiro
+                                </div>
+                                <div class="card-body">
+                                    <a href="/downloads/modulo_financeiro.pdf" class="btn btn-primary"
+                                        target="_blank"
+                                    >
+                                        <i class="fas fa-file"></i> Visualizar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
