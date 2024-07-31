@@ -108,7 +108,7 @@
                 </div>
 
                 <div class="mb-3">
-                    {!! Form::label('nome_secretario', 'Nome da Secretario') !!}
+                    {!! Form::label('nome_secretario', 'Nome do(a) Secretário(a)') !!}
                     {!! Form::text(
                         'nome_secretario',
                         null,
