@@ -4,6 +4,7 @@ namespace App\DataTables\ComissaoExecutiva;
 
 use App\Helpers\BootstrapHelper;
 use App\Models\ComissaoExecutiva\DocumentoRecebido;
+use App\Models\Sinodal;
 use App\Models\User;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -12,10 +13,17 @@ class CredenciaisDataTable extends DataTable
 {
 
     protected bool $perfilSinodal = false;
+    protected bool $perfilExecutiva = false;
+    protected bool $perfilDiretoria = false;
 
     public function __construct()
     {
-        $this->perfilSinodal = auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA;
+        $this->perfilSinodal = !in_array(auth()->user()->roles->first()->name, [
+            User::ROLE_SEC_EXECUTIVA,
+            User::ROLE_DIRETORIA
+        ]);
+        $this->perfilExecutiva = auth()->user()->roles->first()->name == User::ROLE_SEC_EXECUTIVA;
+        $this->perfilDiretoria = auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
     }
 
     /**
@@ -33,10 +41,10 @@ class CredenciaisDataTable extends DataTable
                     'id' => $sql->id,
                     'url' => $sql->path,
                     'confirmar' => [
-                        'permissao' => !$this->perfilSinodal,
+                        'permissao' => $this->perfilExecutiva,
                         'status' => $sql->status
                     ],
-                    'delete' => auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA
+                    'delete' => $this->perfilSinodal
                         && $sql->status != DocumentoRecebido::STATUS_DOCUMENTO_RECEBIDO,
                 ]);
             })
@@ -73,6 +81,14 @@ class CredenciaisDataTable extends DataTable
                 function ($sql) use ($reuniao)
                 {
                     return $sql->where('reuniao_id', $reuniao);
+                }
+            )
+            ->when(
+                $this->perfilDiretoria,
+                function ($sql)
+                {
+                    $sinodais = $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->pluck('id');
+                    return $sql->whereIn('sinodal_id', $sinodais);
                 }
             )
             ->where('tipo', DocumentoRecebido::TIPO_CREDENCIAL_SINODAL);

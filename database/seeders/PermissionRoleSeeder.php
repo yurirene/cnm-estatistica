@@ -39,7 +39,8 @@ class PermissionRoleSeeder extends Seeder
                     'minhas-demandas',
                     'tutoriais',
                     'detalhamento',
-                    'helpdesk'
+                    'helpdesk',
+                    'comissao-executiva'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -220,6 +221,7 @@ class PermissionRoleSeeder extends Seeder
             ],
         ];
         DB::table('permission_role')->truncate();
+        $permissions = [];
         try {
 
             foreach ($roles_permissions as $role_slug => $permissions_array) {

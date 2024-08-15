@@ -4,6 +4,7 @@ namespace App\DataTables\ComissaoExecutiva;
 
 use App\Helpers\BootstrapHelper;
 use App\Models\ComissaoExecutiva\DocumentoRecebido;
+use App\Models\Sinodal;
 use App\Models\User;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -12,11 +13,18 @@ class DocumentoRecebidoDataTable extends DataTable
 {
     protected ?string $reuniao = null;
     protected bool $perfilSinodal = false;
+    protected bool $perfilExecutiva = false;
+    protected bool $perfilDiretoria = false;
 
     public function __construct(?string $reuniao = null)
     {
         $this->reuniao = $reuniao;
-        $this->perfilSinodal = auth()->user()->roles->first()->name != User::ROLE_SEC_EXECUTIVA;
+        $this->perfilSinodal = !in_array(auth()->user()->roles->first()->name, [
+            User::ROLE_SEC_EXECUTIVA,
+            User::ROLE_DIRETORIA
+        ]);
+        $this->perfilExecutiva = auth()->user()->roles->first()->name == User::ROLE_SEC_EXECUTIVA;
+        $this->perfilDiretoria = auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
     }
 
     /**
@@ -34,7 +42,7 @@ class DocumentoRecebidoDataTable extends DataTable
                     'id' => $sql->id,
                     'url' => $sql->path,
                     'confirmar' => [
-                        'permissao' => !$this->perfilSinodal,
+                        'permissao' => $this->perfilExecutiva,
                         'status' => $sql->status
                     ],
                     'delete' => $this->perfilSinodal
@@ -83,6 +91,21 @@ class DocumentoRecebidoDataTable extends DataTable
                 {
                     return $sql->where('reuniao_id', $reuniao)
                         ->where('tipo', '!=', DocumentoRecebido::TIPO_CREDENCIAL_SINODAL);
+                }
+            )
+            ->when(
+                $this->perfilDiretoria,
+                function ($sql)
+                {
+                    $sinodais = $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->pluck('id');
+                    return $sql->whereIn('sinodal_id', $sinodais);
+                }
+            )
+            ->when(
+                $this->perfilSinodal,
+                function ($sql)
+                {
+                    return $sql->where('sinodal_id', auth()->user()->sinodais->pluck('id'));
                 }
             );
     }
