@@ -279,7 +279,7 @@ class EstatisticaService
     public static function getDadosQualidadeEstatistica(): Collection
     {
         $ano = EstatisticaService::getAnoReferencia();
-        return Sinodal::where('status', true)
+        return Sinodal::whereNull('deleted_at')
             ->orderBy('regiao_id')
             ->orderBy('nome')
             ->get()
@@ -287,6 +287,11 @@ class EstatisticaService
                 $nome = str_replace('Sinodal', 'S', $item->nome);
                 $nome = str_replace('Confederação', 'C', $nome);
                 $nome = str_replace(['Mocidade', 'Mocidades'], 'M', $nome);
+
+                if ($item->status == 0) {
+                    $nome .= " (Inativa)";
+                }
+
                 return [
                     'id' => $item->id,
                     'ano' => $ano,
