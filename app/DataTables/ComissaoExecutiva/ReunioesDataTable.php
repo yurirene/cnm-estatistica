@@ -24,7 +24,8 @@ class ReunioesDataTable extends DataTable
                 return view('dashboard.comissao-executiva.actions', [
                     'id' => $sql->id,
                     'delete' => $sql->documentos->isEmpty(),
-                    'route' => 'dashboard.comissao-executiva'
+                    'route' => 'dashboard.comissao-executiva',
+                    'podeEditar' => auth()->user()->roles->first()->name == 'executiva'
                 ]);
             })
             ->editColumn('aberto', function ($sql) {

@@ -53,7 +53,8 @@ class AdministradorService
     public static function getTotalRelatoriosPendentes()
     {
         return Sinodal::whereDoesntHave('relatorios', function($sql) {
-                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                    ->whereIn('status', [0,1]);
             })
             ->where('status', 1)
             ->get()
@@ -63,7 +64,8 @@ class AdministradorService
     public static function getTotalRelatoriosEntregues()
     {
         return Sinodal::whereHas('relatorios', function($sql) {
-                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
+                return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                    ->whereIn('status', [0,1]);
             })
             ->get()
             ->count();
