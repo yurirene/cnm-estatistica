@@ -15,7 +15,6 @@ class AcessoSeeder extends Seeder
     public function run()
     {
         try {
-            DB::beginTransaction();
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             DB::table('permission_role')->truncate();
             DB::table('permissions')->truncate();
@@ -25,7 +24,6 @@ class AcessoSeeder extends Seeder
                 PermissionsSeeder::class,
                 PermissionRoleSeeder::class,
             ]);
-            DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th->getMessage());
