@@ -25,7 +25,6 @@ class AcessoSeeder extends Seeder
                 PermissionRoleSeeder::class,
             ]);
         } catch (\Throwable $th) {
-            DB::rollBack();
             dd($th->getMessage());
         }
     }

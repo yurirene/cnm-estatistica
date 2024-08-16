@@ -150,13 +150,13 @@ class ComissaoExecutivaController extends Controller
     {
         $request->validate(
             [
-                'arquivo' => 'mimes:pdf|max:300', // 300 Kb,
+                'arquivo' => 'mimes:pdf|max:1000', // 1 Mb,
                 'tipo' => 'required',
                 'titulo' => 'required'
             ],
             [
                 '*.mimes' => 'O arquivo precisa ser um PDF',
-                '*.max' => 'O arquivo precisa ter no máximo 300 Kb',
+                '*.max' => 'O arquivo precisa ter no máximo 1 Mb',
                 'tipo.required' => 'Selecione um tipo',
                 'titulo.required' => 'O campo não pode estar vazio'
             ]
