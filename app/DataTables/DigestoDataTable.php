@@ -91,8 +91,8 @@ class DigestoDataTable extends DataTable
                   ->title('Ação'),
             Column::make('titulo')->title('Título'),
             Column::make('ano')->title('Ano'),
-            Column::make('tipo_reuniao_id')->title('Tipo'),
-            Column::make('arquivo')->title('Arquivo'),
+            Column::make('tipo_reuniao_id')->title('Tipo')->searchable(false),
+            Column::make('arquivo')->title('Arquivo')->searchable(false)->orderable(false),
         ];
         return $colunas;
     }
