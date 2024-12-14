@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\ColetorDadosDataTable;
+use App\Exceptions\ColetaDadosException;
 use App\Services\ColetorDadosService;
 use Illuminate\Http\Request;
 
@@ -44,22 +45,30 @@ class ColetorDadosController extends Controller
 
     public function responder(string $id, Request $request)
     {
+        $mensagem = '';
+        
         try {
             ColetorDadosService::responder($id, $request->except(['_token']));
-            return redirect()->back()->with([
+
+            return redirect()->route('coletor-dados.login')->with([
                 'mensagem' => [
                     'status' => true,
-                    'texto' => 'Formulários foram criados com sucesso!'
+                    'texto' => 'Formulário Respondido com Sucesso!'
                 ]
             ]);
+        } catch (ColetaDadosException $e) {
+            $mensagem = $e->getMessage();
         } catch (\Throwable $th) {
-            return redirect()->back()->with([
+            $mensagem = 'Algo deu Errado!';
+        }
+
+        return redirect()->route('coletor-dados.externo', ['codigo' => $id])
+            ->with([
                 'mensagem' => [
                     'status' => false,
-                    'texto' => 'Algo deu Errado!'
+                    'texto' => $mensagem
                 ]
             ]);
-        }
     }
 
     public function delete(string $id)
@@ -90,12 +99,21 @@ class ColetorDadosController extends Controller
 
     public function externo(Request $request)
     {
-        $request->validate([
-            'codigo' => 'required'
-        ]);
+        try {
+            $request->validate([
+                'codigo' => 'required'
+            ]);
 
-        $dados = ColetorDadosService::carregar($request->codigo);
+            $dados = ColetorDadosService::carregar($request->codigo);
 
-        return view('coletor-dados.formulario', $dados);
+            return view('coletor-dados.formulario', $dados);
+        } catch (\Throwable $th) {
+            return redirect()->route('coletor-dados.login')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
     }
 }

@@ -19,7 +19,7 @@
             <div class="col-lg-12 col-md-12">
                 <div class="card bg-secondary shadow border-0">
                     <div class="card-body px-lg-5 py-lg-5">
-                        {!! Form::open(['method' => 'POST', 'url' => route("coletor-dados.externo")]) !!}
+                        {!! Form::open(['method' => 'GET', 'url' => route("coletor-dados.externo")]) !!}
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">

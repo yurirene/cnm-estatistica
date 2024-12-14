@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Helpers\FormHelper;
 use App\Models\ColetorDados;
+use App\Services\ColetorDadosService;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
@@ -23,7 +24,9 @@ class ColetorDadosDataTable extends DataTable
                 return view('dashboard.coletor-dados.actions', [
                     'route' => 'dashboard.coletor-dados',
                     'id' => $sql->id,
-                    'resposta' => $sql->resposta
+                    'resposta' => !empty($sql->resposta['raw'])
+                        ? json_encode(ColetorDadosService::formatarRespostaParaVisualizacao($sql->resposta['raw']))
+                        : ''
                 ]);
             })
             ->editColumn('status', function ($sql) {
@@ -61,7 +64,7 @@ class ColetorDadosDataTable extends DataTable
                         "buttons" => [
                             [
                                 'text' => '<i class="fas fa-print"></i> Baixar Lista',
-                                'action' => 'csv'
+                                'extend' => 'csv'
                             ],
                             [
                                 'text' => '<i class="fas fa-plus"></i> Novo Registro',

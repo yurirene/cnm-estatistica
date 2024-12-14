@@ -15,4 +15,9 @@ class ColetorDados extends Model
     protected $casts = [
         'resposta' => 'array'
     ];
+
+    public function local()
+    {
+        return $this->belongsTo(Local::class, 'local_id');
+    }
 }

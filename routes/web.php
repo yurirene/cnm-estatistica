@@ -63,9 +63,9 @@ Route::get('/estatistica', [EstatisticaController::class, 'externo'])
 
 Route::get('/coletor-dados/login', [ColetorDadosController::class, 'login'])
     ->name('coletor-dados.login');
-Route::post('/coletor-dados', [ColetorDadosController::class, 'externo'])
+Route::get('/coletor-dados', [ColetorDadosController::class, 'externo'])
     ->name('coletor-dados.externo');
-Route::post('/coletor-dados/responder', [ColetorDadosController::class, 'responder'])
+Route::post('/coletor-dados/responder/{id}', [ColetorDadosController::class, 'responder'])
     ->name('coletor-dados.responder');
 
 
