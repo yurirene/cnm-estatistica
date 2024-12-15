@@ -35,17 +35,8 @@
                                 {!! Form::label('status', 'Situação') !!}
                                 {!! Form::select('status', ['A' => 'Ativa', 'I' => 'Inativa'], isset($local) ? ($local->status == true ? ' A' : 'I') : null , ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
-                        </div>
-                        @if(Auth::user()->federacoes->count()>1)
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('federacao_id', 'Federação') !!}
-                                {!! Form::select('federacao_id', $federacoes, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                        @else
-                            {!! Form::hidden('federacao_id', auth()->user()->federacoes->first()->id) !!}
-                        @endif
+                        </div>                        
+                        {!! Form::hidden('federacao_id', auth()->user()->federacao_id) !!}
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('email_usuario', 'E-mail do Usuário') !!}

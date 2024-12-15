@@ -434,14 +434,14 @@ class FormularioFederacaoService
 
     public static function getFormularioAnoCorrente()
     {
-        return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
+        return FormularioFederacao::where('federacao_id', auth()->user()->federacao_id)
             ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
     public static function getFormulario($ano) : ?FormularioFederacao
     {
-        return FormularioFederacao::where('federacao_id', Auth::user()->federacoes->first()->id)
+        return FormularioFederacao::where('federacao_id', auth()->user()->federacao_id)
             ->where('ano_referencia', $ano)
             ->first();
     }

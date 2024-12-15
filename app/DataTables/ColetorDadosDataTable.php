@@ -53,7 +53,7 @@ class ColetorDadosDataTable extends DataTable
      */
     public function html()
     {
-        $rotaDelete = route('coletor-dados.restaurar', ['local' => auth()->user()->locais->first()->id]);
+        $rotaDelete = route('coletor-dados.restaurar', ['local' => auth()->user()->local_id]);
 
         return $this->builder()
                     ->setTableId('coletor-dados-table')

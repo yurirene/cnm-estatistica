@@ -169,8 +169,8 @@
                     {!! Form::label('data_organizacao', 'Data da Organização') !!}
                     {!! Form::text(
                         'data_organizacao',
-                        null,
-                        ['class' => 'form-control isDate', 'required' => 'required']
+                        $local->data_organizacao_formatada,
+                        ['class' => 'form-control isDate']
                     ) !!}
                     <small class="text-danger">{{ $errors->first('data_organizacao') }}</small>
                 </div>

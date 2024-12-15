@@ -45,7 +45,7 @@ class InformacoesUsuarioStrategy implements ChatBotStrategy
             } else if ($cliente->usuario->hasRole('federacao')) {
                 return $cliente->usuario->federacoes->first()->nome;
             } else if ($cliente->usuario->hasRole('local')) {
-                return $cliente->usuario->locais->first()->nome;
+                return $cliente->usuario->local->nome;
             } else {
                 return 'Não Identificado';
             }

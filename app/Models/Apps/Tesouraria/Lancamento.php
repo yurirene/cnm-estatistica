@@ -58,11 +58,11 @@ class Lancamento extends Model
         }
 
         if ($role == User::ROLE_FEDERACAO) {
-            $query->where('federacao_id', auth()->user()->federacoes->first()->id);
+            $query->where('federacao_id', auth()->user()->federacao_id);
         }
 
         if ($role == User::ROLE_LOCAL) {
-            $query->where('local_id', auth()->user()->locais->first()->id);
+            $query->where('local_id', auth()->user()->local_id);
         }
 
         return $query;

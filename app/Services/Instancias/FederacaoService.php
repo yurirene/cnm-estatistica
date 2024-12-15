@@ -109,11 +109,18 @@ class FederacaoService
     public static function updateInfo(Federacao $federacao, Request $request)
     {
         DB::beginTransaction();
+
         try {
+            $dataOrganizacao = null;
+            
+            if ($request->filled('data_organizacao')) {
+                $dataOrganizacao = Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d');
+            }
+
             $federacao->update([
                 'nome' => $request->nome,
                 'presbiterio' => $request->presbiterio,
-                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'data_organizacao' => $dataOrganizacao,
                 'midias_sociais' => $request->midias_sociais
             ]);
             DB::commit();

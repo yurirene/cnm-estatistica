@@ -250,14 +250,14 @@ class UserService
         if ($perfil == User::ROLE_FEDERACAO) {
             $retorno = [
                 'campo' => 'federacao_id',
-                'id' => auth()->user()->federacoes->first()->id
+                'id' => auth()->user()->federacao_id
             ];
         }
 
         if ($perfil == User::ROLE_LOCAL) {
             $retorno = [
                 'campo' => 'local_id',
-                'id' => auth()->user()->locais->first()->id
+                'id' => auth()->user()->local_id
             ];
         }
         return $retorno;
@@ -281,7 +281,7 @@ class UserService
         } elseif ($usuario->roles->first()->name == User::ROLE_FEDERACAO) {
             $instancia = $usuario->federacoes->first();
         } elseif ($usuario->roles->first()->name == User::ROLE_LOCAL) {
-            $instancia = $usuario->locais->first();
+            $instancia = $usuario->local;
         }
         return $instancia;
     }

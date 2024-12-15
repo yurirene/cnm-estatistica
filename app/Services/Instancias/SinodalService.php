@@ -91,11 +91,18 @@ class SinodalService
     public static function updateInfo(Sinodal $sinodal, Request $request)
     {
         DB::beginTransaction();
+
         try {
+            $dataOrganizacao = null;
+            
+            if ($request->filled('data_organizacao')) {
+                $dataOrganizacao = Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d');
+            }
+
             $sinodal->update([
                 'nome' => $request->nome,
                 'sinodo' => $request->sinodo,
-                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'data_organizacao' => $dataOrganizacao,
                 'midias_sociais' => $request->midias_sociais
             ]);
             DB::commit();

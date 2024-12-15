@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Pesquisas\Pesquisa;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -57,9 +58,9 @@ class User extends Authenticatable
     public const ROLE_ADMINISTRADOR = 'administrador';
     public const ROLE_SEC_EXECUTIVA = 'executiva';
 
-    public function regioes()
+    public function regioes(): BelongsTo
     {
-        return $this->belongsToMany(Regiao::class, 'usuario_regiao');
+        return $this->belongsTo(Regiao::class, 'regiao_id');
     }
 
     public function atividades()
@@ -67,19 +68,19 @@ class User extends Authenticatable
         return $this->hasMany(Atividade::class);
     }
 
-    public function sinodais()
+    public function sinodal(): BelongsTo
     {
-        return $this->belongsToMany(Sinodal::class, 'usuario_sinodal');
+        return $this->belongsTo(Sinodal::class, 'sinodal_id');
     }
 
-    public function federacoes()
+    public function federacao(): BelongsTo
     {
-        return $this->belongsToMany(Federacao::class, 'usuario_federacao');
+        return $this->belongsTo(Federacao::class, 'federacao_id');
     }
 
-    public function locais()
+    public function local(): BelongsTo
     {
-        return $this->belongsToMany(Local::class, 'usuario_local', 'user_id', 'local_id', 'id', 'id');
+        return $this->belongsTo(Local::class, 'local_id');
     }
 
     public function pesquisas()
@@ -95,18 +96,18 @@ class User extends Authenticatable
     public function instancia()
     {
         if ($this->hasRole(self::ROLE_SINODAL)) {
-            $relation = $this->sinodais();
+            $relation = $this->sinodal();
         } elseif ($this->hasRole(self::ROLE_FEDERACAO)) {
-            $relation = $this->federacoes();
+            $relation = $this->federacao();
         } elseif ($this->hasRole(self::ROLE_LOCAL)) {
-            $relation = $this->locais();
+            $relation = $this->local();
         }
         return $relation;
     }
 
     public function scopeQuery($query)
     {
-        if (Auth::user()->admin) {
+        if (auth()->user()->admin) {
             return $query;
         }
 

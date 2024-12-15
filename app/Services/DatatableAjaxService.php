@@ -202,7 +202,7 @@ class DatatableAjaxService
                 $query = Local::when($id, function ($sql) use ($id) {
                         return $sql->where('federacao_id', $id);
                     }, function ($sql) {
-                        return $sql->where('federacao_id', auth()->user()->federacoes->first()->id);
+                        return $sql->where('federacao_id', auth()->user()->federacao_id);
                     });
             }
             $formulariosEntregues = $query
@@ -295,7 +295,7 @@ class DatatableAjaxService
                 ->get()
                 ->map(function ($item) {
                     return [
-                        'nome' => $item->instancia()->first()->nome,
+                        'nome' => $item->instancia()->nome,
                         'lido' => $item->pivot->visualizado
                     ];
                 })

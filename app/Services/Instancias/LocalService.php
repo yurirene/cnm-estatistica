@@ -83,9 +83,15 @@ class LocalService
     {
         DB::beginTransaction();
         try {
+            $dataOrganizacao = null;
+            
+            if ($request->filled('data_organizacao')) {
+                $dataOrganizacao = Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d');
+            }
+
             $local->update([
                 'nome' => $request->nome,
-                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'data_organizacao' => $dataOrganizacao,
                 'midias_sociais' => $request->midias_sociais
             ]);
             DB::commit();
@@ -132,7 +138,7 @@ class LocalService
     public static function getTotalizadores()
     {
         try {
-            $local = Auth::user()->locais->first();
+            $local = auth()->user()->local;
             $formulario = $local->relatorios->last();
             if (!$formulario) {
                 return [
@@ -152,7 +158,7 @@ class LocalService
     public static function getInfo()
     {
         try {
-            return Auth::user()->locais->first();
+            return auth()->user()->local;
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

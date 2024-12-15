@@ -24,7 +24,7 @@ class ColetorDadosService
     {
         DB::beginTransaction();
         try {
-            $localId = auth()->user()->locais->first()->id;
+            $localId = auth()->user()->local_id;
 
             if ((int) $request['quantidade'] < 0) {
                 throw new Exception("Quantidade deve ser maior que 0");
@@ -336,7 +336,7 @@ class ColetorDadosService
     public static function carregarDadosCompilados(): array
     {
         $ano = EstatisticaService::getAnoReferencia();
-        $local = auth()->user()->locais->first()->id;
+        $local = auth()->user()->local_id;
 
         $coletas = ColetorDados::where('local_id', $local)
             ->where('status', 1)
