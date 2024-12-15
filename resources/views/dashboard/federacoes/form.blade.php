@@ -72,20 +72,11 @@
                                 </div>
                             </div>
                         </div>
-                        @if(count(auth()->user()->sinodais) > 1)
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('sinodal_id', 'Sinodal') !!}
-                                {!! Form::select('sinodal_id', auth()->user()->sinodais->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::hidden('sinodal_id', auth()->user()->sinodal_id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
-                        @else
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::hidden('sinodal_id', auth()->user()->sinodais()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                        @endif
                     </div>
                     <button class="btn btn-success" id="submit-button"><i class='fas fa-save'></i> {{(isset($federacao) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.federacoes.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
@@ -142,7 +133,7 @@ function verificarUsuario(email) {
 
 <script>
 
-const sinodal = '{{ auth()->user()->sinodais()->first()->sigla }}'
+const sinodal = '{{ auth()->user()->sinodal->sigla }}'
 
 $('#status').on('change', function() {
     if ($(this).val() == 'I') {

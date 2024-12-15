@@ -46,7 +46,7 @@ class Federacao extends Model
 
     public function usuario()
     {
-        return $this->belongsToMany(User::class, 'usuario_federacao');
+        return $this->hasOne(User::class, 'federacao_id');
     }
 
 
@@ -67,11 +67,11 @@ class Federacao extends Model
 
     public function scopeMinhaSinodal($query)
     {
-        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
+        return $query->where('sinodal_id', auth()->user()->sinodal_id);
     }
 
     public function scopeDaMinhaRegiao($query)
     {
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
+        return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 }

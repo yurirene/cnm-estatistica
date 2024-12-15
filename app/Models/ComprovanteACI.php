@@ -25,7 +25,7 @@ class ComprovanteACI extends Model
             return $sql;
         },
         function($sql) {
-            return $sql->where('sinodal_id', auth()->user()->sinodais->first()->id);
+            return $sql->where('sinodal_id', auth()->user()->sinodal_id);
         });
     }
 }

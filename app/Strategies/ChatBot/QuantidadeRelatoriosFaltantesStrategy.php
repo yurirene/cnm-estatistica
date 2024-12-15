@@ -44,22 +44,26 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
     public static function getTotalizador(BotCliente $cliente)
     {
         try {
-
             $usuario = $cliente->usuario;
             $texto = '';
+
             if ($usuario->hasRole('diretoria')) {
                 $texto .= self::getTotalizadorSinodais($usuario) . PHP_EOL;
-                $sinodais = Sinodal::whereIn('regiao_id', $usuario->regioes->pluck('id'))->get()->pluck('id')->toArray();
+                $sinodais = Sinodal::where('regiao_id', $usuario->regiao_id)
+                    ->get()
+                    ->pluck('id')
+                    ->toArray();
                 $texto .= self::getTotalizadorFederacoes($sinodais) . PHP_EOL;
                 $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
-            if ($usuario->hasRole('sinodal')) {
 
-                $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')->toArray()) . PHP_EOL;
-                $federacoes = Federacao::whereIn('sinodal_id', $usuario->sinodais->pluck('id'))->get()->pluck('id')->toArray();
+            if ($usuario->hasRole('sinodal')) {
+                $texto .= self::getTotalizadorFederacoes([$usuario->sinodal_id]) . PHP_EOL;
+                $federacoes = Federacao::where('sinodal_id', $usuario->sinodal_id)->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
+
             if ($usuario->hasRole('federacao')) {
                 $texto .= self::getTotalizadorLocais([$usuario->federacao_id]) . PHP_EOL;
             }
@@ -75,7 +79,7 @@ class QuantidadeRelatoriosFaltantesStrategy implements ChatBotStrategy
 
     public static function getTotalizadorSinodais(User $user)
     {
-        $relatorios = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))
+        $relatorios = Sinodal::where('regiao_id', $user->regiao_id)
             ->whereDoesntHave('relatorios', function($sql) {
                 return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })

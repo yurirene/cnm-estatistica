@@ -46,7 +46,7 @@ class Sinodal extends Model
 
     public function usuario()
     {
-        return $this->belongsToMany(User::class, 'usuario_sinodal');
+        return $this->hasOne(User::class, 'sinodal_id');
     }
 
     public function relatorios()
@@ -84,7 +84,7 @@ class Sinodal extends Model
         if (auth()->user()->admin) {
             return $query;
         }
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
+        return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 
     public function diretoria()

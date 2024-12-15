@@ -52,7 +52,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
                 $texto .= self::getTotalizadorSinodais($usuario) . PHP_EOL;
             }
             if ($usuario->hasRole('sinodal')) {
-                $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')->toArray()) . PHP_EOL;
+                $texto .= self::getTotalizadorFederacoes([$usuario->sinodal_id]) . PHP_EOL;
             }
             if ($usuario->hasRole('federacao')) {
                 $texto .= self::getTotalizadorLocais([$usuario->federacao_id]) . PHP_EOL;
@@ -69,7 +69,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
 
     public static function getTotalizadorSinodais(User $user)
     {
-        $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))
+        $sinodais = Sinodal::where('regiao_id', $user->regiao_id)
             ->whereDoesntHave('relatorios', function($sql) {
                 return $sql->where('ano_referencia', EstatisticaService::getAnoReferencia());
             })

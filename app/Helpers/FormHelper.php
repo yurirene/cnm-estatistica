@@ -15,7 +15,7 @@ class FormHelper
 
     public static function getUsarioInstancia($instancia, $campo)
     {
-        $usuario = $instancia->usuario->first();
+        $usuario = $instancia->usuario;
         if (!is_null($usuario)) {
             return $usuario->$campo;
         }

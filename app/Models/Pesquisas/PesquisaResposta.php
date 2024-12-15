@@ -2,6 +2,7 @@
 
 namespace App\Models\Pesquisas;
 
+use App\Models\User;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 

@@ -59,7 +59,7 @@ class DiretoriaNacionalService
     public static function getFormularioEntregue() : array
     {
         $retorno = [];
-        $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
+        $sinodais = Sinodal::where('regiao_id', auth()->user()->regiao_id)->get();
         foreach ($sinodais as $sinodal) {
             $status = true;
             $formulario = FormularioSinodal::where('ano_referencia', EstatisticaService::getAnoReferencia())
@@ -81,7 +81,7 @@ class DiretoriaNacionalService
     public static function getTotalizadores()
     {
         try {
-            $sinodais = Sinodal::whereIn('regiao_id', Auth::user()->regioes->pluck('id'))->get();
+            $sinodais = Sinodal::where('regiao_id', auth()->user()->regiao_id)->get();
             $federacoes = Federacao::whereIn('sinodal_id', $sinodais->pluck('id'))->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
             $formularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
@@ -113,7 +113,7 @@ class DiretoriaNacionalService
     public static function getQualidadeEntregaRelatorios()
     {
         try {
-            $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->get();
+            $sinodais = Sinodal::where('regiao_id', auth()->user()->regiao_id)->get();
             $quantidadeUmps = Local::whereIn('sinodal_id', $sinodais->pluck('id'))
                 ->where('status', true)
                 ->count();

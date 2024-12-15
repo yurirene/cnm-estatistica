@@ -482,7 +482,7 @@ class PesquisaService
 
         try {
             $alcance = array();
-            $regiao = Auth::user()->regioes->first()->id;
+            $regiao = auth()->user()->regiao_id;
             if (in_array('Sinodal', $pesquisa->instancias)) {
                 $alcance['sinodal'] = [
                     'quantidade' => 0,

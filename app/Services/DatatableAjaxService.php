@@ -61,7 +61,7 @@ class DatatableAjaxService
                 $relatorioEntregue = (!is_null($ultimoRelatorio) && $ultimoRelatorio->ano_referencia == $anoReferencia)
                     ? 'Entregue'
                     : 'Pendente';
-                $usuario = $local->usuario->first();
+                $usuario = $local->usuario;
                 return [
                     'nome_ump' => $local->nome,
                     'nro_socios' => $totalSocios,
@@ -93,7 +93,7 @@ class DatatableAjaxService
                 ->collapse()
                 ->pluck('id');
             $nao_responderam = Sinodal::whereNotIn('id', $responderam)
-                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->where('regiao_id', auth()->user()->regiao->id)
                 ->get()
                 ->map(function($item) {
                     return [
@@ -126,7 +126,7 @@ class DatatableAjaxService
                 ->collapse()
                 ->pluck('id');
             $nao_responderam = Federacao::whereNotIn('id', $responderam)
-                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->where('regiao_id', auth()->user()->regiao->id)
                 ->get()
                 ->map(function($item) {
                     return [
@@ -159,7 +159,7 @@ class DatatableAjaxService
                 ->collapse()
                 ->pluck('id');
             $nao_responderam = Local::whereNotIn('id', $responderam)
-                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->where('regiao_id', auth()->user()->regiao->id)
                 ->get()
                 ->map(function($item) {
                     return [
@@ -188,14 +188,14 @@ class DatatableAjaxService
                 $query = Federacao::when($id, function ($sql) use ($id) {
                         return $sql->where('sinodal_id', $id);
                     }, function ($sql) {
-                        return $sql->where('sinodal_id', auth()->user()->sinodais->first()->id);
+                        return $sql->where('sinodal_id', auth()->user()->sinodal_id);
                     });
             }
             if ($instancia == 'Sinodal') {
                 $query = Sinodal::when($id, function ($sql) use ($id) {
                         return $sql->where('regiao_id', $id);
                     }, function ($sql) {
-                        return $sql->where('regiao_id', auth()->user()->regioes->first()->id);
+                        return $sql->where('regiao_id', auth()->user()->regiao_id);
                     });
             }
             if ($instancia == 'Local') {

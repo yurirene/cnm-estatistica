@@ -29,7 +29,12 @@ class LocalService
                 'status' => $request->status == 'A' ? true : false ,
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
-            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+            $usuario = UserService::usuarioVinculado(
+                $request,
+                $local,
+                'local',
+                'local_id'
+            );
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }
@@ -113,15 +118,10 @@ class LocalService
 
         DB::beginTransaction();
         try {
-            if ($local->usuario->first()) {
-
-                $local->usuario->first()->update([
-                    'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
-                ]);
-                $usuario = $local->usuario->first();
-                $local->usuario()->sync([]);
-                $usuario->delete();
-            }
+            $local->usuario->update([
+                'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com',
+                'local_id' => null
+            ]);
             $local->delete();
             DB::commit();
         } catch (\Throwable $th) {

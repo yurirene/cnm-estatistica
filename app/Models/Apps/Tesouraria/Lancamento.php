@@ -54,7 +54,7 @@ class Lancamento extends Model
         $role = auth()->user()->roles->first()->name;
 
         if ($role == User::ROLE_SINODAL) {
-            $query->where('sinodal_id', auth()->user()->sinodais->first()->id);
+            $query->where('sinodal_id', auth()->user()->sinodal_id);
         }
 
         if ($role == User::ROLE_FEDERACAO) {

@@ -48,7 +48,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 {!! Form::label('regiao_id[]', 'Região') !!}
-                                {!! Form::select('regiao_id[]', $regioes, isset($usuario) ? $usuario->regioes->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
+                                {!! Form::select('regiao_id[]', $regioes, isset($usuario) ? $usuario->regiao_id : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
                             </div>
                         </div>
                         @endcan

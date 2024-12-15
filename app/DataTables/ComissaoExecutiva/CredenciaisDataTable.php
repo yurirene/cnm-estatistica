@@ -87,7 +87,8 @@ class CredenciaisDataTable extends DataTable
                 $this->perfilDiretoria,
                 function ($sql)
                 {
-                    $sinodais = $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->pluck('id');
+                    $sinodais = $sinodais = Sinodal::where('regiao_id', auth()->user()->regiao_id)
+                        ->pluck('id');
                     return $sql->whereIn('sinodal_id', $sinodais);
                 }
             )

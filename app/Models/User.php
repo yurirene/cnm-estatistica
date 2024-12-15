@@ -26,6 +26,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'local_id',
+        'federacao_id',
+        'sinodal_id',
+        'regiao_id'
     ];
 
     protected $hidden = [
@@ -58,7 +63,7 @@ class User extends Authenticatable
     public const ROLE_ADMINISTRADOR = 'administrador';
     public const ROLE_SEC_EXECUTIVA = 'executiva';
 
-    public function regioes(): BelongsTo
+    public function regiao(): BelongsTo
     {
         return $this->belongsTo(Regiao::class, 'regiao_id');
     }

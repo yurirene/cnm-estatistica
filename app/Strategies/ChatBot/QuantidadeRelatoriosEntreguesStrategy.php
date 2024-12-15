@@ -44,19 +44,27 @@ class QuantidadeRelatoriosEntreguesStrategy implements ChatBotStrategy
         try {        
             $usuario = $cliente->usuario;
             $texto = '';
+
             if ($usuario->hasRole('diretoria')) {
                 $texto .= self::getTotalizadorSinodais($usuario) . PHP_EOL;
-                $sinodais = Sinodal::whereIn('regiao_id', $usuario->regioes->pluck('id'))->get()->pluck('id')->toArray();
+                $sinodais = Sinodal::where('regiao_id', $usuario->regiao_id)
+                    ->get()
+                    ->pluck('id')
+                    ->toArray();
                 $texto .= self::getTotalizadorFederacoes($sinodais) . PHP_EOL;
                 $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
-            if ($usuario->hasRole('sinodal')) {
 
-                $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')->toArray()) . PHP_EOL;
-                $federacoes = Federacao::whereIn('sinodal_id', $usuario->sinodais->pluck('id'))->get()->pluck('id')->toArray();
+            if ($usuario->hasRole('sinodal')) {
+                $texto .= self::getTotalizadorFederacoes([$usuario->sinodal_id]) . PHP_EOL;
+                $federacoes = Federacao::where('sinodal_id', $usuario->sinodal_id)
+                    ->get()
+                    ->pluck('id')
+                    ->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
+
             if ($usuario->hasRole('federacao')) {
                 $texto .= self::getTotalizadorLocais([$usuario->federacao_id]) . PHP_EOL;
             }
@@ -72,7 +80,9 @@ class QuantidadeRelatoriosEntreguesStrategy implements ChatBotStrategy
 
     public static function getTotalizadorSinodais(User $user)
     {
-        $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))->get()->pluck('id');
+        $sinodais = Sinodal::where('regiao_id', $user->regiao_id)
+            ->get()
+            ->pluck('id');
         $relatorios = FormularioSinodal::whereIn('sinodal_id', $sinodais)->get()->count();
         return '<b>Total de Relatórios de Sinodais</b>: ' . $relatorios;
     }

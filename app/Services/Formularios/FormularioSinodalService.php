@@ -121,7 +121,7 @@ class FormularioSinodalService
      */
     public static function getFormularioAnoCorrente(): ?FormularioSinodal
     {
-        return FormularioSinodal::where('sinodal_id', Auth::user()->sinodais->first()->id)
+        return FormularioSinodal::where('sinodal_id', auth()->user()->sinodal_id)
             ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
@@ -144,7 +144,7 @@ class FormularioSinodalService
     public static function getAnosFormulariosRespondidos()
     {
         try {
-            return FormularioSinodal::whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'))
+            return FormularioSinodal::where('sinodal_id', auth()->user()->sinodal_id)
                 ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                 ->get()
                 ->pluck('ano_referencia', 'id');
@@ -159,7 +159,7 @@ class FormularioSinodalService
     {
 
         try {
-            $federacoes = auth()->user()->sinodais->first()
+            $federacoes = auth()->user()->sinodal
                 ->federacoes()
                 ->where('status', true)
                 ->get();
@@ -199,12 +199,12 @@ class FormularioSinodalService
     {
 
         try {
-            $federacoes = Auth::user()->sinodais->first()->federacoes;
+            $federacoes = auth()->user()->sinodal->federacoes;
             $formularios_entregue  = FormularioFederacao::whereIn('federacao_id', $federacoes->pluck('id'))
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->get();
 
-            $totalizador = self::totalizador(Auth::user()->sinodais->first()->id);
+            $totalizador = self::totalizador(auth()->user()->sinodal_id);
 
             $data = [
                 'quantidade_federacoes' => $federacoes->where('status', 1)->count(),
@@ -357,7 +357,7 @@ class FormularioSinodalService
 
     public static function getFormulario($ano)
     {
-        return FormularioSinodal::where('sinodal_id', auth()->user()->sinodais->first()->id)
+        return FormularioSinodal::where('sinodal_id', auth()->user()->sinodal_id)
             ->where('ano_referencia', $ano)
             ->first();
     }
@@ -365,8 +365,8 @@ class FormularioSinodalService
     public static function getFederacoes()
     {
         try {
-            $federacoes = Auth::user()->sinodais->pluck('id');
-            return Federacao::whereIn('sinodal_id', $federacoes)->get()->map(function($federacao) {
+            $sinodalId = auth()->user()->sinodal_id;
+            return Federacao::where('sinodal_id', $sinodalId)->get()->map(function($federacao) {
                 return ['id' => $federacao->id, 'text' => $federacao->sigla];
             });
         } catch (\Throwable $th) {
