@@ -43,6 +43,9 @@
                                         <span>Responder</span>
                                         <span class="badge bg-danger blob">{{$ano_referencia}}</span>
                                     </button>
+                                    <a href="{{ route('dashboard.coletor-dados.index') }}" id="coleta-dados" class="btn btn-primary mb-2 ml-1">
+                                        <span class="text-white">Coletor de Dados</span>
+                                    </a>
                                 @endif
                             </div>
                         </div>

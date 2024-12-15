@@ -7,6 +7,7 @@ use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\Apps\TesourariaController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
+use App\Http\Controllers\ColetorDadosController;
 use App\Http\Controllers\ComissaoExecutivaController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
@@ -60,6 +61,14 @@ Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])
     ->name('estatistica');
 
+Route::get('/coletor-dados/login', [ColetorDadosController::class, 'login'])
+    ->name('coletor-dados.login');
+Route::get('/coletor-dados', [ColetorDadosController::class, 'externo'])
+    ->name('coletor-dados.externo');
+Route::post('/coletor-dados/responder/{id}', [ColetorDadosController::class, 'responder'])
+    ->name('coletor-dados.responder');
+Route::get('/coletor-dados/restaurar/{local}', [ColetorDadosController::class, 'restaurar'])
+    ->name('coletor-dados.restaurar');
 
 Route::group(['prefix' => 'site'], function () {
     Route::get('/{sigla}', [SiteController::class, 'show'])
@@ -141,6 +150,17 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 });
 
+// COLETOR DE DADOS
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'coletor-dados'], function () {
+        Route::get('/coletor-dados', [ColetorDadosController::class, 'index'])
+            ->name('coletor-dados.index');
+        Route::post('/coletor-dados', [ColetorDadosController::class, 'store'])
+            ->name('coletor-dados.store');
+        Route::get('/coletor-dados/delete/{id}', [ColetorDadosController::class, 'delete'])
+            ->name('coletor-dados.delete');
+    });
+});
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'atividades'], function () {
