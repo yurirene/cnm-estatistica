@@ -147,7 +147,7 @@ class FormularioFederacaoService
     public static function getAnosFormulariosRespondidos(): Collection
     {
         try {
-            return FormularioFederacao::whereIn('federacao_id', auth()->user()->federacoes->pluck('id'))
+            return FormularioFederacao::where('federacao_id', auth()->user()->federacao_id)
                 ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                 ->get()
                 ->pluck('ano_referencia', 'id');
@@ -391,7 +391,7 @@ class FormularioFederacaoService
     {
 
         try {
-            $locais = Auth::user()->federacoes->first()->locais;
+            $locais = auth()->user()->federacao->locais;
             $quantidade_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
@@ -420,7 +420,7 @@ class FormularioFederacaoService
 
     public static function getEstrutura() : array
     {
-        $locais = auth()->user()->federacoes->first()->locais;
+        $locais = auth()->user()->federacao->locais;
         $formularios_entregue  = FormularioLocal::whereIn('local_id', $locais->pluck('id'))
             ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->get();

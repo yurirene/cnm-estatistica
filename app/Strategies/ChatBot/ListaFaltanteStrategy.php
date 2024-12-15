@@ -55,7 +55,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
                 $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')->toArray()) . PHP_EOL;
             }
             if ($usuario->hasRole('federacao')) {
-                $texto .= self::getTotalizadorLocais($usuario->federacoes->pluck('id')->toArray()) . PHP_EOL;
+                $texto .= self::getTotalizadorLocais([$usuario->federacao_id]) . PHP_EOL;
             }
             return $texto;
         }  catch (\Throwable $th) {
@@ -103,6 +103,7 @@ class ListaFaltanteStrategy implements ChatBotStrategy
             })
             ->get();
         $texto = '';
+
         foreach ($locais as $local) {
             $texto .= '# ' . $local->nome . PHP_EOL;
         }

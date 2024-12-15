@@ -116,21 +116,21 @@ class User extends Authenticatable
         return $query->whereDoesntHave('roles', function($sql) {
             return $sql->whereIn('name', ['diretoria']);
         })
-        ->when(in_array('diretoria',$perfil_usuario), function($sql) {
+        ->when(in_array('diretoria', $perfil_usuario), function($sql) {
             return $sql->whereHas('sinodais', function ($q) {
-                return $q->whereIn('sinodais.regiao_id', auth()->user()->regioes->pluck('id')->toArray());
+                return $q->where('sinodais.regiao_id', auth()->user()->regiao_id);
             })->orWhereHas('roles', function ($q) {
                 return $q->whereIn('name', self::ROLES_SECRETARIOS);
             });
         })
-        ->when(in_array('sinodal',$perfil_usuario), function($sql) use ($param_busca) {
+        ->when(in_array('sinodal', $perfil_usuario), function($sql) use ($param_busca) {
             return $sql->$param_busca('federacoes', function ($q) {
-                return $q->whereIn('federacoes.sinodal_id', auth()->user()->sinodais->pluck('id')->toArray());
+                return $q->where('federacoes.sinodal_id', auth()->user()->sinodal_id);
             });
         })
-        ->when(in_array('federacao',$perfil_usuario), function($sql) use ($param_busca) {
+        ->when(in_array('federacao', $perfil_usuario), function($sql) use ($param_busca) {
             return $sql->$param_busca('locais', function ($q) {
-                return $q->whereIn('locais.federacao_id', auth()->user()->federacoes->pluck('id')->toArray());
+                return $q->where('locais.federacao_id', auth()->user()->federacao_id);
             });
         });
 

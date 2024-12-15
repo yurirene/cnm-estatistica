@@ -58,7 +58,7 @@ class QuantidadeRelatoriosEntreguesStrategy implements ChatBotStrategy
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
             if ($usuario->hasRole('federacao')) {
-                $texto .= self::getTotalizadorLocais($usuario->federacoes->pluck('id')->toArray()) . PHP_EOL;
+                $texto .= self::getTotalizadorLocais([$usuario->federacao_id]) . PHP_EOL;
             }
             return $texto;
         }  catch (\Throwable $th) {

@@ -111,39 +111,20 @@
 
                     <h3>ACI</h3>
                     @include('dashboard.formularios.federacao.aci')
-
-                    @if(count(auth()->user()->federacoes) > 1)
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('federacao_id', 'Federação') !!}
-                                {!! Form::select(
-                                    'federacao_id',
-                                    auth()->user()->federacoes->pluck('sigla', 'id'),
-                                    null,
-                                    [
-                                        'class' => 'form-control',
-                                        'required'=>true,
-                                        'autocomplete' => 'off'
-                                    ]
-                                ) !!}
-                            </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {!! Form::hidden(
+                                'federacao_id',
+                                auth()->user()->federacao_id ,
+                                [
+                                    'id' => 'federacao_id',
+                                    'class' => 'form-control',
+                                    'required'=>true,
+                                    'autocomplete' => 'off'
+                                ]
+                            ) !!}
                         </div>
-                        @else
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::hidden(
-                                    'federacao_id',
-                                    auth()->user()->federacoes()->first()->id ,
-                                    [
-                                        'id' => 'federacao_id',
-                                        'class' => 'form-control',
-                                        'required'=>true,
-                                        'autocomplete' => 'off'
-                                    ]
-                                ) !!}
-                            </div>
-                        </div>
-                    @endif
+                    </div>
 
                     @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
                     <div class="btn-group pull-right">

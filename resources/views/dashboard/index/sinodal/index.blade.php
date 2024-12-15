@@ -169,7 +169,7 @@
                     {!! Form::label('data_organizacao', 'Data da Organização') !!}
                     {!! Form::text(
                         'data_organizacao',
-                        $local->data_organizacao_formatada,
+                        $sinodal->data_organizacao_formatada,
                         ['class' => 'form-control isDate']
                     ) !!}
                     <small class="text-danger">{{ $errors->first('data_organizacao') }}</small>

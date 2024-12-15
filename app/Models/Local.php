@@ -55,7 +55,7 @@ class Local extends Model
 
     public function scopeMinhaFederacao($query)
     {
-        return $query->whereIn('federacao_id', Auth::user()->federacoes->pluck('id'));
+        return $query->where('federacao_id', auth()->user()->federacao_id);
     }
 
     public function getDataOrganizacaoFormatadaAttribute()

@@ -279,7 +279,7 @@ class UserService
         if ($usuario->roles->first()->name == User::ROLE_SINODAL) {
             $instancia = $usuario->sinodais->first();
         } elseif ($usuario->roles->first()->name == User::ROLE_FEDERACAO) {
-            $instancia = $usuario->federacoes->first();
+            $instancia = $usuario->federacao;
         } elseif ($usuario->roles->first()->name == User::ROLE_LOCAL) {
             $instancia = $usuario->local;
         }

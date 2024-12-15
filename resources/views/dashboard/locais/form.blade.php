@@ -130,7 +130,7 @@ $('#status').on('change', function() {
     }
 })
 
-const federacao = '{{ auth()->user()->federacoes->first()->sigla }}'
+const federacao = '{{ auth()->user()->federacao->sigla }}'
 
 $('#nome').on('keyup', function() {
     let user = $(this).val().normalize("NFD").replace(/\p{Diacritic}/gu, "").split(' ').join('').toLowerCase();

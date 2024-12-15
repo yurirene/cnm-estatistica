@@ -138,7 +138,7 @@ class FederacaoService
 
     public static function getInfo()
     {
-        return auth()->user()->federacoes->first();
+        return auth()->user()->federacao;
     }
 
 
