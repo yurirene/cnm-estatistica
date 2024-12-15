@@ -67,7 +67,8 @@ Route::get('/coletor-dados', [ColetorDadosController::class, 'externo'])
     ->name('coletor-dados.externo');
 Route::post('/coletor-dados/responder/{id}', [ColetorDadosController::class, 'responder'])
     ->name('coletor-dados.responder');
-
+Route::get('/coletor-dados/restaurar/{local}', [ColetorDadosController::class, 'restaurar'])
+    ->name('coletor-dados.restaurar');
 
 Route::group(['prefix' => 'site'], function () {
     Route::get('/{sigla}', [SiteController::class, 'show'])
@@ -156,7 +157,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('coletor-dados.index');
         Route::post('/coletor-dados', [ColetorDadosController::class, 'store'])
             ->name('coletor-dados.store');
-        Route::get('/coletor-dados/delete', [ColetorDadosController::class, 'delete'])
+        Route::get('/coletor-dados/delete/{id}', [ColetorDadosController::class, 'delete'])
             ->name('coletor-dados.delete');
     });
 });

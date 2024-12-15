@@ -522,4 +522,36 @@ class ColetorDadosService
 
         return $totalizador;
     }
+
+    /**
+     * Remove todos os formulário
+     * 
+     * @param string $id Id da UMP Local
+     * 
+     * @return void
+     */
+    public static function restaurar(string $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $formularios = ColetorDados::where('local_id', $id)
+                ->where('ano', EstatisticaService::getAnoReferencia())
+                ->get();
+            
+            foreach ($formularios as $formulario) {
+                $formulario->delete();
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao Resetar ");
+        }
+    }
 }

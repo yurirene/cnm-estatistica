@@ -53,6 +53,8 @@ class ColetorDadosDataTable extends DataTable
      */
     public function html()
     {
+        $rotaDelete = route('coletor-dados.restaurar', ['local' => auth()->user()->locais->first()->id]);
+
         return $this->builder()
                     ->setTableId('coletor-dados-table')
                     ->columns($this->getColumns())
@@ -63,12 +65,17 @@ class ColetorDadosDataTable extends DataTable
                     ->parameters([
                         "buttons" => [
                             [
+                                'text' => '<i class="fas fa-plus"></i> Novo Registro',
+                                'action' => "function() { $('#modal-create').modal('show'); }"
+                            ],
+                            [
                                 'text' => '<i class="fas fa-print"></i> Baixar Lista',
                                 'extend' => 'csv'
                             ],
                             [
-                                'text' => '<i class="fas fa-plus"></i> Novo Registro',
-                                'action' => "function() { $('#modal-create').modal('show'); }"
+                                'text' => '<i class="fas fa-trash"></i> Apagar tudo',
+                                'action' => "function() { alertConfirmar('{$rotaDelete}', 'Deseja apagar todos os formulários, até os respondidos? (Faça isso se quiser coletar tudo novamente)') }",
+                                'className' => 'btn-danger'
                             ]
                         ],
                         "language" => [

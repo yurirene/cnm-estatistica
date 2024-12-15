@@ -116,4 +116,25 @@ class ColetorDadosController extends Controller
             ]);
         }
     }
+
+    public function restaurar(string $local)
+    {
+        try {
+            ColetorDadosService::restaurar($local);
+
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Todos os formulários foram removidos com sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
 }
