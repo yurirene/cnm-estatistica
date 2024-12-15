@@ -106,7 +106,8 @@ class PermissionRoleSeeder extends Seeder
                     'formularios-locais',
                     'tutoriais',
                     'helpdesk',
-                    'diretoria'
+                    'diretoria',
+                    'coletor-dados'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -114,7 +115,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.responder',
                     'dashboard.locais.update-info',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
                 ]
             ],
             'tesouraria' => [
