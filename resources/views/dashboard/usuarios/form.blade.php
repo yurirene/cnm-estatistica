@@ -38,8 +38,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('perfil_id[]', 'Perfil') !!}
-                                {!! Form::select('perfil_id[]', $perfis, isset($usuario) ? $usuario->roles->pluck('id') : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
+                                {!! Form::label('perfil_id', 'Perfil') !!}
+                                {!! Form::select('perfil_id', $perfis, isset($usuario) ? $usuario->role->id : null, ['class' => 'form-control ', 'required'=> false, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     </div>
@@ -47,8 +47,8 @@
                         @can('isAdmin')
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('regiao_id[]', 'Região') !!}
-                                {!! Form::select('regiao_id[]', $regioes, isset($usuario) ? $usuario->regiao_id : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off', 'multiple' => true]) !!}
+                                {!! Form::label('regiao_id', 'Região') !!}
+                                {!! Form::select('regiao_id', $regioes, isset($usuario) ? $usuario->regiao_id : null, ['class' => 'form-control isSelect2', 'required'=> false, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         @endcan

@@ -3,23 +3,21 @@
 namespace App\Models;
 
 use App\Models\Pesquisas\Pesquisa;
+use App\Traits\CacheTrait;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
-use Yajra\Acl\Traits\HasRoleAndPermission;
-use Yajra\Acl\Traits\InteractsWithRole;
 
 class User extends Authenticatable
 {
 
     use GenericTrait;
     use HasApiTokens, HasFactory, Notifiable;
-    use HasRoleAndPermission, InteractsWithRole;
     use SoftDeletes;
 
     protected $fillable = [
@@ -42,10 +40,9 @@ class User extends Authenticatable
     ];
 
     public const ROLES_SECRETARIOS = [
-        'secretaria_eventos',
         'secreatria_produtos',
-        'secretaria_evangelismo',
-        'secretaria_responsabilidade'
+        'secreatariado_comum',
+        'secretaria_estatistica'
     ];
 
 
@@ -66,11 +63,6 @@ class User extends Authenticatable
     public function regiao(): BelongsTo
     {
         return $this->belongsTo(Regiao::class, 'regiao_id');
-    }
-
-    public function atividades()
-    {
-        return $this->hasMany(Atividade::class);
     }
 
     public function sinodal(): BelongsTo
@@ -95,18 +87,21 @@ class User extends Authenticatable
 
     public function perfil()
     {
-        return $this->roles->first();
+        return $this->role;
     }
 
     public function instancia()
     {
-        if ($this->hasRole(self::ROLE_SINODAL)) {
-            $relation = $this->sinodal();
-        } elseif ($this->hasRole(self::ROLE_FEDERACAO)) {
-            $relation = $this->federacao();
-        } elseif ($this->hasRole(self::ROLE_LOCAL)) {
-            $relation = $this->local();
+        $relation = null;
+
+        if ($this->can(self::ROLE_SINODAL)) {
+            $relation = $this->sinodal;
+        } elseif ($this->can(self::ROLE_FEDERACAO)) {
+            $relation = $this->federacao;
+        } elseif ($this->can(self::ROLE_LOCAL)) {
+            $relation = $this->local;
         }
+
         return $relation;
     }
 
@@ -116,7 +111,7 @@ class User extends Authenticatable
             return $query;
         }
 
-        $perfil_usuario =  Auth::user()->roles->pluck('name')->toArray();
+        $perfil_usuario =  auth()->user()->role->toArray();
         $param_busca = count($perfil_usuario) > 1 ? 'orWhereHas' : 'whereHas';
         return $query->whereDoesntHave('roles', function($sql) {
             return $sql->whereIn('name', ['diretoria']);
@@ -144,15 +139,15 @@ class User extends Authenticatable
     public function getInstanciaFormatadaAttribute()
     {
         $instancia = '';
-        if ($this->roles->first()->name == self::ROLE_ADMINISTRADOR) {
+        if ($this->role->name == self::ROLE_ADMINISTRADOR) {
             $instancia = 'Administrador';
-        } elseif ($this->roles->first()->name == self::ROLE_DIRETORIA) {
+        } elseif ($this->role->name == self::ROLE_DIRETORIA) {
             $instancia = 'Diretoria';
-        } elseif ($this->roles->first()->name == self::ROLE_SINODAL) {
+        } elseif ($this->role->name == self::ROLE_SINODAL) {
             $instancia = 'Sinodal';
-        } elseif ($this->roles->first()->name == self::ROLE_FEDERACAO) {
+        } elseif ($this->role->name == self::ROLE_FEDERACAO) {
             $instancia = 'Federação';
-        } elseif ($this->roles->first()->name == self::ROLE_LOCAL) {
+        } elseif ($this->role->name == self::ROLE_LOCAL) {
             $instancia = 'Local';
         }
         return $instancia;
@@ -163,5 +158,42 @@ class User extends Authenticatable
         return $this->belongsToMany(Aviso::class, 'aviso_usuarios', 'user_id', 'aviso_id')
             ->withPivot('visualizado');
     }
+    
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
 
+    // Define the cache key (as its used in multiple places)
+    protected function getRoleCacheKey(): string
+    {
+        return sprintf('user-%d-role', $this->id);
+    }
+
+    // Provide a cache clearing mechanism
+    public function clearCache(): bool
+    {
+        return Cache::forget($this->getRoleCacheKey());
+    }
+
+    // Override the relation property getter
+    // It will return the cached collection when it exists, otherwise getting a fresh one from the database
+    // It then populates the relation with that collection for use elsewhere
+    public function getRoleAttribute(): Role
+    {
+        // If the relation is already loaded and set to the current instance of model, return it
+        if ($this->relationLoaded('role')) {
+            return $this->getRelationValue('role');
+        }
+
+        // Get the relation from the cache, or load it from the datasource and set to the cache
+        $role = Cache::rememberForever($this->getRoleCacheKey(), function () {
+            return $this->getRelationValue('role');
+        });
+
+        // Set the relation to the current instance of model
+        $this->setRelation('role', $role);
+
+        return $role;
+    }
 }

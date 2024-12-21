@@ -6,6 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class AuthSistema
 {
@@ -20,7 +21,7 @@ class AuthSistema
         if (in_array($route, $excpetions)) {
             return $next($request);
         }
-        if (!auth()->user()->canAtLeast([$route])) {
+        if (Gate::denies('rota-permitida', [$route])) {
             return redirect()->route('dashboard.home')->with([
                 'mensagem' => [
                     'status' => false,

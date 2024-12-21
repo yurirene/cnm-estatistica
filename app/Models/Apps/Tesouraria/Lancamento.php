@@ -51,7 +51,7 @@ class Lancamento extends Model
      */
     public function scopeDaMinhaInstancia($query)
     {
-        $role = auth()->user()->roles->first()->name;
+        $role = auth()->user()->role->name;
 
         if ($role == User::ROLE_SINODAL) {
             $query->where('sinodal_id', auth()->user()->sinodal_id);

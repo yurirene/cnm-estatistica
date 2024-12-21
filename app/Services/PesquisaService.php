@@ -357,7 +357,7 @@ class PesquisaService
                 ];
             }
             foreach ($pesquisa->respostas as $resposta) {
-                $instancia = $resposta->usuario->roles->first()->name;
+                $instancia = $resposta->usuario->role->name;
                 $alcance[$instancia]['quantidade'] += 1;
             }
             return self::calcularPorcentagemAlcance($alcance);
@@ -513,7 +513,7 @@ class PesquisaService
                 });
             })->get();
             foreach ($respostas as $resposta) {
-                $instancia = $resposta->usuario->roles->first()->name;
+                $instancia = $resposta->usuario->role->name;
                 $alcance[$instancia]['quantidade'] += 1;
             }
             return self::calcularPorcentagemAlcance($alcance);

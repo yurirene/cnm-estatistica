@@ -19,12 +19,12 @@ class DocumentoRecebidoDataTable extends DataTable
     public function __construct(?string $reuniao = null)
     {
         $this->reuniao = $reuniao;
-        $this->perfilSinodal = !in_array(auth()->user()->roles->first()->name, [
+        $this->perfilSinodal = !in_array(auth()->user()->role->name, [
             User::ROLE_SEC_EXECUTIVA,
             User::ROLE_DIRETORIA
         ]);
-        $this->perfilExecutiva = auth()->user()->roles->first()->name == User::ROLE_SEC_EXECUTIVA;
-        $this->perfilDiretoria = auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
+        $this->perfilExecutiva = auth()->user()->role->name == User::ROLE_SEC_EXECUTIVA;
+        $this->perfilDiretoria = auth()->user()->role->name == User::ROLE_DIRETORIA;
     }
 
     /**

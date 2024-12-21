@@ -2,16 +2,14 @@
 
 namespace App\Services;
 
-use Yajra\Acl\Models\Role;
+use App\Models\Role;
 use App\Models\Regiao;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class UserService
 {
@@ -123,32 +121,6 @@ class UserService
         }
     }
 
-    public static function getAdministrados($usuario) : array
-    {
-        $usuario = User::find($usuario);
-        $administrando = [];
-
-        foreach ($usuario->sinodais as $sinodal) {
-            $administrando[] = [
-                'texto' => $sinodal->sigla,
-                'cor' => 'success'
-            ];
-        }
-        foreach ($usuario->federacoes as $federacao) {
-            $administrando[] = [
-                'texto' => $federacao->sigla,
-                'cor' => 'primary'
-            ];
-        }
-        foreach ($usuario->locais as $local) {
-            $administrando[] = [
-                'texto' => $local->nome,
-                'cor' => 'info'
-            ];
-        }
-        return $administrando;
-    }
-
     public static function usuarioVinculado(
         Request $request,
         Model $instancia,
@@ -241,7 +213,7 @@ class UserService
     public static function getCampoInstanciaDB(): array
     {
         $retorno = [];
-        $perfil = auth()->user()->roles->first()->name;
+        $perfil = auth()->user()->role->name;
 
         if ($perfil == User::ROLE_SINODAL) {
             $retorno = [
@@ -279,11 +251,11 @@ class UserService
         }
 
         $instancia = null;
-        if ($usuario->roles->first()->name == User::ROLE_SINODAL) {
+        if ($usuario->role->name == User::ROLE_SINODAL) {
             $instancia = $usuario->sinodal;
-        } elseif ($usuario->roles->first()->name == User::ROLE_FEDERACAO) {
+        } elseif ($usuario->role->name == User::ROLE_FEDERACAO) {
             $instancia = $usuario->federacao;
-        } elseif ($usuario->roles->first()->name == User::ROLE_LOCAL) {
+        } elseif ($usuario->role->name == User::ROLE_LOCAL) {
             $instancia = $usuario->local;
         }
         return $instancia;

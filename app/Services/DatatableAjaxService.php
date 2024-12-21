@@ -3,49 +3,16 @@
 namespace App\Services;
 
 use App\Models\Aviso;
-use App\Models\Estado;
 use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\LogErro;
-use App\Models\Parametro;
 use App\Models\Pesquisas\Pesquisa;
-use App\Models\Regiao;
-use App\Models\RegistroLogin;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
-use App\Services\Formularios\FormularioFederacaoService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class DatatableAjaxService
 {
-   public static function logErros()
-   {
-        try {
-            $logs = LogErro::select(['log_erros.id', 'log_erros.created_at', 'u.name', 'log'])
-            ->join('users as u', 'u.id', 'user_id')
-            ->get()
-            ->map(function($item) {
-                return [
-                    'id' => $item->id,
-                    'dia' => Carbon::parse($item->created_at)->format('d/m/y H:i:s'),
-                    'erro' => $item->log['message'],
-                    'usuario' => $item->name,
-                    'erro_completo' => $item->getRawOriginal('log')
-                ];
-            });
-
-        return datatables()::of($logs)->make();
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-        }
-   }
-
    public static function informacaoFederacao(Federacao $federacao)
    {
         try {

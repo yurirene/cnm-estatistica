@@ -29,7 +29,7 @@
             </div>
         </div>
         @endif
-        @canAtLeast(['dashboard.federacoes.index'])
+        @can('rota-permitida', ['dashboard.federacoes.index'])
         @if(!DashboardHelper::entregouComprovante())
         <div class="row mt-3">
             <div class="col">
@@ -52,7 +52,7 @@
             </div>
         </div>
         @endif
-        @endCanAtLeast
+        @endCan
         @foreach(DashboardHelper::getAvisosUsuario() as $aviso)
         <div class="row mt-3">
             <div class="col">

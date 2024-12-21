@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 
 class AddRolesAndInstancesInUsersTable extends Migration
@@ -23,7 +24,12 @@ class AddRolesAndInstancesInUsersTable extends Migration
             $table->foreign('local_id')->references('id')->on('locais')->cascadeOnDelete();
             $table->foreign('federacao_id')->references('id')->on('federacoes')->cascadeOnDelete();
             $table->foreign('sinodal_id')->references('id')->on('sinodais')->cascadeOnDelete();
+
         });
+
+        Artisan::call('db:seed', [
+            '--class' => 'MigracaoDeEstruturaDeUsuariosSeeder',
+        ]);
     }
 
     /**
