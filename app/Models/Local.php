@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Diretorias\DiretoriaLocal;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,6 +37,11 @@ class Local extends Model
     public function estado()
     {
         return $this->belongsTo(Estado::class);
+    }
+
+    public function diretoria(): HasOne
+    {
+        return $this->hasOne(DiretoriaLocal::class, 'local_id');
     }
 
     public function usuario()

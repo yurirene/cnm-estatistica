@@ -5,6 +5,7 @@ namespace App\DataTables\Instancias;
 use App\Helpers\FormHelper;
 use App\Models\AcessoExterno;
 use App\Models\Local;
+use App\Services\Instancias\DiretoriaService;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -23,10 +24,18 @@ class LocalDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function ($sql) {
+                $diretoria = $sql->diretoria
+                    ? json_encode(DiretoriaService::getDiretoriaTabela(
+                        $sql->id,
+                        DiretoriaService::TIPO_DIRETORIA_LOCAL
+                    ))
+                    : null;
+
                 return view('includes.actions', [
                     'route' => 'dashboard.locais',
                     'id' => $sql->id,
-                    'show' => false
+                    'show' => false,
+                    'diretoria' => $diretoria
                 ]);
             })
             ->editColumn('status', function ($sql) {
@@ -54,13 +63,16 @@ class LocalDataTable extends DataTable
             ->editColumn('federacao_id', function ($sql) {
                 return $sql->federacao->sigla;
             })
+            ->editColumn('diretoria', function ($sql) {
+                return $sql->diretoria ? $sql->diretoria->updated_at->format('d/m/Y') : 'Sem Diretoria';
+            })
             ->rawColumns(['status']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\Local $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Local $model)
@@ -110,6 +122,7 @@ class LocalDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('estatistica')->title('Estatística')->orderable(false),
+            Column::make('diretoria')->title('Att. Diretoria')->orderable(false),
             Column::make('federacao_id')->title('Federação'),
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),

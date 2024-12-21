@@ -3,11 +3,12 @@
 namespace App\Models\Diretorias;
 
 use App\Casts\Encryptable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DiretoriaSinodal extends Model
+class DiretoriaFederacao extends Model
 {
-    protected $table = 'diretorias_sinodal';
+    protected $table = 'diretorias_federacao';
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $dates = ['updated_at', 'created_at'];
     protected $casts = [
@@ -17,7 +18,7 @@ class DiretoriaSinodal extends Model
         'primeiro_secretario' => Encryptable::class,
         'segundo_secretario' => Encryptable::class,
         'tesoureiro' => Encryptable::class,
-        'secretario_sinodal' => Encryptable::class,
+        'secretario_presbiterial' => Encryptable::class,
 
         'contato_presidente' => Encryptable::class,
         'contato_vice_presidente' => Encryptable::class,
@@ -25,9 +26,8 @@ class DiretoriaSinodal extends Model
         'contato_primeiro_secretario' => Encryptable::class,
         'contato_segundo_secretario' => Encryptable::class,
         'contato_tesoureiro' => Encryptable::class,
-        'contato_secretario_sinodal' => Encryptable::class,
+        'contato_secretario_presbiterialapp/Models/Diretorias/DiretoriaFederacao.php' => Encryptable::class,
 
         'secretarios' => 'array'
     ];
-
 }

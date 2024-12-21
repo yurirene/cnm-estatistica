@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Apps\App;
+use App\Models\Diretorias\DiretoriaFederacao;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -53,7 +54,7 @@ class Federacao extends Model
 
     public function diretoria(): HasOne
     {
-        return $this->hasOne(Diretoria::class, 'federacao_id');
+        return $this->hasOne(DiretoriaFederacao::class, 'federacao_id');
     }
 
     public function relatorios()
@@ -80,7 +81,7 @@ class Federacao extends Model
 
     protected function getDadosDatatableCacheKey(): string
     {
-        return sprintf('federacao-%d-dados-datatable', $this->id);
+        return sprintf('federacao-%s-dados-datatable', $this->id);
     }
 
     public function clearCache(): bool

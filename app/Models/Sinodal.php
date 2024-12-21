@@ -95,7 +95,7 @@ class Sinodal extends Model
 
     protected function getDadosFederacaoLocalCacheKey(): string
     {
-        return sprintf('sinodal-%d-dados-federacao-local', $this->id);
+        return sprintf('sinodal-%s-dados-federacao-local', $this->id);
     }
 
     public function clearCache(): bool
