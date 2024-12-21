@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Yajra\Acl\Models\Permission;
 
 use function PHPSTORM_META\map;
 

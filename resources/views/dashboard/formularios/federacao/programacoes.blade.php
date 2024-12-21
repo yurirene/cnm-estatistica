@@ -22,7 +22,7 @@
             'programacoes[evangelistico]',
             'Programações de cunho evangelístico e missional realizadas'
         ) !!}
-        <br><small class="text-muted">Ex: Viagem missionária, culto em praças, distrubição de folhetos, incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
+        <br><small class="text-muted">Ex: Viagem missionária, culto em praças, distribuição de folhetos, incluindo os projetos da Secretaria de Evangelismo e Missões.</small>
         {!! Form::number(
             'programacoes[evangelistico]',
             isset($formulario) && !empty($formulario->programacoes)

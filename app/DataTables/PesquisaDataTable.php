@@ -9,6 +9,7 @@ use App\Models\Pesquisas\Pesquisa;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -75,7 +76,7 @@ class PesquisaDataTable extends DataTable
 
     public function verificarPefilInstancia() : bool
     {
-        return !in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS);
+        return !in_array(Auth::user()->role->name, User::ROLES_INSTANCIAS);
     }
 
     public function verificarUsuariosPermitidosParaConfiguracoes() : bool
@@ -85,7 +86,7 @@ class PesquisaDataTable extends DataTable
 
     public function verificarUsuariosDiretoria() : bool
     {
-        return Auth::user()->roles->first()->name == 'diretoria';
+        return Auth::user()->role->name == 'diretoria';
     }
 
     /**
@@ -96,12 +97,12 @@ class PesquisaDataTable extends DataTable
      */
     public function query(Pesquisa $model)
     {
-        return $model->newQuery()->when(in_array(Auth::user()->roles->first()->name, User::ROLES_SECRETARIOS), function($sql) {
+        return $model->newQuery()->when(in_array(Auth::user()->role->name, User::ROLES_SECRETARIOS), function($sql) {
             return $sql->whereHas('usuarios', function($q) {
                 return $q->where('users.id', Auth::id());
             });
         })
-        ->when(in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS), function($sql) {
+        ->when(in_array(Auth::user()->role->name, User::ROLES_INSTANCIAS), function($sql) {
             return $sql->whereJsonContains('instancias', Auth::user()->instancia_formatada)
                 ->where('status', true);
         });
@@ -122,7 +123,7 @@ class PesquisaDataTable extends DataTable
                     ->orderBy(0)
                     ->buttons(
                         Button::make('create')->text('<i class="fas fa-plus"></i> Nova Pesquisa')
-                            ->enabled(auth()->user()->canAtLeast(['dashboard.pesquisas.create']))
+                            ->enabled(Gate::allows('rota-permitida', ['dashboard.pesquisas.create']))
                             ->addClass(!$this->verificarPefilInstancia() ? 'd-none' : null)
                     )
                     ->parameters([

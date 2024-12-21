@@ -108,35 +108,20 @@
 
                     <h3>ACI</h3>
                     @include('dashboard.formularios.sinodal.aci')
-
-                    @if(count(auth()->user()->sinodais) > 1)
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('sinodal_id', 'Sinodal') !!}
-                                {!! Form::select(
-                                    'sinodal_id',
-                                    auth()->user()->sinodais->pluck('nome', 'id'),
-                                    null,
-                                    ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']
-                                ) !!}
-                            </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {!! Form::hidden(
+                                'sinodal_id',
+                                auth()->user()->sinodal_id,
+                                [
+                                    'class' => 'form-control',
+                                    'id'=>'sinodal_id',
+                                    'required'=>true,
+                                    'autocomplete' => 'off'
+                                ]
+                            ) !!}
                         </div>
-                        @else
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::hidden(
-                                    'sinodal_id',
-                                    auth()->user()->sinodais()->first()->id,
-                                    [
-                                        'class' => 'form-control',
-                                        'id'=>'sinodal_id',
-                                        'required'=>true,
-                                        'autocomplete' => 'off'
-                                    ]
-                                ) !!}
-                            </div>
-                        </div>
-                    @endif
+                    </div>
 
                     @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
                     <div class="btn-group pull-right">

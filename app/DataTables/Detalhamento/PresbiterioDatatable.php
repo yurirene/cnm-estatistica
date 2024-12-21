@@ -112,7 +112,7 @@ class PresbiterioDatatable extends DataTable
      */
     public function verificarUsuariosDiretoria(): bool
     {
-        return auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
+        return auth()->user()->role->name == User::ROLE_DIRETORIA;
     }
 
 
@@ -123,7 +123,7 @@ class PresbiterioDatatable extends DataTable
      */
     public function verificarUsuariosSinodal(): bool
     {
-        return auth()->user()->roles->first()->name == User::ROLE_SINODAL;
+        return auth()->user()->role->name == User::ROLE_SINODAL;
     }
 
     /**

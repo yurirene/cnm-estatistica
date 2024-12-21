@@ -184,7 +184,6 @@ return [
         /*
         * Application Service Providers...
         */
-        Yajra\Acl\AclServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,

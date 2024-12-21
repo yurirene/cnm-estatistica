@@ -117,7 +117,7 @@ class FormularioLocalService
     public static function getAnosFormulariosRespondidos()
     {
         try {
-            return FormularioLocal::whereIn('local_id', Auth::user()->locais->pluck('id'))
+            return FormularioLocal::where('local_id', auth()->user()->local_id)
                 ->get()
                 ->pluck('ano_referencia', 'id');
         } catch (\Throwable $th) {
@@ -127,14 +127,14 @@ class FormularioLocalService
 
     public static function getFormularioAnoCorrente()
     {
-        return FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
+        return FormularioLocal::where('local_id', auth()->user()->local_id)
             ->where('ano_referencia', EstatisticaService::getAnoReferencia())
             ->first();
     }
 
     public static function getFormulario($ano)
     {
-        return FormularioLocal::where('local_id', Auth::user()->locais->first()->id)
+        return FormularioLocal::where('local_id', auth()->user()->local_id)
             ->where('ano_referencia', $ano)
             ->first();
     }

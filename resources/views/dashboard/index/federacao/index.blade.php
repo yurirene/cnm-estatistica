@@ -102,7 +102,11 @@
                 </div>
                 <div class="form-group{{ $errors->has('data_organizacao') ? ' has-error' : '' }}">
                 {!! Form::label('data_organizacao', 'Data da Organização') !!}
-                {!! Form::text('data_organizacao', null, ['class' => 'form-control isDate', 'required' => 'required']) !!}
+                {!! Form::text(
+                    'data_organizacao',
+                    $federacao->data_organizacao_formatada,
+                    ['class' => 'form-control isDate']
+                ) !!}
                 <small class="text-danger">{{ $errors->first('data_organizacao') }}</small>
                 </div>
                 <div class="form-group{{ $errors->has('midias_sociais') ? ' has-error' : '' }}">

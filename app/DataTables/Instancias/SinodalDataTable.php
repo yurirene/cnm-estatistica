@@ -26,20 +26,20 @@ class SinodalDataTable extends DataTable
                     'route' => 'dashboard.sinodais',
                     'id' => $sql->id,
                     'show' => true,
-                    'delete' => $sql->federacoes->count() > 0 ? false : true
+                    'delete' => $sql->dadosFederacaoLocal['nro_federacoes'] > 0 ? false : true
                 ]);
             })
             ->editColumn('status', function ($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
             ->editColumn('regiao_id', function ($sql) {
-                return $sql->regiao->nome;
+                return $sql->dadosFederacaoLocal['regiao'];
             })
             ->addColumn('nro_federacoes', function ($sql) {
-                return $sql->federacoes->count();
+                return $sql->dadosFederacaoLocal['nro_federacoes'];
             })
             ->addColumn('nro_locais', function ($sql) {
-                return $sql->locais->count();
+                return $sql->dadosFederacaoLocal['nro_locais'];
             })
             ->rawColumns(['status']);
     }

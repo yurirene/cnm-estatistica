@@ -2,9 +2,6 @@
 
 namespace App\Traits;
 
-use App\Services\AuditableService;
-use App\Services\AuditService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 trait GenericTrait
@@ -25,31 +22,10 @@ trait GenericTrait
         });
 
 
-        // create a event to happen on updating
-        static::updating(function ($table) {
-            AuditableService::store(
-                $table,
-                Auth::id() ?? null,
-                'updating'
-            );
-        });
-
-        // create a event to happen on saving
-        static::created(function ($table) {
-            AuditableService::store(
-                $table,
-                Auth::id() ?? null,
-                'created'
-            );
-        });
-
-        // create a event to happen on deleting
-        static::deleting(function ($table) {
-            AuditableService::store(
-                $table,
-                Auth::id() ?? null,
-                'deleting'
-            );
+        static::updating(function ($model) {
+            if (method_exists($model, 'clearCache')) {
+                $model->clearCache();
+            }
         });
     }
 

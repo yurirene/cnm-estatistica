@@ -34,7 +34,7 @@ class DiretoriaService
     {
         $diretoria = DiretoriaSinodal::where(
             'sinodal_id',
-            $sinodalId ?? auth()->user()->sinodais->first()->id
+            $sinodalId ?? auth()->user()->sinodal_id
         )
             ->first();
 
@@ -53,7 +53,7 @@ class DiretoriaService
     public static function criarDiretoria(?string $sinodalId): ?DiretoriaSinodal
     {
         return DiretoriaSinodal::create([
-            'sinodal_id' => $sinodalId ?? auth()->user()->sinodais->first()->id
+            'sinodal_id' => $sinodalId ?? auth()->user()->sinodal_id
         ]);
     }
 

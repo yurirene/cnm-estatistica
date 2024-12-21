@@ -65,14 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if(count(auth()->user()->regioes) > 1)
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('regiao_id', 'Região') !!}
-                                {!! Form::select('regiao_id', auth()->user()->regioes->pluck('nome', 'id'), null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                        @elseif (auth()->user()->admin)
+                        @if (auth()->user()->admin)
                             <div class="form-group">
                                 {!! Form::label('regiao_id', 'Região') !!}
                                 {!! Form::select('regiao_id', $regioes, null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
@@ -80,7 +73,7 @@
                         @else
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::hidden('regiao_id', auth()->user()->regioes()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                                {!! Form::hidden('regiao_id', auth()->user()->regiao()->first()->id ,['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                         @endif

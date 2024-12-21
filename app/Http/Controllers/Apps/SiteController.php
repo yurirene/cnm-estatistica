@@ -15,7 +15,7 @@ class SiteController extends Controller
 {
     public function index()
     {
-        $sinodal = auth()->user()->sinodais->first();
+        $sinodal = auth()->user()->sinodal;
         $site = Site::where('sinodal_id', $sinodal->id)->first();
         $evento = Evento::where('sinodal_id', $sinodal->id)->first();
         if (!$site) {

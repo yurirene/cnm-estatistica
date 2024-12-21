@@ -17,13 +17,12 @@ class MapaService
 
     public static function getEstadosUsuario()
     {
-        $usuario = User::find(Auth::id());
-
-        $estados = Estado::whereIn('regiao_id', $usuario->regioes->pluck('id'))
+        $estados = Estado::where('regiao_id', auth()->user()->regiao_id)
             ->get()
             ->map(function($item) {
                 return 'br-' . strtolower($item->sigla);
             });
+
         return $estados;
     }
 

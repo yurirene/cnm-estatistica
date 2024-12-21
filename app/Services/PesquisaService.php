@@ -357,7 +357,7 @@ class PesquisaService
                 ];
             }
             foreach ($pesquisa->respostas as $resposta) {
-                $instancia = $resposta->usuario->roles->first()->name;
+                $instancia = $resposta->usuario->role->name;
                 $alcance[$instancia]['quantidade'] += 1;
             }
             return self::calcularPorcentagemAlcance($alcance);
@@ -482,7 +482,7 @@ class PesquisaService
 
         try {
             $alcance = array();
-            $regiao = Auth::user()->regioes->first()->id;
+            $regiao = auth()->user()->regiao_id;
             if (in_array('Sinodal', $pesquisa->instancias)) {
                 $alcance['sinodal'] = [
                     'quantidade' => 0,
@@ -513,7 +513,7 @@ class PesquisaService
                 });
             })->get();
             foreach ($respostas as $resposta) {
-                $instancia = $resposta->usuario->roles->first()->name;
+                $instancia = $resposta->usuario->role->name;
                 $alcance[$instancia]['quantidade'] += 1;
             }
             return self::calcularPorcentagemAlcance($alcance);

@@ -8,7 +8,7 @@
 
 <div class="container-fluid mt--7">
     <div class="row mt-5">
-        @if(auth()->user()->roles->first()->name == 'tesouraria')
+        @if(auth()->user()->role->name == 'tesouraria')
             @include('dashboard.comprovante-aci.tesouraria')
         @else
             @include('dashboard.comprovante-aci.sinodal')
