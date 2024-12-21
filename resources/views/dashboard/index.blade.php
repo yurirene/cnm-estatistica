@@ -2,40 +2,40 @@
 
 @section('content')
 
-@role('local')
+@can('permitido', ['local'])
 @include('dashboard.index.local.index')
-@endRole
+@endcan
 
-@role('federacao')
+@can('permitido', ['federacao'])
 @include('dashboard.index.federacao.index')
-@endRole
+@endcan
 
-@role('sinodal')
+@can('permitido', ['sinodal'])
 @include('dashboard.index.sinodal.index')
-@endRole
+@endcan
 
-@role('diretoria')
+@can('permitido', ['diretoria'])
 @include('dashboard.index.diretoria.index')
-@endRole
+@endcan
 
-@role('tesouraria')
+@can('permitido', ['tesouraria'])
 @include('dashboard.index.tesouraria.index')
-@endRole
+@endcan
 
-@role('administrador')
+@can('permitido', ['administrador'])
 @include('dashboard.index.admin.index')
-@endRole
+@endcan
 
-@role('executiva')
+@can('permitido', ['executiva'])
 @include('dashboard.index.executiva.index')
-@endRole
+@endcan
 
-@role('secretaria_estatistica')
+@can('permitido', ['secretaria_estatistica'])
 @include('dashboard.index.estatistica.index')
-@endRole
+@endcan
 
-@role('secreatria_produtos')
+@can('permitido', ['secreatria_produtos'])
 @include('dashboard.index.produtos.index')
-@endRole
+@endcan
 
 @endsection

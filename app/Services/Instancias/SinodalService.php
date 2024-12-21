@@ -37,7 +37,13 @@ class SinodalService
 
 
             if ($request->has('email_usuario')) {
-                $usuario = UserService::usuarioVinculado($request, $sinodal, 'sinodal', 'sinodais');
+                $usuario = UserService::usuarioVinculado(
+                    $request,
+                    $sinodal,
+                    'sinodal',
+                    'sinodal_id'
+                );
+
                 if ($request->has('resetar_senha')) {
                     UserService::resetarSenha($usuario);
                 }
@@ -91,11 +97,18 @@ class SinodalService
     public static function updateInfo(Sinodal $sinodal, Request $request)
     {
         DB::beginTransaction();
+
         try {
+            $dataOrganizacao = null;
+            
+            if ($request->filled('data_organizacao')) {
+                $dataOrganizacao = Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d');
+            }
+
             $sinodal->update([
                 'nome' => $request->nome,
                 'sinodo' => $request->sinodo,
-                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'data_organizacao' => $dataOrganizacao,
                 'midias_sociais' => $request->midias_sociais
             ]);
             DB::commit();
@@ -114,7 +127,7 @@ class SinodalService
     {
         try {
             $usuario = User::find(Auth::id());
-            $regioes = Estado::whereIn('regiao_id', $usuario->regioes->pluck('id'))
+            $regioes = Estado::where('regiao_id', $usuario->regiao_id)
                 ->get()
                 ->pluck('nome', 'id');
             return $regioes;
@@ -130,7 +143,7 @@ class SinodalService
     public static function getTotalizadores()
     {
         try {
-            $sinodal = auth()->user()->sinodais->first();
+            $sinodal = auth()->user()->sinodal;
             $federacoes = Federacao::where('sinodal_id', $sinodal->id)->get();
             $umps = Local::whereIn('federacao_id', $federacoes->pluck('id'))->get();
             $anoReferencia = EstatisticaService::getAnoReferencia();
@@ -171,7 +184,7 @@ class SinodalService
     public static function getInfo()
     {
         try {
-            return Auth::user()->sinodais->first();
+            return auth()->user()->sinodal;
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -186,12 +199,10 @@ class SinodalService
     {
         DB::beginTransaction();
         try {
-            $sinodal->usuario->first()->update([
-                'email' => 'apagadoComASinodalEm'.date('dmyhms').'@apagado.com'
+            $sinodal->usuario->update([
+                'email' => 'apagadoComASinodalEm'.date('dmyhms').'@apagado.com',
+                'sinodal_id' => null
             ]);
-            $usuario = $sinodal->usuario->first();
-            $sinodal->usuario()->sync([]);
-            $usuario->delete();
             $sinodal->delete();
             DB::commit();
         } catch (\Throwable $th) {
@@ -317,7 +328,7 @@ class SinodalService
                         + intval($formulario->perfil['cooperadores'] ?? 0);
                 }
 
-                $usuario = $federacao->usuario->first();
+                $usuario = $federacao->usuario;
 
                 $infoFederacao[] = [
                     'id' => $federacao->id,
@@ -355,7 +366,7 @@ class SinodalService
         }
         $sinodais = Sinodal::select(['id', 'nome']);
         if (!auth()->user()->admin) {
-            $sinodais = $sinodais->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
+            $sinodais = $sinodais->where('regiao_id', auth()->user()->regiao_id);
         }
         $listaSinodais = $sinodais->orderBy('nome')->get()->pluck('id')->toArray();
 

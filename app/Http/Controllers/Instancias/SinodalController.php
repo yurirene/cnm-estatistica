@@ -23,7 +23,7 @@ class SinodalController extends Controller
     public function create()
     {
         return view('dashboard.sinodais.form', [
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome),
+            'regiao' => strtolower(auth()->user()->regiao->nome),
             'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }
@@ -66,7 +66,7 @@ class SinodalController extends Controller
         return view('dashboard.sinodais.form', [
             'sinodal' => $sinodal,
             'estados' => $estados,
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome),
+            'regiao' => strtolower(auth()->user()->regiao->nome),
             'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }

@@ -7,6 +7,7 @@ use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class Federacao extends Model
 {
@@ -46,7 +47,7 @@ class Federacao extends Model
 
     public function usuario()
     {
-        return $this->belongsToMany(User::class, 'usuario_federacao');
+        return $this->hasOne(User::class, 'federacao_id');
     }
 
 
@@ -67,11 +68,47 @@ class Federacao extends Model
 
     public function scopeMinhaSinodal($query)
     {
-        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
+        return $query->where('sinodal_id', auth()->user()->sinodal_id);
     }
 
     public function scopeDaMinhaRegiao($query)
     {
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
+        return $query->where('regiao_id', auth()->user()->regiao_id);
+    }
+
+
+
+    protected function getDadosDatatableCacheKey(): string
+    {
+        return sprintf('federacao-%d-dados-datatable', $this->id);
+    }
+
+    public function clearCache(): bool
+    {
+        return Cache::forget($this->getDadosDatatableCacheKey());
+    }
+
+    public function getDadosDatatableAttribute(): array
+    {     
+        $dados = Cache::remember(
+            $this->getDadosDatatableCacheKey(),
+            now()->addDay(),
+            function () {
+                $relatorio = $this->relatorios()
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    ->first();
+
+                return [
+                    'estatistica' => $relatorio ? $relatorio->ano_referencia : 'Sem Relatório',
+                    'regiao' => $this->regiao->nome,
+                    'estado' => $this->estado->nome,
+                    'sigla_sinodal' => $this->sinodal->sigla,
+                    'nro_locais' => $this->locais->count()
+                ];
+            }
+        );
+
+        return $dados;
     }
 }

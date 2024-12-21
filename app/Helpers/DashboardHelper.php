@@ -11,6 +11,7 @@ use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\SinodalService;
 use App\Services\Produtos\ProdutoService;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardHelper
 {
@@ -19,19 +20,19 @@ class DashboardHelper
     {
         $service = null;
 
-        if (auth()->user()->hasRole(['sinodal'])) {
+        if (Gate::check(['sinodal'])) {
             $service = app()->make(SinodalService::class);
-        } elseif (auth()->user()->hasRole(['federacao'])) {
+        } elseif (Gate::check(['federacao'])) {
             $service = app()->make(FederacaoService::class);
-        } elseif (auth()->user()->hasRole(['diretoria'])) {
+        } elseif (Gate::check(['diretoria'])) {
             $service = app()->make(DiretoriaNacionalService::class);
-        } elseif (auth()->user()->hasRole(['administrador'])) {
+        } elseif (Gate::check(['isAdmin'])) {
             $service = app()->make(AdministradorService::class);
-        } elseif (auth()->user()->hasRole(['local'])) {
+        } elseif (Gate::check(['local'])) {
             $service = app()->make(LocalService::class);
-        } elseif (auth()->user()->hasRole(['secretaria_estatistica'])) {
+        } elseif (Gate::check(['secretaria_estatistica'])) {
             $service = app()->make(EstatisticaService::class);
-        } elseif (auth()->user()->hasRole(['secreatria_produtos'])) {
+        } elseif (Gate::check(['secreatria_produtos'])) {
             $service = app()->make(ProdutoService::class);
         }
 
@@ -41,6 +42,10 @@ class DashboardHelper
     public static function getTotalizadores()
     {
         $class = self::make();
+        
+        if (is_null($class)) {
+            return [];
+        }
         return $class::getTotalizadores();
     }
 

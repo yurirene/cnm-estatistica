@@ -19,12 +19,12 @@ class DocumentoRecebidoDataTable extends DataTable
     public function __construct(?string $reuniao = null)
     {
         $this->reuniao = $reuniao;
-        $this->perfilSinodal = !in_array(auth()->user()->roles->first()->name, [
+        $this->perfilSinodal = !in_array(auth()->user()->role->name, [
             User::ROLE_SEC_EXECUTIVA,
             User::ROLE_DIRETORIA
         ]);
-        $this->perfilExecutiva = auth()->user()->roles->first()->name == User::ROLE_SEC_EXECUTIVA;
-        $this->perfilDiretoria = auth()->user()->roles->first()->name == User::ROLE_DIRETORIA;
+        $this->perfilExecutiva = auth()->user()->role->name == User::ROLE_SEC_EXECUTIVA;
+        $this->perfilDiretoria = auth()->user()->role->name == User::ROLE_DIRETORIA;
     }
 
     /**
@@ -97,7 +97,7 @@ class DocumentoRecebidoDataTable extends DataTable
                 $this->perfilDiretoria,
                 function ($sql)
                 {
-                    $sinodais = $sinodais = Sinodal::whereIn('regiao_id', auth()->user()->regioes->pluck('id'))->pluck('id');
+                    $sinodais = $sinodais = Sinodal::where('regiao_id', auth()->user()->regiao_id)->pluck('id');
                     return $sql->whereIn('sinodal_id', $sinodais);
                 }
             )
@@ -105,7 +105,7 @@ class DocumentoRecebidoDataTable extends DataTable
                 $this->perfilSinodal,
                 function ($sql)
                 {
-                    return $sql->where('sinodal_id', auth()->user()->sinodais->pluck('id'));
+                    return $sql->where('sinodal_id', auth()->user()->sinodal_id);
                 }
             );
     }

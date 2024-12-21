@@ -2,16 +2,14 @@
 
 namespace App\Services;
 
-use Yajra\Acl\Models\Role;
+use App\Models\Role;
 use App\Models\Regiao;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class UserService
 {
@@ -31,50 +29,52 @@ class UserService
 
     public static function getRoles()
     {
-        if (Auth::user()->admin) {
+        if (auth()->user()->admin) {
             return Role::all();
         }
-        $roles = array();
 
-        foreach (Auth::user()->roles as $role) {
-            $roles[] = self::HIERARQUIA[$role->id];
-        }
+        $role = self::HIERARQUIA[auth()->user()->role_id];
 
-        return Role::whereIn('id', $roles)->get();
+        return Role::where('id', $role)->get();
     }
 
     public static function getRegioes()
     {
-        if (Auth::user()->admin) {
+        if (auth()->user()->admin) {
             return Regiao::all();
         }
-        return Regiao::whereIn('id', Auth::user()->regioes->pluck('id'))->get();
+        return Regiao::where('id', auth()->user()->regiao_id)->get();
     }
 
     public static function store(Request $request)
     {
         DB::beginTransaction();
+
         try {
             $usuario = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make('123')
+                'password' => Hash::make('123'),
+                'role_id' => $request->role_id,
             ]);
+
+            $data = [];
+
             if ($request->filled('regiao_id')) {
-                $usuario->regioes()->sync($request->regiao_id);
+                $data['regiao_id'] = $request->regiao_id;
             }
 
-            if ($request->filled('perfil_id')) {
-                $roles = $usuario->roles->pluck('id')->toArray();
-                $perfil_id = $request->perfil_id;
+            if ($request->filled('campo')) {
+                $campo = $request->campo;
+                $data[$campo] = $request->$campo;
+            }
 
-                if (!in_array($perfil_id, $roles)) {
-                    array_push($roles, $perfil_id);
-                    $usuario->syncRoles(array_unique($perfil_id));
-                }
+            if (!empty($data)) {
+                $usuario->update($data);
             }
 
             DB::commit();
+
             return $usuario;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -84,30 +84,32 @@ class UserService
                 'file' => $th->getFile()
             ]);
             throw new Exception("Erro ao Salvar");
-
         }
     }
 
     public static function update(User $usuario, Request $request)
     {
         try {
-            $usuario->update([
+            $data = [
                 'name' => $request->name,
-                'email' => $request->email,
-            ]);
+                'email' => $request->email
+            ];
+
             if ($request->filled('regiao_id')) {
-                $usuario->regioes()->sync($request->regiao_id);
+                $data['regiao_id'] = $request->regiao_id;
             }
 
-            if ($request->filled('perfil_id')) {
-                $roles = $usuario->roles->pluck('id')->toArray();
-                $perfil_id = $request->perfil_id;
-
-                if (!in_array($perfil_id, $roles)) {
-                    $perfis = array_merge($roles, $perfil_id);
-                    $usuario->syncRoles(array_unique($perfis));
-                }
+            if ($request->filled('role_id')) {
+                $data['role_id'] = $request->role_id;
             }
+
+            if ($request->filled('campo')) {
+                $campo = $request->campo;
+                $data[$campo] = $request->$campo;
+            }
+
+            $usuario->update($data);
+
             return $usuario;
         } catch (\Throwable $th) {
             LogErroService::registrar([
@@ -116,47 +118,26 @@ class UserService
                 'file' => $th->getFile()
             ]);
             throw new Exception("Erro ao Atualizar");
-
         }
     }
 
-    public static function getAdministrados($usuario) : array
-    {
-        $usuario = User::find($usuario);
-        $administrando = [];
-
-        foreach ($usuario->sinodais as $sinodal) {
-            $administrando[] = [
-                'texto' => $sinodal->sigla,
-                'cor' => 'success'
-            ];
-        }
-        foreach ($usuario->federacoes as $federacao) {
-            $administrando[] = [
-                'texto' => $federacao->sigla,
-                'cor' => 'primary'
-            ];
-        }
-        foreach ($usuario->locais as $local) {
-            $administrando[] = [
-                'texto' => $local->nome,
-                'cor' => 'info'
-            ];
-        }
-        return $administrando;
-    }
-
-    public static function usuarioVinculado(Request $request, Model $instancia, string $perfil, string $relacao) : User
-    {
+    public static function usuarioVinculado(
+        Request $request,
+        Model $instancia,
+        string $perfil,
+        string $campo
+    ) : User {
         try {
-            $usuario = $instancia->usuario->first();
+            $usuario = $instancia->usuario;
 
             $perfil = Role::where('name', $perfil)->first();
 
             $new_request = (new Request([
                 'name' => $request->nome_usuario,
                 'email' => $request->email_usuario,
-                'perfil_id' => [$perfil->id]
+                $campo => $instancia->id,
+                'role_id' => $perfil->id,
+                'campo' => $campo
             ]));
 
 
@@ -166,13 +147,7 @@ class UserService
                 $usuario = self::store($new_request);
             }
 
-            if (!in_array($instancia->id, $usuario->$relacao->pluck('id')->toArray())) {
-                $novo_vinculo = $usuario->$relacao->pluck('id')->toArray();
-                $novo_vinculo[] = $instancia->id;
-                $usuario->$relacao()->sync($novo_vinculo);
-            }
             return $usuario;
-
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -238,26 +213,26 @@ class UserService
     public static function getCampoInstanciaDB(): array
     {
         $retorno = [];
-        $perfil = auth()->user()->roles->first()->name;
+        $perfil = auth()->user()->role->name;
 
         if ($perfil == User::ROLE_SINODAL) {
             $retorno = [
                 'campo' => 'sinodal_id',
-                'id' => auth()->user()->sinodais->first()->id
+                'id' => auth()->user()->sinodal_id
             ];
         }
 
         if ($perfil == User::ROLE_FEDERACAO) {
             $retorno = [
                 'campo' => 'federacao_id',
-                'id' => auth()->user()->federacoes->first()->id
+                'id' => auth()->user()->federacao_id
             ];
         }
 
         if ($perfil == User::ROLE_LOCAL) {
             $retorno = [
                 'campo' => 'local_id',
-                'id' => auth()->user()->locais->first()->id
+                'id' => auth()->user()->local_id
             ];
         }
         return $retorno;
@@ -276,12 +251,12 @@ class UserService
         }
 
         $instancia = null;
-        if ($usuario->roles->first()->name == User::ROLE_SINODAL) {
-            $instancia = $usuario->sinodais->first();
-        } elseif ($usuario->roles->first()->name == User::ROLE_FEDERACAO) {
-            $instancia = $usuario->federacoes->first();
-        } elseif ($usuario->roles->first()->name == User::ROLE_LOCAL) {
-            $instancia = $usuario->locais->first();
+        if ($usuario->role->name == User::ROLE_SINODAL) {
+            $instancia = $usuario->sinodal;
+        } elseif ($usuario->role->name == User::ROLE_FEDERACAO) {
+            $instancia = $usuario->federacao;
+        } elseif ($usuario->role->name == User::ROLE_LOCAL) {
+            $instancia = $usuario->local;
         }
         return $instancia;
     }

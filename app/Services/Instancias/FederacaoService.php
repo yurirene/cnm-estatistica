@@ -34,7 +34,13 @@ class FederacaoService
             ]);
 
 
-            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+            $usuario = UserService::usuarioVinculado(
+                $request,
+                $federacao,
+                'federacao',
+                'federacao_id'
+            );
+
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }
@@ -66,7 +72,13 @@ class FederacaoService
                 'status' => $request->status == 'A' ? true : false
             ]);
 
-            $usuario = UserService::usuarioVinculado($request, $federacao, 'federacao', 'federacoes');
+            $usuario = UserService::usuarioVinculado(
+                $request,
+                $federacao,
+                'federacao',
+                'federacao_id'
+            );
+
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }
@@ -86,21 +98,16 @@ class FederacaoService
 
     public static function getEstados()
     {
-        $sinodais = Auth::user()->sinodais;
-        $regioes = [];
-        foreach ($sinodais as $sinodal) {
-            $regioes[] = $sinodal->regiao_id;
-        }
-        $regioes = Estado::whereIn('regiao_id', $regioes)
+        $regiao = auth()->user()->sinodal->regiao->id;
+        $estados = Estado::where('regiao_id', $regiao)
             ->get()
             ->pluck('nome', 'id');
-        return $regioes;
+        return $estados;
     }
 
     public static function getSinodal()
     {
-        $usuario = User::find(Auth::id());
-        return Sinodal::whereIn('regiao_id', $usuario->regioes->pluck('id'))
+        return Sinodal::where('regiao_id', auth()->user()->regiao_id)
             ->get()
             ->pluck('nome', 'id');
     }
@@ -109,11 +116,18 @@ class FederacaoService
     public static function updateInfo(Federacao $federacao, Request $request)
     {
         DB::beginTransaction();
+
         try {
+            $dataOrganizacao = null;
+            
+            if ($request->filled('data_organizacao')) {
+                $dataOrganizacao = Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d');
+            }
+
             $federacao->update([
                 'nome' => $request->nome,
                 'presbiterio' => $request->presbiterio,
-                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'data_organizacao' => $dataOrganizacao,
                 'midias_sociais' => $request->midias_sociais
             ]);
             DB::commit();
@@ -131,7 +145,7 @@ class FederacaoService
 
     public static function getInfo()
     {
-        return auth()->user()->federacoes->first();
+        return auth()->user()->federacao;
     }
 
 
@@ -166,15 +180,12 @@ class FederacaoService
     {
         DB::beginTransaction();
         try {
-            if ($federacao->usuario->first()) {
-                $federacao->usuario->first()->update([
-                    'email' => 'apagadoFedEm'.date('dmyhms').'@apagado.com'
+            if (!empty($federacao->usuario)) {
+                $federacao->usuario->update([
+                    'email' => 'apagadoFedEm'.date('dmyhms').'@apagado.com',
+                    'federacao_id' => null
                 ]);
-                $usuario = $federacao->usuario->first();
-                $federacao->usuario()->sync([]);
-                $usuario->delete();
             }
-
 
             $federacao->delete();
             DB::commit();
@@ -294,13 +305,16 @@ class FederacaoService
         if (session()->has('lista_federacoes')) {
             return session()->get('lista_federacoes');
         }
-        $federacoes = Federacao::select(['id']);
-        if (!auth()->user()->admin) {
-            $federacoes = $federacoes->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id')->toArray());
-        }
-        $listaFederacoes = $federacoes->orderBy('nome')->get()->pluck('id')->toArray();
 
+        $federacoes = Federacao::select(['id']);
+
+        if (!auth()->user()->admin) {
+            $federacoes = $federacoes->where('sinodal_id', auth()->user()->sinodal_id);
+        }
+
+        $listaFederacoes = $federacoes->orderBy('nome')->get()->pluck('id')->toArray();
         session()->put('lista_federacoes', $listaFederacoes);
+
         return $listaFederacoes;
     }
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\Services\LoginService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,12 +48,10 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        LoginService::login($request, $user);
     }
 
     public function logout()
     {
-        LoginService::logout(auth()->user());
         $this->guard()->logout();
         return redirect()->route('login');
     }

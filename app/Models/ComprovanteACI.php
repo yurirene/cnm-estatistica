@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\Auditable;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ComprovanteACI extends Model
 {
-    use Auditable;
+    
 
     protected $table = 'comprovantes_aci';
     protected $guarded = ['id', 'created_at', 'updated_at'];
@@ -21,11 +21,11 @@ class ComprovanteACI extends Model
 
     public function scopeMeusComprovantes($query)
     {
-        return $query->when(auth()->user()->roles->first()->name == 'tesouraria', function($sql) {
+        return $query->when(auth()->user()->role->name == 'tesouraria', function($sql) {
             return $sql;
         },
         function($sql) {
-            return $sql->where('sinodal_id', auth()->user()->sinodais->first()->id);
+            return $sql->where('sinodal_id', auth()->user()->sinodal_id);
         });
     }
 }

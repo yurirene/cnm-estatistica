@@ -116,7 +116,7 @@ class TesourariaService
         }
 
         $nome = time().'.'. $file->getClientOriginalExtension();
-        $sinodalId = auth()->user()->sinodais->first()->id;
+        $sinodalId = auth()->user()->sinodal_id;
         $path = $file->storeAs("/public/sinodais/{$sinodalId}/tesouraria/" . date('Y'), $nome);
 
         return str_replace(
@@ -134,7 +134,7 @@ class TesourariaService
     public static function categoriaToSelect(): array
     {
         return Categoria::all()
-            ->where('sinodal_id', auth()->user()->sinodais->first()->id)
+            ->where('sinodal_id', auth()->user()->sinodal_id)
             ->pluck('nome', 'id')
             ->toArray();
     }
