@@ -9,6 +9,7 @@ use App\Models\LogErro;
 use App\Models\Pesquisas\Pesquisa;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Instancias\DiretoriaService;
 use Carbon\Carbon;
 
 class DatatableAjaxService
@@ -28,16 +29,36 @@ class DatatableAjaxService
                 $relatorioEntregue = (!is_null($ultimoRelatorio) && $ultimoRelatorio->ano_referencia == $anoReferencia)
                     ? 'Entregue'
                     : 'Pendente';
+                $temDiretoria = $local->diretoria ? true : false;
+                $attDiretoria = $temDiretoria ? $local->diretoria->updated_at->format('d/m/Y') : 'Sem diretoria';
                 $usuario = $local->usuario;
                 return [
                     'nome_ump' => $local->nome,
                     'nro_socios' => $totalSocios,
                     'status_relatorio' => $relatorioEntregue,
+                    'diretoria' => [
+                        'atualizacao' => $attDiretoria,
+                        'dados' => $temDiretoria
+                            ? DiretoriaService::getDiretoriaTabela(
+                                $local->id, 
+                                DiretoriaService::TIPO_DIRETORIA_LOCAL
+                            )
+                            : null
+                    ],
                     'usuario_email' => $usuario->email,
-                    'usuario_id' => $usuario->id
+                    'usuario_id' => $usuario->id,
                 ];
             });
-            return datatables()::of($informacoes)->make();
+            return datatables()::of($informacoes)
+                ->with([
+                    'diretoria_federacao' => $federacao->diretoria
+                        ? DiretoriaService::getDiretoriaTabela(
+                            $federacao->id,
+                            DiretoriaService::TIPO_DIRETORIA_FEDERACAO
+                        )
+                        : null
+                ])
+                ->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

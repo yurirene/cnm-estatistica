@@ -55,6 +55,28 @@
                             </div>
                         </div>
                     </li>
+                    <li class="py-1">
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <div class="badge badge-circle badge-primary mr-3">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">
+                                    Att Diretoria: {{ $attDiretoria }}
+                                    <sup>
+                                        <em
+                                            class="fas fa-1x fa-info-circle"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Última atualização da diretoria"
+                                        ></em>
+                                    </sup>
+                                </h6>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

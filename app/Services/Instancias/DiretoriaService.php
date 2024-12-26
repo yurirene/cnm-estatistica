@@ -88,9 +88,11 @@ class DiretoriaService
     /**
      * Retorna a diretoria da sinodal,local,federacao e se ainda não tiver um cadastrada, cadastra uma
      *
+     * @param string $tipo DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL
+     * @param string|null $id - Se não passar cria a diretoria
      * @return DiretoriaSinodal|DiretoriaFederacao|DiretoriaLocal|null
      */
-    public static function getDiretoria(?string $id = null, ?string $tipo): ?Model
+    public static function getDiretoria(string $tipo, ?string $id = null): ?Model
     {
         $diretoria = null;
         $classe = self::CLASSES_DIRETORIAS[$tipo];
@@ -150,15 +152,15 @@ class DiretoriaService
     /**
      * Retorna os campos e o nome formatado dos cargos para exibição
      * 
-     * @param string|null $id
-     * @param string|null $tipo
+     * @param string $id
+     * @param string $tipo - DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL
      * 
      * @return array
      */
-    public static function getDiretoriaTabela(?string $id = null, ?string $tipo = null): array
+    public static function getDiretoriaTabela(string $id, string $tipo): array
     {
         $retorno = [];
-        $diretoria = self::getDiretoria($id, $tipo);
+        $diretoria = self::getDiretoria($tipo, $id);
 
         foreach (self::CAMPOS_CARGOS as $indice => $campo) {
             $contato = "contato_{$campo}";
@@ -167,7 +169,7 @@ class DiretoriaService
         }
 
         if ($tipo == self::TIPO_DIRETORIA_LOCAL) {
-            unset($retorno['cargos'][2]);
+            unset($retorno['cargos'][self::CARGOS[2]]);
         }
         
         $campoSecretarioCausas = self::CAMPOS_SECRETARIO_CAUSAS[$tipo];

@@ -8,6 +8,7 @@ use App\Models\Parametro;
 use App\Services\ColetorDadosService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioLocalService;
+use Exception;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -87,8 +88,14 @@ class FormularioLocalController extends Controller
 
     public function localExport($local)
     {
+        $formulario = FormularioLocalService::getFormularioLocal($local);
+
+        if (!$formulario) {
+            throw new Exception("Formulário não existe", 500);
+            
+        }
         return view('dashboard.formularios.local.export', [
-            'formulario' => FormularioLocalService::getFormularioLocal($local)
+            'formulario' => $formulario
         ]);
     }
 }

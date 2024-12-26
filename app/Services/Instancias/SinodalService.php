@@ -339,6 +339,9 @@ class SinodalService
                     'status' => $federacao->status,
                     'usuario' => $usuario->email,
                     'usuarioId' => $usuario->id,
+                    'attDiretoria' => $federacao->diretoria
+                        ? $federacao->diretoria->updated_at->format('d/m/Y')
+                        : "Sem Diretoria",
                     'origemRelatorio' => $totalUmpsOrganizada['relatorio']
                 ];
             }

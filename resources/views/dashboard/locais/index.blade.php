@@ -49,11 +49,11 @@
             <div class="modal-body">
                 <h5>Informação atualizada em: <span id="dir_atualizacao"></span></h5>
                 <table class="table table-striped">
-                    <tr>
+                    <thead>
                         <th>Cargo</th>
                         <th>Nome</th>
                         <th>Contato</th>
-                    </tr>
+                    </thead>
                     <tbody id="dir_cargos">
                     </tbody>
                 </table>
@@ -74,7 +74,6 @@
     $('#modal_diretoria').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var dados = button.data('dados')
-        console.log(dados);
         Object.entries(dados.cargos).forEach(([cargo, dado]) => {
             $('#dir_cargos').append(`
                 <tr>
