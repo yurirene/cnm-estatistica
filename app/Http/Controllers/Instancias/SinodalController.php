@@ -56,7 +56,7 @@ class SinodalController extends Controller
             'informacoes' => SinodalService::getInformacoesOrganizacao($sinodal),
             'sinodal' => $sinodal,
             'navegacaoSinodais' => SinodalService::navegacaoListaSinodais($sinodal->id),
-            'diretoria' => DiretoriaService::getDiretoriaTabela($sinodal->id, 'sinodal')
+            'diretoria' => DiretoriaService::getDiretoriaTabela($sinodal->id, DiretoriaService::TIPO_DIRETORIA_SINODAL)
         ]);
     }
 

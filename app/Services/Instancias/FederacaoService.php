@@ -158,12 +158,11 @@ class FederacaoService
                 ->first();
             if (!$formulario) {
                 return [
-                    'total_umps' => $federacao->locais->count(),
                     'total_socios' => 'Resposta Pendente',
                 ];
             }
             return [
-                'total_umps' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'total_umps' => $federacao->locais->count() ?? 0,
                 'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
             ];
         } catch (\Throwable $th) {
@@ -206,8 +205,8 @@ class FederacaoService
             $total = ($formulario->estrutura['ump_organizada'] ?? 0)
                 + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
             return [
-                'total' => $total,
-                'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'total' => $total ?: $federacao->locais->count(),
+                'organizadas' => $formulario->estrutura['ump_organizada'] ?? $federacao->locais->count(),
                 'relatorio' => true
             ];
         }

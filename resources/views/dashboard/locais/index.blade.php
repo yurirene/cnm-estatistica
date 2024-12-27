@@ -83,6 +83,13 @@
                 </tr>
             `)
         })
+        
+        $('#dir_cargos').append(`
+            <tr>
+                <td>Secretários de Atividades</td>
+                <td colspan="2">${dados.secretarios ?? 'Sem Secretários'}</td>
+            </tr>
+        `)
         $('#dir_atualizacao').text(dados.atualizacao)
     });
 </script>

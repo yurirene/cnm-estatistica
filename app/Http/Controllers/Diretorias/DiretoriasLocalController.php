@@ -18,7 +18,7 @@ class DiretoriasLocalController extends Controller
         return view('dashboard.diretoria.index', [
             'tipo' => 'Local',
             'cargos' => DiretoriaService::getCargos(DiretoriaService::TIPO_DIRETORIA_LOCAL),
-            'diretoria' => DiretoriaService::getDiretoria(DiretoriaService::TIPO_DIRETORIA_LOCAL),
+            'diretoria' => DiretoriaService::getDiretoria(DiretoriaService::TIPO_DIRETORIA_LOCAL, auth()->user()->local_id),
             'route' => 'dashboard.diretoria-local.update',
             'secretarias' => DiretoriaService::getSecretarios(),
         ]);

@@ -88,8 +88,9 @@ class DiretoriaService
     /**
      * Retorna a diretoria da sinodal,local,federacao e se ainda não tiver um cadastrada, cadastra uma
      *
-     * @param string $tipo DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL
+     * @param string $tipo DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL     * 
      * @param string|null $id - Se não passar cria a diretoria
+     * 
      * @return DiretoriaSinodal|DiretoriaFederacao|DiretoriaLocal|null
      */
     public static function getDiretoria(string $tipo, ?string $id = null): ?Model
@@ -103,7 +104,7 @@ class DiretoriaService
         )->first();
 
         if ($diretoria === null) {
-            $diretoria = self::criarDiretoria($tipo);
+            $diretoria = self::criarDiretoria($tipo, $id);
         }
 
         return $diretoria;
@@ -112,15 +113,18 @@ class DiretoriaService
     /**
      * Cria uma diretoria automaticamente se não houver
      *
+     * @param string $tipo DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL     * 
+     * @param string $id Id da diretoria que será criada
+     * 
      * @return DiretoriaSinodal|DiretoriaFederacao|DiretoriaLocal|null
      */
-    public static function criarDiretoria($tipo): ?Model
+    public static function criarDiretoria(string $tipo, string $id): ?Model
     {
         $classe = self::CLASSES_DIRETORIAS[$tipo];
         $campo = "{$tipo}_id";
 
         return $classe::create([
-            $campo => $sinodalId ?? auth()->user()->$campo
+            $campo => $id
         ]);
     }
 
@@ -175,7 +179,15 @@ class DiretoriaService
         $campoSecretarioCausas = self::CAMPOS_SECRETARIO_CAUSAS[$tipo];
         $retorno['cargos'][$campoSecretarioCausas['valor']]['nome'] = $diretoria->{$campoSecretarioCausas['chave']};
         $retorno['cargos'][$campoSecretarioCausas['valor']]['contato'] = $diretoria->{'contato_'.$campoSecretarioCausas['chave']};
+        $retorno['secretarios'] = '';
+        $secretarios = [];
+        
+        foreach ((array) $diretoria->secretarios as $secretario) {
+            $secretarios[] = self::SECRETARIOS[$secretario];
+        }
 
+        $retorno['secretarios'] = implode(', ', $secretarios);
+        
         $retorno['atualizacao'] = $diretoria->updated_at->format('d/m/Y') ?? 'Nunca atualizado';
 
         return $retorno;

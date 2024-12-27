@@ -260,6 +260,10 @@
                         <td>{{ $dado['contato'] }}</td>
                     </tr>
                     @endforeach
+                    <tr>
+                        <td>Secretários de Atividades</td>
+                        <td colspan="2">{{ $diretoria['secretarios'] }}</td>
+                    </tr>
                 </table>
             </div>
             <div class="modal-footer">
@@ -411,6 +415,13 @@
                 </tr>
             `)
         })
+        $('#dir_cargos').append(`
+            <tr>
+                <td>Secretários de Atividades</td>
+                <td colspan="2">${dados.secretarios ?? 'Sem Secretários'}</td>
+            </tr>
+        `)
+
         $('#dir_atualizacao').text(dados.atualizacao)
     });
 

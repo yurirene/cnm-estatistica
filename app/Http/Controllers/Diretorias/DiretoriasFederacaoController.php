@@ -17,7 +17,7 @@ class DiretoriasFederacaoController extends Controller
         return view('dashboard.diretoria.index', [
             'tipo' => 'Federação',
             'cargos' => DiretoriaService::getCargos(DiretoriaService::TIPO_DIRETORIA_FEDERACAO),
-            'diretoria' => DiretoriaService::getDiretoria(DiretoriaService::TIPO_DIRETORIA_FEDERACAO),
+            'diretoria' => DiretoriaService::getDiretoria(DiretoriaService::TIPO_DIRETORIA_FEDERACAO, auth()->user()->federacao_id),
             'route' => 'dashboard.diretoria-federacao.update',
             'secretarias' => DiretoriaService::getSecretarios(),
         ]);

@@ -52,14 +52,8 @@ class DashboardHelper
 
     public static function getInfo()
     {
-
         $class = self::make();
         return $class::getInfo();
-    }
-
-    public static function getTotalLocais()
-    {
-        return 10;
     }
 
     public static function getFormularioEntregue() : array
