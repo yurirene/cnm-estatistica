@@ -167,7 +167,7 @@ class User extends Authenticatable
     // Define the cache key (as its used in multiple places)
     protected function getRoleCacheKey(): string
     {
-        return sprintf('user-%d-role', $this->id);
+        return sprintf('user-%s-role', $this->id);
     }
 
     // Provide a cache clearing mechanism

@@ -41,13 +41,19 @@ class SinodalDataTable extends DataTable
             ->addColumn('nro_locais', function ($sql) {
                 return $sql->dadosFederacaoLocal['nro_locais'];
             })
+            ->addColumn('diretoria', function ($sql) {
+                return $sql->diretoria
+                    ? $sql->diretoria->updated_at->format('d/m/y')
+                    : 'Sem Diretoria';
+            })
             ->rawColumns(['status']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\Sinodal $model
+     * 
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Sinodal $model)
@@ -72,7 +78,8 @@ class SinodalDataTable extends DataTable
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
+                        Button::make('create')
+                            ->text('<i class="fas fa-plus"></i> Nova Sinodal')
                     )
                     ->parameters([
                         "language" => [
@@ -100,6 +107,7 @@ class SinodalDataTable extends DataTable
             Column::make('nro_federacoes')->title('Nº Federações')->orderable(false),
             Column::make('nro_locais')->title('Nº UMPs Locais')->orderable(false),
             Column::make('status')->title('Status'),
+            Column::make('diretoria')->title('Att. Diretoria'),
             Column::make('regiao_id')->title('Região'),
         ];
     }

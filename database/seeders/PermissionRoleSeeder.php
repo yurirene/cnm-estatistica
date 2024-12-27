@@ -83,7 +83,7 @@ class PermissionRoleSeeder extends Seeder
                     'formularios-federacoes',
                     'tutoriais',
                     'helpdesk',
-                    'diretoria'
+                    'diretoria-federacao',
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -102,7 +102,7 @@ class PermissionRoleSeeder extends Seeder
                     'formularios-locais',
                     'tutoriais',
                     'helpdesk',
-                    'diretoria',
+                    'diretoria-local',
                     'coletor-dados'
                 ],
                 'permissions' => [

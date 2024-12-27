@@ -96,6 +96,20 @@
                     </a>
                 </li>
                 @endcan
+                @can('rota-permitida', ['dashboard.diretoria-federacao.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria-federacao.index') }}">
+                        <i class="fas fa-users"></i> Diretoria
+                    </a>
+                </li>
+                @endcan
+                @can('rota-permitida', ['dashboard.diretoria-local.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria-local.index') }}">
+                        <i class="fas fa-users"></i> Diretoria
+                    </a>
+                </li>
+                @endcan
                 @endcannot
                 @can('rota-permitida', ['dashboard.sinodais.index'])
                 <li class="nav-item">

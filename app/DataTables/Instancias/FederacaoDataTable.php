@@ -48,13 +48,18 @@ class FederacaoDataTable extends DataTable
             ->addColumn('nro_umps', function ($sql) {
                 return $sql->dadosDatatable['nro_locais'];
             })
+            ->addColumn('diretoria', function ($sql) {
+                return $sql->diretoria
+                    ? $sql->diretoria->updated_at->format('d/m/y')
+                    : 'Sem Diretoria';
+            })
             ->rawColumns(['status']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\Federacao $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Federacao $model)
@@ -109,6 +114,7 @@ class FederacaoDataTable extends DataTable
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),
+            Column::make('diretoria')->title('Att. Diretoria'),
             Column::make('regiao_id')->title('Região'),
         ];
     }

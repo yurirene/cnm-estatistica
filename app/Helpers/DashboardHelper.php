@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\ComprovanteACI;
 use App\Models\Parametro;
+use App\Models\User;
 use App\Services\AdministradorService;
 use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
@@ -42,7 +43,7 @@ class DashboardHelper
     public static function getTotalizadores()
     {
         $class = self::make();
-        
+
         if (is_null($class)) {
             return [];
         }
@@ -51,20 +52,8 @@ class DashboardHelper
 
     public static function getInfo()
     {
-
         $class = self::make();
         return $class::getInfo();
-    }
-
-    public static function getTotalLocais()
-    {
-        return 10;
-    }
-
-    public static function getGraficoAtividades() : array
-    {
-        $class = self::make();
-        return $class::getGraficoAtividades();
     }
 
     public static function getFormularioEntregue() : array
@@ -76,7 +65,7 @@ class DashboardHelper
 
     public static function entregouRelatorio(): bool
     {
-        $instancia = auth()->user()->instancia() ? auth()->user()->instancia()->first() : null;
+        $instancia = User::find(auth()->id())->instancia() ?: null;
         if (!$instancia) {
             return true;
         }
@@ -92,7 +81,7 @@ class DashboardHelper
      */
     public static function entregouComprovante(): bool
     {
-        $instancia = auth()->user()->instancia() ? auth()->user()->instancia()->first() : null;
+        $instancia = User::find(auth()->id())->instancia() ?: null;
         if (!$instancia) {
             return true;
         }
@@ -104,7 +93,7 @@ class DashboardHelper
 
     public static function getAvisosUsuario(): array
     {
-        return auth()->user()
+        return User::find(auth()->id())
             ->avisos()
             ->where('ativo', true)
             ->select(['titulo', 'texto'])
@@ -114,7 +103,7 @@ class DashboardHelper
 
     public static function getAvisosUsuarioModal(): array
     {
-        $aviso = auth()->user()
+        $aviso = User::find(auth()->id())
             ->avisos()
             ->where('ativo', true)
             ->where('modal', true)

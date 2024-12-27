@@ -2,7 +2,10 @@
 
 namespace App\Services\Instancias;
 
+use App\Models\Diretorias\DiretoriaFederacao;
+use App\Models\Diretorias\DiretoriaLocal;
 use App\Models\Diretorias\DiretoriaSinodal;
+use Illuminate\Database\Eloquent\Model;
 
 class DiretoriaService
 {
@@ -12,34 +15,96 @@ class DiretoriaService
         2 => 'secretaria_executiva',
         3 => 'primeiro_secretario',
         4 => 'segundo_secretario',
-        5 => 'tesoureiro',
-        6 => 'secretario_sinodal'
+        5 => 'tesoureiro'
     ];
+
+    public const CAMPOS_SECRETARIO_CAUSAS = [
+        self::TIPO_DIRETORIA_SINODAL => [
+            'chave' => 'secretario_sinodal',
+            'valor' => 'Secretário Sinodal',
+        ],
+        self::TIPO_DIRETORIA_FEDERACAO => [
+            'chave' => 'secretario_presbiterial',
+            'valor' => 'Secretário Presbiterial'
+        ],
+        self::TIPO_DIRETORIA_LOCAL => [
+            'chave' => 'conselheiro',
+            'valor' => 'Conselheiro'
+        ]
+    ];
+
+    /**
+     * Classes das diretorias pelo tipo
+     * 
+     * @var array
+     */
+    public const CLASSES_DIRETORIAS = [
+        self::TIPO_DIRETORIA_LOCAL => DiretoriaLocal::class,
+        self::TIPO_DIRETORIA_FEDERACAO => DiretoriaFederacao::class,
+        self::TIPO_DIRETORIA_SINODAL => DiretoriaSinodal::class
+    ];
+
     public const CARGOS = [
         0 => 'Presidente',
         1 => 'Vice-Presidente',
         2 => 'Secretário-Executivo',
         3 => 'Primeiro(a) Secretário(a)',
         4 => 'Segundo(a) Secretário(a)',
-        5 => 'Tesoureiro(a)',
-        6 => 'Secretário Sinodal'
+        5 => 'Tesoureiro(a)'
+    ];
+    public const SECRETARIOS = [
+        'evangelismo' => 'Evangelismo e Missões',
+        'responsabilidade' => 'Responsabilidade Social',
+        'comunicacao' => 'Marketing e Comunicação',
+        'produtos' => 'Produtos',
+        'estatistica' => 'Estatística',
+        'educacao' => 'Educação Cristã',
+        'esporte' => 'Esportes e Lazer',
+        'musica' => 'Música',
+        'outras' => 'Outra',
     ];
 
     /**
-     * Retorna a diretoria da sinodal e se ainda não tiver um cadastrada, cadastra uma
-     *
-     * @return DiretoriaSinodal|null
+     * Tipos de diretoria local
+     * 
+     * @var string
      */
-    public static function getDiretoria(?string $sinodalId = null): ?DiretoriaSinodal
-    {
-        $diretoria = DiretoriaSinodal::where(
-            'sinodal_id',
-            $sinodalId ?? auth()->user()->sinodal_id
-        )
-            ->first();
+    public const TIPO_DIRETORIA_LOCAL = 'local';
+    
+    /**
+     * Tipos de diretoria federação
+     * 
+     * @var string
+     */
+    public const TIPO_DIRETORIA_FEDERACAO = 'federacao';
+    
+    /**
+     * Tipos de diretoria sinodal
+     * 
+     * @var string
+     */
+    public const TIPO_DIRETORIA_SINODAL = 'sinodal';
 
-        if (is_null($diretoria)) {
-            $diretoria = self::criarDiretoria($sinodalId);
+    /**
+     * Retorna a diretoria da sinodal,local,federacao e se ainda não tiver um cadastrada, cadastra uma
+     *
+     * @param string $tipo DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL     * 
+     * @param string|null $id - Se não passar cria a diretoria
+     * 
+     * @return DiretoriaSinodal|DiretoriaFederacao|DiretoriaLocal|null
+     */
+    public static function getDiretoria(string $tipo, ?string $id = null): ?Model
+    {
+        $diretoria = null;
+        $classe = self::CLASSES_DIRETORIAS[$tipo];
+        $campo = "{$tipo}_id";
+        $diretoria = $classe::where(
+            $campo,
+            $id ?? auth()->user()->$campo
+        )->first();
+
+        if ($diretoria === null) {
+            $diretoria = self::criarDiretoria($tipo, $id);
         }
 
         return $diretoria;
@@ -48,21 +113,29 @@ class DiretoriaService
     /**
      * Cria uma diretoria automaticamente se não houver
      *
-     * @return DiretoriaSinodal|null
+     * @param string $tipo DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL     * 
+     * @param string $id Id da diretoria que será criada
+     * 
+     * @return DiretoriaSinodal|DiretoriaFederacao|DiretoriaLocal|null
      */
-    public static function criarDiretoria(?string $sinodalId): ?DiretoriaSinodal
+    public static function criarDiretoria(string $tipo, string $id): ?Model
     {
-        return DiretoriaSinodal::create([
-            'sinodal_id' => $sinodalId ?? auth()->user()->sinodal_id
+        $classe = self::CLASSES_DIRETORIAS[$tipo];
+        $campo = "{$tipo}_id";
+
+        return $classe::create([
+            $campo => $id
         ]);
     }
 
     /**
      * Retorna os campos e o nome formatado dos cargos
      *
+     * @param string $tipo - Sinodal, Federação, Local
+     * 
      * @return array
      */
-    public static function getCargos(): array
+    public static function getCargos(string $tipo): array
     {
         $retorno = [];
 
@@ -70,13 +143,28 @@ class DiretoriaService
             $retorno[$campo] = self::CARGOS[$indice];
         }
 
+        $campoSecretarioCausas = self::CAMPOS_SECRETARIO_CAUSAS[$tipo];
+        $retorno[$campoSecretarioCausas['chave']] = $campoSecretarioCausas['valor'];
+
+        if ($tipo == self::TIPO_DIRETORIA_LOCAL) {
+            unset($retorno['secretaria_executiva']);
+        }
+
         return $retorno;
     }
 
-    public static function getDiretoriaTabela(?string $sinodalId = null): array
+    /**
+     * Retorna os campos e o nome formatado dos cargos para exibição
+     * 
+     * @param string $id
+     * @param string $tipo - DiretoriaService::TIPO_DIRETORIA_SINODAL|DiretoriaService::TIPO_DIRETORIA_FEDERACAO|DiretoriaService::TIPO_DIRETORIA_LOCAL
+     * 
+     * @return array
+     */
+    public static function getDiretoriaTabela(string $id, string $tipo): array
     {
         $retorno = [];
-        $diretoria = self::getDiretoria($sinodalId);
+        $diretoria = self::getDiretoria($tipo, $id);
 
         foreach (self::CAMPOS_CARGOS as $indice => $campo) {
             $contato = "contato_{$campo}";
@@ -84,22 +172,48 @@ class DiretoriaService
             $retorno['cargos'][self::CARGOS[$indice]]['contato'] = $diretoria->$contato;
         }
 
+        if ($tipo == self::TIPO_DIRETORIA_LOCAL) {
+            unset($retorno['cargos'][self::CARGOS[2]]);
+        }
+        
+        $campoSecretarioCausas = self::CAMPOS_SECRETARIO_CAUSAS[$tipo];
+        $retorno['cargos'][$campoSecretarioCausas['valor']]['nome'] = $diretoria->{$campoSecretarioCausas['chave']};
+        $retorno['cargos'][$campoSecretarioCausas['valor']]['contato'] = $diretoria->{'contato_'.$campoSecretarioCausas['chave']};
+        $retorno['secretarios'] = '';
+        $secretarios = [];
+        
+        foreach ((array) $diretoria->secretarios as $secretario) {
+            $secretarios[] = self::SECRETARIOS[$secretario];
+        }
+
+        $retorno['secretarios'] = implode(', ', $secretarios);
+        
         $retorno['atualizacao'] = $diretoria->updated_at->format('d/m/Y') ?? 'Nunca atualizado';
 
         return $retorno;
     }
 
     /**
-     * Atualiza os dados da diretoria
+     * Atualiza os dados da diretoria da federação
      *
      * @param array $dados
-     * @param DiretoriaSinodal $diretoria
+     * @param  DiretoriaSinodal|DiretoriaFederacao|DiretoriaLocal $diretoria
      *
      * @return void
      */
-    public static function update(array $dados, DiretoriaSinodal $diretoria): void
+    public static function update(array $dados, Model $diretoria): void
     {
         $diretoria->update($dados);
+    }
+
+    /**
+     * Retorna o array de secretários
+     * 
+     * @return array
+     */
+    public static function getSecretarios(): array
+    {
+        return self::SECRETARIOS;
     }
 
 }

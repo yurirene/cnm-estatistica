@@ -21,7 +21,7 @@
                     {!! Form::model(
                         $diretoria,
                         [
-                            'url' => route('dashboard.diretoria-sinodal.update', ['diretoria' => $diretoria->id]),
+                            'url' => route($route, ['diretoria' => $diretoria->id]),
                             'method' => 'PUT'
                         ]
                     ) !!}
@@ -37,7 +37,6 @@
                                         <div class="form-group">
                                             {!! Form::text($campo, null, [
                                                 'class' => 'form-control float-right',
-                                                'required'=>true,
                                                 'autocomplete' => 'off',
                                                 'placeholder' => 'Nome'
                                             ]) !!}
@@ -47,7 +46,6 @@
                                         <div class="form-group">
                                             {!! Form::text("contato_{$campo}", null, [
                                                 'class' => 'form-control float-right',
-                                                'required'=>true,
                                                 'autocomplete' => 'off',
                                                 'placeholder' => 'Contato'
                                             ]) !!}
@@ -57,6 +55,27 @@
                             </div>
                         </div>
                         @endforeach
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card mb-3 border-0">
+                                <div class="row g-0 d-flex align-items-center">
+                                    <div class="col-md-12 text-center">
+                                        <h5 class="">Secretários</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        @foreach($secretarias as $chave => $secretaria)
+                                            {!! Form::checkbox(
+                                                'secretarios[]',
+                                                $chave,
+                                                null,
+                                                []
+                                            ) !!}
+                                            {{ $secretaria }} <br>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <button class="btn btn-success">
                                 <i class='fas fa-save'></i>

@@ -31,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->admin == true;
         });
         
-        Gate::define('cnm', function (User $user) {
+        Gate::define('diretoria', function (User $user) {
             return 'diretoria' == $user->role->name;
         });
 

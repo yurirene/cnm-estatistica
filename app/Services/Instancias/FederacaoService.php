@@ -158,12 +158,11 @@ class FederacaoService
                 ->first();
             if (!$formulario) {
                 return [
-                    'total_umps' => $federacao->locais->count(),
                     'total_socios' => 'Resposta Pendente',
                 ];
             }
             return [
-                'total_umps' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'total_umps' => $federacao->locais->count() ?? 0,
                 'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
             ];
         } catch (\Throwable $th) {
@@ -206,8 +205,8 @@ class FederacaoService
             $total = ($formulario->estrutura['ump_organizada'] ?? 0)
                 + ($formulario->estrutura['ump_nao_organizada'] ?? 0);
             return [
-                'total' => $total,
-                'organizadas' => $formulario->estrutura['ump_organizada'] ?? 0,
+                'total' => $total ?: $federacao->locais->count(),
+                'organizadas' => $formulario->estrutura['ump_organizada'] ?? $federacao->locais->count(),
                 'relatorio' => true
             ];
         }
@@ -253,12 +252,14 @@ class FederacaoService
         }
     }
 
-    public static function getInformacoesLocaisShow(Federacao $federacao) : array
+    public static function getInformacoesLocaisShow(Federacao $federacao): array
     {
         try {
 
-            $locais = $federacao->locais()->orderBy('status', 'desc')->get();
-            $info_local = [];
+            $locais = $federacao->locais()
+                ->orderBy('status', 'desc')
+                ->get();
+            $infoLocal = [];
             foreach ($locais as $local) {
                 $utlimoFormulario = $local->relatorios()
                     ->orderBy('created_at','desc')
@@ -266,23 +267,39 @@ class FederacaoService
                     ->first();
 
                 $ultimoAno = 'Sem Resposta';
-                $total_socios = 0;
+                $ultimaACI = 'Sem Resposta';
+                $totalSocio = 0;
+                $anoReferencia = EstatisticaService::getAnoReferencia();
+                $mesmoAno = false;
+
                 if (!is_null($utlimoFormulario)) {
-                    $total_socios = intval($utlimoFormulario->perfil['ativos'] ?? 0)
+                    $totalSocio = intval($utlimoFormulario->perfil['ativos'] ?? 0)
                         + intval($utlimoFormulario->perfil['cooperadores'] ?? 0);
                     $ultimoAno = $utlimoFormulario->ano_referencia;
+                    $ultimaACI = $utlimoFormulario->aci['repasse'] == 'S'
+                        ? "R$ {$utlimoFormulario->aci['valor']}"
+                        : 'Sem Repasse';
+                    $mesmoAno = $utlimoFormulario->ano_referencia == $anoReferencia;
                 }
-
-
-                $info_local[] = [
+                $temDiretoria = $local->diretoria ? true : false;
+                $infoLocal[] = [
                     'id' => $local->id,
                     'nome' => $local->nome,
                     'status' => $local->status,
-                    'numero_socios' => $total_socios,
-                    'ultimo_formulario' => $ultimoAno
+                    'numeroSocios' => $totalSocio,
+                    'ultimoFormulario' => $ultimoAno,
+                    'temDiretoria' => $temDiretoria,
+                    'ultimaAtualizacaoDiretoria' => $temDiretoria
+                        ? $local->diretoria->updated_at->format('d/m/Y')
+                        : 'Sem Diretoria',
+                    'ultimaACI' => $ultimaACI,
+                    'diretoria' => $temDiretoria
+                        ? json_encode(DiretoriaService::getDiretoriaTabela($local->id, DiretoriaService::TIPO_DIRETORIA_LOCAL))
+                        : '',
+                    'mesmoAno' => $mesmoAno
                 ];
             }
-            return $info_local;
+            return $infoLocal;
 
         } catch (\Throwable $th) {
             LogErroService::registrar([
