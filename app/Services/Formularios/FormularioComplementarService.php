@@ -239,7 +239,6 @@ class FormularioComplementarService
         return $resposta;
     }
 
-    
     public static function tratarRespostasComplementaresSinodal(
         array $request,
         string $instanciaId,
@@ -265,170 +264,15 @@ class FormularioComplementarService
         return self::tratarResposta($request, $formularios->referencias);
     }
 
-
-    public static function status(Model $formulario)
+    public static function getRespostas(string $id, string $tipo): array
     {
-        try {
-            $formulario->update([
-                'status' => !$formulario->status
-            ]);
-        } catch (Throwable $th) {
-            Log::error('Erro ao atualizar status', [
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-            throw new Exception('Erro ao Responder');
+        $formulario = self::getFormularioComplementar($id, $tipo);
+        
+        if ($formulario == null) {
+            return [];
         }
-    }
-    public static function templateConfiguracao(Model $formulario) : array
-    {
-        $configuracoes =[];
-        foreach ($formulario->referencias as $parametros) {
-            foreach ($parametros as $campo => $opcoes) {
-                $configuracoes['configuracao'][$campo] = [
-                    'label' => $opcoes['label'],
-                    'campo' => $opcoes['campo'],
-                    'tipo_grafico' => null,
-                    'exportar' => false,
-                    'tipo_dado' => self::QUANTIDADE
-                ];
-            }
-        }
-        return $configuracoes;
-    }
-
-    public static function setConfiguracoesPesquisa(Model $formulario, array $request)
-    {
-        try {
-            $configuracoes = $formulario->configuracao->configuracao;
-            $novas_configuracoes = [];
-            foreach ($configuracoes as $campo => $configuracao) {
-                $novas_configuracoes[$campo]['label'] = $configuracao['label'];
-                $novas_configuracoes[$campo]['campo'] = $configuracao['campo'];
-                $novas_configuracoes[$campo]['exportar'] = isset($request['configuracao'][$campo]['exportar']) ? true : false;
-                $novas_configuracoes[$campo]['tipo_grafico'] = $request['configuracao'][$campo]['tipo_grafico'];
-                $novas_configuracoes[$campo]['tipo_dado'] = $request['configuracao'][$campo]['tipo_dado'];
-            }
-            $formulario->configuracao->update([
-                'configuracao' => $novas_configuracoes
-            ]);
-        } catch (Throwable $th) {
-            Log::error('Erro ao setar a configuração da pesquisa', [
-                'mensagem' => $th->getMessage(),
-                'linha' => $th->getLine(),
-                'arquivo' => $th->getFile()
-            ]);
-            throw new Exception("Erro ao processar configurações pesquisa", 1);
-        }
-    }
-
-    public static function getGraficos(Model $pesquisa)
-    {
-        try {
-            $graficos = [];
-            foreach ($pesquisa->configuracao->configuracao as  $chave => $configuracao) {
-                if (is_null($configuracao['tipo_grafico'])) {
-                    continue;
-                }
-
-                $graficos[] = [
-                    'tamanho' => self::TAMANHO[$configuracao['tipo_grafico']],
-                    'grafico' => PesquisaGraficoFactory::make($configuracao['tipo_grafico'])
-                        ->handle($pesquisa, $configuracao['campo'], $chave)
-                ];
-            }
-            return $graficos;
-        } catch (Throwable $th) {
-            Log::error('Erro ao gerar dados dos gráficos', [
-                'mensagem' => $th->getMessage(),
-                'linha' => $th->getLine(),
-                'arquivo' => $th->getFile()
-            ]);
-            throw new Exception("Erro ao processar get graficos", 1);
-        }
+        
+        $referencias = $formulario->referencias;
 
     }
-
-    public static function getTotalizadores(Model $pesquisa)
-    {
-        try {
-            $retorno = array();
-            $i = 0;
-            foreach ($pesquisa->configuracao->configuracao as $configuracao) {
-                if (is_null($configuracao['tipo_dado'])) {
-                    continue;
-                }
-                $valores_respostas =  $pesquisa->respostas()
-                    ->get()
-                    ->pluck('resposta.'.$configuracao['campo']);
-                if (count($valores_respostas->toArray()) == count($valores_respostas->toArray(), COUNT_RECURSIVE)) {
-                    $valores = $pesquisa->respostas()
-                        ->when(request()->has('filtro'), function ($query) {
-                            return $query->whereHas('usuario', function ($sql) {
-                                return $sql->whereHas(request()->filtro);
-                            });
-                        })
-                        ->get()
-                        ->pluck('resposta.'.$configuracao['campo'])->countBy();
-                } else {
-                    $valores = $pesquisa->respostas()
-                        ->when(request()->has('filtro'), function ($query) {
-                            return $query->whereHas('usuario', function ($sql) {
-                                return $sql->whereHas(request()->filtro);
-                            });
-                        })
-                        ->get()
-                        ->pluck('resposta.'.$configuracao['campo'])->collapse()->countBy();
-                }
-                $retorno[$i]['campo'] = $configuracao['label'];
-                foreach ($valores as $opcao => $valor) {
-                    $retorno[$i]['valores'][] = [
-                        'label' => self::getLabelPeloCampo($pesquisa, $configuracao['campo'], $opcao),
-                        'valor' => $valor
-                    ];
-                }
-                $i++;
-            }
-            return $retorno;
-        } catch (Throwable $th) {
-            Log::error('Erro ao carregar os totalizadores', [
-                'mensagem' => $th->getMessage(),
-                'linha' => $th->getLine(),
-                'arquivo' => $th->getFile()
-            ]);
-            throw new Exception("Erro ao processar get totalizadores", 1);
-        }
-    }
-
-    public static function getLabelPeloCampo(Model $pesquisa, string $campo, string $opcao) : string
-    {
-        try {
-            $referencias = $pesquisa->referencias;
-            foreach ($referencias as $referencia) {
-                foreach ($referencia as $informacoes) {
-                    if ($informacoes['campo'] != $campo) {
-                        continue;
-                    }
-                    if (!isset($informacoes['valores'])) {
-                        return $informacoes['label'];
-                    }
-                    foreach ($informacoes['valores'] as $valor) {
-                        if ($valor['value'] == $opcao) {
-                            return $valor['label'];
-                        }
-                    }
-                }
-            }
-            return '';
-        } catch (Throwable $th) {
-            Log::error('Erro ao buscar label do campo', [
-                'mensagem' => $th->getMessage(),
-                'linha' => $th->getLine(),
-                'arquivo' => $th->getFile()
-            ]);
-            throw new Exception("Erro ao processar get label pelo campo", 1);
-        }
-    }
-
 }

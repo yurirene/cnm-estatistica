@@ -16,7 +16,11 @@ class FormularioComplementarSinodalController extends Controller
                 auth()->user()->sinodal_id,
                 FormularioComplementarService::TIPO_FORMULARIO_SINODAL
             ),
-            'route' => 'formulario-complementar-sinodal'
+            'route' => 'formulario-complementar-sinodal',
+            'respostas' => FormularioComplementarService::getRespostas(
+                auth()->user()->sinodal_id,
+                FormularioComplementarService::TIPO_FORMULARIO_SINODAL
+            )
         ]);
     }
 
