@@ -125,6 +125,8 @@
                             ) !!}
                         </div>
                     </div>
+                    
+                    @include('dashboard.formularios.federacao.complementar')
 
                     @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
                     <div class="btn-group pull-right">

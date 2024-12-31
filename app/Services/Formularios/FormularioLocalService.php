@@ -58,7 +58,15 @@ class FormularioLocalService
                     'programacoes' => $programacoes,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
-                    'local_id' => $request->local_id
+                    'local_id' => $request->local_id,
+                    'campo_extra_sinodal' => FormularioComplementarService::tratarRespostasComplementaresSinodal(
+                        $request->all(),
+                        $request->local_id
+                    ),
+                    'campo_extra_federacao' => FormularioComplementarService::tratarRespostasComplementaresFederacao(
+                        $request->all(),
+                        $request->local_id
+                    )
                 ]
             );
             EstatisticaService::atualizarRelatorioGeral();
