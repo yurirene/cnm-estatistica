@@ -7,6 +7,7 @@ use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
 use App\Models\Parametro;
+use App\Services\ComprovanteAciService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
@@ -312,7 +313,8 @@ class FormularioSinodalService
             
             $totalSocios = $totalizadorAtivas['perfil']['ativos'] + $totalizadorAtivas['perfil']['cooperadores'];
             $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
-            $aciNecessaria = $totalSocios * $paramValorAci * 0.25 * 0.35;
+            $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor);
+            $aciNecessaria = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
             $totalizador['aci_necessaria'] = $aciNecessaria;
 
             return $totalizador;
