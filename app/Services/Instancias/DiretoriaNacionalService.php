@@ -119,11 +119,13 @@ class DiretoriaNacionalService
                 ->count();
 
             $quantidadeFormularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
-                    $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
+                    $sql->whereIn('sinodal_id', $sinodais->pluck('id'))
+                        ->where('status', true);
                 })
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
             $restante = $quantidadeUmps - $quantidadeFormularios;
+
             return [
                 "labels" => ['Entregue', 'Pendente'],
                 "datasets" => [
