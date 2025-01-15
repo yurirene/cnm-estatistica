@@ -50,6 +50,13 @@ class ParametrosSeeder extends Seeder
                 'valor' => '70',
                 'area' => 'estatistica',
                 'tipo' => 'text'
+            ],
+            [
+                'nome' => 'min_aci',
+                'descricao' => 'Porcentagem de ACI mínima(por sócio das federações ativas)',
+                'valor' => '35',
+                'area' => 'tesouraria',
+                'tipo' => 'text'
             ]
         ];
         DB::beginTransaction();

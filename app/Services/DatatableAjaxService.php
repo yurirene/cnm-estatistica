@@ -11,6 +11,7 @@ use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Instancias\DiretoriaService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DatatableAjaxService
 {
@@ -197,20 +198,60 @@ class DatatableAjaxService
                 ->where('status', true)
                 ->get()
                 ->map(function ($item) use ($instancia){
-                    return [
+                    $anoReferencia = EstatisticaService::getAnoReferencia();
+                    $relatorioDoAno = $item->relatorios()
+                        ->where('ano_referencia', $anoReferencia)
+                        ->when($instancia != 'Local', function ($sql) {
+                            return $sql->where('status', EstatisticaService::FORMULARIO_ENTREGUE);
+                        })
+                        ->get();
+                    $retorno = [
                         'id' => $item->id,
                         'nome' => $item->nome,
-                        'entregue' => $item->relatorios()
-                            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
-                            ->when($instancia != 'Local', function ($sql) {
-                                return $sql->where('status', EstatisticaService::FORMULARIO_ENTREGUE);
-                            })
-                            ->get()
-                            ->count(),
+                        'entregue' => $relatorioDoAno->count()
                     ];
+
+                    if ($instancia == 'Sinodal') {
+                        $totalSocios = 0;
+                        $totalRelatoriosFederacoes = 0;
+                        $totalRelatoriosLocais = 0;
+                        $totalLocais = 0;
+                        $totalFederacoes = +$item->federacoes()
+                            ->where('status', true)
+                            ->get()
+                            ->each(function ($federacao) use ($anoReferencia, &$totalSocios, &$totalRelatoriosFederacoes, &$totalRelatoriosLocais, &$totalLocais) {
+                                $relatorio = $federacao->relatorios()
+                                    ->where('ano_referencia', $anoReferencia)
+                                    ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+                                    ->first();
+                                if (!empty($relatorio)) {
+                                    $totalSocios += intval($relatorio->perfil['ativos']) + intval($relatorio->perfil['cooperadores']);
+                                    $totalRelatoriosFederacoes++;
+                                }
+                                $totalLocais += $federacao->locais()
+                                    ->where('status', true)
+                                    ->get()
+                                    ->each(function ($local) use ($anoReferencia, &$totalRelatoriosLocais) {
+                                        $relatorioLocal = $local->relatorios()->where('ano_referencia', $anoReferencia)->first();
+                                        
+                                        if (!empty($relatorioLocal)) {
+                                            $totalRelatoriosLocais++;
+                                        }
+                                    })->count();
+                            })->count();
+                        $valorACI = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+                        $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
+                        $total = $totalSocios * $valorACI * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
+                        $retorno['aci_necessaria'] = "R$" . number_format($total, 2, ',', '.');
+                        $retorno['aci_repassada'] = "R$" . ($relatorioDoAno->isNotEmpty() ? $relatorioDoAno->first()->aci['valor_repassado'] : 0);
+                        $retorno['federacoes'] = "{$totalRelatoriosFederacoes}/{$totalFederacoes}"; 
+                        $retorno['locais'] = "{$totalRelatoriosLocais}/{$totalLocais}"; 
+                    }
+
+                    return $retorno;
                 });
 
-        return datatables()::of($formulariosEntregues)->make();
+            return datatables()::of($formulariosEntregues)->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

@@ -85,14 +85,23 @@ class DiretoriaNacionalService
             $sinodais = Sinodal::where('regiao_id', auth()->user()->regiao_id)->get();
             $quantidadeUmps = Local::whereIn('sinodal_id', $sinodais->pluck('id'))
                 ->where('status', true)
+                ->whereHas('federacao', function ($q) {
+                    return $q->where('status', true);
+                })
                 ->count();
 
             $quantidadeFormularios = FormularioLocal::whereHas('local', function ($sql) use ($sinodais) {
-                    $sql->whereIn('sinodal_id', $sinodais->pluck('id'));
+                    $sql->whereIn('sinodal_id', $sinodais->pluck('id'))
+                        ->where('status', true)
+                        ->whereHas('federacao', function ($q) {
+                            return $q->where('status', true);
+                        });
                 })
                 ->where('ano_referencia', EstatisticaService::getAnoReferencia())
                 ->count();
+
             $restante = $quantidadeUmps - $quantidadeFormularios;
+
             return [
                 "labels" => ['Entregue', 'Pendente'],
                 "datasets" => [

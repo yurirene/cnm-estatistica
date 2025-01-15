@@ -24,7 +24,7 @@
 </div>
 <div class="row">
     <div class="col-md-12 col-sm-12">
-        ACI Recebida: R$<b id="aci-recebida"></b><br>
+        ACI Recebida: R$<b id="aci-recebida"></b> <span class="ml-2">|</span> <span class="ml-2">Necessário para Isenção: R$<b id="aci-necessaria"></b></span><br>
     </div>
 </div>
 <div class="row">
