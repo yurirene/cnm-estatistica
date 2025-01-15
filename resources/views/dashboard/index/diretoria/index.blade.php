@@ -221,7 +221,6 @@
         });
     </script>
 @endpush
-@dd(DashboardHelper::getQualidadeEntregaRelatorios())
 @push('script')
 <script>
     const config_grafico_entrega = {
