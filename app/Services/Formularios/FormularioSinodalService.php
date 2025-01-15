@@ -305,13 +305,12 @@ class FormularioSinodalService
                 ->get();
 
             $totalizadorAtivas['perfil']['ativos'] = 0;
-            $totalizadorAtivas['perfil']['cooperadores'] = 0;
             
             foreach ($formulariosFederacoesAtivas as $formularioFederacaoAtiva) {
                 $totalizadorAtivas = self::somarCampos($formularioFederacaoAtiva, $totalizadorAtivas, true);
             }
             
-            $totalSocios = $totalizadorAtivas['perfil']['ativos'] + $totalizadorAtivas['perfil']['cooperadores'];
+            $totalSocios = $totalizadorAtivas['perfil']['ativos'];
             $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
             $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
             $aciNecessaria = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
@@ -332,10 +331,10 @@ class FormularioSinodalService
     public static function somarCampos(object $formulario, array $totalizador, bool $soAci = false): array
     {
         $totalizador['perfil']['ativos'] += (isset($formulario->perfil['ativos']) ? intval($formulario->perfil['ativos']) : 0);
-        $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
         if ($soAci) {
             return $totalizador;
         }
+        $totalizador['perfil']['cooperadores'] += (isset($formulario->perfil['cooperadores']) ? intval($formulario->perfil['cooperadores']) : 0);
         $totalizador['aci'] += isset($formulario->aci['valor']) ? FormHelper::converterParaFloat($formulario->aci['valor']) : 0;
         $totalizador['perfil']['homens'] += (isset($formulario->perfil['homens']) ? intval($formulario->perfil['homens']) : 0);
         $totalizador['perfil']['mulheres'] += (isset($formulario->perfil['mulheres']) ? intval($formulario->perfil['mulheres']) : 0);
