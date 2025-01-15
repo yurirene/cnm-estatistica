@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Estatistica;
+namespace App\Services\Formularios;
 
 /**
  * Classe responsável por validar os campos dos formulários
