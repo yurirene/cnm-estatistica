@@ -45,6 +45,7 @@
             },
             success: function(json) {
                 $('#aci-recebida').text(json.data.aci?.formatMoney(2, "", ".", ","))
+                $('#aci-necessaria').text(json.data.aci_necessaria?.formatMoney(2, "", ".", ","))
                 $('#resumo-ativos').text(json.data.perfil.ativos)
                 $('#resumo-cooperadores').text(json.data.perfil.cooperadores)
                 $('#resumo-homens').text(json.data.perfil.homens)
