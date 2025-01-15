@@ -66,6 +66,10 @@
                                                 <th class="text-center">#</th>
                                                 <th class="text-center">Sinodal</th>
                                                 <th class="text-center">Status</th>
+                                                <th class="text-center">Federações</th>
+                                                <th class="text-center">Locais</th>
+                                                <th class="text-center">ACI Repassada</th>
+                                                <th class="text-center">ACI Mínima</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -296,6 +300,10 @@
                         </span>`;
                     }
                 },
+                {data: 'federacoes'},
+                {data: 'locais'},
+                {data: 'aci_repassada'},
+                {data: 'aci_necessaria'}
             ]
         });
     });

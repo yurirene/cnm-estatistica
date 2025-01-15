@@ -313,13 +313,12 @@ class FormularioSinodalService
             
             $totalSocios = $totalizadorAtivas['perfil']['ativos'] + $totalizadorAtivas['perfil']['cooperadores'];
             $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
-            $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor);
+            $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
             $aciNecessaria = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
             $totalizador['aci_necessaria'] = $aciNecessaria;
 
             return $totalizador;
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),

@@ -10,6 +10,13 @@ use Throwable;
 
 class ComprovanteAciService
 {
+
+    /**
+     * Porcentagem a ser passada pela sinodal da ACI para a CNM
+     * @var float
+     */
+    public const PORCENTAGEM_SINODAL = 0.25;
+    
     public static function store(Request $request) : ComprovanteACI
     {
         try {
