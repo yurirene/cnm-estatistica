@@ -125,7 +125,7 @@ class ComprovanteAciDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('Bfrtipl')
-            ->orderBy([2, 7])
+            ->orderBy(7)
             ->parameters([
                 "language" => [
                     "url" => "/vendor/datatables/portugues.json"
