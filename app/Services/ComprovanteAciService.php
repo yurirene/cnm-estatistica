@@ -3,9 +3,14 @@
 namespace App\Services;
 
 use App\Models\ComprovanteACI;
+use App\Models\Federacao;
+use App\Models\FormularioFederacao;
+use App\Models\Parametro;
+use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\FormularioSinodalService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class ComprovanteAciService
@@ -81,5 +86,45 @@ class ComprovanteAciService
             ->get()
             ->pluck('ano', 'ano')
             ->toArray();
+    }
+
+    public static function totalizadorAciNecessaria($id)
+    {
+        try {
+            $federacoesAtivas = Federacao::where('sinodal_id', $id)
+                ->where('status', true)
+                ->get()
+                ->pluck('id');
+            $formulariosFederacoesAtivas = FormularioFederacao::whereIn('federacao_id', $federacoesAtivas)
+                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+                ->get();
+
+            $totalizadorAtivas['perfil']['ativos'] = 0;
+            
+            foreach ($formulariosFederacoesAtivas as $formularioFederacaoAtiva) {
+                $totalizadorAtivas = FormularioSinodalService::somarCampos(
+                    $formularioFederacaoAtiva,
+                    $totalizadorAtivas,
+                    true
+                );
+            }
+            
+            $totalSocios = $totalizadorAtivas['perfil']['ativos'];
+            $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+            $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
+            $aciNecessaria = $totalSocios * $paramValorAci * self::PORCENTAGEM_SINODAL * $valorMinimoACI;
+            
+            return [
+                'valor' => number_format($aciNecessaria, 2, ',', '.'),
+                'total_socios' => $totalSocios
+            ];
+        } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            throw new Exception("Erro no Totalizador", 1);
+        }
     }
 }
