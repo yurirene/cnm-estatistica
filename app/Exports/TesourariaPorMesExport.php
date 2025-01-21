@@ -45,7 +45,7 @@ class TesourariaPorMesExport implements
         $this->dataInicio = $dataInicio;
         $this->dataFim = $dataFim;
         $this->mes = $mes;
-        $this->baseUrl = config('app.url');
+        $this->baseUrl = 'https://ump.app.br';
         $this->comComprovante = $comComprovante;
 
         $this->totalizadores = TesourariaService::totalizadores([
