@@ -21,7 +21,7 @@
                             Ativos: <b id="ativos"></b><br>
                             Cooperadores: <b id="cooperadores"></b><br>
                             Homens: <b id="homens"></b><br>
-                            Muljeres: <b id="mulheres"></b><br>
+                            Mulheres: <b id="mulheres"></b><br>
                             Menor de 19: <b id="menor19"></b><br>
                             19 a 23: <b id="de19a23"></b><br>
                             24 a 29: <b id="de24a29"></b><br>
