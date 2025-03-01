@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class AcessoSeeder extends Seeder
@@ -24,6 +25,7 @@ class AcessoSeeder extends Seeder
                 PermissionsSeeder::class,
                 PermissionRoleSeeder::class,
             ]);
+            Artisan::call('cache:clear');
         } catch (\Throwable $th) {
             dd($th->getMessage());
         }

@@ -82,7 +82,8 @@ class RolesSeeder extends Seeder
                 Role::updateOrCreate([
                     'slug' => $role['slug']
                 ],
-                $role);
+                $role)
+                ->clearCache();
             }
             DB::commit();
         } catch (\Throwable $th) {

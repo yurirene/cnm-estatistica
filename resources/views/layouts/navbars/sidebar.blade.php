@@ -195,6 +195,14 @@
                     </a>
                 </li>
                 @endcan
+                
+                @can('rota-permitida', ['dashboard.pedidos.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.pedidos.index') }}">
+                        <i class="fas fa-shopping-cart"></i> Pedidos
+                    </a>
+                </li>
+                @endcan
                 @endcannot
 
                 @can('rota-permitida', ['dashboard.digestos.index'])
@@ -249,7 +257,7 @@
                 @endcan
 
                 @cannot('isAdmin')
-                @can('rota-permitida', 'apps', [])
+                @can('rota-permitida', 'apps')
                 <a class="nav-link"
                     href="#meusapps"
                     data-toggle="collapse"

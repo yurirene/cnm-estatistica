@@ -70,7 +70,7 @@ class EstoqueProdutosDataTable extends DataTable
                     ->columns($this->getColumns())
                     ->minifiedAjax(route('dashboard.produtos.datatable.estoque'))
                     ->dom('Bfrtip')
-                    ->orderBy(2)
+                    ->orderBy(1)
                     ->buttons(
                         Button::make('create')
                             ->text('<i class="fas fa-plus"></i> Novo Registro')
