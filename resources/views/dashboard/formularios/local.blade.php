@@ -43,6 +43,9 @@
                                         <span>Responder</span>
                                         <span class="badge bg-danger blob">{{$ano_referencia}}</span>
                                     </button>
+                                    <a href="{{ route('dashboard.coletor-dados.index') }}" id="coleta-dados" class="btn btn-primary mb-2 ml-1">
+                                        <span class="text-white">Coletor de Dados</span>
+                                    </a>
                                 @endif
                             </div>
                         </div>
@@ -122,30 +125,15 @@
 
                     <h3>ACI</h3>
                     @include('dashboard.formularios.local.aci')
-
-                    @if(count(auth()->user()->locais) > 1)
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('local_id', 'UMP Local') !!}
-                                {!! Form::select(
-                                    'local_id',
-                                    auth()->user()->locais->pluck('nome', 'id'),
-                                    null,
-                                    ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']
-                                ) !!}
-                            </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {!! Form::hidden(
+                                'local_id',
+                                auth()->user()->local_id,
+                                ['class' => 'form-control','required'=>true, 'autocomplete' => 'off']
+                            ) !!}
                         </div>
-                        @else
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::hidden(
-                                    'local_id',
-                                    auth()->user()->locais()->first()->id,
-                                    ['class' => 'form-control','required'=>true, 'autocomplete' => 'off']
-                                ) !!}
-                            </div>
-                        </div>
-                    @endif
+                    </div>
 
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}

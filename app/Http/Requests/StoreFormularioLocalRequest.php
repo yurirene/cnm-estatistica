@@ -109,7 +109,7 @@ class StoreFormularioLocalRequest extends FormRequest
      */
     public function rules()
     {
-        $role = Auth::user()->roles->first()->name;
+        $role = Auth::user()->role->name;
         $data = [
             'perfil' => ['array', 'required', 'min:8'],
             'escolaridade' => ['array', 'required', 'min:5'],

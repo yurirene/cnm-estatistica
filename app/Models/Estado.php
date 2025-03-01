@@ -18,6 +18,6 @@ class Estado extends Model
      */
     public function scopeDaMinhaRegiao($query)
     {
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
+        return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 }

@@ -8,13 +8,14 @@ use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
 use App\Models\Diretorias\DiretoriaSinodal;
 use App\Models\Estatistica\Ranking;
-use App\Traits\Auditable;
+
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class Sinodal extends Model
 {
@@ -46,7 +47,7 @@ class Sinodal extends Model
 
     public function usuario()
     {
-        return $this->belongsToMany(User::class, 'usuario_sinodal');
+        return $this->hasOne(User::class, 'sinodal_id');
     }
 
     public function relatorios()
@@ -84,11 +85,38 @@ class Sinodal extends Model
         if (auth()->user()->admin) {
             return $query;
         }
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id')->toArray());
+        return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 
     public function diretoria()
     {
         return $this->hasOne(DiretoriaSinodal::class, 'sinodal_id');
+    }
+
+    protected function getDadosFederacaoLocalCacheKey(): string
+    {
+        return sprintf('sinodal-%s-dados-federacao-local', $this->id);
+    }
+
+    public function clearCache(): bool
+    {
+        return Cache::forget($this->getDadosFederacaoLocalCacheKey());
+    }
+
+    public function getDadosFederacaoLocalAttribute(): array
+    {     
+        $dados = Cache::remember(
+            $this->getDadosFederacaoLocalCacheKey(),
+            now()->addDay(),
+            function () {
+                return [
+                    'regiao' => $this->regiao->nome,
+                    'nro_federacoes' => $this->federacoes->count(),
+                    'nro_locais' => $this->locais->count()
+                ];
+            }
+        );
+
+        return $dados;
     }
 }

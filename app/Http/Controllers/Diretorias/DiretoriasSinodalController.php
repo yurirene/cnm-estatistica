@@ -16,8 +16,10 @@ class DiretoriasSinodalController extends Controller
     {
         return view('dashboard.diretoria.index', [
             'tipo' => 'Sinodal',
-            'cargos' => DiretoriaService::getCargos(),
-            'diretoria' => DiretoriaService::getDiretoria()
+            'cargos' => DiretoriaService::getCargos(DiretoriaService::TIPO_DIRETORIA_SINODAL),
+            'diretoria' => DiretoriaService::getDiretoria(DiretoriaService::TIPO_DIRETORIA_SINODAL, auth()->user()->sinodal_id),
+            'route' => 'dashboard.diretoria-sinodal.update',
+            'secretarias' => DiretoriaService::getSecretarios(),
         ]);
     }
 

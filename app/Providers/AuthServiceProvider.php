@@ -30,30 +30,30 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('isAdmin', function (User $user) {
             return $user->admin == true;
         });
-
-        Gate::define('cnm', function (User $user) {
-            return in_array('cnm', $user->perfis->pluck('nome')->toArray());
+        
+        Gate::define('diretoria', function (User $user) {
+            return 'diretoria' == $user->role->name;
         });
 
         Gate::define('secretario', function (User $user) {
-            return in_array('secretario', $user->perfis->pluck('nome')->toArray());
+            return 'secretario' == $user->role->name;
         });
 
         Gate::define('sinodal', function (User $user) {
-            return in_array('sinodal', $user->perfis->pluck('nome')->toArray());
+            return 'sinodal' == $user->role->name;
         });
 
         Gate::define('federacao', function (User $user) {
-            return in_array('federacao', $user->perfis->pluck('nome')->toArray());
+            return 'federacao' == $user->role->name;
         });
 
         Gate::define('local', function (User $user) {
-            return in_array('local', $user->perfis->pluck('nome')->toArray());
+            return 'local' == $user->role->name;
         });
 
         Gate::define('permitido', function(User $user, ...$perfis) {
             foreach ($perfis as $perfil) {
-                if (in_array($perfil, $user->perfis->pluck('nome')->toArray())) {
+                if ($perfil == $user->role->name) {
                     return true;
                 }
             }
@@ -68,7 +68,7 @@ class AuthServiceProvider extends ServiceProvider
 
             if (
                 empty($instancia)
-                || $user->roles->first()->name != User::ROLE_SINODAL
+                || $user->role->name != User::ROLE_SINODAL
             ) {
                 return false;
             }
@@ -82,6 +82,19 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return $retorno;
+        });
+
+
+        Gate::define('rota-permitida', function(User $user, ...$rotas) {
+            $permissoes = $user->role
+                ->permissions
+                ->pluck('slug')
+                ->toArray();
+            foreach ($rotas as $rota) {
+                if (in_array($rota, $permissoes)) {
+                    return true;
+                }
+            }
         });
 
     }

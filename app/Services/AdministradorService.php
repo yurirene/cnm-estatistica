@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Estado;
 use App\Models\Parametro;
 use App\Models\Regiao;
-use App\Models\RegistroLogin;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
 use Carbon\Carbon;
@@ -17,11 +16,8 @@ class AdministradorService
     public static function getTotalizadores()
     {
         return [
-            'total_acessos_hoje' => self::getTotalAcessosHoje(),
             'total_relatorios_entregues' => self::getTotalRelatoriosEntregues(),
             'total_relatorios_pendentes' => self::getTotalRelatoriosPendentes(),
-            'total_acessos_trinta_dias' => self::getTotalAcessosTrintaDias(),
-            'grafico_acesso_trinta_dias' => self::getAcessosTrintaDias(),
             'grafico_entrega_formulario_por_regiao' => self::getGraficoEntregaRelatorioPorRegiao(),
         ];
 
@@ -69,75 +65,6 @@ class AdministradorService
             })
             ->get()
             ->count();
-    }
-
-    public static function getTotalAcessosHoje()
-    {
-        try {
-            $hoje = Carbon::now()->format('Y-m-d');
-            $total = RegistroLogin::whereDate('created_at', $hoje)
-                ->get()
-                ->count();
-            return $total;
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-        }
-    }
-    public static function getTotalAcessosTrintaDias()
-    {
-        try {
-            $hoje = Carbon::now()->format('Y-m-d');
-            $trinta_dias_atras = Carbon::now()->subMonth()->format('Y-m-d');
-            $total = RegistroLogin::whereBetween('created_at', [$trinta_dias_atras, $hoje])
-                ->get()
-                ->count();
-            return $total;
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-        }
-    }
-
-    public static function getAcessosTrintaDias()
-    {
-        try {
-            $hoje = Carbon::now()->format('Y-m-d');
-            $trinta_dias_atras = Carbon::now()->subMonth()->format('Y-m-d');
-
-            $logins = RegistroLogin::select(DB::raw('DATE(created_at) as dia'), DB::raw('count(*) as quantidade'))
-                ->whereBetween('created_at', [$trinta_dias_atras, $hoje])
-                ->groupBy('dia')
-                ->get()
-                ->pluck('quantidade', 'dia');
-
-            return [
-                'labels' => self::getDataFormatadaGrafico($logins->toArray()),
-                'datasets' => [
-                    [
-                        'label' => 'Quantidade de Acessos',
-                        'data' => $logins->values()->toArray(),
-                        'borderColor' => '#ffa600',
-                        'backgroundColor' => '#ff6361',
-                        'tension' => 0.4
-                    ],
-                ]
-            ];
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-        }
-
-
     }
 
     public static function getDataFormatadaGrafico(array $dados)

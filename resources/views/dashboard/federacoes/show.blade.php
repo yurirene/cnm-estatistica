@@ -59,8 +59,20 @@
                     <hr>
                     <div class="row">
                         <div class="col">
-                            <h3><span class="badge badge-primary">Último Formulário:</span> {{ $informacoes['ultimo_formulario'] }}</h3>
+                            <h3>
+                                <span class="badge badge-primary">Último Formulário:</span>
+                                {{ $informacoes['ultimo_formulario'] }}
+                            </h3>
+                            <button
+                                type="button"
+                                class="btn btn-primary mt-3"
+                                data-toggle="modal"
+                                data-target="#modal_diretoria_federacao"
+                            >
+                                <i class="fas fa-users"></i> Diretoria
+                            </button>
                         </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col">
@@ -120,22 +132,109 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal_diretoria"
+    data-backdrop="static"
+    data-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="modal_diretoriaLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_diretoriaLabel">
+                    Diretoria
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Informação atualizada em: <span id="dir_atualizacao"></span></h5>
+                <table class="table table-striped">
+                    <thead>
+                        <th>Cargo</th>
+                        <th>Nome</th>
+                        <th>Contato</th>
+                    </thead>
+                    <tbody id="dir_cargos">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_diretoria_federacao"
+    data-backdrop="static"
+    data-keyboard="false"
+    aria-labelledby="modal_diretoriaLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_diretoria_title">
+                    Diretoria
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Informação atualizada em: {{ $diretoria['atualizacao'] }}</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Cargo</th>
+                        <th>Nome</th>
+                        <th>Contato</th>
+                    </tr>
+                    @foreach($diretoria['cargos'] as $cargo => $dado)
+                    <tr>
+                        <td>{{ $cargo }}</td>
+                        <td>{{ $dado['nome'] }}</td>
+                        <td>{{ $dado['contato'] }}</td>
+                    </tr>
+                    @endforeach
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('js')
 <script>
-    Morris.Donut({
-        element: 'donut-example',
-        data: [
-            {label: "FAMP", value: 12},
-            {label: "FEPAM", value: 30},
-            {label: "FMS", value: 20}
-        ],
-        resize: true,
-        formatter: function (y, data) {
-            return data.value + ' Sócios'
-        },
-    });
+    $('#modal_diretoria').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var dados = button.data('dados');
+        
+        $('#dir_cargos').empty();
+        
+        Object.entries(dados.cargos).forEach(([cargo, dado]) => {
+            $('#dir_cargos').append(`
+                <tr>
+                    <td>${cargo}</td>
+                    <td>${dado.nome ?? 'Sem Registro'}</td>
+                    <td>${dado.contato ?? 'Sem Registro'}</td>
+                </tr>
+            `)
+        })
+        
+        $('#dir_cargos').append(`
+            <tr>
+                <td>Secretários de Atividades</td>
+                <td colspan="2">${dados.secretarios ?? 'Sem Secretários'}</td>
+            </tr>
+        `)
 
+        $('#dir_atualizacao').text(dados.atualizacao)
+    });
 </script>
 @endpush

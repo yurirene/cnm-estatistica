@@ -80,155 +80,156 @@
                         <i class="fas fa-home"></i> Início
                     </a>
                 </li>
-
-                @canAtLeast(['dashboard.diretoria.index'])
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.diretoria.index') }}">
-                        <i class="fas fa-bullhorn"></i> Diretoria
-                    </a>
-                </li>
-                @endCanAtLeast
-
-                @canAtLeast(['dashboard.usuarios.index'])
+                @can('rota-permitida', ['dashboard.usuarios.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.usuarios.index') }}">
                         <i class="fas fa-users"></i> Usuários
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
 
-                @canAtLeast(['dashboard.diretoria-sinodal.index'])
+                @cannot('isAdmin')
+                @can('rota-permitida', ['dashboard.diretoria-sinodal.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.diretoria-sinodal.index') }}">
                         <i class="fas fa-users"></i> Diretoria
                     </a>
                 </li>
-
-                @endCanAtLeast
-
-
-                @canAtLeast(['dashboard.sinodais.index'])
+                @endcan
+                @can('rota-permitida', ['dashboard.diretoria-federacao.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria-federacao.index') }}">
+                        <i class="fas fa-users"></i> Diretoria
+                    </a>
+                </li>
+                @endcan
+                @can('rota-permitida', ['dashboard.diretoria-local.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.diretoria-local.index') }}">
+                        <i class="fas fa-users"></i> Diretoria
+                    </a>
+                </li>
+                @endcan
+                @endcannot
+                @can('rota-permitida', ['dashboard.sinodais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.sinodais.index') }}">
                         <i class="fas fa-object-group"></i> Sinodais
                     </a>
                 </li>
-                @endCanAtLeast
-                @canAtLeast(['dashboard.federacoes.index'])
+                @endcan
+                
+                @cannot('isAdmin')
+                @can('rota-permitida', ['dashboard.federacoes.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.federacoes.index') }}">
                         <i class="fas fa-layer-group"></i> Federações
                     </a>
                 </li>
-
-
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-sinodais.index') }}">
                         <i class="fas fa-file"></i> Formulário Estatístico
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
+                @endcannot
 
-
-                @canAtLeast(['dashboard.comprovante-aci.index'])
+                @cannot('isAdmin')
+                @can('rota-permitida', ['dashboard.comprovante-aci.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.comprovante-aci.index') }}">
                         <i class="fas fa-file-invoice-dollar"></i> Comprovante de ACI
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
+                @endcannot
 
-                @canAtLeast(['dashboard.pesquisas.index'])
+                @can('rota-permitida', ['dashboard.pesquisas.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.pesquisas.index') }}">
                         <i class="fas fa-question"></i> Formulário de Pesquisa
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
 
-                @canAtLeast(['dashboard.locais.index'])
+                @cannot('isAdmin')
+                @can('rota-permitida', ['dashboard.locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.locais.index') }}">
                         <i class="fas fa-church"></i> UMP Local
                     </a>
                 </li>
 
-                @endCanAtLeast
-                {{-- @canAtLeast(['dashboard.atividades.index'])
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.atividades.index') }}">
-                        <i class="fas fa-calendar"></i> Atividades
-                    </a>
-                </li>
-                @endCanAtLeast --}}
-                @canAtLeast(['dashboard.estatistica.index'])
+                @endcan
+                @endcannot
+
+                @can('rota-permitida', ['dashboard.estatistica.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.estatistica.index') }}">
                         <i class="fas fa-chart-line"></i> Estatística
                     </a>
                 </li>
-                @endCanAtLeast
-                @canAtLeast(['dashboard.comissao-executiva.index'])
+                @endcan
+
+                @can('rota-permitida', ['dashboard.comissao-executiva.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.comissao-executiva.index') }}">
                         <i class="fas fa-gavel"></i> Comissão Executiva
                     </a>
                 </li>
-                @endCanAtLeast
-                @canAtLeast(['dashboard.ce-sinodal.index'])
+                @endcan
+
+                @cannot('isAdmin')
+                @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.ce-sinodal.index') }}">
                         <i class="fas fa-gavel"></i> Comissão Executiva
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
 
-                @canAtLeast(['dashboard.produtos.index'])
+                @can('rota-permitida', ['dashboard.produtos.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.produtos.index') }}">
                         <i class="fas fa-store"></i> Produtos
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
+                
+                @can('rota-permitida', ['dashboard.pedidos.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.pedidos.index') }}">
+                        <i class="fas fa-shopping-cart"></i> Pedidos
+                    </a>
+                </li>
+                @endcan
+                @endcannot
 
-                @canAtLeast(['dashboard.demandas.index'])
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.demandas.index') }}">
-                        <i class="fas fa-project-diagram"></i> Demandas
-                    </a>
-                </li>
-                @endCanAtLeast
-                @canAtLeast(['dashboard.minhas-demandas.index'])
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.minhas-demandas.index') }}">
-                        <i class="fas fa-project-diagram"></i> Minhas Demandas
-                    </a>
-                </li>
-                @endCanAtLeast
-                @canAtLeast(['dashboard.digestos.index'])
+                @can('rota-permitida', ['dashboard.digestos.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.digestos.index') }}">
                         <i class="fas fa-file-alt"></i> Digestos
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
 
-                @canAtLeast(['dashboard.formularios-locais.index'])
-
+                @cannot('isAdmin')
+                @can('rota-permitida', ['dashboard.formularios-locais.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-locais.index') }}">
                         <i class="fas fa-file"></i> Formulário Estatístico
                     </a>
                 </li>
-                @endCanAtLeast
-                @canAtLeast(['dashboard.formularios-federacoes.index'])
+                @endcan
+                @can('rota-permitida', ['dashboard.formularios-federacoes.index'])
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formularios-federacoes.index') }}">
                         <i class="fas fa-file"></i> Formulário Estatístico
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
+                @endcannot
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.tutoriais.index') }}">
@@ -237,25 +238,26 @@
                 </li>
 
 
-                @canAtLeast(['dashboard.apps.liberacao'])
+                @can('rota-permitida', ['dashboard.apps.liberacao'])
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.apps.liberacao') }}">
                         <i class="fas fa-key"></i> Liberar Apps
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
 
-                @canAtLeast(['dashboard.avisos.index'])
+                @can('rota-permitida', ['dashboard.avisos.index'])
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.avisos.index') }}">
                         <i class="fas fa-bullhorn"></i> Avisos
                     </a>
                 </li>
-                @endCanAtLeast
+                @endcan
 
-                @can('apps', [])
+                @cannot('isAdmin')
+                @can('rota-permitida', 'apps')
                 <a class="nav-link"
                     href="#meusapps"
                     data-toggle="collapse"
@@ -264,7 +266,7 @@
                     <i class="fas fa-tablet-alt"></i> Meus Apps
                 </a>
                 <ul class="collapse list-unstyled" id="meusapps" >
-                    @can('apps', 'sites')
+                    @can('rota-permitida', 'apps', 'sites')
                     <li class="nav-item ml-3">
                         <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
                             <i class="fab fa-chrome"></i>
@@ -272,7 +274,7 @@
                         </a>
                     </li>
                     @endcan
-                    @can('apps', 'tesouraria')
+                    @can('rota-permitida', 'apps', 'tesouraria')
                     <li class="nav-item ml-3">
                         <a  class="nav-link" href="{{ route('dashboard.apps.tesouraria.index') }}">
                             <i class="fas fa-dollar-sign"></i>
@@ -282,6 +284,7 @@
                     @endcan
                 </ul>
                 @endcan
+                @endcannot
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.helpdesk.index') }}">

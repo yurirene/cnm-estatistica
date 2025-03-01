@@ -30,7 +30,7 @@ class ComprovanteAciDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.comprovante-aci',
                     'id' => $sql->id,
-                    'status' => auth()->user()->roles->first()->name == 'tesouraria',
+                    'status' => auth()->user()->role->name == 'tesouraria',
                     'edit' => false,
                     'delete' => false,
                     'abrir' => $sql->path
@@ -201,6 +201,6 @@ class ComprovanteAciDataTable extends DataTable
      */
     public function verificaSeUsarioTesouraria(): bool
     {
-        return auth()->user()->roles->first()->name == User::ROLE_TESOURARIA;
+        return auth()->user()->role->name == User::ROLE_TESOURARIA;
     }
 }

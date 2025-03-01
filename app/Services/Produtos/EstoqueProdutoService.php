@@ -7,7 +7,8 @@ use App\Models\Produtos\Produto;
 
 class EstoqueProdutoService
 {
-
+    public const TIPO_ENTRADA = 1;
+    public const TIPO_SAIDA = 0;
     public const TIPOS = [
         0 => 'Saída',
         1 => 'Entrada'

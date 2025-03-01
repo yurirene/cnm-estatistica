@@ -51,18 +51,18 @@ class Lancamento extends Model
      */
     public function scopeDaMinhaInstancia($query)
     {
-        $role = auth()->user()->roles->first()->name;
+        $role = auth()->user()->role->name;
 
         if ($role == User::ROLE_SINODAL) {
-            $query->where('sinodal_id', auth()->user()->sinodais->first()->id);
+            $query->where('sinodal_id', auth()->user()->sinodal_id);
         }
 
         if ($role == User::ROLE_FEDERACAO) {
-            $query->where('federacao_id', auth()->user()->federacoes->first()->id);
+            $query->where('federacao_id', auth()->user()->federacao_id);
         }
 
         if ($role == User::ROLE_LOCAL) {
-            $query->where('local_id', auth()->user()->locais->first()->id);
+            $query->where('local_id', auth()->user()->local_id);
         }
 
         return $query;

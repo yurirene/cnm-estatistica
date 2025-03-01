@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Diretorias\DiretoriaLocal;
 use App\Traits\GenericTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,9 +39,14 @@ class Local extends Model
         return $this->belongsTo(Estado::class);
     }
 
+    public function diretoria(): HasOne
+    {
+        return $this->hasOne(DiretoriaLocal::class, 'local_id');
+    }
+
     public function usuario()
     {
-        return $this->belongsToMany(User::class, 'usuario_local');
+        return $this->hasOne(User::class, 'local_id');
     }
 
     public function relatorios()
@@ -48,14 +54,9 @@ class Local extends Model
         return $this->hasMany(FormularioLocal::class, 'local_id');
     }
 
-    public function diretoria(): HasOne
-    {
-        return $this->hasOne(Diretoria::class, 'local_id');
-    }
-
     public function scopeMinhaFederacao($query)
     {
-        return $query->whereIn('federacao_id', Auth::user()->federacoes->pluck('id'));
+        return $query->where('federacao_id', auth()->user()->federacao_id);
     }
 
     public function getDataOrganizacaoFormatadaAttribute()
@@ -65,11 +66,11 @@ class Local extends Model
 
     public function scopeDaMinhaRegiao($query)
     {
-        return $query->whereIn('regiao_id', auth()->user()->regioes->pluck('id'));
+        return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 
     public function scopeMinhaSinodal($query)
     {
-        return $query->whereIn('sinodal_id', auth()->user()->sinodais->pluck('id'));
+        return $query->where('sinodal_id', auth()->user()->sinodal_id);
     }
 }

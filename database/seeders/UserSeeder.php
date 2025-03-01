@@ -23,8 +23,10 @@ class UserSeeder extends Seeder
                 'admin' => true
             ]);
 
-            $usuario->regioes()->sync([1]);
-            $usuario->roles()->sync([1]);
+            $usuario->update([
+                'role_id' => 1,
+                'regiao_id' => 1
+            ]);
             
         } catch (\Throwable $th) {
             dd($th->getMessage());

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission as ModelsPermission;
+use App\Models\Role as ModelsRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Yajra\Acl\Models\Permission;
-use Yajra\Acl\Models\Role;
 
 class PermissionRoleSeeder extends Seeder
 {
@@ -18,13 +18,11 @@ class PermissionRoleSeeder extends Seeder
                     'sinodais',
                     'federacoes',
                     'umps-locais',
-                    'atividades',
                     'formularios-locais',
                     'pesquisas',
                     'datatables',
                     'secretaria-estatistica',
                     'secretaria-produtos',
-                    'demandas',
                     'digestos',
                     'tutoriais',
                     'acesso-apps',
@@ -35,12 +33,11 @@ class PermissionRoleSeeder extends Seeder
             'diretoria' => [
                 'resources' => [
                     'sinodais',
-                    'atividades',
-                    'minhas-demandas',
                     'tutoriais',
                     'detalhamento',
                     'helpdesk',
-                    'comissao-executiva'
+                    'comissao-executiva',
+                    'pedidos'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -87,7 +84,7 @@ class PermissionRoleSeeder extends Seeder
                     'formularios-federacoes',
                     'tutoriais',
                     'helpdesk',
-                    'diretoria'
+                    'diretoria-federacao',
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -106,7 +103,8 @@ class PermissionRoleSeeder extends Seeder
                     'formularios-locais',
                     'tutoriais',
                     'helpdesk',
-                    'diretoria'
+                    'diretoria-local',
+                    'coletor-dados'
                 ],
                 'permissions' => [
                     'dashboard.pesquisas.index',
@@ -114,59 +112,32 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.responder',
                     'dashboard.locais.update-info',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
                 ]
             ],
             'tesouraria' => [
                 'resources' => [
                     'comprovante-aci',
-                    'minhas-demandas',
                     'helpdesk'
+                ],
+                'permissions' => [
+                    'dasbhoard.produtos.index',
+                    'dashboard.produtos.datatable.produtos',
+                    'dashboard.produtos.datatable.estoque',
+                    'dashboard.produtos.datatable.consignacao',
                 ]
             ],
             'executiva' => [
                 'resources' => [
-                    'demandas',
-                    'minhas-demandas',
                     'digestos',
                     'helpdesk',
                     'comissao-executiva'
                 ]
             ],
-            'secretaria_eventos' => [
-                'resources' => [
-                    'atividades',
-                    'eventos',
-                    'minhas-demandas',
-                    'helpdesk'
-                ],
-                'permissions' => [
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.status',
-                    'dashboard.pesquisas.relatorio',
-                    'dashboard.pesquisas.relatorio.excel'
-                ]
-            ],
-            'secretaria_evangelismo' => [
-                'resources' => [
-                    'atividades',
-                    'minhas-demandas',
-                    'helpdesk'
-                ],
-                'permissions' => [
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.status',
-                    'dashboard.pesquisas.relatorio',
-                    'dashboard.pesquisas.relatorio.excel'
-                ]
-            ],
             'secreatria_produtos' => [
                 'resources' => [
-                    'atividades',
                     'secretaria-produtos',
-                    'minhas-demandas',
+                    'pedidos',
                     'helpdesk'
                 ],
                 'permissions' => [
@@ -175,34 +146,11 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.pesquisas.status',
                     'dashboard.pesquisas.relatorio',
                     'dashboard.pesquisas.relatorio.excel'
-                ]
-            ],
-            'secretaria_responsabilidade' => [
-                'resources' => [
-                    'atividades',
-                    'minhas-demandas',
-                    'helpdesk'
-                ],
-                'permissions' => [
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.status',
-                    'dashboard.pesquisas.relatorio',
-                    'dashboard.pesquisas.relatorio.excel'
-                ]
-            ],
-            'secretaria_comunicacao' => [
-                'resources' => [
-                    'atividades',
-                    'minhas-demandas',
-                    'helpdesk'
                 ]
             ],
             'secretaria_estatistica' => [
                 'resources' => [
-                    'atividades',
                     'secretaria-estatistica',
-                    'minhas-demandas',
                     'avisos',
                     'helpdesk'
                 ],
@@ -212,32 +160,49 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.formularios-entregues'
                 ]
             ],
-            'secretaria_educacao_crista' => [
+            'secretariado_comum' => [
                 'resources' => [
-                    'atividades',
-                    'minhas-demandas',
                     'helpdesk'
+                ],
+                'permissions' => [
+                    'dashboard.pesquisas.index',
+                    'dashboard.pesquisas.show',
+                    'dashboard.pesquisas.status',
+                    'dashboard.pesquisas.relatorio',
+                    'dashboard.pesquisas.relatorio.excel'
                 ]
             ],
+            'presidente' => [
+                'resources' => [
+                    'helpdesk',
+                    'comissao-executiva'
+                ],
+                'permissions' => [
+                    'dasbhoard.produtos.index',
+                    'dashboard.produtos.datatable.produtos',
+                    'dashboard.produtos.datatable.estoque',
+                    'dashboard.produtos.datatable.consignacao',
+                ]
+            ]
         ];
         DB::table('permission_role')->truncate();
         $permissions = [];
         try {
 
             foreach ($roles_permissions as $role_slug => $permissions_array) {
-                $role = Role::where('slug', $role_slug)->first();
-                $permissions = Permission::whereIn('resource', $permissions_array['resources'])
+                $role = ModelsRole::where('slug', $role_slug)->first();
+                $permissions = ModelsPermission::whereIn('resource', $permissions_array['resources'])
                     ->get()
                     ->pluck('id')
                     ->toArray();
                 if (isset($permissions_array['permissions'])) {
-                    $array_permission = Permission::whereIn('slug', $permissions_array['permissions'])
+                    $array_permission = ModelsPermission::whereIn('slug', $permissions_array['permissions'])
                         ->get()
                         ->pluck('id')
                         ->toArray();
                     array_push($permissions, ...$array_permission);
                 }
-                $role->syncPermissions($permissions);
+                $role->permissions()->sync($permissions);
             }
         } catch (\Throwable $th) {
             dd($th->getMessage(), $permissions);

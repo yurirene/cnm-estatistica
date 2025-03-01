@@ -5,13 +5,14 @@ namespace App\Models\Produtos;
 use App\Casts\DateCast;
 use App\Casts\FileCast;
 use App\Casts\MoneyCast;
-use App\Traits\GenericTrait;
+use App\Services\Produtos\AuditoriaProdutosService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class FluxoCaixa extends Model
 {
-    use GenericTrait;
+    public string $nomeTabela = 'Fluxo Caixa';
 
     protected $table = 'produtos_fluxo_caixa';
     protected $guarded = ['id', 'created_at', 'updated_at'];
@@ -22,6 +23,75 @@ class FluxoCaixa extends Model
     ];
     protected $dates = ['created_at', 'updated_at'];
     public $caminho = 'public/produtos/comprovantes';
+
+    
+    public function getNomeTabelaFormatada(): string
+    {
+        return $this->nomeTabela;
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = Str::uuid()->toString();
+            }
+        });
+        // create a event to happen on updating
+        static::updating(function ($table) {
+            $acao = "Alterado o registro #{$table->getKey()} em {$table->getNomeTabelaFormatada()}";
+            AuditoriaProdutosService::store(
+                $table,
+                auth()->id() ?? null,
+                $acao,
+                session()->get('login_externo') ?? null
+            );
+        });
+
+        // create a event to happen on saving
+        static::created(function ($table) {
+            $acao = "Criado o registro #{$table->getKey()} em {$table->getNomeTabelaFormatada()}";
+            AuditoriaProdutosService::store(
+                $table,
+                auth()->id() ?? null,
+                $acao,
+                session()->get('login_externo') ?? null
+            );
+        });
+
+        // create a event to happen on deleting
+        static::deleting(function ($table) {
+            $acao = "Apagado o registro #{$table->getKey()} em {$table->getNomeTabelaFormatada()}";
+            AuditoriaProdutosService::store(
+                $table,
+                auth()->id() ?? null,
+                $acao,
+                session()->get('login_externo') ?? null
+            );
+        });
+    }
+    
+   /**
+     * Get the value indicating whether the IDs are incrementing.
+     *
+     * @return bool
+     */
+    public function getIncrementing()
+    {
+        return false;
+    }
+
+   /**
+     * Get the auto-incrementing key type.
+     *
+     * @return string
+     */
+    public function getKeyType()
+    {
+        return 'string';
+    }
 
     public const SALDO_INICIAL = 0;
     public const ENTRADA = 1;

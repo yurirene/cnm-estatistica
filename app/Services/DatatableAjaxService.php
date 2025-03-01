@@ -6,41 +6,15 @@ use App\Models\Aviso;
 use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\LogErro;
-use App\Models\Parametro;
 use App\Models\Pesquisas\Pesquisa;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Instancias\DiretoriaService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DatatableAjaxService
 {
-   public static function logErros()
-   {
-        try {
-            $logs = LogErro::select(['log_erros.id', 'log_erros.created_at', 'u.name', 'log'])
-            ->join('users as u', 'u.id', 'user_id')
-            ->get()
-            ->map(function($item) {
-                return [
-                    'id' => $item->id,
-                    'dia' => Carbon::parse($item->created_at)->format('d/m/y H:i:s'),
-                    'erro' => $item->log['message'],
-                    'usuario' => $item->name,
-                    'erro_completo' => $item->getRawOriginal('log')
-                ];
-            });
-
-        return datatables()::of($logs)->make();
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-        }
-   }
-
    public static function informacaoFederacao(Federacao $federacao)
    {
         try {
@@ -56,16 +30,36 @@ class DatatableAjaxService
                 $relatorioEntregue = (!is_null($ultimoRelatorio) && $ultimoRelatorio->ano_referencia == $anoReferencia)
                     ? 'Entregue'
                     : 'Pendente';
-                $usuario = $local->usuario->first();
+                $temDiretoria = $local->diretoria ? true : false;
+                $attDiretoria = $temDiretoria ? $local->diretoria->updated_at->format('d/m/Y') : 'Sem diretoria';
+                $usuario = $local->usuario;
                 return [
                     'nome_ump' => $local->nome,
                     'nro_socios' => $totalSocios,
                     'status_relatorio' => $relatorioEntregue,
+                    'diretoria' => [
+                        'atualizacao' => $attDiretoria,
+                        'dados' => $temDiretoria
+                            ? DiretoriaService::getDiretoriaTabela(
+                                $local->id, 
+                                DiretoriaService::TIPO_DIRETORIA_LOCAL
+                            )
+                            : null
+                    ],
                     'usuario_email' => $usuario->email,
-                    'usuario_id' => $usuario->id
+                    'usuario_id' => $usuario->id,
                 ];
             });
-            return datatables()::of($informacoes)->make();
+            return datatables()::of($informacoes)
+                ->with([
+                    'diretoria_federacao' => $federacao->diretoria
+                        ? DiretoriaService::getDiretoriaTabela(
+                            $federacao->id,
+                            DiretoriaService::TIPO_DIRETORIA_FEDERACAO
+                        )
+                        : null
+                ])
+                ->make();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -88,7 +82,7 @@ class DatatableAjaxService
                 ->collapse()
                 ->pluck('id');
             $nao_responderam = Sinodal::whereNotIn('id', $responderam)
-                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->where('regiao_id', auth()->user()->regiao->id)
                 ->get()
                 ->map(function($item) {
                     return [
@@ -121,7 +115,7 @@ class DatatableAjaxService
                 ->collapse()
                 ->pluck('id');
             $nao_responderam = Federacao::whereNotIn('id', $responderam)
-                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->where('regiao_id', auth()->user()->regiao->id)
                 ->get()
                 ->map(function($item) {
                     return [
@@ -154,7 +148,7 @@ class DatatableAjaxService
                 ->collapse()
                 ->pluck('id');
             $nao_responderam = Local::whereNotIn('id', $responderam)
-                ->where('regiao_id', Auth::user()->regioes->first()->id)
+                ->where('regiao_id', auth()->user()->regiao->id)
                 ->get()
                 ->map(function($item) {
                     return [
@@ -183,21 +177,21 @@ class DatatableAjaxService
                 $query = Federacao::when($id, function ($sql) use ($id) {
                         return $sql->where('sinodal_id', $id);
                     }, function ($sql) {
-                        return $sql->where('sinodal_id', auth()->user()->sinodais->first()->id);
+                        return $sql->where('sinodal_id', auth()->user()->sinodal_id);
                     });
             }
             if ($instancia == 'Sinodal') {
                 $query = Sinodal::when($id, function ($sql) use ($id) {
                         return $sql->where('regiao_id', $id);
                     }, function ($sql) {
-                        return $sql->where('regiao_id', auth()->user()->regioes->first()->id);
+                        return $sql->where('regiao_id', auth()->user()->regiao_id);
                     });
             }
             if ($instancia == 'Local') {
                 $query = Local::when($id, function ($sql) use ($id) {
                         return $sql->where('federacao_id', $id);
                     }, function ($sql) {
-                        return $sql->where('federacao_id', auth()->user()->federacoes->first()->id);
+                        return $sql->where('federacao_id', auth()->user()->federacao_id);
                     });
             }
             $formulariosEntregues = $query
@@ -330,7 +324,7 @@ class DatatableAjaxService
                 ->get()
                 ->map(function ($item) {
                     return [
-                        'nome' => $item->instancia()->first()->nome,
+                        'nome' => $item->instancia()->nome,
                         'lido' => $item->pivot->visualizado
                     ];
                 })

@@ -6,6 +6,7 @@ use App\DataTables\Instancias\FederacaoDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFederacaoRequest;
 use App\Models\Federacao;
+use App\Services\Instancias\DiretoriaService;
 use App\Services\Instancias\FederacaoService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -55,7 +56,8 @@ class FederacaoController extends Controller
             'umps' => FederacaoService::getInformacoesLocaisShow($federacao),
             'informacoes' => FederacaoService::getInformacoesFederacaoOrganizacao($federacao),
             'federacao' => $federacao,
-            'navegacaoFederacoes' => FederacaoService::navegacaoListaFederacoes($federacao->id)
+            'navegacaoFederacoes' => FederacaoService::navegacaoListaFederacoes($federacao->id),
+            'diretoria' => DiretoriaService::getDiretoriaTabela($federacao->id, DiretoriaService::TIPO_DIRETORIA_FEDERACAO)
         ]);
     }
 

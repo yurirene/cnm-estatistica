@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\ComprovanteACI;
 use App\Models\Parametro;
+use App\Models\User;
 use App\Services\AdministradorService;
 use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
@@ -11,6 +12,7 @@ use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\SinodalService;
 use App\Services\Produtos\ProdutoService;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardHelper
 {
@@ -19,19 +21,19 @@ class DashboardHelper
     {
         $service = null;
 
-        if (auth()->user()->hasRole(['sinodal'])) {
+        if (Gate::check(['sinodal'])) {
             $service = app()->make(SinodalService::class);
-        } elseif (auth()->user()->hasRole(['federacao'])) {
+        } elseif (Gate::check(['federacao'])) {
             $service = app()->make(FederacaoService::class);
-        } elseif (auth()->user()->hasRole(['diretoria'])) {
+        } elseif (Gate::check(['diretoria'])) {
             $service = app()->make(DiretoriaNacionalService::class);
-        } elseif (auth()->user()->hasRole(['administrador'])) {
+        } elseif (Gate::check(['isAdmin'])) {
             $service = app()->make(AdministradorService::class);
-        } elseif (auth()->user()->hasRole(['local'])) {
+        } elseif (Gate::check(['local'])) {
             $service = app()->make(LocalService::class);
-        } elseif (auth()->user()->hasRole(['secretaria_estatistica'])) {
+        } elseif (Gate::check(['secretaria_estatistica'])) {
             $service = app()->make(EstatisticaService::class);
-        } elseif (auth()->user()->hasRole(['secreatria_produtos'])) {
+        } elseif (Gate::check(['secreatria_produtos'])) {
             $service = app()->make(ProdutoService::class);
         }
 
@@ -41,25 +43,17 @@ class DashboardHelper
     public static function getTotalizadores()
     {
         $class = self::make();
+
+        if (is_null($class)) {
+            return [];
+        }
         return $class::getTotalizadores();
     }
 
     public static function getInfo()
     {
-
         $class = self::make();
         return $class::getInfo();
-    }
-
-    public static function getTotalLocais()
-    {
-        return 10;
-    }
-
-    public static function getGraficoAtividades() : array
-    {
-        $class = self::make();
-        return $class::getGraficoAtividades();
     }
 
     public static function getFormularioEntregue() : array
@@ -71,7 +65,7 @@ class DashboardHelper
 
     public static function entregouRelatorio(): bool
     {
-        $instancia = auth()->user()->instancia() ? auth()->user()->instancia()->first() : null;
+        $instancia = User::find(auth()->id())->instancia() ?: null;
         if (!$instancia) {
             return true;
         }
@@ -87,7 +81,7 @@ class DashboardHelper
      */
     public static function entregouComprovante(): bool
     {
-        $instancia = auth()->user()->instancia() ? auth()->user()->instancia()->first() : null;
+        $instancia = User::find(auth()->id())->instancia() ?: null;
         if (!$instancia) {
             return true;
         }
@@ -99,7 +93,7 @@ class DashboardHelper
 
     public static function getAvisosUsuario(): array
     {
-        return auth()->user()
+        return User::find(auth()->id())
             ->avisos()
             ->where('ativo', true)
             ->select(['titulo', 'texto'])
@@ -109,7 +103,7 @@ class DashboardHelper
 
     public static function getAvisosUsuarioModal(): array
     {
-        $aviso = auth()->user()
+        $aviso = User::find(auth()->id())
             ->avisos()
             ->where('ativo', true)
             ->where('modal', true)

@@ -5,16 +5,17 @@ use App\Http\Controllers\Apps\CategoriaController;
 use App\Http\Controllers\Apps\EventoController;
 use App\Http\Controllers\Apps\SiteController;
 use App\Http\Controllers\Apps\TesourariaController;
-use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\AvisoController;
+use App\Http\Controllers\ColetorDadosController;
 use App\Http\Controllers\ComissaoExecutivaController;
 use App\Http\Controllers\ComprovanteACIController;
+use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
-use App\Http\Controllers\DemandaController;
 use App\Http\Controllers\DetalhamentoController;
 use App\Http\Controllers\DigestoController;
+use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
@@ -24,12 +25,11 @@ use App\Http\Controllers\Formularios\FormularioLocalController;
 use App\Http\Controllers\Formularios\FormularioSinodalController;
 use App\Http\Controllers\HelpdeskController;
 use App\Http\Controllers\Instancias\LocalController;
-use App\Http\Controllers\MinhasDemandasController;
 use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
-use App\Http\Controllers\SecretarioController;
+use App\Http\Controllers\Produtos\PedidoController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +60,14 @@ Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])
     ->name('estatistica');
 
+Route::get('/coletor-dados/login', [ColetorDadosController::class, 'login'])
+    ->name('coletor-dados.login');
+Route::get('/coletor-dados', [ColetorDadosController::class, 'externo'])
+    ->name('coletor-dados.externo');
+Route::post('/coletor-dados/responder/{id}', [ColetorDadosController::class, 'responder'])
+    ->name('coletor-dados.responder');
+Route::get('/coletor-dados/restaurar/{local}', [ColetorDadosController::class, 'restaurar'])
+    ->name('coletor-dados.restaurar');
 
 Route::group(['prefix' => 'site'], function () {
     Route::get('/{sigla}', [SiteController::class, 'show'])
@@ -141,18 +149,15 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 });
 
-
+// COLETOR DE DADOS
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
-    Route::group(['modulo' => 'atividades'], function () {
-        Route::resource('atividades', AtividadeController::class)
-            ->parameters(['atividades' => 'atividade'])
-            ->names('atividades')->except('destroy');
-        Route::get('/atividades/{atividade}/delete', [AtividadeController::class, 'delete'])
-            ->name('atividades.delete');
-        Route::get('/atividades-calendario', [AtividadeController::class, 'calendario'])
-            ->name('atividades.calendario');
-        Route::get('/atividades/{atividade}/confirmar', [AtividadeController::class, 'confirmar'])
-            ->name('atividades.confirmar');
+    Route::group(['modulo' => 'coletor-dados'], function () {
+        Route::get('/coletor-dados', [ColetorDadosController::class, 'index'])
+            ->name('coletor-dados.index');
+        Route::post('/coletor-dados', [ColetorDadosController::class, 'store'])
+            ->name('coletor-dados.store');
+        Route::get('/coletor-dados/delete/{id}', [ColetorDadosController::class, 'delete'])
+            ->name('coletor-dados.delete');
     });
 });
 
@@ -304,35 +309,21 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 });
 
-// MINHAS DEMANDAS
+// SECRETARIA DE PRODUTOS - PDV
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
-    Route::group(['modulo' => 'minhas-demandas'], function () {
-        Route::get('minhas-demandas', [MinhasDemandasController::class, 'index'])
-            ->name('minhas-demandas.index');
+    Route::group(['modulo' => 'pedidos'], function () {
+        Route::resource('pedidos', PedidoController::class)
+            ->names('pedidos')
+            ->except(['create', 'show', 'edit', 'update', 'destroy']);
+
+        Route::get('/pedidos/pagar/{pedido}/{formaPagamento}', [PedidoController::class, 'pagar'])
+            ->name('pedidos.pagar');
+        Route::get('/pedidos/cancelar/{pedido}', [PedidoController::class, 'cancelar'])
+            ->name('pedidos.cancelar');
     });
 });
 
 //SECRETARIA EXECUTIVA
-Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
-    Route::group(['modulo' => 'demandas'], function () {
-        Route::resource('demandas', DemandaController::class)
-            ->parameters(['demandas' => 'demanda'])
-            ->names('demandas')->except('destroy');
-        Route::get('/demandas/{demanda}/delete', [DemandaController::class, 'delete'])
-            ->name('demandas.delete');
-        Route::get('/demandas/{demanda}/lista', [DemandaController::class, 'lista'])
-            ->name('demandas.lista');
-        Route::get('/demandas/{demanda}/{item}/delete', [DemandaController::class, 'deleteItem'])
-            ->name('demandas.delete-item');
-        Route::post('/demandas/{demanda}/{item}/atualizar', [DemandaController::class, 'atualizarItem'])
-            ->name('demandas.update-item');
-        Route::post('/demandas/{demanda}/store-item', [DemandaController::class, 'storeItem'])
-            ->name('demandas.store-item');
-        Route::post('/demandas/informacoes-adicionais', [DemandaController::class, 'informacoesAdicionais'])
-            ->name('demandas.informacoesAdicionais');
-    });
-});
-
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'digestos'], function () {
         Route::resource('digestos', DigestoController::class)
@@ -495,15 +486,27 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::get('/detalhamento/{tipo}', [DetalhamentoController::class, 'index'])
             ->name('detalhamento.index');
     });
+});
 
-    //DIRETORIA
-
+//DIRETORIA
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'diretoria-sinodal'], function () {
         Route::get('/diretoria-sinodal', [DiretoriasSinodalController::class, 'index'])->name('diretoria-sinodal.index');
         Route::put('/diretoria-sinodal/{diretoria}/update', [DiretoriasSinodalController::class, 'update'])->name('diretoria-sinodal.update');
     });
 
+    Route::group(['modulo' => 'diretoria-federacao'], function () {
+        Route::get('/diretoria-federacao', [DiretoriasFederacaoController::class, 'index'])->name('diretoria-federacao.index');
+        Route::put('/diretoria-federacao/{diretoria}/update', [DiretoriasFederacaoController::class, 'update'])->name('diretoria-federacao.update');
+    });
+
+    Route::group(['modulo' => 'diretoria-local'], function () {
+        Route::get('/diretoria-local', [DiretoriasLocalController::class, 'index'])->name('diretoria-local.index');
+        Route::put('/diretoria-local/{diretoria}/update', [DiretoriasLocalController::class, 'update'])->name('diretoria-local.update');
+    });
 });
+
+
 
 //HELPDESK
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {

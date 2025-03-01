@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Formularios;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFormularioLocalRequest;
 use App\Models\Parametro;
+use App\Services\ColetorDadosService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioLocalService;
+use Exception;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -14,13 +16,14 @@ class FormularioLocalController extends Controller
 {
     public function index()
     {
-        $formulario_respondido_ano = FormularioLocalService::getAnosFormulariosRespondidos();
-        $formulario_coleta_atual = FormularioLocalService::getFormularioAnoCorrente();
+        $formularioRespondidoAno = FormularioLocalService::getAnosFormulariosRespondidos();
+        $formularioColetaAtual = FormularioLocalService::getFormularioAnoCorrente();
         return view('dashboard.formularios.local', [
             'coleta' => FormularioLocalService::verificarColeta(),
-            'anos' => $formulario_respondido_ano,
+            'anos' => $formularioRespondidoAno,
             'ano_referencia' => EstatisticaService::getAnoReferencia(),
-            'formulario' => $formulario_coleta_atual
+            'formulario' => $formularioColetaAtual,
+            'coletorDados' => ColetorDadosService::carregarDadosCompilados()
         ]);
     }
 
@@ -85,8 +88,14 @@ class FormularioLocalController extends Controller
 
     public function localExport($local)
     {
+        $formulario = FormularioLocalService::getFormularioLocal($local);
+
+        if (!$formulario) {
+            throw new Exception("Formulário não existe", 500);
+            
+        }
         return view('dashboard.formularios.local.export', [
-            'formulario' => FormularioLocalService::getFormularioLocal($local)
+            'formulario' => $formulario
         ]);
     }
 }

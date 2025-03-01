@@ -26,20 +26,25 @@ class SinodalDataTable extends DataTable
                     'route' => 'dashboard.sinodais',
                     'id' => $sql->id,
                     'show' => true,
-                    'delete' => $sql->federacoes->count() > 0 ? false : true
+                    'delete' => $sql->dadosFederacaoLocal['nro_federacoes'] > 0 ? false : true
                 ]);
             })
             ->editColumn('status', function ($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
             ->editColumn('regiao_id', function ($sql) {
-                return $sql->regiao->nome;
+                return $sql->dadosFederacaoLocal['regiao'];
             })
             ->addColumn('nro_federacoes', function ($sql) {
-                return $sql->federacoes->count();
+                return $sql->dadosFederacaoLocal['nro_federacoes'];
             })
             ->addColumn('nro_locais', function ($sql) {
-                return $sql->locais->count();
+                return $sql->dadosFederacaoLocal['nro_locais'];
+            })
+            ->addColumn('diretoria', function ($sql) {
+                return $sql->diretoria
+                    ? $sql->diretoria->updated_at->format('d/m/y')
+                    : 'Sem Diretoria';
             })
             ->rawColumns(['status']);
     }
@@ -47,7 +52,8 @@ class SinodalDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\Sinodal $model
+     * 
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Sinodal $model)
@@ -72,7 +78,8 @@ class SinodalDataTable extends DataTable
                     ->dom('Bfrtip')
                     ->orderBy(1)
                     ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Sinodal')
+                        Button::make('create')
+                            ->text('<i class="fas fa-plus"></i> Nova Sinodal')
                     )
                     ->parameters([
                         "language" => [
@@ -100,6 +107,7 @@ class SinodalDataTable extends DataTable
             Column::make('nro_federacoes')->title('Nº Federações')->orderable(false),
             Column::make('nro_locais')->title('Nº UMPs Locais')->orderable(false),
             Column::make('status')->title('Status'),
+            Column::make('diretoria')->title('Att. Diretoria'),
             Column::make('regiao_id')->title('Região'),
         ];
     }

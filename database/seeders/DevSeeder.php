@@ -19,7 +19,9 @@ class DevSeeder extends Seeder
     public function run()
     {
         $usuario = User::first();
-        $usuario->regioes()->sync([1]);
+        $usuario->update([
+            'regiao_id' => 1
+        ]);
 
         $sinodal = Sinodal::create([
             'nome' => 'Setentrional',

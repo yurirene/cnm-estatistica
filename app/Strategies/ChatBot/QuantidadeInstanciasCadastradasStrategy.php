@@ -44,19 +44,25 @@ class QuantidadeInstanciasCadastradasStrategy implements ChatBotStrategy
             $texto = '';
             if ($usuario->hasRole('diretoria')) {
                 $texto .= self::getTotalizadorSinodais($usuario) . PHP_EOL;
-                $sinodais = Sinodal::whereIn('regiao_id', $usuario->regioes->pluck('id'))->get()->pluck('id')->toArray();
+                $sinodais = Sinodal::where('regiao_id', $usuario->regiao_id)
+                    ->get()
+                    ->pluck('id')
+                    ->toArray();
                 $texto .= self::getTotalizadorFederacoes($sinodais) . PHP_EOL;
-                $federacoes = Federacao::whereIn('sinodal_id', $sinodais)->get()->pluck('id')->toArray();
+                $federacoes = Federacao::whereIn('sinodal_id', $sinodais)
+                    ->get()
+                    ->pluck('id')
+                    ->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
             if ($usuario->hasRole('sinodal')) {
 
-                $texto .= self::getTotalizadorFederacoes($usuario->sinodais->pluck('id')->toArray()) . PHP_EOL;
-                $federacoes = Federacao::whereIn('sinodal_id', $usuario->sinodais->pluck('id'))->get()->pluck('id')->toArray();
+                $texto .= self::getTotalizadorFederacoes([$usuario->siniodal_id]) . PHP_EOL;
+                $federacoes = Federacao::where('sinodal_id', $usuario->siniodal_id)->get()->pluck('id')->toArray();
                 $texto .= self::getTotalizadorLocais($federacoes) . PHP_EOL;
             }
             if ($usuario->hasRole('federacao')) {
-                $texto .= self::getTotalizadorLocais($usuario->federacoes->pluck('id')->toArray()) . PHP_EOL;
+                $texto .= self::getTotalizadorLocais($usuario->federacao_id) . PHP_EOL;
             }
             return $texto;
        }  catch (\Throwable $th) {
@@ -70,7 +76,7 @@ class QuantidadeInstanciasCadastradasStrategy implements ChatBotStrategy
 
     public static function getTotalizadorSinodais(User $user)
     {
-        $sinodais = Sinodal::whereIn('regiao_id', $user->regioes->pluck('id'))->count();
+        $sinodais = Sinodal::where('regiao_id', $user->regiao_id)->count();
         return '<b>Total de Sinodais</b>: ' . $sinodais;
     }
 

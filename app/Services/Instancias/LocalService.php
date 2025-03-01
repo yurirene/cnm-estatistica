@@ -29,7 +29,12 @@ class LocalService
                 'status' => $request->status == 'A' ? true : false ,
                 'outro_modelo' => $request->has('outro_modelo') ? true : false
             ]);
-            $usuario = UserService::usuarioVinculado($request, $local, 'local', 'locais');
+            $usuario = UserService::usuarioVinculado(
+                $request,
+                $local,
+                'local',
+                'local_id'
+            );
             if ($request->has('resetar_senha')) {
                 UserService::resetarSenha($usuario);
             }
@@ -83,9 +88,15 @@ class LocalService
     {
         DB::beginTransaction();
         try {
+            $dataOrganizacao = null;
+            
+            if ($request->filled('data_organizacao')) {
+                $dataOrganizacao = Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d');
+            }
+
             $local->update([
                 'nome' => $request->nome,
-                'data_organizacao' => Carbon::createFromFormat('d/m/Y', $request->data_organizacao)->format('Y-m-d'),
+                'data_organizacao' => $dataOrganizacao,
                 'midias_sociais' => $request->midias_sociais
             ]);
             DB::commit();
@@ -107,15 +118,10 @@ class LocalService
 
         DB::beginTransaction();
         try {
-            if ($local->usuario->first()) {
-
-                $local->usuario->first()->update([
-                    'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com'
-                ]);
-                $usuario = $local->usuario->first();
-                $local->usuario()->sync([]);
-                $usuario->delete();
-            }
+            $local->usuario->update([
+                'email' => 'apagadoUMPEm'.date('dmyhms').'@apagado.com',
+                'local_id' => null
+            ]);
             $local->delete();
             DB::commit();
         } catch (\Throwable $th) {
@@ -132,7 +138,7 @@ class LocalService
     public static function getTotalizadores()
     {
         try {
-            $local = Auth::user()->locais->first();
+            $local = auth()->user()->local;
             $formulario = $local->relatorios->last();
             if (!$formulario) {
                 return [
@@ -152,7 +158,7 @@ class LocalService
     public static function getInfo()
     {
         try {
-            return Auth::user()->locais->first();
+            return auth()->user()->local;
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

@@ -41,11 +41,11 @@ class InformacoesUsuarioStrategy implements ChatBotStrategy
             } else if ($cliente->usuario->hasRole('diretoria')) {
                 return 'Confederação Nacional de Mocidades';
             } else if ($cliente->usuario->hasRole('sinodal')) {
-                return $cliente->usuario->sinodais->first()->nome;
+                return $cliente->usuario->sinodal->nome;
             } else if ($cliente->usuario->hasRole('federacao')) {
-                return $cliente->usuario->federacoes->first()->nome;
+                return $cliente->usuario->federacao->nome;
             } else if ($cliente->usuario->hasRole('local')) {
-                return $cliente->usuario->locais->first()->nome;
+                return $cliente->usuario->local->nome;
             } else {
                 return 'Não Identificado';
             }

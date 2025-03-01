@@ -26,6 +26,8 @@ class DiretoriaSinodal extends Model
         'contato_segundo_secretario' => Encryptable::class,
         'contato_tesoureiro' => Encryptable::class,
         'contato_secretario_sinodal' => Encryptable::class,
+
+        'secretarios' => 'array'
     ];
 
 }

@@ -23,7 +23,7 @@ class SinodalController extends Controller
     public function create()
     {
         return view('dashboard.sinodais.form', [
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome),
+            'regiao' => strtolower(auth()->user()->regiao->nome),
             'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }
@@ -56,7 +56,7 @@ class SinodalController extends Controller
             'informacoes' => SinodalService::getInformacoesOrganizacao($sinodal),
             'sinodal' => $sinodal,
             'navegacaoSinodais' => SinodalService::navegacaoListaSinodais($sinodal->id),
-            'diretoria' => DiretoriaService::getDiretoriaTabela($sinodal->id)
+            'diretoria' => DiretoriaService::getDiretoriaTabela($sinodal->id, DiretoriaService::TIPO_DIRETORIA_SINODAL)
         ]);
     }
 
@@ -66,7 +66,7 @@ class SinodalController extends Controller
         return view('dashboard.sinodais.form', [
             'sinodal' => $sinodal,
             'estados' => $estados,
-            'regiao' => strtolower(Auth::user()->regioes->first()->nome),
+            'regiao' => strtolower(auth()->user()->regiao->nome),
             'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }

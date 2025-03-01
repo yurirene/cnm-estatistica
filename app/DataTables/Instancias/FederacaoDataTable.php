@@ -27,33 +27,31 @@ class FederacaoDataTable extends DataTable
                     'route' => 'dashboard.federacoes',
                     'id' => $sql->id,
                     'show' => true,
-                    'delete' => $sql->locais->count() > 0 ? false : true
+                    'delete' => $sql->dadosDatatable['nro_locais'] > 0 ? false : true
                 ]);
             })
             ->editColumn('status', function ($sql) {
                 return FormHelper::statusFormatado($sql->status, 'Ativo', 'Inativo');
             })
             ->editColumn('regiao_id', function ($sql) {
-                return $sql->regiao->nome;
+                return $sql->dadosDatatable['regiao'];
             })
             ->addColumn('estatistica', function ($sql) {
-
-                $relatorio = $sql->relatorios()->orderBy('created_at', 'desc')->get()->first();
-                if (!$relatorio) {
-                    return 'Sem Relatório';
-                }
-
-
-                return $relatorio->ano_referencia;
+                return $sql->dadosDatatable['estatistica'];
             })
             ->editColumn('estado_id', function ($sql) {
-                return $sql->estado->nome;
+                return $sql->dadosDatatable['estado'];
             })
             ->editColumn('sinodal_id', function ($sql) {
-                return $sql->sinodal->sigla;
+                return $sql->dadosDatatable['sigla_sinodal'];
             })
             ->addColumn('nro_umps', function ($sql) {
-                return $sql->locais->count();
+                return $sql->dadosDatatable['nro_locais'];
+            })
+            ->addColumn('diretoria', function ($sql) {
+                return $sql->diretoria
+                    ? $sql->diretoria->updated_at->format('d/m/y')
+                    : 'Sem Diretoria';
             })
             ->rawColumns(['status']);
     }
@@ -61,7 +59,7 @@ class FederacaoDataTable extends DataTable
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\AcessoExterno $model
+     * @param \App\Models\Federacao $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Federacao $model)
@@ -116,6 +114,7 @@ class FederacaoDataTable extends DataTable
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('estado_id')->title('Estado'),
             Column::make('status')->title('Status'),
+            Column::make('diretoria')->title('Att. Diretoria'),
             Column::make('regiao_id')->title('Região'),
         ];
     }

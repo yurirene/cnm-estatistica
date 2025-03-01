@@ -30,5 +30,10 @@
         @if(isset($acompanhar) && $acompanhar == true)
         <a class="dropdown-item" href="{{ route($route.'.acompanhar', $id) }}">Acompanhar</a>
         @endif
+        @if(!empty($diretoria))
+        <button type="button" class="dropdown-item" data-toggle="modal" data-dados="{{$diretoria}}" data-target="#modal_diretoria">
+            Diretoria
+        </button>
+        @endif
     </div>
 </div>

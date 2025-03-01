@@ -34,7 +34,7 @@ class PesquisaController extends Controller
     public function show(Pesquisa $pesquisa)
     {
         try {
-            if (in_array(Auth::user()->roles->first()->name, User::ROLES_INSTANCIAS)) {
+            if (in_array(Auth::user()->role->name, User::ROLES_INSTANCIAS)) {
                 if (!in_array(Auth::user()->instancia_formatada, $pesquisa->instancias)) {
                     throw new Exception("Sem Permissão para acessar formulário de pesquisa", 1);
                 }
