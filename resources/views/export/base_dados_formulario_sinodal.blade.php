@@ -23,7 +23,7 @@
                     @if($subcoluna == 'regiao')
                     <td>{{ $dado[$coluna][$subcoluna]['nome'] }}</td>
                     @else
-                    <td>{{ $dado[$coluna][$subcoluna] }}</td>
+                    <td>{{ $dado[$coluna][$subcoluna] ?? '' }}</td>
                     @endif
                 @endforeach
             @endforeach

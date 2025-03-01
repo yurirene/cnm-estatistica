@@ -261,7 +261,7 @@
     $(function() {
         var rotaExport = "{{ route('dashboard.formularios-sinodal.export', ':id') }}";
         $('#sinodal-entregues-table').DataTable({
-            dom: 'frtip',
+            dom: 'frtipl',
             destroy: true,
             responsive: true,
             processing: true,

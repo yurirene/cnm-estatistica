@@ -75,7 +75,7 @@ class Lancamento extends Model
 
     public function getValorAttribute()
     {
-        return FormHelper::converterParaReal($this->attributes['valor']);
+        return FormHelper::converterParaReal($this->attributes['valor'] ?? 0);
     }
 
     protected static function booted()

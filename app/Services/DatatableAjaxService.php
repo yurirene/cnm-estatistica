@@ -225,7 +225,7 @@ class DatatableAjaxService
                                     ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
                                     ->first();
                                 if (!empty($relatorio)) {
-                                    $totalSocios += intval($relatorio->perfil['ativos']) + intval($relatorio->perfil['cooperadores']);
+                                    $totalSocios += intval($relatorio->perfil['ativos']);
                                     $totalRelatoriosFederacoes++;
                                 }
                                 $totalLocais += $federacao->locais()

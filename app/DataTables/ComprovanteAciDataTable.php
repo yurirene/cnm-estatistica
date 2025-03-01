@@ -45,13 +45,19 @@ class ComprovanteAciDataTable extends DataTable
             ->addColumn('valor_informado', function($sql) {
                 return $this->valorInformado($sql);
             })
-            ->addColumn('created_at', function($sql) {
+            ->editColumn('created_at', function($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
             ->addColumn('valor_previsto', function($sql) {
                 return $this->valorPrevisto($sql);
             })
-            ->rawColumns(['status']);
+            ->addColumn('valor_necessario', function ($sql) {
+                $result = ComprovanteAciService::totalizadorAciNecessaria($sql->sinodal_id);
+                $span = "{$result['valor']}<span data-toggle='tooltip' data-placement='top' title='Referente a: {$result['total_socios']} sócios'>
+                    <i class='fas fa-info-circle'></i></span>";
+                return $span;
+            }) 
+            ->rawColumns(['status', 'valor_necessario']);
     }
 
     public function valorInformado($sql)
@@ -69,13 +75,17 @@ class ComprovanteAciDataTable extends DataTable
     public function valorPrevisto($sql)
     {
         $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
-            ->where('ano_referencia', $sql->ano)->first();
+            ->where('ano_referencia', $sql->ano)
+            ->first();
+        
         if (is_null($formulario)) {
             return 'Formulário não respondido';
         }
-        $totalSocios = intval($formulario['perfil']['ativos']) + intval($formulario['perfil']['cooperadores']);
+
+        $totalSocios = intval($formulario['perfil']['ativos']); // + intval($formulario['perfil']['cooperadores']);
         $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
-        $valorPrevisto = $totalSocios * $paramValorAci * 0.25;
+        $valorPrevisto = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL;
+
         return 'R$' . number_format($valorPrevisto, 2, ',', '.');
     }
 
@@ -100,8 +110,7 @@ class ComprovanteAciDataTable extends DataTable
             })
             ->when(!empty($filtro['status']) && $filtro['status'] != 'T', function($sql) use ($filtro) {
                 return $sql->where('status', $filtro['status'] == 'C');
-            })
-            ->orderBy('ano', 'desc');
+            });
     }
 
     /**
@@ -116,7 +125,7 @@ class ComprovanteAciDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('Bfrtipl')
-            ->orderBy(2)
+            ->orderBy(7)
             ->parameters([
                 "language" => [
                     "url" => "/vendor/datatables/portugues.json"
@@ -145,6 +154,7 @@ class ComprovanteAciDataTable extends DataTable
             Column::make('ano')->title('Ano Referência'),
             Column::make('valor_informado')->title('Valor Informado'),
             Column::make('valor_previsto')->title('Valor Previsto'),
+            Column::make('valor_necessario')->title('Valor Mínimo'),
             Column::make('status')->title('Status'),
             Column::make('created_at')->title('Cadastrado em'),
         ];

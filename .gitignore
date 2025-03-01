@@ -16,3 +16,4 @@ yarn-error.log
 /develop
 .well-known/
 .htaccess
+composer.lock

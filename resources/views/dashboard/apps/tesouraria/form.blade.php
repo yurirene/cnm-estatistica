@@ -47,7 +47,7 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('descricao', 'Descrição') !!}
+                                {!! Form::label('data_lancamento', 'Data do Lançamento') !!}
                                 {!! Form::date('data_lancamento', null,  ['class' => 'form-control', 'required'=>true]) !!}
                             </div>
                         </div>

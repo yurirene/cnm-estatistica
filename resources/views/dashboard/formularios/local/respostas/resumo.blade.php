@@ -29,11 +29,11 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Homens
-                                    <span class="badge badge-primary badge-pill"><b id="mulheres"></b></span>
+                                    <span class="badge badge-primary badge-pill"><b id="homens"></b></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Mulheres
-                                    <span class="badge badge-primary badge-pill"><b id="homens"></b></span>
+                                    <span class="badge badge-primary badge-pill"><b id="mulheres"></b></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Menor de 19
