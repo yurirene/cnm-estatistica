@@ -36,7 +36,8 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'detalhamento',
                     'helpdesk',
-                    'comissao-executiva'
+                    'comissao-executiva',
+                    'pedidos'
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -136,6 +137,7 @@ class PermissionRoleSeeder extends Seeder
             'secreatria_produtos' => [
                 'resources' => [
                     'secretaria-produtos',
+                    'pedidos',
                     'helpdesk'
                 ],
                 'permissions' => [

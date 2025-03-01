@@ -29,6 +29,7 @@ use App\Http\Controllers\PesquisaController;
 use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
+use App\Http\Controllers\Produtos\PedidoController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -305,6 +306,20 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('produtos.fluxo-caixa.delete');
         Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])
             ->name('produtos.datatable.fluxo-caixa');
+    });
+});
+
+// SECRETARIA DE PRODUTOS - PDV
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'pedidos'], function () {
+        Route::resource('pedidos', PedidoController::class)
+            ->names('pedidos')
+            ->except(['create', 'show', 'edit', 'update', 'destroy']);
+
+        Route::get('/pedidos/pagar/{pedido}/{formaPagamento}', [PedidoController::class, 'pagar'])
+            ->name('pedidos.pagar');
+        Route::get('/pedidos/cancelar/{pedido}', [PedidoController::class, 'cancelar'])
+            ->name('pedidos.cancelar');
     });
 });
 
