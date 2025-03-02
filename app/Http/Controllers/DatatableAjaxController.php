@@ -9,10 +9,6 @@ use Illuminate\Http\Request;
 
 class DatatableAjaxController extends Controller
 {
-    public function logErros()
-    {
-        return DatatableAjaxService::logErros();
-    }
 
     public function informacaoFederacao(Request $request, Federacao $federacao)
     {

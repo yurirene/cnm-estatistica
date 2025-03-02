@@ -345,10 +345,6 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'datatables'], function () {
         Route::get(
-            '/datatables/log-erro',
-            [DatatableAjaxController::class, 'logErros']
-        )->name('datatables.log-erros');
-        Route::get(
             '/datatables/formularios-entregues/{instancia}/{id?}',
             [DatatableAjaxController::class, 'formulariosEntregues']
         )->name('datatables.formularios-entregues');
