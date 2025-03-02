@@ -5,13 +5,11 @@ namespace App\Services;
 use App\Models\Aviso;
 use App\Models\Federacao;
 use App\Models\Local;
-use App\Models\LogErro;
+use App\Models\Parametro;
 use App\Models\Pesquisas\Pesquisa;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Instancias\DiretoriaService;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class DatatableAjaxService
 {
