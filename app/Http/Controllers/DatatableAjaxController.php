@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Federacao;
-use App\Models\LogErro;
 use App\Models\Pesquisas\Pesquisa;
 use App\Services\DatatableAjaxService;
-use App\Services\LogErroService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DatatableAjaxController extends Controller

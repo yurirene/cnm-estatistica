@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\LogErro;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -13,16 +12,12 @@ class LogErroService
     public static function registrar(array $informacoes)
     {
         try {
-            Log::error($informacoes);
 
             if (env('APP_ENV') == 'local') {
                 return;
             }
-            LogErro::create([
-                'user_id' => auth()->id() ?? null,
-                'log' => $informacoes
-            ]);
-            Log::error([
+            
+            Log::error('Erro Lançado', [
                 'user_id' => auth()->id() ?? null,
                 'log' => $informacoes
             ]);
@@ -31,8 +26,7 @@ class LogErroService
             self::sendTelegram($informacoes);
 
         } catch (Throwable $th) {
-            Log::error([
-                'title' => 'ERRO AO REGISTRAR LOG DE ERRO',
+            Log::error('ERRO AO REGISTRAR LOG DE ERRO', [
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
