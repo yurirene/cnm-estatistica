@@ -257,7 +257,15 @@
                 @endcan
 
                 @cannot('isAdmin')
-                @can('rota-permitida', 'apps')
+                @can('rota-permitida', ['dashboard.apps.sites.index'])
+                <li class="nav-item">
+                    <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
+                        <i class="fab fa-chrome"></i>
+                        Site
+                    </a>
+                </li>
+                @endcan
+                @can('apps', 'tesouraria')
                 <a class="nav-link"
                     href="#meusapps"
                     data-toggle="collapse"
@@ -266,22 +274,12 @@
                     <i class="fas fa-tablet-alt"></i> Meus Apps
                 </a>
                 <ul class="collapse list-unstyled" id="meusapps" >
-                    @can('rota-permitida', 'apps', 'sites')
-                    <li class="nav-item ml-3">
-                        <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
-                            <i class="fab fa-chrome"></i>
-                            Site
-                        </a>
-                    </li>
-                    @endcan
-                    @can('rota-permitida', 'apps', 'tesouraria')
                     <li class="nav-item ml-3">
                         <a  class="nav-link" href="{{ route('dashboard.apps.tesouraria.index') }}">
                             <i class="fas fa-dollar-sign"></i>
                             Tesouraria
                         </a>
                     </li>
-                    @endcan
                 </ul>
                 @endcan
                 @endcannot

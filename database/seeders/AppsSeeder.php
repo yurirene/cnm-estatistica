@@ -18,18 +18,8 @@ class AppsSeeder extends Seeder
         $apps = [
             [
                 'id' => 1,
-                'nome' => 'Sites',
-                'name' => 'sites'
-            ],
-            [
-                'id' => 2,
                 'nome' => 'Tesouraria',
                 'name' => 'tesouraria'
-            ],
-            [
-                'id' => 3,
-                'nome' => 'Registro de Atos',
-                'name' => 'registro_atos'
             ]
         ];
 
