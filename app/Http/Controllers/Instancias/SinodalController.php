@@ -66,7 +66,7 @@ class SinodalController extends Controller
         return view('dashboard.sinodais.form', [
             'sinodal' => $sinodal,
             'estados' => $estados,
-            'regiao' => strtolower(auth()->user()->regiao->nome),
+            'regiao' => auth()->user()->admin ? '' : strtolower(auth()->user()->regiao->nome),
             'regioes' => Regiao::get()->pluck('nome', 'id')
         ]);
     }

@@ -345,10 +345,6 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'datatables'], function () {
         Route::get(
-            '/datatables/log-erro',
-            [DatatableAjaxController::class, 'logErros']
-        )->name('datatables.log-erros');
-        Route::get(
             '/datatables/formularios-entregues/{instancia}/{id?}',
             [DatatableAjaxController::class, 'formulariosEntregues']
         )->name('datatables.formularios-entregues');
@@ -391,6 +387,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     });
 });
 
+
 // APPS
 Route::group(
     [
@@ -399,7 +396,7 @@ Route::group(
         'as' => 'dashboard.'
     ],
     function () {
-        Route::group(['modulo' => 'apps'], function () {
+        Route::group(['modulo' => 'sites'], function () {
             Route::get('/apps/sites', [SiteController::class, 'index'])
                 ->name('apps.sites.index');
             Route::post('/apps/sites/{sinodal_id}/atualizar-config',[SiteController::class, 'atualizar'])
@@ -438,7 +435,19 @@ Route::group(
             )->name('apps.sites.remover-inscrito');
             Route::get('/apps/sites/{evento_id}/limpar-lista',[EventoController::class, 'limparLista'])
                 ->name('apps.sites.limpar-lista');
+        });
+    }
+);
 
+// APPS
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(['modulo' => 'apps'], function () {
             //TESOURARIA
 
             Route::resource('/apps/tesouraria', TesourariaController::class)

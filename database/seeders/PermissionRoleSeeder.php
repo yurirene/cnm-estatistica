@@ -61,7 +61,8 @@ class PermissionRoleSeeder extends Seeder
                     'detalhamento',
                     'helpdesk',
                     'diretoria-sinodal',
-                    'ce-sinodal'
+                    'ce-sinodal',
+                    'sites'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
