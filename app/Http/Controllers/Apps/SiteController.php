@@ -53,10 +53,8 @@ class SiteController extends Controller
     public function show($sigla)
     {
         try {
-            $sinodal = Sinodal::where('sigla', $sigla)
-                ->whereHas('apps', function ($sql) {
-                    $sql->where('name', 'sites');
-                })->first();
+            $sinodal = Sinodal::where('sigla', $sigla)->first();
+
             if (!$sinodal) {
                 return abort(410, 'A sinodal não encontrada ou não tem essa funcionalidade habilitada');
             }

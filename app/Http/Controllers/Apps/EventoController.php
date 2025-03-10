@@ -52,10 +52,7 @@ class EventoController extends Controller
     public function show($sigla)
     {
         try {
-            $sinodal = Sinodal::where('sigla', $sigla)
-                ->whereHas('apps', function ($sql) {
-                    $sql->where('name', 'sites');
-                })->first();
+            $sinodal = Sinodal::where('sigla', $sigla)->first();
             $evento = $sinodal->evento;
             return view("sites.modelo_evento", [
                 'evento' => $evento,
@@ -76,10 +73,7 @@ class EventoController extends Controller
     public function inscricao(string $sigla, Request $request)
     {
         try {
-            $sinodal = Sinodal::where('sigla', $sigla)
-                ->whereHas('apps', function ($sql) {
-                    $sql->where('name', 'sites');
-                })->first();
+            $sinodal = Sinodal::where('sigla', $sigla)->first();
             $evento = $sinodal->evento;
             EventoService::inscricao($evento, $request->all());
             return redirect()->route('meusite.evento', $sigla)->with([
