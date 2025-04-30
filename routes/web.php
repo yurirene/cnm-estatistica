@@ -316,6 +316,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->names('pedidos')
             ->except(['create', 'show', 'edit', 'update', 'destroy']);
 
+        Route::get('/pedidos/caixa', [PedidoController::class, 'caixa'])
+            ->name('pedidos.caixa');
         Route::get('/pedidos/pagar/{pedido}/{formaPagamento}', [PedidoController::class, 'pagar'])
             ->name('pedidos.pagar');
         Route::get('/pedidos/cancelar/{pedido}', [PedidoController::class, 'cancelar'])

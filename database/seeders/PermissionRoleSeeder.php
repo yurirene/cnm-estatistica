@@ -184,6 +184,21 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.produtos.datatable.estoque',
                     'dashboard.produtos.datatable.consignacao',
                 ]
+            ],
+            'produtos_vendedor' => [
+                'resources' => [],
+                'permissions' => [
+                    'dashboard.pedidos.index',
+                    'dashboard.pedidos.store',
+                ]
+            ],
+            'produtos_caixa' => [
+                'resources' => [],
+                'permissions' => [
+                    'dashboard.pedidos.caixa',
+                    'dashboard.pedidos.pagar',
+                    'dashboard.pedidos.cancelar'
+                ]
             ]
         ];
         DB::table('permission_role')->truncate();
