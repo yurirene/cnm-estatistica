@@ -8,6 +8,7 @@ use App\Services\Produtos\PedidoService;
 use App\Services\Produtos\ProdutoService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Throwable;
 
@@ -17,6 +18,13 @@ class PedidoController extends Controller
     {
         return view('dashboard.produtos.pedidos', [
             'produtos' => ProdutoService::getAllProdutos(),
+            'formasPagamentos' => PedidoService::FORMAS_PAGAMENTOS 
+        ]);
+    }
+    
+    public function caixa(): View
+    {
+        return view('dashboard.produtos.caixa', [
             'pedidos' => PedidoService::getAllPedidos(),
             'formasPagamentos' => PedidoService::FORMAS_PAGAMENTOS 
         ]);
@@ -47,13 +55,18 @@ class PedidoController extends Controller
     {
         try {
             PedidoService::pagar($pedido, $formaPagamento);
-            return redirect()->route('dashboard.pedidos.index')->with([
+            return redirect()->route('dashboard.pedidos.caixa')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Pedido Pago!'
                 ]
             ]);
         } catch (Throwable $th) {
+            Log::error('Erro ao pagar pedido:', [
+                'msgem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

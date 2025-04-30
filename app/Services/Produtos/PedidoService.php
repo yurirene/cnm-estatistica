@@ -16,8 +16,9 @@ class PedidoService
 
     public const FORMAS_PAGAMENTOS = [
         1 => 'Pix',
-        2 => 'Cartão',
-        3 => 'Dinheiro'
+        2 => 'Cartão Crédito',
+        3 => 'Cartão Débito',
+        4 => 'Dinheiro'
     ];
 
     public static function store(array $request) : ?Pedido
@@ -37,6 +38,8 @@ class PedidoService
 
             $pedido = Pedido::create([
                 'nome' => $request['nome'],
+                'vendedor' => $request['vendedor'],
+                'comanda' => $request['comanda'],
                 'forma_pagamento' => $request['forma_pagamento'],
                 'valor_pedido' => $valor,
                 'produtos' => json_encode($request['produtos']),
@@ -121,7 +124,9 @@ class PedidoService
 
     public static function getAllPedidos(): array
     {
-        $pedidos = Pedido::when(!request()->filled('listar_todas'), function ($sql) {
+        $pedidos = Pedido::when(
+            !request()->filled('listar_todas'),
+            function ($sql) {
                 return $sql->where('status', false);
             })
             ->orderBy('created_at', 'asc')
@@ -143,6 +148,8 @@ class PedidoService
 
             $retorno[] = [
                 'id' => $pedido->id,
+                'comanda' => $pedido->comanda,
+                'vendedor' => $pedido->vendedor,
                 'nome' => $pedido->nome,
                 'produtos' => $produtos,
                 'valor' => $pedido->valor_pedido,

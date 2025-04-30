@@ -55,7 +55,7 @@ class UserService
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make('123'),
-                'role_id' => $request->role_id,
+                'role_id' => $request->perfil_id,
             ]);
 
             $data = [];

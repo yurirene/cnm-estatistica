@@ -74,6 +74,16 @@ class RolesSeeder extends Seeder
                 'slug'                 => 'presidente',
                 'description'          => 'Presidente da CNM',
             ],
+            [
+                'name'                 => 'produtos_vendedor',
+                'slug'                 => 'produtos_vendedor',
+                'description'          => 'Produtos - Vendedor',
+            ],
+            [
+                'name'                 => 'produtos_caixa',
+                'slug'                 => 'produtos_caixa',
+                'description'          => 'Produtos - Caixa',
+            ],
         ];
 
         DB::beginTransaction();
