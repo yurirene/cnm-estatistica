@@ -8,6 +8,7 @@
     'titulo' => 'Pedidos'
 ])
 <div class="container-fluid mt-3">
+    @can('rota-permitida', ['dashboard.pedidos.index'])
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
@@ -23,6 +24,39 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
+                                {!! Form::label('vendedor', 'Nome do Vendedor') !!}
+                                {!! Form::text(
+                                    'vendedor',
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'autocomplete' => 'off',
+                                        'required' => true
+                                    ]
+                                ) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {!! Form::label('comanda', 'Comanda') !!}
+                                {!! Form::number(
+                                    'comanda',
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'autocomplete' => 'off',
+                                        'required' => true
+                                    ]
+                                ) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
                                 {!! Form::label('nome', 'Nome') !!}
                                 {!! Form::text(
                                     'nome',
@@ -35,7 +69,7 @@
                                 ) !!}
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                     <h5>Produtos</h5>
                     <div class="row">
                         @foreach($produtos as $produto)
@@ -102,64 +136,12 @@
         </div>
 
     </div>
-     <div class="row mt-5">
-        <div class="col-xl-12 mb-5 mb-xl-0">
-            <div class="card shadow p-3">
-                <div class="card-header p-0 border-bottom-0">
-                    Lista de Pedidos para Finalizar
-                </div>
-                <div class="card-body table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Nome</th>
-                                <th scope="col">Pedido</th>
-                                <th scope="col">Valor</th>
-                                <th scope="col">Pagamento</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($pedidos as $pedido)
-                            <tr>
-                                <td>
-                                    @if(!$pedido['status'])
-                                    <button class="btn btn-sm btn-success" onclick="pagar('{{$pedido['id']}}', {{ $pedido['forma_pagamento'] }})">
-                                        <i class="fas fa-check"></i>
-                                        Pagar
-                                    </button>
-
-                                    <button class="btn btn-sm btn-danger" onclick="cancelar('{{$pedido['id']}}')">
-                                        <i class="fas fa-trash"></i>
-                                        Cancelar
-                                    </button>
-                                    @endif
-                                </td>
-                                <td>{{ $pedido['nome'] }} </td>
-                                <td>
-                                    @foreach($pedido['produtos'] as $produto)
-                                        {{ $produto }} <br>
-                                    @endforeach
-                                </td>
-                                <td>{{ $pedido['valor'] }} </td>
-                                <td>{{ $pedido['pagamento'] }} </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    @endcan
 </div>
 @endsection
 
 @push('js')
 <script>
-
-    const ROUTE_DELETE = "{{ route('dashboard.pedidos.cancelar', ':id') }}";
-    const ROUTE_PAGAR = "{{ route('dashboard.pedidos.pagar', [':id', ':forma']) }}";
 
     $(document).ready(function() {
         atualizarValor();
@@ -178,45 +160,22 @@
         });
 
         $('#total_pedido').val(total);
-    }
+    }    
 
-    function cancelar(id) {
-        let route = ROUTE_DELETE.replace(':id', id);
-        deleteRegistro(route);
-    }
-    function pagar(id, forma) {
-        let route = ROUTE_PAGAR.replace(':id', id);
-        
-        let opcoes = [
-            { id: 1, name: 'Pix' },
-            { id: 2, name: 'Cartão' },
-            { id: 3, name: 'Dinheiro' }
-        ];
+    const inputVendedor = document.getElementById("vendedor");
+        // Carrega valor salvo ao abrir a página
+        window.addEventListener("DOMContentLoaded", () => {
+        const nomeSalvo = localStorage.getItem("nome_vendedor");
 
-        let options = {};
-        $.map(opcoes, function(o) {
-            options[o.id] = o.name;
-        });
+        if (nomeSalvo) {
+            inputVendedor.value = nomeSalvo;
+        }
+    });
 
-        Swal.fire({
-            icon: 'warning',
-            title: 'Atenção',
-            text: `Confirmar Pagamento com ${options[forma]}?`,
-            input: 'select',
-            inputOptions: options,
-            inputValue: forma,
-            showCancelButton: true,
-            textCancelButton: 'Cancelar',
-            confirmButtonText: 'Pagar',
-            animation: 'slide-from-top',
-            inputPlaceholder: 'Selecione a forma de pagamento'
-        }).then(function (result) {
-            if (result.isConfirmed) {
-                route = route.replace(':forma', result.value);
-                window.location.href = route;
-            } 
-        });
-    }
+    // Salva automaticamente quando o valor muda
+    inputVendedor.addEventListener("input", () => {
+        localStorage.setItem("nome_vendedor", inputVendedor.value);
+    });
 
 </script>
 

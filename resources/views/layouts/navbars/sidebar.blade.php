@@ -203,6 +203,13 @@
                     </a>
                 </li>
                 @endcan
+                @can('rota-permitida', ['dashboard.pedidos.caixa'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.pedidos.caixa') }}">
+                        <i class="fas fa-shopping-cart"></i> Caixa
+                    </a>
+                </li>
+                @endcan
                 @endcannot
 
                 @can('rota-permitida', ['dashboard.digestos.index'])
