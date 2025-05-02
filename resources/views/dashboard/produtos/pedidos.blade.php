@@ -75,7 +75,7 @@
                         @foreach($produtos as $produto)
                         <div class="col-md-12">
                             <span class="" id="basic-addon1">{{ $produto->nome }}</span>
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 {!! Form::number(
                                     "produtos[$produto->id]",
                                     0,
@@ -90,6 +90,7 @@
                                 ) !!}
                                 <span class="input-group-text">R$ {{ $produto->valor }}</span>
                             </div>
+                            <small class='mb-3'>Restam: {{ $produto->estoque }}</small>
                             <hr>
                         </div>
                         @endforeach

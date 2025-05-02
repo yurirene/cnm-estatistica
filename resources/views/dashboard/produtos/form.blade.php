@@ -36,6 +36,12 @@
                                 {!! Form::text('valor', null, ['class' => 'form-control isMoney', 'required'=>true, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('exibir', 'Exibir') !!}
+                                {!! Form::select('exibir', ['0' => 'Não', '1' => 'Sim'], null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
+                            </div>
+                        </div>
                     </div>
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($produto) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.produtos.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>

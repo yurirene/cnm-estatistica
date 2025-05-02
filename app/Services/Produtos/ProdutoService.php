@@ -17,7 +17,8 @@ class ProdutoService
             return Produto::create([
                 'nome' => $request['nome'],
                 'valor' => $valor,
-                'estoque' => 0
+                'estoque' => 0,
+                'exibir' => $request['exibir']
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -30,7 +31,8 @@ class ProdutoService
             $valor = str_replace(',', '.', str_replace('.', '',$request['valor']));
             $produto->update([
                 'nome' => $request['nome'],
-                'valor' => $valor
+                'valor' => $valor,
+                'exibir' => $request['exibir']
             ]);
             return $produto;
         } catch (\Throwable $th) {
@@ -49,7 +51,7 @@ class ProdutoService
 
     public static function getAllProdutos()
     {
-        return Produto::all();
+        return Produto::where('exibir', true)->get();
     }
 
     public static function getTotalizadoresProdutos()
