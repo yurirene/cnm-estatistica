@@ -81,13 +81,39 @@ class PedidoController extends Controller
     {
         try {
             PedidoService::delete($pedido);
-            return redirect()->route('dashboard.pedidos.index')->with([
+            return redirect()->route('dashboard.pedidos.caixa')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Pedido Cancelado!'
                 ]
             ]);
         } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage()
+                ]
+            ])
+            ->withInput();
+        }
+    }
+    public function separar(Pedido $pedido): RedirectResponse
+    {
+        try {
+            PedidoService::separar($pedido);
+
+            return redirect()->route('dashboard.pedidos.caixa')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Pedido Separado!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            Log::error('Erro ao separar pedido:', [
+                'msgem' => $th->getMessage(),
+                'linha' => $th->getLine(),
+                'arquivo' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

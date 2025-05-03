@@ -16,7 +16,7 @@
                     Lista de Pedidos para Finalizar
                 </div>
                 <div class="card-body table-responsive">
-                    <table class="table">
+                    <table class="table" id="pedidos-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -26,6 +26,7 @@
                                 <th scope="col">Valor</th>
                                 <th scope="col">Pagamento</th>
                                 <th scope="col">Vendedor</th>
+                                <th scope="col">Obs</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,6 +43,19 @@
                                         <i class="fas fa-trash"></i>
                                         Cancelar
                                     </button>
+                                    
+
+                                    @if(!$pedido['separado'])
+                                    <a href="{{ route('dashboard.pedidos.separar', $pedido['id']) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-thumbs-up"></i>
+                                        Separar
+                                    </button>
+                                    @else
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-thumbs-up"></i>
+                                            Separado
+                                        </span>
+                                    @endif
                                     @endif
                                 </td>
                                 <td>{{ $pedido['comanda'] }} </td>
@@ -54,6 +68,7 @@
                                 <td>{{ $pedido['valor'] }} </td>
                                 <td>{{ $pedido['pagamento'] }} </td>
                                 <td>{{ $pedido['vendedor'] }} </td>
+                                <td>{{ $pedido['observacoes'] }} </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -112,6 +127,10 @@
         });
     }
 
+    $('#pedidos-table').DataTable({
+        order: [1, 'asc'],
+        paging: false
+    });
 </script>
 
 

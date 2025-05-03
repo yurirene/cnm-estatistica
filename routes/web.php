@@ -320,6 +320,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('pedidos.caixa');
         Route::get('/pedidos/pagar/{pedido}/{formaPagamento}', [PedidoController::class, 'pagar'])
             ->name('pedidos.pagar');
+        Route::get('/pedidos/separar/{pedido}', [PedidoController::class, 'separar'])
+            ->name('pedidos.separar');
         Route::get('/pedidos/cancelar/{pedido}', [PedidoController::class, 'cancelar'])
             ->name('pedidos.cancelar');
     });

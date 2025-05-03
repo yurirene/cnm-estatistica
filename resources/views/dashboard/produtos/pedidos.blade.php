@@ -85,15 +85,33 @@
                                         'min' => 0,
                                         'max' => $produto->estoque,
                                         'data-valor' => $produto->valor,
-                                        'readonly' => !$produto->estoque
+                                        'readonly' => !$produto->estoqueTravado
                                     ]
                                 ) !!}
                                 <span class="input-group-text">R$ {{ $produto->valor }}</span>
                             </div>
-                            <small class='mb-3'>Restam: {{ $produto->estoque }}</small>
+                            <small class='mb-3'>
+                                Restam: {{ $produto->estoqueTravado }} (Estoque: {{ $produto->estoque }})
+                            </small>
                             <hr>
                         </div>
                         @endforeach
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {!! Form::label('observacoes', 'Obs') !!}
+                                {!! Form::text(
+                                    'observacoes',
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'autocomplete' => 'off',
+                                        'required' => false
+                                    ]
+                                ) !!}
+                            </div>
+                        </div>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="total">
@@ -148,7 +166,7 @@
         atualizarValor();
         $('.produto').on('change', function() {
             atualizarValor()
-        })
+        });
     })
 
     function atualizarValor() {

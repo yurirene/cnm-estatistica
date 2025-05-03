@@ -4,6 +4,7 @@ namespace App\Services\Produtos;
 
 use App\Models\Produtos\ConsignacaoProduto;
 use App\Models\Produtos\FluxoCaixa;
+use App\Models\Produtos\Pedido;
 use App\Models\Produtos\Produto;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -51,7 +52,31 @@ class ProdutoService
 
     public static function getAllProdutos()
     {
-        return Produto::where('exibir', true)->get();
+        $produtos = Produto::where('exibir', true)->get();
+        
+        return self::calcularEstoqueTravado($produtos); 
+    }
+
+    public static function calcularEstoqueTravado($produtos)
+    {
+        foreach ($produtos as &$produto) {
+            $totalProdutos = $produto->estoque;
+            Pedido::where('status', 0)
+                ->get()
+                ->filter(function($item) use ($produto) {
+                    $produtosDoPedido = json_decode($item->produtos, true);
+                    
+                    return isset($produtosDoPedido[$produto->id]);
+                })
+                ->each(function ($item) use (&$totalProdutos, $produto) {
+                    $pedido = json_decode($item->produtos, true);
+                    $totalProdutos -= $pedido[$produto->id];
+                });
+                
+            $produto->estoqueTravado = $totalProdutos;
+        }
+
+        return $produtos;
     }
 
     public static function getTotalizadoresProdutos()
