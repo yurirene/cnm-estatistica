@@ -38,7 +38,8 @@
                                             {!! Form::text($campo, null, [
                                                 'class' => 'form-control float-right',
                                                 'autocomplete' => 'off',
-                                                'placeholder' => 'Nome'
+                                                'placeholder' => 'Nome',
+                                                'maxlength' => 255
                                             ]) !!}
                                         </div>
                                     </div>
