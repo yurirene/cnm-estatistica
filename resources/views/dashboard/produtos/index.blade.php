@@ -64,6 +64,26 @@
                 <div class="card-body">
                     <div class="tab-content" id="custom-tabs-four-tabContent">
                         <div class="tab-pane fade  {{ session()->get('aba') == 0 ? 'show active' : '' }}" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 class="">
+                                        <i class="fas fa-filter"></i>
+                                        Filtros
+                                    </h4>
+                                </div>
+                                 <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="filtro_status">Status</label>
+                                            <select class="form-control" id="filtro_status" name="filtro_status">
+                                                <option value="">Selecione</option>
+                                                <option value="1">Exibir</option>
+                                                <option value="0">Não Exibir</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 {!! $produtosDataTable->table(['style'=>'width:100%']) !!}
                             </div>
@@ -87,7 +107,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 @endsection
@@ -98,5 +117,21 @@
 {!! $estoqueProdutosDataTable->scripts() !!}
 {!! $consignacaoProdutosDataTable->scripts() !!}
 {!! $fluxoCaixaDataTable->scripts() !!}
+
+<script>
+    
+    const table = $('#produtos-table');
+
+    $(document).ready(function() {
+        $('#filtro_status').change(function() {
+            var status = $(this).val();
+
+            table.on('preXhr.dt', function(e, settings, data){
+                data.status = status;
+            });
+            table.DataTable().ajax.reload();
+        });
+    });
+</script>
 
 @endpush

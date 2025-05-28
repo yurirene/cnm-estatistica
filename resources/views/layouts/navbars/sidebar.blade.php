@@ -210,6 +210,15 @@
                     </a>
                 </li>
                 @endcan
+                
+                @can('rota-permitida', ['dashboard.produtos.relatorios'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.produtos.relatorios') }}">
+                        <i class="fas fa-file"></i> Relatórios
+                    </a>
+                </li>
+                @endcan
+
                 @endcannot
 
                 @can('rota-permitida', ['dashboard.digestos.index'])

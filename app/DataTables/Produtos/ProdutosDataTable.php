@@ -43,7 +43,10 @@ class ProdutosDataTable extends DataTable
      */
     public function query(Produto $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()
+            ->when(request()->filled('status'), function ($query) {
+                return $query->where('exibir', request('status'));
+            });
     }
 
     /**
@@ -63,6 +66,7 @@ class ProdutosDataTable extends DataTable
                 Button::make('create')->text('<i class="fas fa-plus"></i> Novo Registro')
             )
             ->parameters([
+                'stateSave'=>true,
                 "language" => [
                     "url" => "/vendor/datatables/portugues.json"
                 ]

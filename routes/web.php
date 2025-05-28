@@ -275,7 +275,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::group(['modulo' => 'secretaria-produtos'], function () {
         Route::resource('produtos', ProdutoController::class)
             ->parameters(['produtos' => 'produto'])
-                ->names('produtos')->except('destroy');
+                ->names('produtos')->except(['destroy', 'show']);
         Route::get('/produtos/{produto}/delete', [ProdutoController::class, 'delete'])
             ->name('produtos.delete');
         Route::get('/produtos-datatable/produtos', [ProdutoController::class, 'produtoDataTable'])
@@ -306,6 +306,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('produtos.fluxo-caixa.delete');
         Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])
             ->name('produtos.datatable.fluxo-caixa');
+
+        Route::get('/produtos-relatorios', [ProdutoController::class, 'relatorios'])
+            ->name('produtos.relatorios');
     });
 });
 
