@@ -2,6 +2,7 @@
 
 namespace App\DataTables\Produtos;
 
+use App\Helpers\FormHelper;
 use App\Models\Produtos\Produto;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -27,18 +28,25 @@ class ProdutosDataTable extends DataTable
             })
             ->editColumn('valor', function ($sql) {
                 return $sql->valor_formatado;
-            });
+            })
+            ->editColumn('exibir', function ($sql) {
+                return FormHelper::statusFormatado($sql->exibir, 'Exibir', 'Não Exibir');
+            })
+            ->rawColumns(['exibir']);
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Atividade $model
+     * @param \App\Models\Produtos\Produto $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Produto $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()
+            ->when(request()->filled('status'), function ($query) {
+                return $query->where('exibir', request('status'));
+            });
     }
 
     /**
@@ -49,19 +57,20 @@ class ProdutosDataTable extends DataTable
     public function html()
     {
         return $this->builder()
-                    ->setTableId('produtos-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax(route('dashboard.produtos.datatable.produtos'))
-                    ->dom('Bfrtip')
-                    ->orderBy(2)
-                    ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Novo Registro')
-                    )
-                    ->parameters([
-                        "language" => [
-                            "url" => "/vendor/datatables/portugues.json"
-                        ]
-                    ]);
+            ->setTableId('produtos-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax(route('dashboard.produtos.datatable.produtos'))
+            ->dom('Bfrtip')
+            ->orderBy(2)
+            ->buttons(
+                Button::make('create')->text('<i class="fas fa-plus"></i> Novo Registro')
+            )
+            ->parameters([
+                'stateSave'=>true,
+                "language" => [
+                    "url" => "/vendor/datatables/portugues.json"
+                ]
+            ]);
     }
 
     /**
@@ -81,6 +90,7 @@ class ProdutosDataTable extends DataTable
             Column::make('nome')->title('Nome'),
             Column::make('valor')->title('Valor'),
             Column::make('estoque')->title('Estoque'),
+            Column::make('exibir')->title('Exibir?'),
         ];
     }
 

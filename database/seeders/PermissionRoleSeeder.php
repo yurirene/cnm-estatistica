@@ -196,6 +196,7 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [],
                 'permissions' => [
                     'dashboard.pedidos.caixa',
+                    'dashboard.pedidos.separar',
                     'dashboard.pedidos.pagar',
                     'dashboard.pedidos.cancelar'
                 ]

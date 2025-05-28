@@ -41,6 +41,7 @@ class PedidoService
                 'vendedor' => $request['vendedor'],
                 'comanda' => $request['comanda'],
                 'forma_pagamento' => $request['forma_pagamento'],
+                'observacoes' => $request['observacoes'],
                 'valor_pedido' => $valor,
                 'produtos' => json_encode($request['produtos']),
                 'user_id' => auth()->id()
@@ -117,6 +118,23 @@ class PedidoService
         }
     }
 
+    public static function separar(Pedido $pedido): void
+    {
+        try {
+            $pedido->update([
+                'separado' => true
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('Erro ao Separar', [
+                'msg' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+
+            throw $th;
+        }
+    }
+
     public static function delete(Pedido $pedido)
     {
         $pedido->delete();
@@ -155,7 +173,9 @@ class PedidoService
                 'valor' => $pedido->valor_pedido,
                 'status' => $pedido->status,
                 'forma_pagamento' => $pedido->forma_pagamento,
-                'pagamento' => self::FORMAS_PAGAMENTOS[$pedido->forma_pagamento]
+                'pagamento' => self::FORMAS_PAGAMENTOS[$pedido->forma_pagamento],
+                'separado' => $pedido->separado,
+                'observacoes' => $pedido->observacoes
             ];
 
         }
