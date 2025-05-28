@@ -13,18 +13,16 @@ class LogErroService
     {
         try {
 
-            if (env('APP_ENV') == 'local') {
-                return;
-            }
-            
-            Log::error('Erro Lançado', [
+            Log::notice('Erro Lançado', [
                 'user_id' => auth()->id() ?? null,
                 'log' => $informacoes
             ]);
 
+            if (env('APP_ENV') == 'local') {
+                return;
+            }
 
             self::sendTelegram($informacoes);
-
         } catch (Throwable $th) {
             Log::error('ERRO AO REGISTRAR LOG DE ERRO', [
                 'message' => $th->getMessage(),

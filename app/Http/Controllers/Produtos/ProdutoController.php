@@ -119,4 +119,18 @@ class ProdutoController extends Controller
     {
         return $consignacaoProdutosDataTable->render('dashboard.produtos.index');
     }
+
+    public function relatorios()
+    {
+        return view('dashboard.produtos.relatorios', []);
+    }
+
+    public function gerarRelatorio(Request $request)
+    {
+        $data = $request->all();
+        $data['data_inicial'] = date('Y-m-d', strtotime($data['data_inicial']));
+        $data['data_final'] = date('Y-m-d', strtotime($data['data_final']));
+
+        return RelatorioService::gerarRelatorio($data);
+    }
 }

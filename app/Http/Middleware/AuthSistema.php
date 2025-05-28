@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class AuthSistema
 {
@@ -22,6 +23,12 @@ class AuthSistema
             return $next($request);
         }
         if (Gate::denies('rota-permitida', [$route])) {
+            Log::alert('Acesso negado', [
+                'user_id' => auth()->user()->id,
+                'user_role' => auth()->user()->role_id,
+                'route' => $route,
+                'ip' => $request->ip(),
+            ]);
             return redirect()->route('dashboard.home')->with([
                 'mensagem' => [
                     'status' => false,
