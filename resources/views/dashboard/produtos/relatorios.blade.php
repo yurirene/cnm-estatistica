@@ -72,8 +72,8 @@
                     </div>
 
                     <button class="btn btn-success">
-                        <i class='fas fa-save'></i>
-                        Fechar Pedido
+                        <i class='fas fa-file'></i>
+                        Gerar Relatório
                     </button>
                     {!! Form::close() !!}
                 </div>
