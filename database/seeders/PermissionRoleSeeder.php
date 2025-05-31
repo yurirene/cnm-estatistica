@@ -179,9 +179,9 @@ class PermissionRoleSeeder extends Seeder
                     'comissao-executiva'
                 ],
                 'permissions' => [
-                    'dasbhoard.produtos.index',
-                    'dasbhoard.produtos.relatorios',
-                    'dasbhoard.produtos.relatorios.gerar',
+                    'dashboard.produtos.index',
+                    'dashboard.produtos.relatorios',
+                    'dashboard.produtos.relatorios.gerar',
                     'dashboard.produtos.datatable.produtos',
                     'dashboard.produtos.datatable.estoque',
                     'dashboard.produtos.datatable.consignacao',
