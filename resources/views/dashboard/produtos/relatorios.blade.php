@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body">
                     {!! Form::open([
-                        'url' => route('dashboard.pedidos.store'),
+                        'url' => route('dashboard.produtos.relatorios.gerar'),
                         'method' => 'POST'
                     ]) !!}
                     <div class="row">
@@ -41,12 +41,28 @@
                                 {!! Form::select(
                                     'tipo',
                                     [
-                                        'vendas' => 'Vendas',
-                                        'estoque' => 'Estoque'
+                                        'vendas' => 'Vendas'
                                     ],
                                     null,
                                     [
-                                        'class' => 'form-control isDateRange',
+                                        'class' => 'form-control',
+                                        'autocomplete' => 'off',
+                                        'required' => true
+                                    ]
+                                ) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {!! Form::label('formato', 'Formato') !!}
+                                {!! Form::select(
+                                    'formato',
+                                    [
+                                        'pdf' => 'PDF'
+                                    ],
+                                    null,
+                                    [
+                                        'class' => 'form-control',
                                         'autocomplete' => 'off',
                                         'required' => true
                                     ]
@@ -56,8 +72,8 @@
                     </div>
 
                     <button class="btn btn-success">
-                        <i class='fas fa-save'></i>
-                        Fechar Pedido
+                        <i class='fas fa-file'></i>
+                        Gerar Relatório
                     </button>
                     {!! Form::close() !!}
                 </div>
