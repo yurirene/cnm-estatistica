@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\UserDataTable;
-use App\Models\Perfil;
-use App\Models\Regiao;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;

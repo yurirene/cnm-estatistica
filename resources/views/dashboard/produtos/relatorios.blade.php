@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body">
                     {!! Form::open([
-                        'url' => route('dashboard.produtos.relatorios'),
+                        'url' => route('dashboard.produtos.relatorios.gerar'),
                         'method' => 'POST'
                     ]) !!}
                     <div class="row">

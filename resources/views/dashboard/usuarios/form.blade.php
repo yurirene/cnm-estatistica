@@ -38,8 +38,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                {!! Form::label('perfil_id', 'Perfil') !!}
-                                {!! Form::select('perfil_id', $perfis, isset($usuario) ? $usuario->role->id : null, ['class' => 'form-control ', 'required'=> false, 'autocomplete' => 'off']) !!}
+                                {!! Form::label('role_id', 'Perfil') !!}
+                                {!! Form::select('role_id', $perfis, isset($usuario) ? $usuario->role->id : null, ['class' => 'form-control ', 'required'=> false, 'autocomplete' => 'off']) !!}
                             </div>
                         </div>
                     </div>
