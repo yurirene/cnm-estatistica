@@ -180,6 +180,8 @@ class PermissionRoleSeeder extends Seeder
                 ],
                 'permissions' => [
                     'dasbhoard.produtos.index',
+                    'dasbhoard.produtos.relatorios',
+                    'dasbhoard.produtos.relatorios.gerar',
                     'dashboard.produtos.datatable.produtos',
                     'dashboard.produtos.datatable.estoque',
                     'dashboard.produtos.datatable.consignacao',
