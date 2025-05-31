@@ -309,6 +309,9 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
         Route::get('/produtos-relatorios', [ProdutoController::class, 'relatorios'])
             ->name('produtos.relatorios');
+        
+        Route::post('/produtos-relatorios', [ProdutoController::class, 'gerarRelatorio'])
+            ->name('produtos.relatorios.gerar');
     });
 });
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Produtos\Produto;
 use App\Services\Produtos\FluxoCaixaService;
 use App\Services\Produtos\ProdutoService;
+use App\Services\Produtos\RelatorioService;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
@@ -128,8 +129,6 @@ class ProdutoController extends Controller
     public function gerarRelatorio(Request $request)
     {
         $data = $request->all();
-        $data['data_inicial'] = date('Y-m-d', strtotime($data['data_inicial']));
-        $data['data_final'] = date('Y-m-d', strtotime($data['data_final']));
 
         return RelatorioService::gerarRelatorio($data);
     }
