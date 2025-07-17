@@ -268,6 +268,7 @@
             $('.isDate').attr('autocomplete', 'off');
             $('.isDate').mask('00/00/0000');
             $('.isYear').mask('0000');
+            $('.isCpf').mask('999.999.999-99');
         })(jQuery)
         $('.isTelefone').mask('(99)99999-9999');
     </script>

@@ -118,7 +118,7 @@
                     </a>
                 </li>
                 @endcan
-                
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.federacoes.index'])
                 <li class="nav-item">
@@ -183,7 +183,11 @@
                 @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.ce-sinodal.index') }}">
-                        <i class="fas fa-gavel"></i> Comissão Executiva
+                        <i class="fas fa-gavel"></i>
+                        Comissão Executiva
+                        <span class="ms-2 badge badge-danger blob text-white">
+                            <i class="fas fa-info"></i>
+                        </span>
                     </a>
                 </li>
                 @endcan
@@ -195,7 +199,7 @@
                     </a>
                 </li>
                 @endcan
-                
+
                 @can('rota-permitida', ['dashboard.pedidos.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.pedidos.index') }}">
@@ -210,7 +214,7 @@
                     </a>
                 </li>
                 @endcan
-                
+
                 @can('rota-permitida', ['dashboard.produtos.relatorios'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.produtos.relatorios') }}">

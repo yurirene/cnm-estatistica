@@ -22,9 +22,9 @@ class FluxoCaixa extends Model
         'data_lancamento' => DateCast::class
     ];
     protected $dates = ['created_at', 'updated_at'];
-    public $caminho = 'public/produtos/comprovantes';
+    public string $caminho = 'public/produtos/comprovantes';
 
-    
+
     public function getNomeTabelaFormatada(): string
     {
         return $this->nomeTabela;
@@ -33,7 +33,7 @@ class FluxoCaixa extends Model
     public static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = Str::uuid()->toString();
@@ -72,7 +72,7 @@ class FluxoCaixa extends Model
             );
         });
     }
-    
+
    /**
      * Get the value indicating whether the IDs are incrementing.
      *
