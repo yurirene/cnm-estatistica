@@ -299,7 +299,7 @@
                     <tbody id="dir_cargos">
                     </tbody>
                 </table>
-                <input type="text" id="dados_diretoria_modal">
+                <input type="hidden" id="dados_diretoria_modal">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="fecharModalDiretoriaInstancia()">Fechar</button>
