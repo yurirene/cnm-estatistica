@@ -159,6 +159,7 @@ class FederacaoService
             if (!$formulario) {
                 return [
                     'total_socios' => 'Resposta Pendente',
+                    'total_umps' => $federacao->locais->count() ?? 0,
                 ];
             }
             return [
