@@ -458,6 +458,7 @@
     </script>
 
     <script src="/vendor/chart.js"></script>
+    <script src="/js/copiar-instancia.js"></script>
 
 
 <script src="/vendor/jquery-ui.min.js"></script>
@@ -515,6 +516,8 @@
         }, 500)
     }, false);
 </script>
+
+
 
 
 </body>

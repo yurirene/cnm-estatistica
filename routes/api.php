@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SicomController;
 use App\Http\Controllers\IClaudiaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,11 @@ Route::any('/iClaudia', function() {
     $request = json_decode($update_response, true);
     
     IClaudiaController::process($request);
+});
+
+Route::middleware('api-token-sicom')->group(function () {
+    Route::get('/validar-token/{token}', [SicomController::class, 'validarToken']);
+    Route::get('/is-sinodal/{token}', [SicomController::class, 'isSinodal']);
+    Route::get('/federacoes/{sinodalId}', [SicomController::class, 'getFederacoes']);
+    Route::get('/federacoes/{federacaoId}/umps-locais', [SicomController::class, 'getUmpsLocais']);
 });

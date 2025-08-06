@@ -90,6 +90,17 @@ class User extends Authenticatable
         return $this->role;
     }
 
+    public function can($ability, $arguments = [])
+    {
+        // Se for uma string simples, verifica se é o nome do role
+        if (is_string($ability) && empty($arguments)) {
+            return $this->role->name === $ability;
+        }
+        
+        // Chama o método da classe pai para outras verificações
+        return parent::can($ability, $arguments);
+    }
+
     public function instancia()
     {
         $relation = null;

@@ -31,6 +31,16 @@
                         <i class="ni ni-settings-gear-65"></i>
                         <span>Trocar Senha</span>
                     </a>
+                    
+                    @if(auth()->user()->instancia())
+                    <a href="#" class="dropdown-item" 
+                       onclick="copiarIdInstancia()"
+                       data-instancia-id="{{ auth()->user()->instancia()->id }}">
+                        <i class="ni ni-key-25"></i>
+                        <span>Copiar Meu Token</span>
+                    </a>
+                    @endif
+                    
                     <div class="dropdown-divider"></div>
                     <a href="#" class="dropdown-item" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
