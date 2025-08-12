@@ -5,30 +5,27 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.1.0",
         "barryvdh/laravel-dompdf": "^2.2",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel-frontend-presets/argon": "^1.1",
-        "laravel/framework": "^8.75",
-        "laravel/sanctum": "^2.11",
-        "laravel/tinker": "^2.5",
+        "guzzlehttp/guzzle": "^7.8",
+        "laravel/framework": "^9.0",
+        "laravel/sanctum": "^2.15",
+        "laravel/tinker": "^2.8",
         "laravel/ui": "^3.4",
-        "laravelcollective/html": "^6.3",
+        "laravelcollective/html": "^6.4",
         "league/csv": "^9.22",
         "maatwebsite/excel": "^3.1",
-        "telegram-bot/api": "^2.3",
-        "yajra/laravel-datatables": "^1.5",
-        "yajra/laravel-datatables-oracle": "~9.0"
+        "telegram-bot/api": "^2.5",
+        "yajra/laravel-datatables": "^9.0",
+        "yajra/laravel-datatables-oracle": "^10.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.7",
-        "facade/ignition": "^2.5",
-        "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^5.10",
-        "phpunit/phpunit": "^9.5.10"
+        "barryvdh/laravel-debugbar": "^3.10",
+        "fakerphp/faker": "^1.23",
+        "laravel/sail": "^1.27",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^6.0",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
@@ -67,6 +64,6 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

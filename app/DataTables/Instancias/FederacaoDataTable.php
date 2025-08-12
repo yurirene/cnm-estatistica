@@ -124,7 +124,7 @@ class FederacaoDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Federacao_' . date('YmdHis');
     }

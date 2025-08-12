@@ -117,7 +117,7 @@ class RankingDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Ranking_' . date('YmdHis');
     }

@@ -56,7 +56,7 @@ class ComprovanteAciDataTable extends DataTable
                 $span = "{$result['valor']}<span data-toggle='tooltip' data-placement='top' title='Referente a: {$result['total_socios']} sócios'>
                     <i class='fas fa-info-circle'></i></span>";
                 return $span;
-            }) 
+            })
             ->rawColumns(['status', 'valor_necessario']);
     }
 
@@ -77,7 +77,7 @@ class ComprovanteAciDataTable extends DataTable
         $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
             ->where('ano_referencia', $sql->ano)
             ->first();
-        
+
         if (is_null($formulario)) {
             return 'Formulário não respondido';
         }
@@ -165,7 +165,7 @@ class ComprovanteAciDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Comprovante_ACI_' . date('YmdHis');
     }
