@@ -19,9 +19,11 @@ class AuthSistema
             'dashboard.trocar-senha',
             'dashboard.usuarios.check-usuario'
         ];
+
         if (in_array($route, $excpetions)) {
             return $next($request);
         }
+
         if (Gate::denies('rota-permitida', [$route])) {
             Log::alert('Acesso negado', [
                 'user_id' => auth()->user()->id,

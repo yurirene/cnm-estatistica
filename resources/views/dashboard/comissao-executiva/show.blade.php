@@ -26,13 +26,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ session()->get('aba') == 1 ? 'active' : '' }}"
-                                id="ce-credenciais-tab"
+                                id="ce-delegados-tab"
                                 data-toggle="pill"
-                                href="#ce-credenciais"
+                                href="#ce-delegados"
                                 role="tab"
-                                aria-controls="ce-credenciais"
+                                aria-controls="ce-delegados"
                                 aria-selected="false">
-                                Credenciais
+                                Delegados
                             </a>
                         </li>
                     </ul>
@@ -44,9 +44,9 @@
                                 {!! $dataTable->table(['style'=>'width:100%']) !!}
                             </div>
                         </div>
-                        <div class="tab-pane fade {{ session()->get('aba') == 1 ? 'active show' : ''}}" id="ce-credenciais" role="tabpanel" aria-labelledby="ce-credenciais-tab">
+                        <div class="tab-pane fade {{ session()->get('aba') == 1 ? 'active show' : ''}}" id="ce-delegados" role="tabpanel" aria-labelledby="ce-delegados-tab">
                             <div class="table-responsive">
-                                {!! $credenciaisDataTable->table(['style'=>'width:100%']) !!}
+                                {!! $delegadosDataTable->table(['style'=>'width:100%']) !!}
                             </div>
                         </div>
                     </div>
@@ -61,6 +61,6 @@
 @push('js')
 
 {!! $dataTable->scripts() !!}
-{!! $credenciaisDataTable->scripts() !!}
+{!! $delegadosDataTable->scripts() !!}
 
 @endpush

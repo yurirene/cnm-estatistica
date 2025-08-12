@@ -13,6 +13,7 @@ use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DatatableAjaxController;
+use App\Http\Controllers\DelegadoComissaoExecutivaController;
 use App\Http\Controllers\DetalhamentoController;
 use App\Http\Controllers\DigestoController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
@@ -309,7 +310,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
 
         Route::get('/produtos-relatorios', [ProdutoController::class, 'relatorios'])
             ->name('produtos.relatorios');
-        
+
         Route::post('/produtos-relatorios', [ProdutoController::class, 'gerarRelatorio'])
             ->name('produtos.relatorios.gerar');
     });
@@ -553,11 +554,15 @@ Route::group(
                 ->name('comissao-executiva.delete');
             Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])
                 ->name('comissao-executiva.encerrar');
-            Route::get('comissao-executiva-credenciais-datatable', [ComissaoExecutivaController::class, 'credenciaisDatatable'])
-                ->name('comissao-executiva.credenciais-datatable');
+            Route::get('comissao-executiva-delegados-datatable/{reuniao}', [ComissaoExecutivaController::class, 'delegadosDatatable'])
+                ->name('comissao-executiva.delegados-datatable');
 
             Route::get('comissao-executiva/{documento}/confirmar', [ComissaoExecutivaController::class, 'confirmarDocumento'])
                 ->name('comissao-executiva.confirmar');
+            Route::get('comissao-executiva/delegado/{delegado}/edit', [DelegadoComissaoExecutivaController::class, 'edit'])
+                ->name('comissao-executiva.delegado.edit');
+            Route::put('comissao-executiva/delegado/{delegado}/update', [DelegadoComissaoExecutivaController::class, 'update'])
+                ->name('comissao-executiva.delegado.update');
         });
     }
 );
@@ -575,10 +580,17 @@ Route::group(
             function () {
                 Route::get('ce/sinodal', [ComissaoExecutivaController::class, 'sinodal'])
                     ->name('ce-sinodal.index');
+                Route::get('ce/sinodal/{reuniao}/abrir', [ComissaoExecutivaController::class, 'showSinodal'])
+                    ->name('ce-sinodal.show');
                 Route::post('ce/enviar-documentos', [ComissaoExecutivaController::class, 'enviarDocumento'])
                     ->name('ce-sinodal.enviar-documento');
                 Route::get('ce/remover-documentos/{documento}', [ComissaoExecutivaController::class, 'removerDocumento'])
                     ->name('ce-sinodal.remover-documento');
+                // Rotas para Delegados
+                Route::post('ce/sinodal/delegado', [ComissaoExecutivaController::class, 'storeDelegado'])
+                    ->name('ce-sinodal.delegado.store');
+                Route::put('ce/sinodal/delegado/{delegado}', [ComissaoExecutivaController::class, 'updateDelegado'])
+                    ->name('ce-sinodal.delegado.update');
             }
         );
     }

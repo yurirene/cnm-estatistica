@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\ComissaoExecutiva\CredenciaisDataTable;
+use App\DataTables\ComissaoExecutiva\DelegadosDataTable;
 use App\DataTables\ComissaoExecutiva\ReunioesDataTable;
 use App\DataTables\ComissaoExecutiva\DocumentoRecebidoDataTable;
+use App\DataTables\ComissaoExecutiva\Sinodais\ReunioesCEDataTable;
+use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\ComissaoExecutiva\Reuniao;
 use App\Services\ComissaoExecutivaService;
+use App\Services\LogErroService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -44,11 +47,11 @@ class ComissaoExecutivaController extends Controller
     public function show(Reuniao $reuniao)
     {
         $documentosDataTable = new DocumentoRecebidoDataTable($reuniao->id);
-        $credenciaisDataTable = new CredenciaisDataTable($reuniao->id);
+        $delegadosDataTable = new DelegadosDataTable($reuniao->id);
 
         return $documentosDataTable->render('dashboard.comissao-executiva.show', [
             'reuniao' => $reuniao,
-            'credenciaisDataTable' => $credenciaisDataTable->html()
+            'delegadosDataTable' => $delegadosDataTable->html()
         ]);
     }
 
@@ -134,8 +137,9 @@ class ComissaoExecutivaController extends Controller
         }
     }
 
-    public function sinodal(DocumentoRecebidoDataTable $dataTable)
+    public function sinodal()
     {
+        $dataTable = new ReunioesCEDataTable();
         $reuniao = ComissaoExecutivaService::getReuniaoAberta();
 
         return $dataTable->render('dashboard.comissao-executiva.index', [
@@ -151,20 +155,18 @@ class ComissaoExecutivaController extends Controller
         $request->validate(
             [
                 'arquivo' => 'mimes:pdf|max:1000', // 1 Mb,
-                'tipo' => 'required',
                 'titulo' => 'required'
             ],
             [
                 '*.mimes' => 'O arquivo precisa ser um PDF',
                 '*.max' => 'O arquivo precisa ter no máximo 1 Mb',
-                'tipo.required' => 'Selecione um tipo',
                 'titulo.required' => 'O campo não pode estar vazio'
             ]
         );
 
         try {
             ComissaoExecutivaService::salvarDocumento($request->all());
-            return redirect()->route('dashboard.ce-sinodal.index')->with([
+            return redirect()->back()->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Documento Salvo com sucesso!'
@@ -184,7 +186,7 @@ class ComissaoExecutivaController extends Controller
     {
         try {
             ComissaoExecutivaService::removerDocumento($documento);
-            return redirect()->route('dashboard.ce-sinodal.index')->with([
+            return redirect()->back()->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Documento Removido com sucesso!'
@@ -220,8 +222,89 @@ class ComissaoExecutivaController extends Controller
         }
     }
 
-    public function credenciaisDataTable(CredenciaisDataTable $credenciaisDataTable)
+    public function delegadosDataTable(string $reuniao)
     {
-        return $credenciaisDataTable->render('dashboard.comissao-executiva.show');
+        $delegadosDataTable = new DelegadosDataTable($reuniao);
+        return $delegadosDataTable->render('dashboard.comissao-executiva.show');
+    }
+
+    public function showSinodal(string $reuniao)
+    {
+        $dataTable = new DocumentoRecebidoDataTable($reuniao);
+        return $dataTable->render('dashboard.comissao-executiva.show-sinodal', [
+            'delegado' => ComissaoExecutivaService::getDelegado(),
+            'suplente' => ComissaoExecutivaService::getDelegadoSuplente(),
+            'reuniao' => ComissaoExecutivaService::getReuniaoAberta()
+        ]);
+    }
+
+    public function storeDelegado(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'cpf' => 'required|string|max:14',
+            'credencial' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048'
+        ], [
+            'nome.required' => 'O nome do delegado é obrigatório',
+            'cpf.required' => 'O CPF é obrigatório',
+            'credencial.required' => 'A credencial é obrigatória',
+            'credencial.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
+            'credencial.max' => 'A credencial deve ter no máximo 2MB'
+        ]);
+
+        try {
+            ComissaoExecutivaService::storeDelegado($request->all());
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Delegado cadastrado com sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage()
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function updateDelegado(Request $request, DelegadoComissaoExecutiva $delegado): RedirectResponse
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'cpf' => 'required|string|max:14',
+            'credencial' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048'
+        ], [
+            'nome.required' => 'O nome do delegado é obrigatório',
+            'cpf.required' => 'O CPF é obrigatório',
+            'credencial.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
+            'credencial.max' => 'A credencial deve ter no máximo 2MB'
+        ]);
+
+        try {
+            ComissaoExecutivaService::updateDelegado($request->all(), $delegado);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Delegado atualizado com sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage()
+                ]
+            ])
+            ->withInput();
+        }
     }
 }

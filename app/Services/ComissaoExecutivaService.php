@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\ComissaoExecutiva\DocumentoRecebido;
 use App\Models\ComissaoExecutiva\Reuniao;
 use Exception;
@@ -26,12 +27,15 @@ class ComissaoExecutivaService
             $reuniao = Reuniao::create([
                 'ano' => $dados['ano'],
                 'local' => $dados['local'],
-                'aberto' => isset($dados['aberto']) ? 1 : 0
+                'aberto' => isset($dados['aberto']) ? 1 : 0,
+                'visible' => true
             ]);
 
-            if (!self::sincronizarSIGCE($reuniao->toArray(), 'nova-reuniao')) {
+            /*
+             if (!self::sincronizarSIGCE($reuniao->toArray(), 'nova-reuniao')) {
                 throw new Exception("Erro de comunicação com o SIGCE");
             }
+            */
 
             DB::commit();
 
@@ -56,9 +60,9 @@ class ComissaoExecutivaService
             ]);
 
 
-            if (!self::sincronizarSIGCE($reuniao->toArray(), 'atualizar-reuniao')) {
-                throw new Exception("Erro de comunicação com o SIGCE");
-            }
+            // if (!self::sincronizarSIGCE($reuniao->toArray(), 'atualizar-reuniao')) {
+            //     throw new Exception("Erro de comunicação com o SIGCE");
+            // }
 
             DB::commit();
 
@@ -137,7 +141,7 @@ class ComissaoExecutivaService
             'path' => $dados['arquivo'],
             'sinodal_id' => UserService::getInstanciaUsuarioLogado()->id,
             'reuniao_id' => $reuniao['id'],
-            'tipo' => $dados['tipo']
+            'tipo' => DocumentoRecebido::TIPO_DOCUMENTO_SINODAL
         ]);
 
         return $documento;
@@ -204,5 +208,73 @@ class ComissaoExecutivaService
         ]);
     }
 
+    public static function getDelegado(): ?DelegadoComissaoExecutiva
+    {
+        return DelegadoComissaoExecutiva::where('sinodal_id', UserService::getInstanciaUsuarioLogado()->id)
+            ->where('reuniao_id', self::getReuniaoAberta()['id'])
+            ->where('suplente', 0)
+            ->first();
+    }
 
+    public static function getDelegadoSuplente(): ?DelegadoComissaoExecutiva
+    {
+        return DelegadoComissaoExecutiva::where('sinodal_id', UserService::getInstanciaUsuarioLogado()->id)
+            ->where('reuniao_id', self::getReuniaoAberta()['id'])
+            ->where('suplente', 1)
+            ->first();
+    }
+
+    public static function storeDelegado(array $dados): void
+    {
+        $reuniao = self::getReuniaoAberta();
+
+        if (empty($reuniao)) {
+            throw new Exception("Nenhuma reunião está aberta para cadastro de delegado");
+        }
+
+        $sinodal = UserService::getInstanciaUsuarioLogado();
+
+        if (DelegadoComissaoExecutiva::where('sinodal_id', $sinodal->id)
+            ->where('reuniao_id', $reuniao['id'])
+            ->where('suplente', $dados['suplente'] ?? 0)
+            ->exists()
+        ) {
+            throw new Exception("Já existe um delegado para esta reunião");
+        }
+
+        $delegado = DelegadoComissaoExecutiva::create([
+            'nome' => $dados['nome'],
+            'cpf' => $dados['cpf'],
+            'reuniao_id' => $reuniao['id'],
+            'sinodal_id' => $sinodal->id,
+            'suplente' => $dados['suplente'] ?? 0,
+            'path_credencial' => $dados['credencial'] ?? null,
+            'status' => DelegadoComissaoExecutiva::STATUS_EM_ANALISE
+        ]);
+    }
+
+    public static function updateDelegado(array $dados, DelegadoComissaoExecutiva $delegado): void
+    {
+
+        $delegado->update([
+            'nome' => $dados['nome'],
+            'cpf' => $dados['cpf']
+        ]);
+
+        if (!empty($dados['credencial'])) {
+            $delegado->update([
+                'path_credencial' => $dados['credencial']
+            ]);
+        }
+    }
+    public static function updateDelegadoExecutiva(array $dados, DelegadoComissaoExecutiva $delegado): void
+    {
+        $delegado->update([
+            'nome' => $dados['nome'],
+            'cpf' => $dados['cpf'],
+            'status' => $dados['status'],
+            'pago' => $dados['pago'] ?? false,
+            'credencial' => $dados['credencial'] ?? false
+        ]);
+    }
 }

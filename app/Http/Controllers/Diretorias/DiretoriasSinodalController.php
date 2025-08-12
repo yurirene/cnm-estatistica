@@ -34,6 +34,12 @@ class DiretoriasSinodalController extends Controller
                 ]
                 ]);
         } catch (Throwable $th) {
+            \Log::error("erro ao atualizar", [
+                $th->getMessage(),
+                $th->getFile(),
+                $th->getLine()
+
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
