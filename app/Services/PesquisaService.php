@@ -40,7 +40,7 @@ class PesquisaService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
+            Log::error('Erro ao salvar Pesquisa', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -68,7 +68,7 @@ class PesquisaService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            Log::error([
+            Log::error('Erro ao Atualizar Pesquisa', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -106,7 +106,7 @@ class PesquisaService
             }
             return $referencias;
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao montar a referencia dos campos', [
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
@@ -142,7 +142,7 @@ class PesquisaService
             );
 	   return true;
         } catch (Throwable $th) {
-            Log::error([
+            Log::error('Erro ao Responder', [
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
@@ -158,7 +158,7 @@ class PesquisaService
                 'status' => !$pesquisa->status
             ]);
         } catch (Throwable $th) {
-            Log::error([
+            Log::error('Erro ao atualizar status', [
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
@@ -200,7 +200,7 @@ class PesquisaService
                 'configuracao' => $novas_configuracoes
             ]);
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao setar a configuração da pesquisa', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -224,7 +224,7 @@ class PesquisaService
             }
             return $graficos;
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao gerar dados dos gráficos', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -276,7 +276,7 @@ class PesquisaService
             }
             return $retorno;
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao carregar os totalizadores', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -306,7 +306,7 @@ class PesquisaService
             }
             return '';
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao buscar label do campo', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -321,7 +321,7 @@ class PesquisaService
         try {
             $pesquisa->respostas()->delete();
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao limpar resposta', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -362,7 +362,7 @@ class PesquisaService
             }
             return self::calcularPorcentagemAlcance($alcance);
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro ao buscar alcance', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -403,7 +403,7 @@ class PesquisaService
             }
             return $alcance;
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('erro ao buscar mapa do alcance', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
@@ -518,12 +518,12 @@ class PesquisaService
             }
             return self::calcularPorcentagemAlcance($alcance);
         } catch (\Throwable $th) {
-            Log::error([
+            Log::error('Erro no acompanhemento da regiao', [
                 'mensagem' => $th->getMessage(),
                 'linha' => $th->getLine(),
                 'arquivo' => $th->getFile()
             ]);
-            throw new Exception("Erro ao buscar alcance", 1);
+            throw new Exception("Erro no acomapanhemnto da região", 1);
         }
 
     }

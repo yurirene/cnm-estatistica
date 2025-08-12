@@ -144,10 +144,18 @@
                 @endcan
                 @endcannot
 
-                @can('rota-permitida', ['dashboard.pesquisas.index'])
+                @can('rota-permitida', ['dashboard.formulario-complementar-sinodal.index'])
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.pesquisas.index') }}">
-                        <i class="fas fa-question"></i> Formulário de Pesquisa
+                    <a class="nav-link" href="{{ route('dashboard.formulario-complementar-sinodal.index') }}">
+                        <i class="fas fa-question"></i> Formulário Complementar
+                    </a>
+                </li>
+                @endcan
+                
+                @can('rota-permitida', ['dashboard.formulario-complementar-federacao.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.formulario-complementar-federacao.index') }}">
+                        <i class="fas fa-question"></i> Formulário Complementar
                     </a>
                 </li>
                 @endcan

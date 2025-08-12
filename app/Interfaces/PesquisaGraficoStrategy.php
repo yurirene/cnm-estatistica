@@ -3,13 +3,14 @@
 namespace App\Interfaces;
 
 use App\Models\Pesquisas\Pesquisa;
+use Illuminate\Database\Eloquent\Model;
 
 interface PesquisaGraficoStrategy
 {
 
-    public function handle(Pesquisa $pesquisa, string $campo, string $chave) : array;
+    public function handle(Model $pesquisa, string $campo, string $chave) : array;
 
-    public static function getDados(Pesquisa $pesquisa, string $campo, string $chave) : array;
+    public static function getDados(Model $pesquisa, string $campo, string $chave) : array;
 
     public static function formatarDados(array $dados, string $tipo_dado) : array;
 

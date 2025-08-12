@@ -32,12 +32,12 @@ class PesquisaDataTable extends DataTable
                     'id' => $sql->id,
                     'show' => !$this->verificarUsuariosDiretoria(),
                     'delete' => false,
-                    'edit' => $this->verificarUsuariosPermitidosParaConfiguracoes($sql),
-                    'status' => $this->verificarUsuariosVinculados($sql),
-                    'respostas' => $this->verificarUsuariosVinculados($sql),
-                    'configuracoes' => $this->verificarUsuariosPermitidosParaConfiguracoes($sql),
-                    'relatorio' =>  $this->verificarUsuariosVinculados($sql),
-                    'acompanhar' =>  $this->verificarUsuariosDiretoria()
+                    'edit' => true,
+                    'status' => true,
+                    'respostas' => true,
+                    'configuracoes' => true,
+                    'relatorio' => true,
+                    'acompanhar' => true
                 ]);
             })
             ->addColumn('usuarios', function($sql) {
@@ -124,7 +124,6 @@ class PesquisaDataTable extends DataTable
                     ->buttons(
                         Button::make('create')->text('<i class="fas fa-plus"></i> Nova Pesquisa')
                             ->enabled(Gate::allows('rota-permitida', ['dashboard.pesquisas.create']))
-                            ->addClass(!$this->verificarPefilInstancia() ? 'd-none' : null)
                     )
                     ->parameters([
                         "language" => [

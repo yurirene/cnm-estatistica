@@ -7,6 +7,7 @@ use App\Http\Requests\StoreFormularioLocalRequest;
 use App\Models\Parametro;
 use App\Services\ColetorDadosService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\FormularioComplementarService;
 use App\Services\Formularios\FormularioLocalService;
 use Exception;
 use Illuminate\Http\Request;
@@ -18,12 +19,21 @@ class FormularioLocalController extends Controller
     {
         $formularioRespondidoAno = FormularioLocalService::getAnosFormulariosRespondidos();
         $formularioColetaAtual = FormularioLocalService::getFormularioAnoCorrente();
+        $formularioComplementarSinodal = FormularioComplementarService::getFormularioSinodal(
+            auth()->user()->local_id
+        );
+        $formularioComplementarFederacao = FormularioComplementarService::getFormularioFederacao(
+            auth()->user()->local_id
+        );
+
         return view('dashboard.formularios.local', [
             'coleta' => FormularioLocalService::verificarColeta(),
             'anos' => $formularioRespondidoAno,
             'ano_referencia' => EstatisticaService::getAnoReferencia(),
             'formulario' => $formularioColetaAtual,
-            'coletorDados' => ColetorDadosService::carregarDadosCompilados()
+            'coletorDados' => ColetorDadosService::carregarDadosCompilados(),
+            'formularioComplementarSinodal' => $formularioComplementarSinodal,
+            'formularioComplementarFederacao' => $formularioComplementarFederacao
         ]);
     }
 
@@ -31,6 +41,7 @@ class FormularioLocalController extends Controller
     {
         try {
             FormularioLocalService::store($request);
+
             return redirect()->route('dashboard.formularios-locais.index')->with([
                 'mensagem' => [
                     'status' => true,
@@ -52,8 +63,9 @@ class FormularioLocalController extends Controller
     {
         try {
             $response = FormularioLocalService::showFormulario($request->id);
+
             return response()->json(['data' => $response]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return response()->json(['erro' => $th->getMessage()]);
         }
     }

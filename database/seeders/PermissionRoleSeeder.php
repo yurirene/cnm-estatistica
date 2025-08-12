@@ -19,7 +19,7 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'umps-locais',
                     'formularios-locais',
-                    'pesquisas',
+                    'formulario-complementar',
                     'datatables',
                     'secretaria-estatistica',
                     'secretaria-produtos',
@@ -41,12 +41,6 @@ class PermissionRoleSeeder extends Seeder
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.datatables.pesquisas.sinodais',
-                    'dashboard.datatables.pesquisas.federacoes',
-                    'dashboard.datatables.pesquisas.locais',
-                    'dashboard.pesquisas.acompanhar',
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-sinodal.export',
                     'dashboard.usuarios.resetar-senha'
@@ -62,6 +56,9 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'diretoria-sinodal',
                     'ce-sinodal',
+                    'formulario-complementar-sinodal',
+                    'pesquisas'
+                    'ce-sinodal',
                     'sites'
                 ],
                 'permissions' => [
@@ -69,9 +66,6 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.sinodais.update-info',
                     'dashboard.comprovante-aci.index',
                     'dashboard.comprovante-aci.store',
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.responder',
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
@@ -86,12 +80,11 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'helpdesk',
                     'diretoria-federacao',
+                    'diretoria',
+                    'formulario-complementar-federacao',
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.responder',
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
@@ -108,9 +101,6 @@ class PermissionRoleSeeder extends Seeder
                     'coletor-dados'
                 ],
                 'permissions' => [
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.responder',
                     'dashboard.locais.update-info',
                     'dashboard.avisos.listar',
                     'dashboard.avisos.visualizado',
@@ -141,13 +131,7 @@ class PermissionRoleSeeder extends Seeder
                     'pedidos',
                     'helpdesk'
                 ],
-                'permissions' => [
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.status',
-                    'dashboard.pesquisas.relatorio',
-                    'dashboard.pesquisas.relatorio.excel'
-                ]
+                'permissions' => []
             ],
             'secretaria_estatistica' => [
                 'resources' => [
@@ -165,13 +149,7 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'helpdesk'
                 ],
-                'permissions' => [
-                    'dashboard.pesquisas.index',
-                    'dashboard.pesquisas.show',
-                    'dashboard.pesquisas.status',
-                    'dashboard.pesquisas.relatorio',
-                    'dashboard.pesquisas.relatorio.excel'
-                ]
+                'permissions' => [                ]
             ],
             'presidente' => [
                 'resources' => [

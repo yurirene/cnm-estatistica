@@ -119,4 +119,9 @@ class Sinodal extends Model
 
         return $dados;
     }
+
+    public function formularioComplementar()
+    {
+        return $this->hasOne(FormularioComplementarSinodal::class, 'sinodal_id');
+    }
 }
