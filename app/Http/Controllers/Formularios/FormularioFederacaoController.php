@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Formularios;
 use App\Http\Controllers\Controller;
 use App\Models\Parametro;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\FormularioComplementarService;
 use App\Services\Formularios\FormularioFederacaoService;
 use Illuminate\Http\Request;
 use Throwable;
@@ -15,6 +16,11 @@ class FormularioFederacaoController extends Controller
     {
         $listaAnosFormulariosRespondidos = FormularioFederacaoService::getAnosFormulariosRespondidos();
         $formularioDesseAno = FormularioFederacaoService::getFormularioAnoCorrente();
+        $formularioComplementarSinodal = FormularioComplementarService::getFormularioSinodal(
+            auth()->user()->federacao_id,
+            FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO
+        );
+
         return view('dashboard.formularios.federacao', [
             'coleta' => FormularioFederacaoService::verificarColeta(),
             'anos' => $listaAnosFormulariosRespondidos,
@@ -23,7 +29,8 @@ class FormularioFederacaoController extends Controller
                 && $formularioDesseAno->status == EstatisticaService::FORMULARIO_ENTREGUE,
             'qualidade_entrega' =>  FormularioFederacaoService::qualidadeEntrega(),
             'estrutura_federacao' => FormularioFederacaoService::getEstrutura(),
-            'formulario' => $formularioDesseAno
+            'formulario' => $formularioDesseAno,
+            'formularioComplementarSinodal' => $formularioComplementarSinodal
         ]);
     }
 

@@ -134,6 +134,8 @@
                             ) !!}
                         </div>
                     </div>
+                    
+                    @include('dashboard.formularios.local.complementar')
 
                     <div class="btn-group pull-right">
                     {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}

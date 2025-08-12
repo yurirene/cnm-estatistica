@@ -25,7 +25,7 @@ class PesquisaController extends Controller
     {
         return view('dashboard.pesquisas.form', [
             'instancias' => Pesquisa::INSTANCIAS,
-            'secretarios' => User::whereHas('roles', function($sql) {
+            'secretarios' => User::whereHas('role', function($sql) {
                 return $sql->whereIn('name', ['secretaria_eventos', 'secreatria_produtos', 'secretaria_evangelismo', 'secretaria_responsabilidade']);
             })->get()->pluck('name', 'id')
         ]);

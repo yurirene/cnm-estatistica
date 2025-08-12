@@ -19,6 +19,8 @@ use App\Http\Controllers\DigestoController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
+use App\Http\Controllers\Formularios\FormularioComplementarFederacaoController;
+use App\Http\Controllers\Formularios\FormularioComplementarSinodalController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
 use App\Http\Controllers\Instancias\FederacaoController;
 use App\Http\Controllers\Formularios\FormularioFederacaoController;
@@ -243,6 +245,82 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('pesquisas.acompanhar');
     });
 });
+
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(
+            ['modulo' => 'formulario-complementar-sinodal'],
+            function ()
+            {
+                Route::resource(
+                    '/formulario-complementar-sinodal',
+                    FormularioComplementarSinodalController::class
+                )->names('formulario-complementar-sinodal');
+                Route::get(
+                    '/formulario-complementar-sinodal/{formulario}/configuracoes',
+                    [FormularioComplementarSinodalController::class, 'configuracoes']
+                )->name('formulario-complementar-sinodal.configuracoes');
+                Route::get(
+                    '/formulario-complementar-sinodal/{formulario}/relatorio',
+                    [FormularioComplementarSinodalController::class, 'relatorio']
+                )->name('formulario-complementar-sinodal.relatorio');
+                Route::put(
+                    '/formulario-complementar-sinodal-configuracoes/{formulario}/update',
+                    [FormularioComplementarSinodalController::class, 'configuracoesUpdate']
+                )->name('formulario-complementar-sinodal.configuracoes-update');
+                Route::get(
+                    '/formulario-complementar-sinodal-configuracoes/{formulario}/export',
+                    [FormularioComplementarSinodalController::class, 'exportExcel']
+                )->name('formulario-complementar-sinodal.relatorio.excel');
+            }
+        );
+    }
+);
+
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(
+            ['modulo' => 'formulario-complementar-federacao'],
+            function ()
+            {
+                Route::get(
+                    '/formulario-complementar-federacao',
+                    [FormularioComplementarFederacaoController::class, 'index']
+                )->name('formulario-complementar-federacao.index');
+                Route::put(
+                    '/formulario-complementar-federacao/{formulario}/update',
+                    [FormularioComplementarFederacaoController::class, 'update']
+                )->name('formulario-complementar-federacao.update');
+                Route::get(
+                    '/formulario-complementar-federacao/{formulario}/configuracoes',
+                    [FormularioComplementarFederacaoController::class, 'configuracoes']
+                )->name('formulario-complementar-federacao.configuracoes');
+                Route::get(
+                    '/formulario-complementar-federacao/{formulario}/relatorio',
+                    [FormularioComplementarFederacaoController::class, 'relatorio']
+                )->name('formulario-complementar-federacao.relatorio');
+                Route::put(
+                    '/formulario-complementar-federacao-configuracoes/{formulario}/update',
+                    [FormularioComplementarFederacaoController::class, 'configuracoesUpdate']
+                )->name('formulario-complementar-federacao.configuracoes-update');
+                Route::get(
+                    '/formulario-complementar-federacao-configuracoes/{formulario}/export',
+                    [FormularioComplementarFederacaoController::class, 'exportExcel']
+                )->name('formulario-complementar-federacao.relatorio.excel');
+            }
+        );
+    }
+);
 
 Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
     Route::group(['modulo' => 'comprovante-aci'], function () {

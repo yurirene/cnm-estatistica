@@ -4,13 +4,26 @@ namespace App\Helpers;
 
 class FormHelper
 {
+    /**
+     * Índice of SWITCH_ON
+     * 
+     * @var string
+     */
+    public const SWITCH_ON = 'on';
+    
+    /**
+     * Índice number do Tipo do campo do FormBuildr.js
+     * 
+     * @var string
+     */
+    public const TIPO_NUMBER = 'numero';
 
     public static function statusFormatado(bool $status, string $ativo, string $inativo)
     {
         if ($status) {
-            return  '<span class="badge badge-success">' . $ativo .'</span>';
+            return  "<span class='badge badge-success'>{$ativo}</span>";
         }
-        return  '<span class="badge badge-danger">' . $inativo .'</span>';
+        return  "<span class='badge badge-danger'>{$inativo}</span>";
     }
 
     public static function getUsarioInstancia($instancia, $campo)

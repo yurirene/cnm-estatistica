@@ -81,7 +81,12 @@ class FormularioFederacaoService
                     'estrutura' => $estrutura,
                     'status' => $apenasSalvar
                         ? EstatisticaService::FORMULARIO_RESPOSTA_PARCIAL
-                        : EstatisticaService::FORMULARIO_ENTREGUE
+                        : EstatisticaService::FORMULARIO_ENTREGUE,
+                    'campo_extra_sinodal' => FormularioComplementarService::tratarRespostasComplementaresSinodal(
+                        $request->all(),
+                        $request->federacao_id,
+                        FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO
+                    ),
                 ]
             );
             EstatisticaService::atualizarRelatorioGeral();
