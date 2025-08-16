@@ -7,7 +7,11 @@ use App\Helpers\FormHelper;
 use App\Models\Federacao;
 use App\Models\FormularioComplementarFederacao;
 use App\Models\FormularioComplementarSinodal;
+use App\Models\FormularioFederacao;
+use App\Models\FormularioLocal;
+use App\Models\FormularioSinodal;
 use App\Models\Local;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -52,7 +56,7 @@ class FormularioComplementarService
         self::TIPO_FORMULARIO_LOCAL => Local::class,
         self::TIPO_FORMULARIO_FEDERACAO => Federacao::class
     ];
-    
+
     public const CLASSES_SERVICES_RELATORIO = [
         self::TIPO_FORMULARIO_LOCAL => [
             'classe' => FormularioLocalService::class,
@@ -64,15 +68,18 @@ class FormularioComplementarService
         ]
     ];
 
-    public static function getFormularioComplementar(string $instanciaId, string $tipo): Model
+    public static function getFormularioComplementar(string $instanciaId, string $tipo, $ano): Model
     {
         $classe = self::CLASSES[$tipo];
         $campo = "{$tipo}_id";
-        $formulario = $classe::where($campo, $instanciaId)->first();
+        $formulario = $classe::where($campo, $instanciaId)
+            ->where('ano', $ano)
+            ->first();
 
         if ($formulario === null) {
             $formulario = $classe::create([
-                $campo => $instanciaId
+                $campo => $instanciaId,
+                'ano' => $ano
             ]);
         }
 
@@ -81,9 +88,9 @@ class FormularioComplementarService
 
     /**
      * Retorna os dados do formulário complementar sinodal
-     * 
+     *
      * @param string $localId
-     * 
+     *
      * @return FormularioComplementarFederacao|null
      */
     public static function getFormularioSinodal(
@@ -107,9 +114,9 @@ class FormularioComplementarService
 
     /**
      * Retorna os dados do formulário complementar da federação
-     * 
+     *
      * @param string $localId
-     * 
+     *
      * @return FormularioComplementarFederacao|null
      */
     public static function getFormularioFederacao(string $localId): ?Model
@@ -136,8 +143,9 @@ class FormularioComplementarService
             $formulario->update([
                 'formulario' => $request['formulario'],
                 'referencias' => $referencias,
-                'status' => $request['status'] == FormHelper::SWITCH_ON
+                'status' => isset($request['status'])
             ]);
+
             DB::commit();
         } catch (Throwable $th) {
             DB::rollBack();
@@ -172,7 +180,7 @@ class FormularioComplementarService
                         'description' => $campo['description'] ?? '',
                     ]
                 ];
-                
+
                 if ($campo['type'] == 'number') {
                     $referencias[$key][$campo['name']]['min'] = $campo['min'] ?? 0;
                     $referencias[$key][$campo['name']]['max'] = $campo['max'] ?? null;
@@ -204,18 +212,18 @@ class FormularioComplementarService
     public static function padronizarFormulario(string $formulario): string
     {
         $dados = json_decode(json_decode($formulario), true);
-        
+
         foreach ($dados as $key => $campo) {
             if (isset($campo['type']) && $campo['type'] == 'header') {
                 $dados[$key]['subtype'] = 'h3';
             }
         }
-        
+
         return json_encode($dados);
     }
 
     public static function tratarResposta(array $request, array $referencias): array
-    {        
+    {
         $resposta = [];
 
         try {
@@ -227,13 +235,13 @@ class FormularioComplementarService
 
                     $resposta[$campo] = $request[$campo];
                 }
-            }   
+            }
         } catch (Throwable $th) {
             Log::error('Erro ao tratar a resposta', [
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
                 'file' => $th->getFile()
-            ]); 
+            ]);
         }
 
         return $resposta;
@@ -249,10 +257,10 @@ class FormularioComplementarService
         if ($formularios == null) {
             return [];
         }
-        
+
         return self::tratarResposta($request, $formularios->referencias);
     }
-    
+
     public static function tratarRespostasComplementaresFederacao(array $request, string $localId): array
     {
         $formularios = self::getFormularioFederacao($localId);
@@ -260,19 +268,171 @@ class FormularioComplementarService
         if ($formularios == null) {
             return [];
         }
-        
+
         return self::tratarResposta($request, $formularios->referencias);
     }
 
-    public static function getRespostas(string $id, string $tipo): array
+    public static function getRespostas(string $id, string $tipo, int $ano): array
     {
-        $formulario = self::getFormularioComplementar($id, $tipo);
-        
-        if ($formulario == null) {
+        $formulario = self::getFormularioComplementar($id, $tipo, $ano);
+
+        if ($formulario == null || empty($formulario->referencias)) {
             return [];
         }
-        
-        $referencias = $formulario->referencias;
 
+        $referencias = self::tratarReferencia($formulario->referencias);
+        $chaves = array_keys($referencias);
+        $perguntas = self::getPerguntasComChave($referencias);
+
+        $instancia = auth()->user()->role->name;
+
+        $respostasFederacao = [];
+
+        if ($instancia == User::ROLE_SINODAL) {
+            $respostasFederacao = self::getRespostasFederacoes($chaves, $perguntas, $ano);
+        }
+
+        $respostasLocal = [];
+
+        if (in_array($instancia, [User::ROLE_SINODAL, User::ROLE_FEDERACAO])) {
+            $respostasLocal = self::getRespostasLocais($chaves, $perguntas, $ano, $instancia);
+        }
+
+        return self::formatarResposta($formulario->referencias, $respostasFederacao, $respostasLocal);
+    }
+
+    public static function getPerguntasComChave(array $referencias): array
+    {
+        $perguntas = [];
+
+        foreach ($referencias as $chave => $dado) {
+            $perguntas[$chave] = $dado[0]['label'];
+        }
+
+        return $perguntas;
+
+    }
+
+    public static function getRespostasFederacoes(array $chaves, array $perguntas, int $ano): array
+    {
+        $instancia = auth()->user()->instancia();
+        $federacoesId = $instancia->federacoes->pluck('id');
+        $respostas = FormularioFederacao::with('federacao')
+            ->whereIn('federacao_id', $federacoesId)
+            ->where('ano_referencia', $ano)
+            ->whereNotNull('campo_extra_sinodal')
+            ->get()
+            ->pluck('campo_extra_sinodal', 'federacao.nome')
+            ->toArray();
+
+        $totalizador = [];
+
+        foreach ($chaves as $chave) {
+            $totalizador[$chave]['totalizador'] = 0;
+            $totalizador[$chave]['pergunta'] = $perguntas[$chave];
+        }
+
+        foreach ($respostas as $federacao => $resposta) {
+            $respostaArray = json_decode($resposta, true);
+
+            foreach ($chaves as $chave) {
+                if (isset($respostaArray[$chave])) {
+                    $totalizador[$chave]['respostas'][$federacao] = $respostaArray[$chave];
+                    $totalizador[$chave]['totalizador'] += intval($respostaArray[$chave]);
+                }
+            }
+        }
+
+        return $totalizador;
+    }
+    public static function getRespostasLocais(array $chaves, array $perguntas, int $ano, $campoInstancia): array
+    {
+        $instancia = auth()->user()->instancia();
+        $federacoesId = $instancia->locais->pluck('id')->toArray();
+        $campo = "campo_extra_{$campoInstancia}";
+
+        $respostas = FormularioLocal::with('local')
+            ->whereIn('local_id', $federacoesId)
+            ->where('ano_referencia', $ano)
+            ->whereNotNull($campo)
+            ->get()
+            ->pluck($campo, 'local.nome')
+            ->toArray();
+
+        $totalizador = [];
+
+        foreach ($chaves as $chave) {
+            $totalizador[$chave]['totalizador'] = 0;
+            $totalizador[$chave]['pergunta'] = $perguntas[$chave];
+        }
+
+        foreach ($respostas as $local => $resposta) {
+            $respostaArray = json_decode($resposta, true);
+
+            foreach ($chaves as $chave) {
+                if (isset($respostaArray[$chave])) {
+                    $totalizador[$chave]['respostas'][$local] = $respostaArray[$chave];
+                    $totalizador[$chave]['totalizador'] += intval($respostaArray[$chave]);
+                }
+            }
+        }
+
+        return $totalizador;
+    }
+
+    public static function formatarResposta($referencias, $valoresFederacao, $valoresLocal): array
+    {
+        $referencias = self::tratarReferencia($referencias);
+        $temDadoFederacao = !empty($valoresFederacao);
+        $temDadoLocal = !empty($valoresLocal);
+        $retorno = [];
+
+        foreach ($referencias as $campo => $dados) {
+            if ($temDadoFederacao) {
+                $retorno['federacao'][$dados[0]['label']] = $valoresFederacao[$campo];
+            }
+
+            if ($temDadoLocal) {
+                $retorno['local'][$dados[0]['label']] = $valoresLocal[$campo];
+            }
+        }
+        return $retorno;
+    }
+
+    public static function tratarReferencia(array $dados, bool $retornarApenasChaves = false): array
+    {
+        $referencias = [];
+
+        foreach ($dados as $dado) {
+            $referencias[array_keys($dado)[0]] = array_values($dado);
+        }
+
+        if ($retornarApenasChaves) {
+            return array_keys($referencias);
+        }
+
+        return $referencias;
+    }
+
+    public static function getAnosToSelect(): array
+    {
+        $instancia = auth()->user()->role->name;
+        $instanciaId = auth()->user()->instancia()->id;
+
+        if ($instancia == User::ROLE_SINODAL) {
+            $formularios = FormularioComplementarSinodal::where('sinodal_id', $instanciaId)
+                ->get()
+                ->pluck('ano', 'ano')
+                ->toArray();
+        } else {
+            $formularios = FormularioComplementarFederacao::where('federacao_id', $instanciaId)
+                ->get()
+                ->pluck('ano', 'ano')
+                ->toArray();
+        }
+
+        $formularios[date('Y')] = date('Y');
+
+        return $formularios;
     }
 }

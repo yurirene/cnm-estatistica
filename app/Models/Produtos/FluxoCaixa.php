@@ -19,9 +19,10 @@ class FluxoCaixa extends Model
     protected $casts = [
         'valor' => MoneyCast::class,
         'comprovante' => FileCast::class,
-        'data_lancamento' => DateCast::class
+        'data_lancamento' => DateCast::class,
+        'updated_at' => 'date',
+        'created_at' => 'date'
     ];
-    protected $dates = ['created_at', 'updated_at'];
     public string $caminho = 'public/produtos/comprovantes';
 
 

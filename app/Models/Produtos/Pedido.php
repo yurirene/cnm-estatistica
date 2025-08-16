@@ -14,9 +14,10 @@ class Pedido extends Model
     protected $table = 'pedidos';
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $casts = [
-        'produtos' => 'array'
+        'produtos' => 'array',
+        'updated_at' => 'date',
+        'created_at' => 'date'
     ];
-    protected $dates = ['created_at'];
 
 
 }

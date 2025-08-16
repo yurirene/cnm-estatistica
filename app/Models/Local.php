@@ -17,7 +17,9 @@ class Local extends Model
     protected $table = 'locais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $dates = ['data_organizacao'];
+    protected $casts = [
+        'data_organizacao' => 'date'
+    ];
 
     public function regiao()
     {

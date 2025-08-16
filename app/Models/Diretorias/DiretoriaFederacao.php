@@ -10,7 +10,6 @@ class DiretoriaFederacao extends Model
 {
     protected $table = 'diretorias_federacao';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $dates = ['updated_at', 'created_at'];
     protected $casts = [
         'presidente' => Encryptable::class,
         'vice_presidente' => Encryptable::class,
@@ -28,6 +27,8 @@ class DiretoriaFederacao extends Model
         'contato_tesoureiro' => Encryptable::class,
         'contato_secretario_presbiterialapp/Models/Diretorias/DiretoriaFederacao.php' => Encryptable::class,
 
-        'secretarios' => 'array'
+        'secretarios' => 'array',
+        'updated_at' => 'date',
+        'created_at' => 'date'
     ];
 }

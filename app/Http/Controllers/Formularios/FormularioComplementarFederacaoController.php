@@ -11,12 +11,21 @@ class FormularioComplementarFederacaoController extends Controller
 {
     public function index()
     {
+        $ano = request()->filled('ano') ? request()->get('ano') : date('Y');
+
         return view('dashboard.formulario-complementar.form', [
             'formulario' => FormularioComplementarService::getFormularioComplementar(
                 auth()->user()->federacao_id,
-                FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO
+                FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO,
+                $ano
             ),
-            'route' => 'formulario-complementar-federacao'
+            'anos' => FormularioComplementarService::getAnosToSelect(),
+            'route' => 'formulario-complementar-federacao',
+            'respostas' => FormularioComplementarService::getRespostas(
+                auth()->user()->federacao_id,
+                FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO,
+                $ano
+            )
         ]);
     }
 
@@ -29,7 +38,7 @@ class FormularioComplementarFederacaoController extends Controller
                 FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO
             );
 
-            return redirect()->route('dashboard.formulario-complementar-sinodal.index')->with([
+            return redirect()->route('dashboard.formulario-complementar-federacao.index')->with([
                 'mensagem' => [
                     'status' => true,
                     'texto' => 'Operação realizada com Sucesso!'
@@ -45,81 +54,4 @@ class FormularioComplementarFederacaoController extends Controller
             ->withInput();
         }
     }
-
-    // public function configuracoes()
-    // {
-    //     try {
-    //         return view('dashboard.formulario-complementar-sinodal.configuracoes', [
-    //             'pesquisa' => $pesquisa,
-    //             'configuracoes' => $pesquisa->configuracao,
-    //             'tipos_graficos' => FormularioComplementarService::TIPO_GRAFICO,
-    //             'tipos_dados' => FormularioComplementarService::TIPO_DADO
-    //         ]);
-    //     } catch (Throwable $th) {
-    //         return redirect()->back()->with([
-    //             'mensagem' => [
-    //                 'status' => false,
-    //                 'texto' => 'Algo deu Errado!'
-    //             ]
-    //         ])
-    //         ->withInput();
-    //     }
-    // }
-
-    // public function configuracoesUpdate(Pesquisa $pesquisa, Request $request)
-    // {
-    //     try {
-    //         PesquisaService::setConfiguracoesPesquisa($pesquisa, $request);
-    //         return redirect()->route('dashboard.formulario-complementar-sinodal.configuracoes', $pesquisa->id)->with([
-    //             'mensagem' => [
-    //                 'status' => true,
-    //                 'texto' => 'Operação realizada com Sucesso!'
-    //             ]
-    //         ]);
-    //     } catch (Throwable $th) {
-    //         return redirect()->back()->with([
-    //             'mensagem' => [
-    //                 'status' => false,
-    //                 'texto' => 'Algo deu Errado!'
-    //             ]
-    //         ])
-    //         ->withInput();
-    //     }
-    // }
-
-    // public function exportExcel(Pesquisa $pesquisa)
-    // {
-    //     try {
-    //         return Excel::download(new PesquisaExport($pesquisa), 'pesquisa_' . $pesquisa->nome . '.xlsx');
-    //     } catch (Throwable $th) {
-    //         return redirect()->back()->with([
-    //             'mensagem' => [
-    //                 'status' => false,
-    //                 'texto' => 'Algo deu Errado!'
-    //             ]
-    //         ])
-    //         ->withInput();
-    //     }
-    // }
-
-    // public function status(Pesquisa $pesquisa)
-    // {
-    //     try {
-    //         PesquisaService::status($pesquisa);
-    //         return redirect()->route('dashboard.formulario-complementar-sinodal.index')->with([
-    //             'mensagem' => [
-    //                 'status' => true,
-    //                 'texto' => 'Operação realizada com Sucesso!'
-    //             ]
-    //         ]);
-    //     } catch (Throwable $th) {
-    //         return redirect()->back()->with([
-    //             'mensagem' => [
-    //                 'status' => false,
-    //                 'texto' => 'Algo deu Errado!'
-    //             ]
-    //         ])
-    //         ->withInput();
-    //     }
-    // }
 }

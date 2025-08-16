@@ -31,7 +31,7 @@ class PermissionsSeeder extends Seeder
             ];
 
             $routes = collect(Route::getRoutes())->filter(function ($route) {
-                return in_array('web', $route->action['middleware']) && key_exists('modulo', $route->action);
+                return in_array('web', $route->action['middleware'] ?? []) && key_exists('modulo', $route->action);
             })
             ->pluck('action')
             ->toArray();
