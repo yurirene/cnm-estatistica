@@ -51,7 +51,6 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'formularios-sinodais',
                     'tutoriais',
-                    'apps',
                     'detalhamento',
                     'helpdesk',
                     'diretoria-sinodal',
@@ -59,7 +58,8 @@ class PermissionRoleSeeder extends Seeder
                     'formulario-complementar-sinodal',
                     'pesquisas',
                     'ce-sinodal',
-                    'sites'
+                    'sites',
+                    'tesouraria'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -82,6 +82,7 @@ class PermissionRoleSeeder extends Seeder
                     'diretoria-federacao',
                     'diretoria',
                     'formulario-complementar-federacao',
+                    'tesouraria'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -98,7 +99,8 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'helpdesk',
                     'diretoria-local',
-                    'coletor-dados'
+                    'coletor-dados',
+                    'tesouraria'
                 ],
                 'permissions' => [
                     'dashboard.locais.update-info',

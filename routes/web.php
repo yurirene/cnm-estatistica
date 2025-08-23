@@ -536,7 +536,7 @@ Route::group(
         'as' => 'dashboard.'
     ],
     function () {
-        Route::group(['modulo' => 'apps'], function () {
+        Route::group(['modulo' => 'tesouraria'], function () {
             //TESOURARIA
 
             Route::resource('/apps/tesouraria', TesourariaController::class)
