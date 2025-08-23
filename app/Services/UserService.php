@@ -244,7 +244,7 @@ class UserService
      * @param User $usuario
      * @return Model|null
      */
-    public static function getInstanciaUsuarioLogado(?User $usuario): ?Model
+    public static function getInstanciaUsuarioLogado(?User $usuario = null): ?Model
     {
         if (is_null($usuario)) {
             $usuario = auth()->user();
