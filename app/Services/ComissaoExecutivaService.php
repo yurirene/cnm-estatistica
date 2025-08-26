@@ -277,4 +277,60 @@ class ComissaoExecutivaService
             'credencial' => $dados['credencial'] ?? false
         ]);
     }
+
+    public static function sincronizarInscritos(Reuniao $reuniao): void
+    {
+        $url = config('app.evento_url') . '/reuniao/listar-inscritos/' . $reuniao->id;
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . config('app.evento_api_token')
+        ];
+
+        $response = Http::withHeaders($headers)->post($url);
+
+        if ($response->failed()) {
+            throw new Exception("Erro ao sincronizar inscritos");
+        }
+
+        $inscritos = $response->json();
+
+        foreach ($inscritos as $inscrito) {
+            $cpf = self::formatarCpf($inscrito['cpf']);
+            $delegado = DelegadoComissaoExecutiva::where('cpf', $cpf)
+                ->where('reuniao_id', $reuniao->id)
+                ->first();
+
+            if (empty($delegado) || !in_array($inscrito['payment_status'], DelegadoComissaoExecutiva::STATUS_PAGAMENTO_CONFIRMADO)) {
+                continue;
+            }
+
+            $delegado->update([
+                'status' => DelegadoComissaoExecutiva::STATUS_CONFIRMADA,
+                'pago' => true
+            ]);
+        }
+    }
+
+    /**
+     * Formata CPF no padrão 000.000.000-00
+     * 
+     * @param string $cpf CPF sem formatação (apenas números)
+     * @return string CPF formatado
+     */
+    public static function formatarCpf(string $cpf): string
+    {
+        // Remove caracteres não numéricos
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+        
+        // Verifica se tem 11 dígitos
+        if (strlen($cpf) !== 11) {
+            return $cpf; // Retorna o CPF original se não tiver 11 dígitos
+        }
+        
+        // Formata no padrão 000.000.000-00
+        return substr($cpf, 0, 3) . '.' . 
+               substr($cpf, 3, 3) . '.' . 
+               substr($cpf, 6, 3) . '-' . 
+               substr($cpf, 9, 2);
+    }
 }

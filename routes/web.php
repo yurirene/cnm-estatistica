@@ -628,6 +628,9 @@ Route::group(
                 ->names('comissao-executiva')
                 ->parameter('comissao-executiva', 'reuniao')
                 ->except(['destroy']);
+
+            Route::get('comissao-executiva/{reuniao}/sincronizar-inscritos', [ComissaoExecutivaController::class, 'sincronizarInscritos'])
+                ->name('comissao-executiva.sincronizar-inscritos');
             Route::get('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
                 ->name('comissao-executiva.delete');
             Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])

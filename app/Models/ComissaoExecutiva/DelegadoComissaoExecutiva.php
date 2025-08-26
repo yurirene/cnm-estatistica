@@ -30,6 +30,9 @@ class DelegadoComissaoExecutiva extends Model
     public const STATUS_EM_ANALISE = 1;
     public const STATUS_CONFIRMADA = 2;
 
+    //status pagamento
+    public const STATUS_PAGAMENTO_CONFIRMADO = ['paid', 'confirmed'];
+
     public const STATUS_LIST = [
         self::STATUS_REJEITADA => 'Rejeitada',
         self::STATUS_PENDENTE => 'Pendente',

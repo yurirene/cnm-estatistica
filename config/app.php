@@ -16,6 +16,9 @@ return [
     'url_integracao_sigce' => env('URL_INTEGRACAO_SIGCE'),
     'chave_integracao_sigce' => env('CHAVE_INTEGRACAO_SIGCE'),
 
+    'evento_url' => env('EVENTOS_URL'),
+    'evento_api_token' => env('EVENTOS_API_TOKEN'),
+
 
     /*
     |--------------------------------------------------------------------------
