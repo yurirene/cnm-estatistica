@@ -26,17 +26,18 @@ class TesourariaService
      */
     public static function store(array $dados): ?Lancamento
     {
+        $campo = UserService::getCampoInstanciaDB();
         $lancamento = Lancamento::create([
             'descricao' => $dados['descricao'],
             'data_lancamento' => $dados['data_lancamento'],
             'valor' => FormHelper::converterParaFloat($dados['valor']),
             'tipo' => $dados['tipo'],
             'categoria_id' => $dados['categoria_id'],
-            'sinodal_id' => UserService::getInstanciaUsuarioLogado(auth()->user())->id
+            $campo['campo'] => $campo['id']
         ]);
 
         if (!empty($dados['comprovante'])) {
-            $path = self::salvarComprovante($dados['comprovante']);
+            $path = self::salvarComprovante($campo, $dados['comprovante']);
             $lancamento->update([
                 'comprovante' => $path,
             ]);
@@ -103,7 +104,7 @@ class TesourariaService
      *
      * @return void
      */
-    public static function salvarComprovante(UploadedFile $file, string $pathAntigo = null): string
+    public static function salvarComprovante(array $campo, UploadedFile $file, ?string $pathAntigo = null): string
     {
         if (!empty($pathAntigo)) {
             Storage::delete(
@@ -116,8 +117,8 @@ class TesourariaService
         }
 
         $nome = time().'.'. $file->getClientOriginalExtension();
-        $sinodalId = auth()->user()->sinodal_id;
-        $path = $file->storeAs("/public/sinodais/{$sinodalId}/tesouraria/" . date('Y'), $nome);
+        $pasta = str_replace('_id', '', $campo['campo']);
+        $path = $file->storeAs("/public/{$pasta}/{$campo['id']}/tesouraria/" . date('Y'), $nome);
 
         return str_replace(
             'public',
@@ -133,8 +134,9 @@ class TesourariaService
      */
     public static function categoriaToSelect(): array
     {
+        $campo = UserService::getCampoInstanciaDB();
         return Categoria::all()
-            ->where('sinodal_id', auth()->user()->sinodal_id)
+            ->where($campo['campo'], $campo['id'])
             ->pluck('nome', 'id')
             ->toArray();
     }
@@ -149,9 +151,11 @@ class TesourariaService
      */
     public static function salvarCategoria(array $dados): ?Categoria
     {
+        $campo = UserService::getCampoInstanciaDB();
+
         return Categoria::create([
             'nome' => $dados['nome'],
-            'sinodal_id' => UserService::getInstanciaUsuarioLogado(auth()->user())->id
+            $campo['campo'] => $campo['id']
         ]);
     }
 
@@ -242,8 +246,8 @@ class TesourariaService
      */
     public static function getTotalAte(
         DateTime $ultimoDia,
-        DateTime $primeiroDia = null,
-        int $tipo = null
+        ?DateTime $primeiroDia = null,
+        ?int $tipo = null
     ): float {
         $lancamentos = Lancamento::where('data_lancamento', '<=', $ultimoDia)
             ->when(!is_null($tipo), function ($sql) use ($tipo) {

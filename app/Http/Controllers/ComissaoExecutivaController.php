@@ -55,6 +55,17 @@ class ComissaoExecutivaController extends Controller
         ]);
     }
 
+    public function sincronizarInscritos(Reuniao $reuniao)
+    {
+        ComissaoExecutivaService::sincronizarInscritos($reuniao);
+        return redirect()->back()->with([
+            'mensagem' => [
+                'status' => true,
+                'texto' => 'Inscritos sincronizados com sucesso!'
+            ]
+        ]);
+    }
+
 
     public function store(Request $request): RedirectResponse
     {

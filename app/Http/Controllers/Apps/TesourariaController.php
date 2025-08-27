@@ -7,6 +7,7 @@ use App\Exports\TesourariaExport;
 use App\Http\Controllers\Controller;
 use App\Models\Apps\Tesouraria\Lancamento;
 use App\Services\Apps\TesourariaService;
+use App\Services\LogErroService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -76,6 +77,13 @@ class TesourariaController extends Controller
                 ]
                 ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'modulo' => 'tesouraria',
+                'mensagem' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'dados' => $request->all(),
+                'user_id' => auth()->id() ?? null,
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -121,6 +129,13 @@ class TesourariaController extends Controller
                 ]
                 ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'modulo' => 'tesouraria',
+                'mensagem' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'dados' => $request->all(),
+                'user_id' => auth()->id() ?? null,
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -138,10 +153,10 @@ class TesourariaController extends Controller
      *
      * @return HttpFoundationRedirectResponse
      */
-    public function delete(Lancamento $tesourarium): HttpFoundationRedirectResponse
+    public function delete(Lancamento $lancamento): HttpFoundationRedirectResponse
     {
         try {
-            TesourariaService::delete($tesourarium);
+            TesourariaService::delete($lancamento);
             return redirect()->route('dashboard.apps.tesouraria.index')->with([
                 'mensagem' => [
                     'status' => true,
@@ -149,6 +164,13 @@ class TesourariaController extends Controller
                 ]
                 ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'modulo' => 'tesouraria',
+                'mensagem' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'dados' => $request->all(),
+                'user_id' => auth()->id() ?? null,
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
