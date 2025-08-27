@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormularioLocal extends Model
 {
-    
     use SoftDeletes;
 
     protected $table = 'formularios_local_v1';
@@ -21,6 +20,8 @@ class FormularioLocal extends Model
         'escolaridade' => 'array',
         'estado_civil' => 'array',
         'programacoes' => 'array',
+        'campo_extra_sinodal' => 'array',
+        'campo_extra_federacao' => 'array'
     ];
 
     public function local()

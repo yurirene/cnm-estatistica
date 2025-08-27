@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormularioFederacao extends Model
 {
-    
+
     use SoftDeletes;
 
     protected $table = 'formularios_federacao_v1';
@@ -23,6 +23,7 @@ class FormularioFederacao extends Model
         'estrutura' => 'array',
         'programacoes_locais' => 'array',
         'programacoes' => 'array',
+        'campo_extra_sinodal' => 'array'
     ];
 
     public function federacao()

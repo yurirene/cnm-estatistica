@@ -264,8 +264,7 @@ class FormularioComplementarService
     public static function tratarRespostasComplementaresFederacao(array $request, string $localId): array
     {
         $formularios = self::getFormularioFederacao($localId);
-
-        if ($formularios == null) {
+        if ($formularios->formulario == null) {
             return [];
         }
 
