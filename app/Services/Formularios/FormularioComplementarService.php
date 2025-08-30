@@ -91,7 +91,7 @@ class FormularioComplementarService
      *
      * @param string $localId
      *
-     * @return FormularioComplementarFederacao|null
+     * @return FormularioComplementarSinodal|null
      */
     public static function getFormularioSinodal(
         string $instanciaId,
@@ -100,6 +100,10 @@ class FormularioComplementarService
         $classe = self::CLASSES_INSTANCIAS[$tipo];
         $instancia = $classe::find($instanciaId);
         $formulario = FormularioComplementarSinodal::where('sinodal_id', $instancia->sinodal_id)->first();
+        
+        if ($formulario == null) {
+            return null;
+        }
 
         $classeServiceFormulario = self::CLASSES_SERVICES_RELATORIO[$tipo]['classe'];
         $metodoServiceFormulario = self::CLASSES_SERVICES_RELATORIO[$tipo]['metodo'];
