@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <div class="tab-pane fade {{ session()->get('aba') == 1 ? 'active show' : ''}}" id="ce-delegados" role="tabpanel" aria-labelledby="ce-delegados-tab">
-                            <div class="">
+                            <div class="mb-3">
                                 <a href="{{ route('dashboard.comissao-executiva.sincronizar-inscritos', $reuniao->id) }}" class="btn btn-primary">Sincronizar Inscritos</a>
                             </div>
                             <div class="table-responsive">

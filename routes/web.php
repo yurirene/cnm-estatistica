@@ -197,6 +197,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('formularios-sinodal.export');
         Route::post('/formularios-sinodais-salvar', [FormularioSinodalController::class, 'salvarPreenchimento'])
             ->name('formularios-sinodais.apenas-salvar');
+        Route::get('/formularios-sinodais-notificar-ce', [FormularioSinodalController::class, 'notificarCE'])
+            ->name('formularios-sinodais.notificar-ce');
     });
 });
 
@@ -591,6 +593,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::group(['modulo' => 'diretoria-sinodal'], function () {
         Route::get('/diretoria-sinodal', [DiretoriasSinodalController::class, 'index'])->name('diretoria-sinodal.index');
         Route::put('/diretoria-sinodal/{diretoria}/update', [DiretoriasSinodalController::class, 'update'])->name('diretoria-sinodal.update');
+        Route::get('/diretoria-sinodal/notificar-ce', [DiretoriasSinodalController::class, 'notificarCe'])->name('diretoria-sinodal.notificar-ce');
     });
 
     Route::group(['modulo' => 'diretoria-federacao'], function () {

@@ -245,7 +245,8 @@ class ComissaoExecutivaController extends Controller
         return $dataTable->render('dashboard.comissao-executiva.show-sinodal', [
             'delegado' => ComissaoExecutivaService::getDelegado(),
             'suplente' => ComissaoExecutivaService::getDelegadoSuplente(),
-            'reuniao' => ComissaoExecutivaService::getReuniaoAberta()
+            'reuniao' => ComissaoExecutivaService::getReuniaoAberta(),
+            'documentosAutomaticos' => ComissaoExecutivaService::getDocumentosAutomaticosEntregues($reuniao)
         ]);
     }
 

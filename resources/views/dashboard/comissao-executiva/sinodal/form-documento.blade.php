@@ -5,6 +5,24 @@
             'files' => true
         ]) !!}
     <div class="row">
+        <div class="col-md-12">
+            
+            @if(isset($documentosAutomaticos['diretoria']))
+            <div>
+                <strong>Diretoria:</strong>
+                <span class="badge badge-{{ $documentosAutomaticos['diretoria'] ? 'success' : 'danger' }}">{{ $documentosAutomaticos['diretoria'] ? 'Entregue' : 'Pendente' }}</span>
+            </div>    
+            @endif
+            @if(isset($documentosAutomaticos['relatorio_estatistico']))
+            <div>
+                <strong>Relatório Estatístico:</strong>
+                <span class="badge badge-{{ $documentosAutomaticos['relatorio_estatistico'] ? 'success' : 'danger' }}">{{ $documentosAutomaticos['relatorio_estatistico'] ? 'Entregue' : 'Pendente' }}</span>
+            </div>
+            @endif
+        </div>
+    </div>
+    <h4 class="mt-3">Novo Documento</h4>
+    <div class="row">
         <div class="col-md-4">
             <div class="form-group">
                 {!! Form::label('titulo', 'Título', ['id' => 'titulo_titulo']) !!}

@@ -3,8 +3,10 @@
 namespace App\DataTables\ComissaoExecutiva;
 
 use App\Helpers\BootstrapHelper;
+use App\Helpers\FormHelper;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\ComissaoExecutiva\DocumentoRecebido;
+use App\Models\ComissaoExecutiva\Reuniao;
 use App\Models\Sinodal;
 use App\Models\User;
 use Yajra\DataTables\Html\Column;
@@ -15,6 +17,7 @@ class DelegadosDataTable extends DataTable
 
     protected bool $perfilSinodal = false;
     protected string $reuniao;
+    protected Reuniao $reuniaoModel;
     protected bool $perfilExecutiva = false;
     protected bool $perfilDiretoria = false;
 
@@ -27,6 +30,7 @@ class DelegadosDataTable extends DataTable
         $this->perfilExecutiva = auth()->user()->role->name == User::ROLE_SEC_EXECUTIVA;
         $this->perfilDiretoria = auth()->user()->role->name == User::ROLE_DIRETORIA;
         $this->reuniao = $reuniao;
+        $this->reuniaoModel = Reuniao::where('id', $reuniao)->first();
     }
 
     /**
@@ -65,10 +69,27 @@ class DelegadosDataTable extends DataTable
             ->editColumn('sinodal_id', function ($sql) {
                 return $sql->sinodal->nome;
             })
+            ->editColumn('regiao', function ($sql) {
+                return $sql->sinodal->regiao->nome;
+            })
+            ->editColumn('documentos', function ($sql) {
+                $documento = $sql->sinodal->documentosAutomaticos()->where('reuniao_id', $this->reuniao)->first();
+                $retorno = [];
+
+                if ($this->reuniaoModel->diretoria == 1) {
+                    $retorno['diretoria'] = FormHelper::statusFormatado($documento->diretoria ?? false ? true : false, 'Diretoria - Ok', 'Diretoria');
+                }
+
+                if ($this->reuniaoModel->relatorio_estatistico == 1) {
+                    $retorno['relatorio_estatistico'] = FormHelper::statusFormatado($documento->relatorio_estatistico ?? false ? true : false, 'Rel. Estat. - Ok', 'Rel. Estat.');
+                }
+
+                return implode(' ', $retorno);
+            })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
-            ->rawColumns(['status', 'credencial', 'pago']);
+            ->rawColumns(['status', 'credencial', 'pago', 'documentos']);
     }
 
     /**
@@ -92,12 +113,12 @@ class DelegadosDataTable extends DataTable
             ->setTableId('ce-credencial-table')
             ->columns($this->getColumns())
             ->minifiedAjax(route('dashboard.comissao-executiva.delegados-datatable', ['reuniao' => $this->reuniao]))
-            ->dom('Bfrtip')
+            ->dom('Bfrtipl')
             ->pageLength(20)
             ->orderBy(1, 'asc')
             ->buttons([])
             ->parameters([
-                "buttons" => [],
+                "buttons" => ['print', 'csv'],
                 "language" => [
                     "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
                 ]
@@ -120,6 +141,8 @@ class DelegadosDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sinodal_id')->title('Sinodal'),
+            Column::make('documentos')->title('Documentos')->searchable(false)->orderable(false),
+            Column::make('regiao')->title('Região')->searchable(false)->orderable(false),
             Column::make('status')->title('Status'),
             Column::make('credencial')->title('Credencial'),
             Column::make('pago')->title('Pago'),

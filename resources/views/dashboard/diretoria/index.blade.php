@@ -82,6 +82,13 @@
                                 <i class='fas fa-save'></i>
                                 Atualizar
                             </button>
+                            
+                            @if ($notificarCe)
+                            <a href="{{ route('dashboard.diretoria-sinodal.notificar-ce') }}" class="btn btn-primary">
+                                <i class='fas fa-bullhorn'></i>
+                                Notificar
+                            </a>
+                            @endif
                         </div>
                     </div>
                     {!! Form::close() !!}

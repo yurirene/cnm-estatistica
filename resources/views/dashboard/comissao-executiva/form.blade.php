@@ -64,9 +64,9 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 mt-2">
+                        <div class="col-md-2 mt-2">
 
-                            <span>Aberto para receber documentos</span>
+                            <span>Receber documentos</span>
                             <br>
                             <input type="checkbox"
                                 class="parametro"
@@ -79,6 +79,40 @@
                                 id="aberto"
                                 style="margin-top:20px;"
                                 {{ isset($reuniao) && $reuniao->aberto == 1 ? 'checked' : ''}}
+                            >
+                        </div>
+                        <div class="col-md-2 mt-2">
+
+                            <span>Solicitar Diretoria</span>
+                            <br>
+                            <input type="checkbox"
+                                class="parametro"
+                                data-toggle="toggle"
+                                data-onstyle="success"
+                                data-on="Receber"
+                                data-id="diretoria"
+                                data-off="Não Receber"
+                                name="diretoria"
+                                id="diretoria"
+                                style="margin-top:20px;"
+                                {{ isset($reuniao) && $reuniao->diretoria == 1 ? 'checked' : ''}}
+                            >
+                        </div>
+                        <div class="col-md-2 mt-2">
+
+                            <span>Solicitar Relatorio Estatistico</span>
+                            <br>
+                            <input type="checkbox"
+                                class="parametro"
+                                data-toggle="toggle"
+                                data-onstyle="success"
+                                data-on="Receber"
+                                data-id="relatorio_estatistico"
+                                data-off="Não Receber"
+                                name="relatorio_estatistico"
+                                id="relatorio_estatistico"
+                                style="margin-top:20px;"
+                                {{ isset($reuniao) && $reuniao->relatorio_estatistico == 1 ? 'checked' : ''}}
                             >
                         </div>
                     </div>

@@ -2,10 +2,15 @@
 
 namespace App\Services\Instancias;
 
+use App\Models\ComissaoExecutiva\DocumentosAutomaticos;
+use App\Models\ComissaoExecutiva\Reuniao;
 use App\Models\Diretorias\DiretoriaFederacao;
 use App\Models\Diretorias\DiretoriaLocal;
 use App\Models\Diretorias\DiretoriaSinodal;
+use App\Services\UserService;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class DiretoriaService
 {
@@ -215,5 +220,44 @@ class DiretoriaService
     {
         return self::SECRETARIOS;
     }
+    
+    public static function enviarNotificacaoCE(string $tipo): void
+    {
+        $reuniao = Reuniao::where('status', 1)->where('aberto', 1)->first();
+
+        if (!$reuniao) {
+            throw new Exception("Nenhuma reunião está aberta para envio de notificação");
+        }
+
+        $instancia = UserService::getCampoInstanciaDB();
+        $diretoria = self::getDiretoria($tipo, $instancia['id']);
+        $dados = self::getDiretoriaTabela($instancia['id'], $tipo);
+
+        if (!$diretoria) {
+            throw new Exception("Diretoria não encontrada");
+        }
+
+        DB::beginTransaction();
+        try {
+            $diretoria->update(['reuniao_notificada' => $reuniao->id]);
+            DocumentosAutomaticos::updateOrCreate(
+                [
+                    $instancia['campo'] => $instancia['id'],
+                    'reuniao_id' => $reuniao->id
+                ],
+                [
+                    'diretoria' => $dados,
+                    'reuniao_id' => $reuniao->id,
+                    $instancia['campo'] => $instancia['id']
+                ]
+            );
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception("Erro ao atualizar a diretoria: " . $e->getMessage());
+        }
+
+    }	
 
 }

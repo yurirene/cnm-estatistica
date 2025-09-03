@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Formularios;
 
 use App\Http\Controllers\Controller;
+use App\Services\ComissaoExecutivaService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Formularios\FormularioSinodalService;
 use Illuminate\Http\Request;
@@ -22,7 +23,8 @@ class FormularioSinodalController extends Controller
             'qualidade_entrega' =>  FormularioSinodalService::qualidadeEntrega(),
             'estrutura_sinodal' => FormularioSinodalService::getEstrutura(),
             'formularioEntregue' => isset($formularioDesseAno)
-                && $formularioDesseAno->status == EstatisticaService::FORMULARIO_ENTREGUE
+                && $formularioDesseAno->status == EstatisticaService::FORMULARIO_ENTREGUE,
+            'notificarCE' => ComissaoExecutivaService::deveNotificarRelatorioEstatistico()
         ]);
     }
 
@@ -131,6 +133,26 @@ class FormularioSinodalController extends Controller
         return view('dashboard.formularios.sinodal.export', [
             'formulario' => FormularioSinodalService::getFormularioDaSinodal($sinodal)
         ]);
+    }
+
+    public function notificarCE()
+    {
+        try {
+            ComissaoExecutivaService::notificarRelatorioEstatistico();
+            return redirect()->route('dashboard.formularios-sinodais.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Notificação realizada com Sucesso!'
+                ]
+            ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
     }
 
 }
