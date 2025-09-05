@@ -86,6 +86,9 @@ class DelegadosDataTable extends DataTable
 
                 return implode(' ', $retorno);
             })
+            ->editColumn('suplente', function ($sql) {
+                return $sql->suplente ? 'Suplente' : 'Delegado';
+            })
             ->editColumn('created_at', function ($sql) {
                 return $sql->created_at->format('d/m/Y H:i:s');
             })
@@ -141,6 +144,7 @@ class DelegadosDataTable extends DataTable
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
             Column::make('sinodal_id')->title('Sinodal'),
+            Column::make('suplente')->title('Tipo'),
             Column::make('documentos')->title('Documentos')->searchable(false)->orderable(false),
             Column::make('regiao')->title('Região')->searchable(false)->orderable(false),
             Column::make('status')->title('Status'),
