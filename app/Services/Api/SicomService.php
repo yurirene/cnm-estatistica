@@ -2,6 +2,7 @@
 
 namespace App\Services\Api;
 
+use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\Sinodal;
@@ -116,5 +117,23 @@ class SicomService
             });
 
         return $unidades;
+    }
+
+    public static function getDelegados($reuniaoId)
+    {
+        $delegados = DelegadoComissaoExecutiva::where('status', 2)
+            ->where('credencial', true)
+            ->where('reuniao_id', $reuniaoId)
+            ->get()
+            ->map(function($delegado) {
+                return [
+                    'id' => $delegado->id,
+                    'nome' => $delegado->nome,
+                    'cpf' => $delegado->cpf,
+                    'telefone' => $delegado->telefone,
+                    'credencial' => $delegado->path_credencial
+                ];
+            });
+        return $delegados;
     }
 }

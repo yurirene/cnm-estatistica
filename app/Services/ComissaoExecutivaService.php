@@ -307,6 +307,7 @@ class ComissaoExecutivaService
 
             $delegado->update([
                 'status' => DelegadoComissaoExecutiva::STATUS_CONFIRMADA,
+                'telefone' => $inscrito['phone'],
                 'pago' => true
             ]);
         }

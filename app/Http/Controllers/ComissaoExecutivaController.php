@@ -255,13 +255,16 @@ class ComissaoExecutivaController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'cpf' => 'required|string|max:14',
-            'credencial' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048'
+            'credencial' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'telefone' => 'required|string|max:15',
         ], [
             'nome.required' => 'O nome do delegado é obrigatório',
             'cpf.required' => 'O CPF é obrigatório',
             'credencial.required' => 'A credencial é obrigatória',
             'credencial.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
-            'credencial.max' => 'A credencial deve ter no máximo 2MB'
+            'credencial.max' => 'A credencial deve ter no máximo 2MB',
+            'telefone.required' => 'O telefone é obrigatório',
+            'telefone.max' => 'O telefone deve ter no máximo 15 caracteres'
         ]);
 
         try {
@@ -293,12 +296,15 @@ class ComissaoExecutivaController extends Controller
         $request->validate([
             'nome' => 'required|string|max:255',
             'cpf' => 'required|string|max:14',
-            'credencial' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048'
+            'credencial' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'telefone' => 'required|string|max:15',
         ], [
             'nome.required' => 'O nome do delegado é obrigatório',
             'cpf.required' => 'O CPF é obrigatório',
             'credencial.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
-            'credencial.max' => 'A credencial deve ter no máximo 2MB'
+            'credencial.max' => 'A credencial deve ter no máximo 2MB',
+            'telefone.required' => 'O telefone é obrigatório',
+            'telefone.max' => 'O telefone deve ter no máximo 15 caracteres'
         ]);
 
         try {
