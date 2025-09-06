@@ -52,4 +52,14 @@ class SicomController extends Controller
     {
         return response()->json(SicomService::getUnidades());
     }
+
+    public function getDelegadosExecutiva($reuniaoId)
+    {
+        return response()->json(SicomService::getDelegadosExecutiva($reuniaoId));
+    }
+
+    public function getDelegadosCongresso($reuniaoId)
+    {
+        return response()->json(SicomService::getDelegadosCongresso($reuniaoId));
+    }
 }

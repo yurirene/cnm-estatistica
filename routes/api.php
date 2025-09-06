@@ -38,4 +38,6 @@ Route::middleware('api-token-sicom')->group(function () {
 Route::middleware('api-token-executiva')->group(function () {
     Route::get('/executiva/sinodais', [SicomController::class, 'getSinodais']);
     Route::get('/congresso', [SicomController::class, 'getUnidades']);
+    Route::get('/executiva/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosExecutiva']);
+    Route::get('/congresso/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosCongresso']);
 });

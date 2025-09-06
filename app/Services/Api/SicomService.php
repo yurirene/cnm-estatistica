@@ -119,7 +119,7 @@ class SicomService
         return $unidades;
     }
 
-    public static function getDelegados($reuniaoId)
+    public static function getDelegadosExecutiva($reuniaoId)
     {
         $delegados = DelegadoComissaoExecutiva::where('status', 2)
             ->where('credencial', true)
@@ -131,9 +131,17 @@ class SicomService
                     'nome' => $delegado->nome,
                     'cpf' => $delegado->cpf,
                     'telefone' => $delegado->telefone,
-                    'credencial' => $delegado->path_credencial
+                    'tipo' => $delegado->suplente ? 2 : 1,
+                    'cargo' => empty($delegado->oficial) ? null : $delegado->oficial,
+                    'credencial' => $delegado->path_credencial,
+                    'unidade_id' => $delegado->sinodal_id,
                 ];
             });
         return $delegados;
+    }
+
+    public static function getDelegadosCongresso($reuniaoId)
+    {
+        return [];
     }
 }
