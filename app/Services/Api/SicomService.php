@@ -75,4 +75,46 @@ class SicomService
 
         return $isTokenValid;
     }
+
+    public static function getSinodais()
+    {
+        $sinodais = Sinodal::where('status', true)
+            ->get()
+            ->map(function($sinodal) {
+                return [
+                    'id' => $sinodal->id,
+                    'nome' => $sinodal->nome,
+                    'sigla' => $sinodal->sigla,
+                    'regiao' => $sinodal->regiao->nome,
+                ];
+            });
+        return $sinodais;
+    }
+
+    public static function getUnidades()
+    {
+        $unidades = Sinodal::where('status', true)
+            ->with('federacoes', function($query) {
+                $query->where('status', true);
+            })
+            ->get()
+            ->map(function($unidade) {
+                return [
+                    'id' => $unidade->id,
+                    'nome' => $unidade->nome,
+                    'sigla' => $unidade->sigla,
+                    'regiao' => $unidade->regiao->nome,
+                    'federacoes' => $unidade->federacoes->map(function($federacao) {
+                        return [
+                            'id' => $federacao->id,
+                            'nome' => $federacao->nome,
+                            'sigla' => $federacao->sigla,
+                            'regiao' => $federacao->regiao->nome,
+                        ];
+                    })
+                ];
+            });
+
+        return $unidades;
+    }
 }

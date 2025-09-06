@@ -34,3 +34,8 @@ Route::middleware('api-token-sicom')->group(function () {
     Route::get('/federacoes/{sinodalId}', [SicomController::class, 'getFederacoes']);
     Route::get('/federacoes/{federacaoId}/umps-locais', [SicomController::class, 'getUmpsLocais']);
 });
+
+Route::middleware('api-token-executiva')->group(function () {
+    Route::get('/executiva/sinodais', [SicomController::class, 'getSinodais']);
+    Route::get('/congresso', [SicomController::class, 'getUnidades']);
+});

@@ -42,4 +42,14 @@ class SicomController extends Controller
 
         return response()->json(SicomService::getUmpsLocais($federacaoId));
     }
+
+    public function getSinodais()
+    {
+        return response()->json(SicomService::getSinodais());
+    }
+
+    public function getUnidades()
+    {
+        return response()->json(SicomService::getUnidades());
+    }
 }

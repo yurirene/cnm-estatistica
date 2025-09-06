@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth-sistema' => \App\Http\Middleware\AuthSistema::class,
         'api-token-sicom' => \App\Http\Middleware\ApiTokenSicomMiddleware::class,
+        'api-token-executiva' => \App\Http\Middleware\ApiTokenExecutivaMiddleware::class,
     ];
 }
