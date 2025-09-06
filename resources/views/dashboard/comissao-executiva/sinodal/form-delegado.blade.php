@@ -150,36 +150,72 @@
 @endif
 <input type="hidden" name="suplente" value="1">
 <div class="row">
-    <div class="col-md-6 mt-2">
+    <div class="col-md-4 mt-2">
         <div class="form-group">
             {!! Form::label('nome', 'Nome do Suplente') !!}
             {!! Form::text(
-    'nome',
-    null,
-    [
-        'class' => 'form-control',
-        'required' => true,
-        'autocomplete' => 'off',
-        'placeholder' => 'Digite o nome completo do suplente',
-        'readonly' => !empty($suplente) && $suplente->credencial == 1
-    ]
-) !!}
+                'nome',
+                null,
+                [
+                    'class' => 'form-control',
+                    'required' => true,
+                    'autocomplete' => 'off',
+                    'placeholder' => 'Digite o nome completo do suplente',
+                    'readonly' => !empty($suplente) && $suplente->credencial == 1
+                ]
+            ) !!}
         </div>
     </div>
-    <div class="col-md-6 mt-2">
+    <div class="col-md-3 mt-2">
         <div class="form-group">
             {!! Form::label('cpf', 'CPF') !!}
             {!! Form::text(
-    'cpf',
-    null,
-    [
-        'class' => 'form-control isCpf',
-        'required' => true,
-        'autocomplete' => 'off',
-        'placeholder' => '000.000.000-00',
-        'readonly' => !empty($suplente) && $suplente->credencial == 1
-    ]
-) !!}
+                'cpf',
+                null,
+                [
+                    'class' => 'form-control isCpf',
+                    'required' => true,
+                    'autocomplete' => 'off',
+                    'placeholder' => '000.000.000-00',
+                    'readonly' => !empty($delegado) && $delegado->credencial == 1
+                ]
+            ) !!}
+        </div>
+    </div>
+    <div class="col-md-3 mt-2">
+        <div class="form-group">
+            {!! Form::label('cpf', 'Telefone') !!}
+            {!! Form::text(
+                'telefone',
+                null,
+                [
+                    'class' => 'form-control isTelefone',
+                    'required' => true,
+                    'autocomplete' => 'off',
+                    'placeholder' => '(99) 99999-9999',
+                    'readonly' => !empty($delegado) && $delegado->credencial == 1
+                ]
+            ) !!}
+        </div>
+    </div>
+    <div class="col-md-2 mt-2">
+        <div class="form-group">
+            {!! Form::label('cpf', 'Oficial') !!}
+            {!! Form::select(
+                'oficial',
+                [
+                    '0' => 'Não',
+                    '1' => 'Diácono',
+                    '2' => 'Presbítero'
+                ],
+                null,
+                [
+                    'class' => 'form-control',
+                    'required' => true,
+                    'autocomplete' => 'off',
+                    'readonly' => !empty($delegado) && $delegado->credencial == 1
+                ]
+            ) !!}
         </div>
     </div>
 </div>
