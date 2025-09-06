@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('comissao_executiva_delegados', function (Blueprint $table) {
-            $table->string('telefone')->nullable();
             $table->tinyInteger('oficial')->nullable();
         });
     }
@@ -23,7 +22,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('comissao_executiva_delegados', function (Blueprint $table) {
-            $table->dropColumn('telefone');
             $table->dropColumn('oficial');
         });
     }
