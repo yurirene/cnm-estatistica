@@ -272,7 +272,8 @@ class ComissaoExecutivaService
     {
         $delegado->update([
             'nome' => $dados['nome'],
-            'cpf' => $dados['cpf'],
+            'telefone' => $dados['telefone'],
+            'oficial' => $dados['oficial'],
             'status' => $dados['status'],
             'pago' => $dados['pago'] ?? false,
             'credencial' => $dados['credencial'] ?? false
@@ -294,7 +295,6 @@ class ComissaoExecutivaService
         }
 
         $inscritos = $response->json();
-
         foreach ($inscritos as $inscrito) {
             $cpf = self::formatarCpf($inscrito['cpf']);
             $delegado = DelegadoComissaoExecutiva::where('cpf', $cpf)
@@ -306,7 +306,7 @@ class ComissaoExecutivaService
             }
 
             $delegado->update([
-                'status' => DelegadoComissaoExecutiva::STATUS_CONFIRMADA,
+                'status' => $delegado->credencial ? DelegadoComissaoExecutiva::STATUS_CONFIRMADA : DelegadoComissaoExecutiva::STATUS_EM_ANALISE,
                 'telefone' => $inscrito['phone'],
                 'pago' => true
             ]);
