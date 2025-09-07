@@ -262,6 +262,10 @@ class FormularioComplementarService
             return [];
         }
 
+        if ($formularios->formulario == null || empty($formularios->referencias)) {
+            return [];
+        }
+
         return self::tratarResposta($request, $formularios->referencias);
     }
 
