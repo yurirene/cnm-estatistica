@@ -149,7 +149,7 @@ class FormularioSinodalController extends Controller
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
-                    'texto' => 'Algo deu Errado!'
+                    'texto' => 'Algo deu Errado!. ' . $th->getMessage()
                 ]
             ]);
         }

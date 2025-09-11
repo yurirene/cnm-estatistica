@@ -315,7 +315,7 @@ class ComissaoExecutivaService
 
     /**
      * Formata CPF no padrão 000.000.000-00
-     * 
+     *
      * @param string $cpf CPF sem formatação (apenas números)
      * @return string CPF formatado
      */
@@ -323,16 +323,16 @@ class ComissaoExecutivaService
     {
         // Remove caracteres não numéricos
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
-        
+
         // Verifica se tem 11 dígitos
         if (strlen($cpf) !== 11) {
             return $cpf; // Retorna o CPF original se não tiver 11 dígitos
         }
-        
+
         // Formata no padrão 000.000.000-00
-        return substr($cpf, 0, 3) . '.' . 
-               substr($cpf, 3, 3) . '.' . 
-               substr($cpf, 6, 3) . '-' . 
+        return substr($cpf, 0, 3) . '.' .
+               substr($cpf, 3, 3) . '.' .
+               substr($cpf, 6, 3) . '-' .
                substr($cpf, 9, 2);
     }
 
@@ -358,11 +358,11 @@ class ComissaoExecutivaService
         }
 
         if ($reuniao->diretoria == 1) {
-            $documentos['diretoria'] = isset($documentosAutomaticos['diretoria']) ? true : false; 
+            $documentos['diretoria'] = isset($documentosAutomaticos['diretoria']) ? true : false;
         }
 
         if ($reuniao->relatorio_estatistico == 1) {
-            $documentos['relatorio_estatistico'] = isset($documentosAutomaticos['relatorio_estatistico']) ? true : false; 
+            $documentos['relatorio_estatistico'] = isset($documentosAutomaticos['relatorio_estatistico']) ? true : false;
         }
 
         return $documentos;
@@ -397,7 +397,7 @@ class ComissaoExecutivaService
         $reuniao = Reuniao::where('status', 1)
             ->where('aberto', 1)
             ->first();
-            
+
         if (empty($reuniao)) {
             throw new Exception("Nenhuma reunião está aberta para envio de notificação");
         }
@@ -405,10 +405,14 @@ class ComissaoExecutivaService
         $instancia = UserService::getCampoInstanciaDB();
 
         DB::beginTransaction();
-        
+
         try {
             $formulario = FormularioSinodalService::getFormularioAnoCorrente();
-            
+
+            if (empty($formulario)) {
+                throw new Exception("Nenhum formulário de relatório estatístico encontrado");
+            }
+
             DocumentosAutomaticos::updateOrCreate(
                 [
                     $instancia['campo'] => $instancia['id'],
@@ -434,6 +438,6 @@ class ComissaoExecutivaService
                 'file' => $th->getFile()
             ]);
             throw new Exception("Erro ao notificar relatório estatístico");
-        }        
+        }
     }
 }
