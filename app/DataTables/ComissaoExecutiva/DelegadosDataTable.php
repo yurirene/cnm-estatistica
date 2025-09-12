@@ -143,6 +143,7 @@ class DelegadosDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
+            Column::make('cpf')->title('CPF'),
             Column::make('sinodal_id')->title('Sinodal'),
             Column::make('suplente')->title('Tipo'),
             Column::make('documentos')->title('Documentos')->searchable(false)->orderable(false),
