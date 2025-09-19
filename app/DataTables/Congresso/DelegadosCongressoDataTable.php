@@ -1,0 +1,179 @@
+<?php
+
+namespace App\DataTables\Congresso;
+
+use App\Helpers\BootstrapHelper;
+use App\Helpers\FormHelper;
+use App\Models\Congresso\DelegadoCongresso;
+use App\Models\Congresso\ReuniaoCongresso;
+use App\Models\User;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Services\DataTable;
+
+class DelegadosCongressoDataTable extends DataTable
+{
+
+    protected bool $perfilSinodal = false;
+    protected string $reuniao;
+    protected ReuniaoCongresso $reuniaoModel;
+    protected bool $perfilExecutiva = false;
+    protected bool $perfilDiretoria = false;
+
+    public function __construct(string $reuniao)
+    {
+        $this->perfilSinodal = !in_array(auth()->user()->role->name, [
+            User::ROLE_SEC_EXECUTIVA,
+            User::ROLE_DIRETORIA
+        ]);
+        $this->perfilExecutiva = auth()->user()->role->name == User::ROLE_SEC_EXECUTIVA;
+        $this->perfilDiretoria = auth()->user()->role->name == User::ROLE_DIRETORIA;
+        $this->reuniao = $reuniao;
+        $this->reuniaoModel = ReuniaoCongresso::where('id', $reuniao)->first();
+    }
+
+    /**
+     * Build DataTable class.
+     *
+     * @param mixed $query Results from query() method.
+     * @return \Yajra\DataTables\DataTableAbstract
+     */
+    public function dataTable($query)
+    {
+        return datatables()
+            ->eloquent($query)
+            ->addColumn('action', function ($sql) {
+                return view('dashboard.congresso.actions-delegado', [
+                    'id' => $sql->id
+                ]);
+            })
+            ->editColumn('status', function ($sql) {
+                return $sql->status_formatado;
+            })
+            ->editColumn('pago', function ($sql) {
+                $cor = $sql->pago ? 'success' : 'danger';
+                $texto = $sql->pago ? 'Pago' : 'Pendente';
+
+                return BootstrapHelper::badge($cor, $texto, true);
+            })
+            ->editColumn('credencial', function ($sql) {
+                $cor = $sql->credencial ? 'success' : 'danger';
+                $texto = $sql->credencial ? 'Entregue' : 'Pendente';
+
+                return BootstrapHelper::badge($cor, $texto, true);
+            })
+            ->editColumn('updated_at', function ($sql) {
+                return $sql->updated_at->format('d/m/Y H:i:s');
+            })
+            ->editColumn('instancia', function ($sql) {
+                return $sql->instancia;
+            })
+            ->editColumn('regiao', function ($sql) {
+                return $sql->regiao;
+            })
+            ->editColumn('documentos', function ($sql) {
+                $documento = $this->getDocumentoAutomatico($sql);
+                $retorno = [];
+
+                if ($this->reuniaoModel->diretoria == 1) {
+                    $retorno['diretoria'] = FormHelper::statusFormatado($documento->diretoria ?? false ? true : false, 'Diretoria - Ok', 'Diretoria');
+                }
+
+                if ($this->reuniaoModel->relatorio_estatistico == 1) {
+                    $retorno['relatorio_estatistico'] = FormHelper::statusFormatado($documento->relatorio_estatistico ?? false ? true : false, 'Rel. Estat. - Ok', 'Rel. Estat.');
+                }
+
+                return implode(' ', $retorno);
+            })
+            ->editColumn('suplente', function ($sql) {
+                return $sql->suplente ? 'Suplente' : 'Delegado';
+            })
+            ->editColumn('created_at', function ($sql) {
+                return $sql->created_at->format('d/m/Y H:i:s');
+            })
+            ->rawColumns(['status', 'credencial', 'pago', 'documentos']);
+    }
+
+    /**
+     * Get query source of dataTable.
+     *
+     */
+    public function query(DelegadoCongresso $model)
+    {
+        return $model->newQuery()
+            ->with(['sinodal', 'federacao', 'local'])
+            ->where('reuniao_id', $this->reuniao);
+    }
+
+    /**
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\DataTables\Html\Builder
+     */
+    public function html()
+    {
+        return $this->builder()
+            ->setTableId('congresso-credencial-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax(route('dashboard.congresso.delegados-datatable', ['reuniao' => $this->reuniao]))
+            ->dom('Bfrtipl')
+            ->pageLength(20)
+            ->orderBy(1, 'asc')
+            ->buttons([])
+            ->parameters([
+                "buttons" => ['print', 'csv'],
+                "language" => [
+                    "url" => "//cdn.datatables.net/plug-ins/1.10.24/i18n/Portuguese-Brasil.json"
+                ]
+            ]);
+    }
+
+    /**
+     * Get columns.
+     *
+     * @return array
+     */
+    protected function getColumns()
+    {
+        return [
+            Column::computed('action')
+                  ->exportable(false)
+                  ->printable(false)
+                  ->width(60)
+                  ->addClass('text-center')
+                  ->title('Ação'),
+            Column::make('nome')->title('Nome'),
+            Column::make('instancia')->title('Instância'),
+            Column::make('suplente')->title('Tipo'),
+            Column::make('documentos')->title('Documentos')->searchable(false)->orderable(false),
+            Column::make('regiao')->title('Região')->searchable(false)->orderable(false),
+            Column::make('status')->title('Status'),
+            Column::make('credencial')->title('Credencial'),
+            Column::make('pago')->title('Pago'),
+            Column::make('created_at')->title('Enviado em'),
+            Column::make('updated_at')->title('Atualizado em'),
+        ];
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename(): string
+    {
+        return 'Congresso_' . date('YmdHis');
+    }
+
+    /**
+     * Get documento automático baseado na instância do delegado
+     */
+    private function getDocumentoAutomatico($delegado)
+    {
+        // Implementar lógica para buscar documento automático baseado na instância
+        // Similar à lógica da comissão executiva, mas adaptada para congresso
+        return (object) [
+            'diretoria' => false,
+            'relatorio_estatistico' => false
+        ];
+    }
+}

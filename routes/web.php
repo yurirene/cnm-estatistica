@@ -8,6 +8,7 @@ use App\Http\Controllers\Apps\TesourariaController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ColetorDadosController;
 use App\Http\Controllers\ComissaoExecutivaController;
+use App\Http\Controllers\CongressoController;
 use App\Http\Controllers\ComprovanteACIController;
 use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
@@ -647,6 +648,33 @@ Route::group(
                 ->name('comissao-executiva.delegado.edit');
             Route::put('comissao-executiva/delegado/{delegado}/update', [DelegadoComissaoExecutivaController::class, 'update'])
                 ->name('comissao-executiva.delegado.update');
+        });
+
+        // ROTAS DO CONGRESSO
+        Route::group(['modulo' => 'congresso'], function () {
+            Route::resource('congresso', CongressoController::class)
+                ->names('congresso')
+                ->parameter('congresso', 'reuniao')
+                ->except(['destroy']);
+
+            Route::get('congresso/{reuniao}/delegados-datatable', [CongressoController::class, 'delegadosDatatable'])
+                ->name('congresso.delegados-datatable');
+            Route::get('congresso/{reuniao}/delegado/create', [CongressoController::class, 'delegadoCreate'])
+                ->name('congresso.delegado.create');
+            Route::post('congresso/{reuniao}/delegado/store', [CongressoController::class, 'delegadoStore'])
+                ->name('congresso.delegado.store');
+            Route::delete('congresso/{reuniao}/delegado/{delegado}/destroy', [CongressoController::class, 'delegadoDestroy'])
+                ->name('congresso.delegado.destroy');
+        });
+
+        // ROTAS DO CONGRESSO NACIONAL
+        Route::group(['modulo' => 'congresso-nacional'], function () {
+            Route::get('congresso-nacional', [CongressoController::class, 'indexNacional'])
+                ->name('congresso-nacional.index');
+            Route::get('congresso-nacional/create', [CongressoController::class, 'createNacional'])
+                ->name('congresso-nacional.create');
+            Route::post('congresso-nacional/store', [CongressoController::class, 'storeNacional'])
+                ->name('congresso-nacional.store');
         });
     }
 );
