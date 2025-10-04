@@ -100,7 +100,7 @@ class FormularioComplementarService
         $classe = self::CLASSES_INSTANCIAS[$tipo];
         $instancia = $classe::find($instanciaId);
         $formulario = FormularioComplementarSinodal::where('sinodal_id', $instancia->sinodal_id)->first();
-        
+
         if ($formulario == null) {
             return null;
         }
@@ -129,7 +129,7 @@ class FormularioComplementarService
         $formulario = FormularioComplementarFederacao::where('federacao_id', $local->federacao_id)->first();
         $formularioLocal = FormularioLocalService::getFormularioLocal($localId);
 
-        if ($formularioLocal != null) {
+        if ($formularioLocal != null && $formulario != null) {
             $formulario->resposta = $formularioLocal->campo_extra_federacao;
         }
 

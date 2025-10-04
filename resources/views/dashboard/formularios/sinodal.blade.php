@@ -133,8 +133,10 @@
                     @if(!$formularioEntregue)
                     <button class="btn btn-warning" id="apenas-salvar" type="button">Apenas Salvar</button>
                     @endif
-                    @if($notificarCE)
-                    <a href="{{ route('dashboard.formularios-sinodais.notificar-ce') }}" class="btn btn-primary" id="notificar-ce"> <i class="fas fa-bullhorn"></i> Notificar</a>
+                    @if(isset($notificarCE) && $notificarCE)
+                    <a href="{{ route('dashboard.formularios-sinodais.notificar-ce') }}" class="btn btn-primary" id="notificar-ce">
+                        <i class="fas fa-bullhorn"></i> Notificar
+                    </a>
                     @endif
                     {!! Form::close() !!}
                 </div>
