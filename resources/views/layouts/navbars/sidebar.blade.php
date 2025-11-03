@@ -285,7 +285,7 @@
                 @endcan
 
                 @cannot('isAdmin')
-                @can('rota-permitida', ['dashboard.sites.index'])
+                @can('rota-permitida', ['dashboard.apps.sites.index'])
                 <li class="nav-item">
                     <a  class="nav-link" href="{{ route('dashboard.apps.sites.index') }}">
                         <i class="fab fa-chrome"></i>

@@ -57,7 +57,6 @@ class PermissionRoleSeeder extends Seeder
                     'ce-sinodal',
                     'formulario-complementar-sinodal',
                     'pesquisas',
-                    'ce-sinodal',
                     'sites',
                     'tesouraria'
                 ],

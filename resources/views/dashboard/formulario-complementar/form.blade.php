@@ -95,7 +95,7 @@
                         <th>UMP</th>
                         <th>Resposta</th>
                     </tr>
-                    @foreach ($dados['respostas'] as $ump => $dado)
+                    @foreach ($dados['respostas'] ?? [] as $ump => $dado)
                     <tr>
                         <td>{{ $ump }}</td>
                         <td>{{ $dado }}</td>
@@ -121,7 +121,7 @@
                         <th>UMP</th>
                         <th>Resposta</th>
                     </tr>
-                    @foreach ($dados['respostas'] as $ump => $dado)
+                    @foreach ($dados['respostas'] ??[] as $ump => $dado)
                     <tr>
                         <td>{{ $ump }}</td>
                         <td>{{ $dado }}</td>

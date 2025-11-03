@@ -118,7 +118,16 @@ class TesourariaService
 
         $nome = time().'.'. $file->getClientOriginalExtension();
         $pasta = str_replace('_id', '', $campo['campo']);
-        $path = $file->storeAs("/public/{$pasta}/{$campo['id']}/tesouraria/" . date('Y'), $nome);
+        $diretorioCompleto = "/public/{$pasta}/{$campo['id']}/tesouraria/" . date('Y');
+        
+        // Garantir que o diretório existe com permissões corretas
+        if (!Storage::exists($diretorioCompleto)) {
+            Storage::createDirectory($diretorioCompleto, [
+                'visibility' => 'public',
+            ]);
+        }
+        
+        $path = $file->storeAs($diretorioCompleto, $nome);
 
         return str_replace(
             'public',
