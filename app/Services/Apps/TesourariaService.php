@@ -56,6 +56,7 @@ class TesourariaService
      */
     public static function update(array $dados, Lancamento $lancamento): Lancamento
     {
+        $campo = UserService::getCampoInstanciaDB();
         $lancamento->update([
             'descricao' => $dados['descricao'],
             'data_lancamento' => $dados['data_lancamento'],
@@ -65,7 +66,7 @@ class TesourariaService
         ]);
 
         if (!empty($dados['comprovante'])) {
-            $path = self::salvarComprovante($dados['comprovante'], $lancamento->comprovante);
+            $path = self::salvarComprovante($campo, $dados['comprovante'], $lancamento->comprovante);
             $lancamento->update([
                 'comprovante' => $path,
             ]);
@@ -119,14 +120,14 @@ class TesourariaService
         $nome = time().'.'. $file->getClientOriginalExtension();
         $pasta = str_replace('_id', '', $campo['campo']);
         $diretorioCompleto = "/public/{$pasta}/{$campo['id']}/tesouraria/" . date('Y');
-        
+
         // Garantir que o diretório existe com permissões corretas
         if (!Storage::exists($diretorioCompleto)) {
             Storage::createDirectory($diretorioCompleto, [
                 'visibility' => 'public',
             ]);
         }
-        
+
         $path = $file->storeAs($diretorioCompleto, $nome);
 
         return str_replace(
