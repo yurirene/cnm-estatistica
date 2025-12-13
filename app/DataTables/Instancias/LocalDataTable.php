@@ -13,6 +13,15 @@ use Yajra\DataTables\Services\DataTable;
 
 class LocalDataTable extends DataTable
 {
+    protected bool $isTransferencias;
+    protected bool $isDiretoria;
+
+    public function __construct(bool $isTransferencias = false, bool $isDiretoria = false)
+    {
+        $this->isTransferencias = $isTransferencias;
+        $this->isDiretoria = $isDiretoria;
+    }
+
     /**
      * Build DataTable class.
      *
@@ -35,7 +44,12 @@ class LocalDataTable extends DataTable
                     'route' => 'dashboard.locais',
                     'id' => $sql->id,
                     'show' => false,
-                    'diretoria' => $diretoria
+                    'diretoria' => $diretoria,
+                    'transferir' => $this->isTransferencias ? true : false,
+                    'nome' => $sql->nome,
+                    'origem_nome' => $sql->federacao->nome,
+                    'edit' => !$this->isTransferencias,
+                    'delete' => !$this->isTransferencias,
                 ]);
             })
             ->editColumn('status', function ($sql) {
@@ -80,7 +94,16 @@ class LocalDataTable extends DataTable
         if (Auth::user()->admin == true) {
             return $model->newQuery();
         }
-        return $model->newQuery()->minhaFederacao();
+        return $model->newQuery()
+            ->when($this->isTransferencias && $this->isDiretoria, function ($query) {
+                return $query->where('regiao_id', auth()->user()->regiao_id);
+            })
+            ->when($this->isTransferencias && !$this->isDiretoria, function ($query) {
+                return $query->minhaSinodal();
+            })
+            ->when(!$this->isTransferencias, function ($query) {
+                return $query->minhaFederacao();
+            });
     }
 
     /**
@@ -90,19 +113,23 @@ class LocalDataTable extends DataTable
      */
     public function html()
     {
+        $buttons = [];
+        if (!$this->isTransferencias) {
+            $buttons[] = Button::make('create')->text('<i class="fas fa-plus"></i> Nova UMP');
+        }
+        
         return $this->builder()
                     ->setTableId('ump-local-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova UMP')
-                    )
+                    ->buttons([])
                     ->parameters([
                         "language" => [
                             "url" => "/vendor/datatables/portugues.json"
-                        ]
+                        ],
+                        'buttons' => $buttons
                     ]);
     }
 
@@ -121,13 +148,13 @@ class LocalDataTable extends DataTable
                   ->addClass('text-center')
                   ->title('Ação'),
             Column::make('nome')->title('Nome'),
-            Column::make('estatistica')->title('Estatística')->orderable(false),
-            Column::make('diretoria')->title('Att. Diretoria')->orderable(false),
-            Column::make('federacao_id')->title('Federação'),
-            Column::make('sinodal_id')->title('Sinodal'),
-            Column::make('estado_id')->title('Estado'),
-            Column::make('status')->title('Status'),
-            Column::make('regiao_id')->title('Região'),
+            Column::make('estatistica')->title('Estatística')->orderable(false)->searchable(false),
+            Column::make('diretoria')->title('Att. Diretoria')->orderable(false)->searchable(false),
+            Column::make('federacao_id')->title('Federação')->searchable(false),
+            Column::make('sinodal_id')->title('Sinodal')->searchable(false),
+            Column::make('estado_id')->title('Estado')->searchable(false),
+            Column::make('status')->title('Status')->searchable(false),
+            Column::make('regiao_id')->title('Região')->searchable(false),
         ];
     }
 

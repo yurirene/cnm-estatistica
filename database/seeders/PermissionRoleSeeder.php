@@ -43,7 +43,10 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.informacao-federacoes',
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-sinodal.export',
-                    'dashboard.usuarios.resetar-senha'
+                    'dashboard.usuarios.resetar-senha',
+                    'dashboard.transferencias.index',
+                    'dashboard.transferencias.transferir-federacao',
+                    'dashboard.transferencias.transferir-ump'
                 ]
             ],
             'sinodal' => [
@@ -78,8 +81,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.sinodal.delegado.delete',
                     'dashboard.cn.sinodal.documento.store',
                     'dashboard.cn.sinodal.documento.delete',
-                    'dashboard.cn.executiva.index',
-                    'dashboard.cn.executiva.delegado.update'
+                    'dashboard.transferencias.index',
+                    'dashboard.transferencias.transferir-ump'
                 ]
             ],
             'federacao' => [

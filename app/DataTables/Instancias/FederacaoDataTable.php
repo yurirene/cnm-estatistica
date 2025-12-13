@@ -12,6 +12,13 @@ use Yajra\DataTables\Services\DataTable;
 
 class FederacaoDataTable extends DataTable
 {
+    protected bool $isTransferencias;
+
+    public function __construct(bool $isTransferencias = false)
+    {
+        $this->isTransferencias = $isTransferencias;
+    }
+
     /**
      * Build DataTable class.
      *
@@ -26,8 +33,12 @@ class FederacaoDataTable extends DataTable
                 return view('includes.actions', [
                     'route' => 'dashboard.federacoes',
                     'id' => $sql->id,
-                    'show' => true,
-                    'delete' => $sql->dadosDatatable['nro_locais'] > 0 ? false : true
+                    'show' => !$this->isTransferencias ? true : false,
+                    'delete' => $this->isTransferencias || $sql->dadosDatatable['nro_locais'] > 0 ? false : true,
+                    'edit' => !$this->isTransferencias ? true : false,
+                    'transferir' => $this->isTransferencias ? true : false,
+                    'nome' => $sql->nome,
+                    'origem_nome' => $sql->sinodal->nome,
                 ]);
             })
             ->editColumn('status', function ($sql) {
@@ -67,7 +78,12 @@ class FederacaoDataTable extends DataTable
         if (Auth::user()->admin == true) {
             return $model->newQuery();
         }
-        return $model->newQuery()->minhaSinodal();
+        return $model->newQuery()
+            ->when($this->isTransferencias, function ($query) {
+                return $query->where('regiao_id', auth()->user()->regiao_id);
+            }, function ($query) {
+                return $query->minhaSinodal();
+            });
     }
 
     /**
@@ -77,19 +93,22 @@ class FederacaoDataTable extends DataTable
      */
     public function html()
     {
+        $buttons = [];
+        if (!$this->isTransferencias) {
+            $buttons[] = Button::make('create')->text('<i class="fas fa-plus"></i> Nova Federação');
+        }
+        
         return $this->builder()
                     ->setTableId('federacoes-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->dom('Bfrtip')
                     ->orderBy(1)
-                    ->buttons(
-                        Button::make('create')->text('<i class="fas fa-plus"></i> Nova Federação')
-                    )
                     ->parameters([
                         "language" => [
                             "url" => "/vendor/datatables/portugues.json"
-                        ]
+                        ],
+                        'buttons' => $buttons
                     ]);
     }
 

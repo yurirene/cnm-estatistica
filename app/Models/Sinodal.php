@@ -104,6 +104,11 @@ class Sinodal extends Model
         return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 
+    public function scopeMinhaRegiao($query)
+    {
+        return $query->where('regiao_id', auth()->user()->regiao_id);
+    }
+
     public function diretoria()
     {
         return $this->hasOne(DiretoriaSinodal::class, 'sinodal_id');

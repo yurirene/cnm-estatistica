@@ -17,6 +17,7 @@ use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DelegadoComissaoExecutivaController;
 use App\Http\Controllers\DetalhamentoController;
 use App\Http\Controllers\DigestoController;
+use App\Http\Controllers\TransferenciasController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
@@ -726,6 +727,22 @@ Route::group(
                 ->name('cn.executiva.index');
             Route::put('congresso-nacional/executiva/{delegado}', [CongressoNacionalController::class, 'updateDelegadoExecutiva'])
                 ->name('cn.executiva.delegado.update');
-            });
+        });
     }
 );
+
+//TRANSFERENCIAS
+Route::group([
+    'middleware' => ['auth', 'auth-sistema'],
+    'prefix' => 'dashboard',
+    'as' => 'dashboard.'
+], function () {
+    Route::group(['modulo' => 'transferencias'], function () {
+        Route::get('/transferencias', [TransferenciasController::class, 'index'])
+            ->name('transferencias.index');
+        Route::post('/transferencias/transferir-federacao', [TransferenciasController::class, 'transferirFederacao'])
+            ->name('transferencias.transferir-federacao');
+        Route::post('/transferencias/transferir-ump', [TransferenciasController::class, 'transferirUmp'])
+            ->name('transferencias.transferir-ump');
+    });
+});

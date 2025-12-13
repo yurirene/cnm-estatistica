@@ -326,6 +326,14 @@
                     </a>
                 </li>
                 @endcan
+                
+                @can('rota-permitida', ['dashboard.transferencias.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.transferencias.index', ['ump' => true]) }}">
+                        <i class="fas fa-exchange-alt"></i> Transferências
+                    </a>
+                </li>
+                @endcan
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.helpdesk.index') }}">
