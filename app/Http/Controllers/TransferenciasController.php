@@ -32,7 +32,7 @@ class TransferenciasController extends Controller
                 $federacoes = Federacao::query()->daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
             }
 
-            return (new LocalDataTable(true))->render('dashboard.trasferencias.index', [
+            return (new LocalDataTable(true, auth()->user()->role->name == 'diretoria'))->render('dashboard.trasferencias.index', [
                 'federacoes' => $federacoes,
                 'rotaUpdate' => route('dashboard.transferencias.transferir-ump'),
                 'showFederacao' => auth()->user()->role->name == 'diretoria',
