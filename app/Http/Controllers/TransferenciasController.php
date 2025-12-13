@@ -29,7 +29,7 @@ class TransferenciasController extends Controller
             if (auth()->user()->role->name == 'sinodal') {
                 $federacoes = Federacao::query()->minhaSinodal()->get()->pluck('nome', 'id')->toArray();
             } else {
-                $federacoes = Federacao::query()->minhaRegiao()->get()->pluck('nome', 'id')->toArray();
+                $federacoes = Federacao::query()->daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
             }
 
             return (new LocalDataTable(true))->render('dashboard.trasferencias.index', [
