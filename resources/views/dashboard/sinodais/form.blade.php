@@ -51,12 +51,6 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('nome_usuario', 'Nome do Usuário') !!}
-                                {!! Form::text('nome_usuario', isset($sinodal) ? FormHelper::getUsarioInstancia($sinodal, 'name') : null, ['class' => 'form-control', 'required'=>true, 'autocomplete' => 'off']) !!}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
                             <div class="form-group mt-5">
                                 <div class="checkbox{{ $errors->has('resetar_senha') ? ' has-error' : '' }}">
                                     <label for="resetar_senha">
@@ -78,6 +72,8 @@
                         </div>
                         @endif
                     </div>
+                    {!! Form::hidden('nome_usuario', 'Sinodal') !!}
+
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($sinodal) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.sinodais.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}

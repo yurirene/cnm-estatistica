@@ -20,7 +20,7 @@ class TransferenciasController extends Controller
     public function index()
     {
         if (auth()->user()->role->name == 'diretoria' && !request()->filled('ump')) {
-            return (new FederacaoDataTable(true))->render('dashboard.trasferencias.index', [
+            return (new FederacaoDataTable(true))->render('dashboard.transferencias.index', [
                 'sinodais' => Sinodal::query()->minhaRegiao()->get()->pluck('nome', 'id')->toArray(),
                 'rotaUpdate' => route('dashboard.transferencias.transferir-federacao'),
                 'showFederacao' => true,
@@ -32,7 +32,7 @@ class TransferenciasController extends Controller
                 $federacoes = Federacao::query()->daMinhaRegiao()->get()->pluck('nome', 'id')->toArray();
             }
 
-            return (new LocalDataTable(true, auth()->user()->role->name == 'diretoria'))->render('dashboard.trasferencias.index', [
+            return (new LocalDataTable(true, auth()->user()->role->name == 'diretoria'))->render('dashboard.transferencias.index', [
                 'federacoes' => $federacoes,
                 'rotaUpdate' => route('dashboard.transferencias.transferir-ump'),
                 'showFederacao' => auth()->user()->role->name == 'diretoria',
