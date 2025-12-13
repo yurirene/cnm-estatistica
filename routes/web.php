@@ -9,6 +9,7 @@ use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ColetorDadosController;
 use App\Http\Controllers\ComissaoExecutivaController;
 use App\Http\Controllers\ComprovanteACIController;
+use App\Http\Controllers\Congresso\CongressoNacionalController;
 use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
@@ -677,5 +678,54 @@ Route::group(
                     ->name('ce-sinodal.delegado.update');
             }
         );
+    }
+);
+
+//CONGRESSO NACIONAL
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(['modulo' => 'congresso-nacional'], function () {
+            Route::get('congresso-nacional/federacao', [CongressoNacionalController::class, 'indexFederacao'])
+                ->name('cn.federacao.index');
+            Route::get('congresso-nacional/federacao/delegado/create', [CongressoNacionalController::class, 'createFederacao'])
+                ->name('cn.federacao.delegado.create');
+            Route::get('congresso-nacional/federacao/delegado/{delegado}/edit', [CongressoNacionalController::class, 'editFederacao'])
+                ->name('cn.federacao.delegado.edit');
+            Route::post('congresso-nacional/federacao/delegado', [CongressoNacionalController::class, 'storeDelegadoFederacao'])
+                ->name('cn.federacao.delegado.store');
+            Route::put('congresso-nacional/federacao/delegado/{delegado}', [CongressoNacionalController::class, 'updateDelegadoFederacao'])
+                ->name('cn.federacao.delegado.update');
+            Route::get('congresso-nacional/federacao/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteFederacao'])
+                ->name('cn.federacao.delegado.delete');
+
+            Route::get('congresso-nacional/sinodal', [CongressoNacionalController::class, 'indexSinodal'])
+                ->name('cn.sinodal.index');
+            Route::get('congresso-nacional/sinodal/delegado/create', [CongressoNacionalController::class, 'createSinodal'])
+                ->name('cn.sinodal.delegado.create');
+            Route::get('congresso-nacional/sinodal/delegado/{delegado}/edit', [CongressoNacionalController::class, 'editSinodal'])
+                ->name('cn.sinodal.delegado.edit');
+            Route::post('congresso-nacional/sinodal/delegado', [CongressoNacionalController::class, 'storeDelegadoSinodal'])
+                ->name('cn.sinodal.delegado.store');
+            Route::put('congresso-nacional/sinodal/delegado/{delegado}', [CongressoNacionalController::class, 'updateDelegadoSinodal'])
+                ->name('cn.sinodal.delegado.update');
+            Route::get('congresso-nacional/sinodal/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteSinodal'])
+                ->name('cn.sinodal.delegado.delete');
+
+            // Rotas para Documentos (apenas sinodal)
+            Route::post('congresso-nacional/sinodal/documento', [CongressoNacionalController::class, 'storeDocumentoSinodal'])
+                ->name('cn.sinodal.documento.store');
+            Route::get('congresso-nacional/sinodal/documento/{documento}/delete', [CongressoNacionalController::class, 'deleteDocumentoSinodal'])
+                ->name('cn.sinodal.documento.delete');
+
+            Route::get('congresso-nacional/executiva', [CongressoNacionalController::class, 'indexExecutiva'])
+                ->name('cn.executiva.index');
+            Route::put('congresso-nacional/executiva/{delegado}', [CongressoNacionalController::class, 'updateDelegadoExecutiva'])
+                ->name('cn.executiva.delegado.update');
+            });
     }
 );

@@ -69,7 +69,17 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
+                    'dashboard.cn.sinodal.index',
+                    'dashboard.cn.sinodal.delegado.create',
+                    'dashboard.cn.sinodal.delegado.edit',
+                    'dashboard.cn.sinodal.delegado.store',
+                    'dashboard.cn.sinodal.delegado.update',
+                    'dashboard.cn.sinodal.delegado.delete',
+                    'dashboard.cn.sinodal.documento.store',
+                    'dashboard.cn.sinodal.documento.delete',
+                    'dashboard.cn.executiva.index',
+                    'dashboard.cn.executiva.delegado.update'
                 ]
             ],
             'federacao' => [
@@ -89,7 +99,13 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
+                    'dashboard.cn.federacao.index',
+                    'dashboard.cn.federacao.delegado.create',
+                    'dashboard.cn.federacao.delegado.edit',
+                    'dashboard.cn.federacao.delegado.store',
+                    'dashboard.cn.federacao.delegado.update',
+                    'dashboard.cn.federacao.delegado.delete'
                 ]
             ],
             'local' => [
@@ -124,6 +140,10 @@ class PermissionRoleSeeder extends Seeder
                     'digestos',
                     'helpdesk',
                     'comissao-executiva'
+                ],
+                'permissions' => [
+                    'dashboard.cn.executiva.index',
+                    'dashboard.cn.executiva.delegado.update'
                 ]
             ],
             'secreatria_produtos' => [

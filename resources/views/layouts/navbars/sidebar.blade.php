@@ -151,7 +151,7 @@
                     </a>
                 </li>
                 @endcan
-                
+
                 @can('rota-permitida', ['dashboard.formulario-complementar-federacao.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formulario-complementar-federacao.index') }}">
@@ -302,6 +302,30 @@
                 </li>
                 @endcan
                 @endcannot
+
+                @can('rota-permitida', ['dashboard.cn.federacao.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.cn.federacao.index') }}">
+                        <i class="fas fa-id-badge"></i> Congresso Nacional
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.cn.sinodal.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.cn.sinodal.index') }}">
+                        <i class="fas fa-id-badge"></i> Congresso Nacional
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.cn.executiva.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.cn.executiva.index') }}">
+                        <i class="fas fa-id-badge"></i> Congresso Nacional
+                    </a>
+                </li>
+                @endcan
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.helpdesk.index') }}">
