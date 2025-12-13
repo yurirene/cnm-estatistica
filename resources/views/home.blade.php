@@ -72,7 +72,7 @@
 <body>
     <!-- Substitua o src pelo seu vídeo -->
     <video autoplay muted loop class="video-background">
-        <source src="/videos/home.mp4" type="video/mp4">
+        <source src="/videos/bg-cnm-1.mp4" type="video/mp4">
         Seu navegador não suporta vídeos em HTML5.
     </video>
 
