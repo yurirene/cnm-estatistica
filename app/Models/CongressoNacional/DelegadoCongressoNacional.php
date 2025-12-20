@@ -19,7 +19,8 @@ class DelegadoCongressoNacional extends Model
     protected $casts = [
         'path_credencial' => FileCast::class,
         'credencial' => 'boolean',
-        'pago' => 'boolean'
+        'pago' => 'boolean',
+        'comissoes' => 'array'
     ];
 
     public string $caminho = 'public/cn/delegados';

@@ -84,7 +84,29 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label('comissoes', 'Preferencias de Comissões') !!}
+            {!! Form::select(
+                'comissoes[]',
+                [
+                    'relatorios_gestao' => 'Relatórios da Gestão (Diretoria e Secretariado)',
+                    'planejamento_estrategico' => 'Planejamento Estratégico',
+                    'gtsi' => 'GTSI',
+                    'atas' => 'Registro de Atos'
+                ],
+                !empty($delegado->comissoes) ? $delegado->comissoes : null,
+                [
+                    'class' => 'form-control isSelect2 select2-comissoes',
+                    'multiple' => true,
+                    'id' => 'comissoes'
+                ]
+            ) !!}
+            <small class="form-text text-muted">Selecione no máximo 2 opções</small>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('credencial_file', 'Credencial (PDF ou Imagem)') !!}
             {!! Form::file(
@@ -122,3 +144,31 @@
     </div>
 </div>
 {!! Form::close() !!}
+
+@push('js')
+<script>
+    $(document).ready(function() {
+        var $comissoes = $('#comissoes');
+        
+        $comissoes.on('select2:select', function (e) {
+            var selectedValues = $(this).val() || [];
+            
+            if (selectedValues.length > 2) {
+                // Remove a última seleção adicionada
+                selectedValues.pop();
+                $(this).val(selectedValues).trigger('change');
+                
+                if (typeof iziToast !== 'undefined') {
+                    iziToast.warning({
+                        title: 'Atenção!',
+                        message: 'Você pode selecionar no máximo 2 opções.',
+                        position: 'topRight'
+                    });
+                } else {
+                    alert('Você pode selecionar no máximo 2 opções.');
+                }
+            }
+        });
+    });
+</script>
+@endpush

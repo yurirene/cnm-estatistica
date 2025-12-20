@@ -192,6 +192,8 @@ class CongressoNacionalController extends Controller
             'cpf' => ['required', 'string', new Cpf()],
             'oficial' => 'required|in:0,1,2',
             'credencial_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'comissoes' => 'nullable|array|max:2',
+            'comissoes.*' => 'in:relatorios_gestao,planejamento_estrategico,gtsi,atas',
         ], [
             'nome.required' => 'O nome do delegado é obrigatório',
             'telefone.required' => 'O telefone é obrigatório',
@@ -199,6 +201,8 @@ class CongressoNacionalController extends Controller
             'oficial.required' => 'O campo oficial é obrigatório',
             'credencial_file.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
             'credencial_file.max' => 'A credencial deve ter no máximo 2MB',
+            'comissoes.max' => 'Você pode selecionar no máximo 2 comissões',
+            'comissoes.*.in' => 'Uma ou mais comissões selecionadas são inválidas',
         ]);
 
         try {
@@ -226,6 +230,10 @@ class CongressoNacionalController extends Controller
                 'sinodal_id' => $federacao->sinodal_id,
                 'status' => DelegadoCongressoNacional::STATUS_EM_ANALISE
             ];
+
+            if ($request->has('comissoes') && is_array($request->comissoes)) {
+                $dados['comissoes'] = $request->comissoes;
+            }
 
             if ($request->hasFile('credencial_file')) {
                 $dados['path_credencial'] = $request->file('credencial_file');
@@ -262,6 +270,8 @@ class CongressoNacionalController extends Controller
             'cpf' => ['required', 'string', new Cpf()],
             'oficial' => 'required|in:0,1,2',
             'credencial_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'comissoes' => 'nullable|array|max:2',
+            'comissoes.*' => 'in:relatorios_gestao,planejamento_estrategico,gtsi,atas',
         ], [
             'nome.required' => 'O nome do delegado é obrigatório',
             'telefone.required' => 'O telefone é obrigatório',
@@ -269,6 +279,8 @@ class CongressoNacionalController extends Controller
             'oficial.required' => 'O campo oficial é obrigatório',
             'credencial_file.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
             'credencial_file.max' => 'A credencial deve ter no máximo 2MB',
+            'comissoes.max' => 'Você pode selecionar no máximo 2 comissões',
+            'comissoes.*.in' => 'Uma ou mais comissões selecionadas são inválidas',
         ]);
 
         try {
@@ -278,6 +290,12 @@ class CongressoNacionalController extends Controller
                 'cpf' => preg_replace('/[^0-9]/', '', $request->cpf),
                 'oficial' => $request->oficial,
             ];
+            
+            if ($request->has('comissoes') && is_array($request->comissoes)) {
+                $dados['comissoes'] = $request->comissoes;
+            } elseif ($request->has('comissoes') && empty($request->comissoes)) {
+                $dados['comissoes'] = null;
+            }
 
             if ($request->hasFile('credencial_file')) {
                 $dados['path_credencial'] = $request->file('credencial_file');
@@ -341,6 +359,8 @@ class CongressoNacionalController extends Controller
             'oficial' => 'required|in:0,1,2',
             'credencial_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'cpf' => ['required', 'string', new Cpf()],
+            'comissoes' => 'nullable|array|max:2',
+            'comissoes.*' => 'in:relatorios_gestao,planejamento_estrategico,gtsi,atas',
         ], [
             'nome.required' => 'O nome do delegado é obrigatório',
             'telefone.required' => 'O telefone é obrigatório',
@@ -348,6 +368,8 @@ class CongressoNacionalController extends Controller
             'credencial_file.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
             'credencial_file.max' => 'A credencial deve ter no máximo 2MB',
             'cpf.required' => 'O CPF é obrigatório',
+            'comissoes.max' => 'Você pode selecionar no máximo 2 comissões',
+            'comissoes.*.in' => 'Uma ou mais comissões selecionadas são inválidas',
         ]);
 
         try {
@@ -375,6 +397,10 @@ class CongressoNacionalController extends Controller
                 'sinodal_id' => $sinodal->id,
                 'status' => DelegadoCongressoNacional::STATUS_EM_ANALISE
             ];
+
+            if ($request->has('comissoes') && is_array($request->comissoes)) {
+                $dados['comissoes'] = $request->comissoes;
+            }
 
             if ($request->hasFile('credencial_file')) {
                 $dados['path_credencial'] = $request->file('credencial_file');
@@ -411,6 +437,8 @@ class CongressoNacionalController extends Controller
             'oficial' => 'required|in:0,1,2',
             'credencial_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'cpf' => ['required', 'string', new Cpf()],
+            'comissoes' => 'nullable|array|max:2',
+            'comissoes.*' => 'in:relatorios_gestao,planejamento_estrategico,gtsi,atas',
         ], [
             'nome.required' => 'O nome do delegado é obrigatório',
             'telefone.required' => 'O telefone é obrigatório',
@@ -418,6 +446,8 @@ class CongressoNacionalController extends Controller
             'credencial_file.mimes' => 'A credencial deve ser um arquivo PDF ou imagem',
             'credencial_file.max' => 'A credencial deve ter no máximo 2MB',
             'cpf.required' => 'O CPF é obrigatório',
+            'comissoes.max' => 'Você pode selecionar no máximo 2 comissões',
+            'comissoes.*.in' => 'Uma ou mais comissões selecionadas são inválidas',
         ]);
 
         try {
@@ -427,6 +457,12 @@ class CongressoNacionalController extends Controller
                 'oficial' => $request->oficial,
                 'cpf' => preg_replace('/[^0-9]/', '', $request->cpf),
             ];
+
+            if ($request->has('comissoes') && is_array($request->comissoes)) {
+                $dados['comissoes'] = $request->comissoes;
+            } elseif ($request->has('comissoes') && empty($request->comissoes)) {
+                $dados['comissoes'] = null;
+            }
 
             if ($request->hasFile('credencial_file')) {
                 $dados['path_credencial'] = $request->file('credencial_file');
