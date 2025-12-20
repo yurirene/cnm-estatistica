@@ -191,7 +191,7 @@ class CongressoNacionalController extends Controller
             'telefone' => 'required|string|max:15',
             'cpf' => ['required', 'string', new Cpf()],
             'oficial' => 'required|in:0,1,2',
-            'credencial_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'credencial_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'comissoes' => 'nullable|array|max:2',
             'comissoes.*' => 'in:relatorios_gestao,planejamento_estrategico,gtsi,atas',
         ], [
@@ -203,6 +203,7 @@ class CongressoNacionalController extends Controller
             'credencial_file.max' => 'A credencial deve ter no máximo 2MB',
             'comissoes.max' => 'Você pode selecionar no máximo 2 comissões',
             'comissoes.*.in' => 'Uma ou mais comissões selecionadas são inválidas',
+            'credencial_file.required' => 'A credencial é obrigatória',
         ]);
 
         try {
@@ -357,7 +358,7 @@ class CongressoNacionalController extends Controller
             'nome' => 'required|string|max:255',
             'telefone' => 'required|string|max:15',
             'oficial' => 'required|in:0,1,2',
-            'credencial_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'credencial_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'cpf' => ['required', 'string', new Cpf()],
             'comissoes' => 'nullable|array|max:2',
             'comissoes.*' => 'in:relatorios_gestao,planejamento_estrategico,gtsi,atas',
@@ -370,6 +371,7 @@ class CongressoNacionalController extends Controller
             'cpf.required' => 'O CPF é obrigatório',
             'comissoes.max' => 'Você pode selecionar no máximo 2 comissões',
             'comissoes.*.in' => 'Uma ou mais comissões selecionadas são inválidas',
+            'credencial_file.required' => 'A credencial é obrigatória',
         ]);
 
         try {
