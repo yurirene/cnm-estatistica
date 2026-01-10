@@ -60,7 +60,7 @@ class TesourariaPorMesExport implements
         $entrada = !empty($lancamento['tipo']) && $lancamento['tipo'] == Lancamento::TIPO_ENTRADA
             ? "R$ " . number_format($valor, 2, ',', '.')
             : '';
-        $saida = !empty($lancamento['tipo']) && $lancamento['tipo'] == Lancamento::TIPO_SAIDA
+        $saida = isset($lancamento['tipo']) && $lancamento['tipo'] == Lancamento::TIPO_SAIDA
             ? "R$ " . number_format(($valor * -1), 2, ',', '.')
             : '';
         $dataLancamento = !is_null($lancamento['data_lancamento'])
