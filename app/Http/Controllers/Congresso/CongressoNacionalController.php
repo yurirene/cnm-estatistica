@@ -61,6 +61,7 @@ class CongressoNacionalController extends Controller
 
             // Verificar limite de 1 delegado por sinodal
             $totalDelegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)
+                ->whereNull('federacao_id')
                 ->count();
             if ($totalDelegados >= 1) {
                 return redirect()->route('dashboard.cn.sinodal.index')->with([
@@ -380,6 +381,7 @@ class CongressoNacionalController extends Controller
 
             // Verificar limite de 1 delegado por sinodal
             $totalDelegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)
+                ->whereNull('federacao_id')
                 ->count();
             if ($totalDelegados >= 1) {
                 return redirect()->back()->with([
