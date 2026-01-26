@@ -23,6 +23,7 @@ class CongressoNacionalController extends Controller
         try {
             $sinodal = UserService::getInstanciaUsuarioLogado();
             $delegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)
+                ->whereNull('federacao_id')
                 ->get();
 
             $totalDelegados = $delegados->count();
@@ -291,7 +292,7 @@ class CongressoNacionalController extends Controller
                 'cpf' => preg_replace('/[^0-9]/', '', $request->cpf),
                 'oficial' => $request->oficial,
             ];
-            
+
             if ($request->has('comissoes') && is_array($request->comissoes)) {
                 $dados['comissoes'] = $request->comissoes;
             } elseif ($request->has('comissoes') && empty($request->comissoes)) {
