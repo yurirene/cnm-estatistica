@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\CongressoNacional\DelegadoCongressoNacional;
 use App\Models\CongressoNacional\DocumentoRecebido;
+use App\Models\Federacao;
+use App\Models\Sinodal;
 use App\Rules\Cpf;
 use App\Services\AvisoService;
 use App\Services\DatatableAjaxService;
@@ -14,6 +16,7 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -632,10 +635,14 @@ class CongressoNacionalController extends Controller
             $documentos = DocumentoRecebido::orderBy('created_at', 'desc')
                 ->get();
 
+            // Queries para quórum
+            $totalizador = $this->getTotalizadorQuorum();
+
             return view('dashboard.congresso-nacional.executiva.index', [
                 'delegadosFederacao' => $delegadosFederacao,
                 'delegadosSinodal' => $delegadosSinodal,
-                'documentos' => $documentos
+                'documentos' => $documentos,
+                'totalizador' => $totalizador
             ]);
         } catch (\Throwable $th) {
             LogErroService::registrar([
@@ -831,5 +838,108 @@ class CongressoNacionalController extends Controller
                substr($cpf, 3, 3) . '.' .
                substr($cpf, 6, 3) . '-' .
                substr($cpf, 9, 2);
+    }
+
+    /**
+     * Lista sinodais ativas com suas federações e contadores de delegados confirmados
+     */
+    public function getSinodaisComFederacoesQuorum()
+    {
+        // Buscar sinodais ativas com região
+        $sinodais = Sinodal::with('regiao:id,nome')
+            ->select([
+                'sinodais.id',
+                'sinodais.nome',
+                'sinodais.sigla',
+                'sinodais.regiao_id'
+            ])
+            ->leftJoin('congresso_nacional_delegados as delegados_sinodal', function($join) {
+                $join->on('delegados_sinodal.sinodal_id', '=', 'sinodais.id')
+                     ->whereNull('delegados_sinodal.federacao_id')
+                     ->where('delegados_sinodal.pago', '=', 1)
+                     ->where('delegados_sinodal.credencial', '=', 1);
+            })
+            ->where('sinodais.status', 1)
+            ->whereNull('sinodais.deleted_at')
+            ->groupBy('sinodais.id', 'sinodais.nome', 'sinodais.sigla', 'sinodais.regiao_id')
+            ->selectRaw('COUNT(delegados_sinodal.id) as total_delegados_sinodal')
+            ->orderBy('sinodais.nome')
+            ->get();
+
+        // Para cada sinodal, buscar suas federações
+        foreach ($sinodais as $sinodal) {
+            $federacoes = Federacao::select([
+                    'federacoes.id',
+                    'federacoes.nome'
+                ])
+                ->leftJoin('congresso_nacional_delegados', function($join) {
+                    $join->on('congresso_nacional_delegados.federacao_id', '=', 'federacoes.id')
+                         ->where('congresso_nacional_delegados.pago', '=', 1)
+                         ->where('congresso_nacional_delegados.credencial', '=', 1);
+                })
+                ->where('federacoes.sinodal_id', $sinodal->id)
+                ->where('federacoes.status', 1)
+                ->whereNull('federacoes.deleted_at')
+                ->groupBy('federacoes.id', 'federacoes.nome')
+                ->selectRaw('COUNT(congresso_nacional_delegados.id) as total_delegados')
+                ->orderBy('federacoes.nome')
+                ->get();
+
+            $sinodal->federacoes = $federacoes;
+        }
+
+        return $sinodais;
+    }
+
+    /**
+     * Calcula totalizador para quórum
+     */
+    public function getTotalizadorQuorum(): array
+    {
+        // Total de federações ativas
+        $totalFederacoes = Federacao::where('status', 1)
+            ->whereNull('deleted_at')
+            ->count();
+
+        // Total de sinodais ativas
+        $totalSinodais = Sinodal::where('status', 1)
+            ->whereNull('deleted_at')
+            ->count();
+
+        // Federações com ao menos 1 delegado confirmado
+        $federacoesComDelegado = DB::table('federacoes')
+            ->join('congresso_nacional_delegados', 'congresso_nacional_delegados.federacao_id', '=', 'federacoes.id')
+            ->where('federacoes.status', 1)
+            ->whereNull('federacoes.deleted_at')
+            ->where('congresso_nacional_delegados.pago', 1)
+            ->where('congresso_nacional_delegados.credencial', 1)
+            ->distinct('federacoes.id')
+            ->count('federacoes.id');
+
+        // Sinodais com ao menos 1 delegado confirmado
+        $sinodaisComDelegado = DB::table('sinodais')
+            ->join('congresso_nacional_delegados', 'congresso_nacional_delegados.sinodal_id', '=', 'sinodais.id')
+            ->where('sinodais.status', 1)
+            ->whereNull('sinodais.deleted_at')
+            ->whereNull('congresso_nacional_delegados.federacao_id')
+            ->where('congresso_nacional_delegados.pago', 1)
+            ->where('congresso_nacional_delegados.credencial', 1)
+            ->distinct('sinodais.id')
+            ->count('sinodais.id');
+
+        // Cálculo de quórum
+        $quorumSinodais = ceil(($totalSinodais * 0.5) + 1);
+        $quorumFederacoes = ceil($totalFederacoes / 3);
+
+        return [
+            'total_federacoes' => $totalFederacoes,
+            'total_sinodais' => $totalSinodais,
+            'federacoes_com_delegado' => $federacoesComDelegado,
+            'sinodais_com_delegado' => $sinodaisComDelegado,
+            'quorum_sinodais' => $quorumSinodais,
+            'quorum_federacoes' => $quorumFederacoes,
+            'atingiu_quorum_sinodais' => $sinodaisComDelegado >= $quorumSinodais,
+            'atingiu_quorum_federacoes' => $federacoesComDelegado >= $quorumFederacoes
+        ];
     }
 }

@@ -64,6 +64,8 @@ Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
     ->name('digesto.exibir');
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])
     ->name('estatistica');
+Route::get('/congresso', [App\Http\Controllers\HomeController::class, 'congresso'])
+    ->name('estatistica');
 
 Route::get('/coletor-dados/login', [ColetorDadosController::class, 'login'])
     ->name('coletor-dados.login');

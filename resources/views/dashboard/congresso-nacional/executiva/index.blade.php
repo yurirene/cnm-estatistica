@@ -16,6 +16,91 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xl-3 col-lg-6 mt-3">
+            <div class="card card-stats mb-4 mb-xl-0 h-100">
+                <div class="card-header h-100">
+                    <div class="row  d-flex align-items-center">
+                        <div class="col-8">
+                            <h5 class="card-title text-uppercase text-muted mb-0">
+                                Sinodais
+                            </h5>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="h2 font-weight-bold mb-0">
+                                {{ $totalizador['sinodais_com_delegado'] }} de {{ $totalizador['total_sinodais'] }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 mt-3">
+            <div class="card card-stats mb-4 mb-xl-0 h-100">
+                <div class="card-header h-100">
+                    <div class="row  d-flex align-items-center">
+                        <div class="col-8">
+                            <h5 class="card-title text-uppercase text-muted mb-0">
+                                Federações
+                            </h5>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="h2 font-weight-bold mb-0">
+                            {{ $totalizador['federacoes_com_delegado'] }} de {{ $totalizador['total_federacoes'] }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 mt-3">
+            <div class="card card-stats mb-4 mb-xl-0 h-100">
+                <div class="card-header h-100">
+                    <div class="row  d-flex align-items-center">
+                        <div class="col-8">
+                            <h5 class="card-title text-uppercase text-muted mb-0">
+                                Quórum
+                            </h5>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="h2 font-weight-bold mb-0">
+                                Sinodais {{ $totalizador['quorum_sinodais'] }}
+                                <br>
+                                Federações {{ $totalizador['quorum_federacoes'] }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
@@ -31,35 +116,21 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
+                                    <th>Pago</th>
+                                    <th>Credencial</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
                                     <th>Nome</th>
                                     <th>CPF</th>
                                     <th>Telefone</th>
                                     <th>Federação</th>
                                     <th>Sinodal</th>
                                     <th>Oficial</th>
-                                    <th>Pago</th>
-                                    <th>Credencial</th>
-                                    <th>Status</th>
-                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($delegadosFederacao as $delegado)
                                     <tr>
-                                        <td>{{ $delegado->nome }}</td>
-                                        <td>{{ $delegado->cpf }}</td>
-                                        <td>{{ $delegado->telefone }}</td>
-                                        <td>{{ $delegado->federacao->nome ?? '-' }}</td>
-                                        <td>{{ $delegado->sinodal->nome ?? '-' }}</td>
-                                        <td>
-                                            @if($delegado->oficial == 1)
-                                                Diácono
-                                            @elseif($delegado->oficial == 2)
-                                                Presbítero
-                                            @else
-                                                Não
-                                            @endif
-                                        </td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input
@@ -94,6 +165,20 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td>{{ $delegado->nome }}</td>
+                                        <td>{{ $delegado->cpf }}</td>
+                                        <td>{{ $delegado->telefone }}</td>
+                                        <td>{{ $delegado->federacao->nome ?? '-' }}</td>
+                                        <td>{{ $delegado->sinodal->nome ?? '-' }}</td>
+                                        <td>
+                                            @if($delegado->oficial == 1)
+                                                Diácono
+                                            @elseif($delegado->oficial == 2)
+                                                Presbítero
+                                            @else
+                                                Não
+                                            @endif
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -123,31 +208,19 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nome</th>
-                                    <th>Telefone</th>
-                                    <th>Sinodal</th>
-                                    <th>Oficial</th>
                                     <th>Pago</th>
                                     <th>Credencial</th>
                                     <th>Status</th>
                                     <th>Ações</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Sinodal</th>
+                                    <th>Oficial</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($delegadosSinodal as $delegado)
                                     <tr>
-                                        <td>{{ $delegado->nome }}</td>
-                                        <td>{{ $delegado->telefone }}</td>
-                                        <td>{{ $delegado->sinodal->nome ?? '-' }}</td>
-                                        <td>
-                                            @if($delegado->oficial == 1)
-                                                Diácono
-                                            @elseif($delegado->oficial == 2)
-                                                Presbítero
-                                            @else
-                                                Não
-                                            @endif
-                                        </td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input
@@ -180,6 +253,18 @@
                                                 <a href="/{{ $delegado->path_credencial }}" target="_blank" class="btn btn-sm btn-info">
                                                     <i class="fas fa-eye"></i> Ver Credencial
                                                 </a>
+                                            @endif
+                                        </td>
+                                        <td>{{ $delegado->nome }}</td>
+                                        <td>{{ $delegado->telefone }}</td>
+                                        <td>{{ $delegado->sinodal->nome ?? '-' }}</td>
+                                        <td>
+                                            @if($delegado->oficial == 1)
+                                                Diácono
+                                            @elseif($delegado->oficial == 2)
+                                                Presbítero
+                                            @else
+                                                Não
                                             @endif
                                         </td>
                                     </tr>
