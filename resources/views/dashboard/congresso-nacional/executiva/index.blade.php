@@ -7,6 +7,15 @@
 ])
 
 <div class="container-fluid mt--7">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('dashboard.cn.executiva.sincronizar-inscritos') }}" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Sincronizar Inscritos
+                </a>
+            </div>
+        </div>
+    </div>
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
@@ -190,6 +199,41 @@
 @endsection
 
 @push('js')
+<script>
+    $(document).ready(() => {
+        const ROTA_PAGO = "{{ route('dashboard.cn.executiva.delegado.update', ':id') }}";
+        const TOKEN = "{{ csrf_token() }}";
 
+        $('.check-status').on('change', function() {
+            const dados = $(this).data();
+            const valor = ($(this).prop('checked'));
+            $.ajax({
+                url: ROTA_PAGO.replace(":id", dados.delegadoId),
+                type: "PUT",
+                data: {
+                    _token: TOKEN,
+                    tipo: dados.campo,
+                    valor: valor ? 1 : 0,
+                },
+                success: function(response) {
+
+                    iziToast.show({
+                        title: 'Sucesso!',
+                        message: response.mensagem,
+                        position: 'topRight',
+                    });
+                },
+                error: function(error){
+
+                    iziToast.show({
+                        title: 'Erro!',
+                        message: response.mensagem,
+                        position: 'topRight',
+                    });
+                }
+            });
+        })
+    })
+</script>
 @endpush
 

@@ -11,8 +11,10 @@ use App\Services\AvisoService;
 use App\Services\DatatableAjaxService;
 use App\Services\LogErroService;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -649,7 +651,7 @@ class CongressoNacionalController extends Controller
     /**
      * Atualiza os campos pago e credencial de um delegado da federação
      */
-    public function updateStatusFederacao(Request $request, DelegadoCongressoNacional $delegado): RedirectResponse
+    public function updateStatusDelegado(Request $request, DelegadoCongressoNacional $delegado): JsonResponse
     {
         $request->validate([
             'pago' => 'nullable|boolean',
@@ -659,22 +661,109 @@ class CongressoNacionalController extends Controller
         try {
             $dados = [];
 
-            if ($request->has('pago')) {
-                $dados['pago'] = $request->pago ? 1 : 0;
+            if ($request->tipo == 'pago') {
+                $dados['pago'] = $request->valor ? 1 : 0;
             }
 
-            if ($request->has('credencial')) {
-                $dados['credencial'] = $request->credencial ? 1 : 0;
+            if ($request->tipo == 'credencial') {
+                $dados['credencial'] = $request->valor ? 1 : 0;
             }
 
-            if (!empty($dados)) {
+            if (empty($dados)) {
+                return response()->json([
+                    'status' => false,
+                    'mensagem' => 'Nenhum dado para atualizar!'
+                ], 500);
+            }
+
+            $delegado->update($dados);
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Status do delegado atualizado com sucesso!'
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return response()->json([
+                'status' => false,
+                'mensagem' => $th->getMessage() ?? 'Erro ao atualizar status!'
+            ], 500);
+        }
+    }
+
+    /**
+     * Sincroniza os inscritos do Congresso Nacional com a API externa
+     */
+    public function sincronizarInscritos(): RedirectResponse
+    {
+        try {
+            // URL da API - pode ser configurada ou usar um ID de evento específico
+            // Por enquanto, vamos usar um endpoint genérico para congresso
+            $url = config('app.evento_url') . '/reuniao/listar-inscritos/f9e5d69f-09e1-4132-97e3-3915d0e73986';
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . config('app.evento_api_token')
+            ];
+
+            $response = Http::withHeaders($headers)->post($url);
+
+            if ($response->failed()) {
+                throw new \Exception("Erro ao sincronizar inscritos: " . $response->body());
+            }
+
+            $inscritos = $response->json();
+
+            if (!is_array($inscritos)) {
+                throw new \Exception("Resposta inválida da API");
+            }
+
+            $atualizados = 0;
+            foreach ($inscritos as $inscrito) {
+                $cpf = $this->formatarCpf($inscrito['cpf'] ?? '');
+
+                if (empty($cpf)) {
+                    continue;
+                }
+
+                // Buscar delegado pelo CPF (sem formatação para comparação)
+                $cpfSemFormatacao = preg_replace('/[^0-9]/', '', $cpf);
+                $delegado = DelegadoCongressoNacional::where('cpf', $cpfSemFormatacao)->first();
+
+                if (empty($delegado)) {
+                    continue;
+                }
+
+                // Verificar se o pagamento está confirmado
+                $paymentStatus = $inscrito['payment_status'] ?? '';
+                if (!in_array($paymentStatus, DelegadoCongressoNacional::STATUS_PAGAMENTO_CONFIRMADO)) {
+                    continue;
+                }
+
+                // Atualizar delegado
+                $dados = [
+                    'pago' => true,
+                    'telefone' => $inscrito['phone'] ?? $delegado->telefone
+                ];
+
+                // Atualizar status baseado na credencial
+                if ($delegado->credencial) {
+                    $dados['status'] = DelegadoCongressoNacional::STATUS_CONFIRMADA;
+                } else {
+                    $dados['status'] = DelegadoCongressoNacional::STATUS_EM_ANALISE;
+                }
+
                 $delegado->update($dados);
+                $atualizados++;
             }
 
             return redirect()->route('dashboard.cn.executiva.index')->with([
                 'mensagem' => [
                     'status' => true,
-                    'texto' => 'Status do delegado atualizado com sucesso!'
+                    'texto' => "Inscritos sincronizados com sucesso! {$atualizados} delegado(s) atualizado(s)."
                 ]
             ]);
         } catch (\Throwable $th) {
@@ -686,55 +775,32 @@ class CongressoNacionalController extends Controller
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
-                    'texto' => $th->getMessage() ?? 'Erro ao atualizar status!'
+                    'texto' => $th->getMessage() ?? 'Erro ao sincronizar inscritos!'
                 ]
             ]);
         }
     }
 
     /**
-     * Atualiza os campos pago e credencial de um delegado da sinodal
+     * Formata CPF no padrão 000.000.000-00
+     *
+     * @param string $cpf CPF sem formatação (apenas números)
+     * @return string CPF formatado
      */
-    public function updateStatusSinodal(Request $request, DelegadoCongressoNacional $delegado): RedirectResponse
+    private function formatarCpf(string $cpf): string
     {
-        $request->validate([
-            'pago' => 'nullable|boolean',
-            'credencial' => 'nullable|boolean',
-        ]);
+        // Remove caracteres não numéricos
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
-        try {
-            $dados = [];
-
-            if ($request->has('pago')) {
-                $dados['pago'] = $request->pago ? 1 : 0;
-            }
-
-            if ($request->has('credencial')) {
-                $dados['credencial'] = $request->credencial ? 1 : 0;
-            }
-
-            if (!empty($dados)) {
-                $delegado->update($dados);
-            }
-
-            return redirect()->route('dashboard.cn.executiva.index')->with([
-                'mensagem' => [
-                    'status' => true,
-                    'texto' => 'Status do delegado atualizado com sucesso!'
-                ]
-            ]);
-        } catch (\Throwable $th) {
-            LogErroService::registrar([
-                'message' => $th->getMessage(),
-                'line' => $th->getLine(),
-                'file' => $th->getFile()
-            ]);
-            return redirect()->back()->with([
-                'mensagem' => [
-                    'status' => false,
-                    'texto' => $th->getMessage() ?? 'Erro ao atualizar status!'
-                ]
-            ]);
+        // Verifica se tem 11 dígitos
+        if (strlen($cpf) !== 11) {
+            return $cpf; // Retorna o CPF original se não tiver 11 dígitos
         }
+
+        // Formata no padrão 000.000.000-00
+        return substr($cpf, 0, 3) . '.' .
+               substr($cpf, 3, 3) . '.' .
+               substr($cpf, 6, 3) . '-' .
+               substr($cpf, 9, 2);
     }
 }

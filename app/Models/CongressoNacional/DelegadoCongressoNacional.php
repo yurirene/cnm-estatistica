@@ -36,6 +36,9 @@ class DelegadoCongressoNacional extends Model
     public const OFICIAL_DIACONO = 1;
     public const OFICIAL_PRESBITERO = 2;
 
+    // Status pagamento
+    public const STATUS_PAGAMENTO_CONFIRMADO = ['paid', 'confirmed'];
+
     public const STATUS_LIST = [
         self::STATUS_REJEITADA => 'Rejeitada',
         self::STATUS_PENDENTE => 'Pendente',

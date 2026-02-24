@@ -95,6 +95,11 @@
                 ]
             ) !!}
             <small class="form-text text-muted">Apenas para novos uploads. Formatos aceitos: PDF, JPG, PNG (máx. 2MB)</small>
+            @if(!empty($delegado->path_credencial))
+                <a href="/{{ $delegado->path_credencial }}" target="_blank" class="link mt-3">
+                <i class="fas fa-eye"></i> Ver credencial atual
+                </a>
+            @endif
         </div>
     </div>
     <div class="col-md-4">
@@ -137,15 +142,15 @@
 <script>
     $(document).ready(function() {
         var $comissoes = $('#comissoes');
-        
+
         $comissoes.on('select2:select', function (e) {
             var selectedValues = $(this).val() || [];
-            
+
             if (selectedValues.length > 2) {
                 // Remove a última seleção adicionada
                 selectedValues.pop();
                 $(this).val(selectedValues).trigger('change');
-                
+
                 if (typeof iziToast !== 'undefined') {
                     iziToast.warning({
                         title: 'Atenção!',

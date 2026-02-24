@@ -6,6 +6,8 @@
                 <th>Nome</th>
                 <th>Telefone</th>
                 <th>Oficial</th>
+                <th>Pagamento</th>
+                <th>Credencial</th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +43,12 @@
                             Não
                         @endif
                     </td>
+                    <td>
+                        {{ $delegado->pago ? 'Pago' : 'Pendente' }}
+                    </td>
+                    <td>
+                        {{ $delegado->credencial ? 'Credencial Aceita' : 'Em Análise' }}
+                    </td></tr>
                 </tr>
             @empty
                 <tr>
