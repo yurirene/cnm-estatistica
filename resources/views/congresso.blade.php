@@ -186,19 +186,30 @@
         }
 
         .regiao-section {
-            border-top: 3px solid #0F766E;
-            padding-top: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .regiao-section:first-of-type {
-            border-top: none;
-            margin-top: 0;
-            padding-top: 0;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.65rem;
+            margin-bottom: 1rem;
+            background: #FFFFFF;
+            overflow: hidden;
         }
 
         .regiao-header {
-            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
+            border-bottom: 1px solid #E5E7EB;
+            transition: background-color 0.2s ease;
+        }
+
+        .regiao-header:hover {
+            background: linear-gradient(135deg, #E0F2F1 0%, #F0FDFA 100%);
+        }
+
+        .regiao-header-content {
+            flex: 1;
         }
 
         .regiao-title {
@@ -206,6 +217,43 @@
             font-weight: 700;
             color: #1F2937;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .regiao-toggle {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #0F766E;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.375rem;
+        }
+
+        .regiao-toggle:hover {
+            color: #0D5E57;
+            background-color: rgba(15, 118, 110, 0.1);
+        }
+
+        .regiao-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .regiao-content {
+            padding: 1.5rem;
+            display: block;
+        }
+
+        .regiao-content.collapsed {
+            display: none;
         }
 
         .regiao-stats {
@@ -486,31 +534,40 @@
             const container = document.getElementById('regioesContainer');
             const regioes = Object.keys(sinodaisPorRegiao).sort();
 
-            container.innerHTML = regioes.map(regiaoNome => {
+            container.innerHTML = regioes.map((regiaoNome, index) => {
                 const sinodaisRegiao = sinodaisPorRegiao[regiaoNome] || [];
                 const totais = calcularTotaisPorRegiao(regiaoNome);
+                const regiaoId = `regiao-${index}`;
 
                 return `
                     <div class="regiao-section">
-                        <div class="regiao-header">
-                            <h2 class="regiao-title">Região ${regiaoNome}</h2>
-                            <div class="regiao-stats">
-                                <div class="regiao-stat">
-                                    <span>Delegados:</span>
-                                    <span class="regiao-stat-value">${totais.totalDelegados}</span>
-                                </div>
-                                <div class="regiao-stat">
-                                    <span>Sinodais:</span>
-                                    <span class="regiao-stat-value">${totais.totalSinodais}</span>
-                                </div>
-                                <div class="regiao-stat">
-                                    <span>Federações:</span>
-                                    <span class="regiao-stat-value">${totais.totalFederacoes}</span>
+                        <div class="regiao-header" onclick="toggleRegiao('${regiaoId}')">
+                            <div class="regiao-header-content">
+                                <h2 class="regiao-title">
+                                    <span>Região ${regiaoNome}</span>
+                                </h2>
+                                <div class="regiao-stats">
+                                    <div class="regiao-stat">
+                                        <span>Delegados:</span>
+                                        <span class="regiao-stat-value">${totais.totalDelegados}</span>
+                                    </div>
+                                    <div class="regiao-stat">
+                                        <span>Sinodais:</span>
+                                        <span class="regiao-stat-value">${totais.totalSinodais}</span>
+                                    </div>
+                                    <div class="regiao-stat">
+                                        <span>Federações:</span>
+                                        <span class="regiao-stat-value">${totais.totalFederacoes}</span>
+                                    </div>
                                 </div>
                             </div>
+                            <button class="regiao-toggle collapsed" id="toggle-${regiaoId}" aria-label="Expandir/Colapsar">
+                                ▼
+                            </button>
                         </div>
 
-                        <div class="sinodais-grid">
+                        <div class="regiao-content collapsed" id="${regiaoId}">
+                            <div class="sinodais-grid">
                             ${sinodaisRegiao.map(sinodal => {
                                 const delegadosSinodal = parseInt(sinodal.total_delegados_sinodal || 0);
                                 const federacoes = sinodal.federacoes || [];
@@ -553,10 +610,25 @@
                                     </div>
                                 `;
                             }).join('')}
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        // Toggle região collapse
+        function toggleRegiao(regiaoId) {
+            const content = document.getElementById(regiaoId);
+            const toggle = document.getElementById(`toggle-${regiaoId}`);
+
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                toggle.classList.remove('collapsed');
+            } else {
+                content.classList.add('collapsed');
+                toggle.classList.add('collapsed');
+            }
         }
 
         // Render all
