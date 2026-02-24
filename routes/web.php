@@ -729,6 +729,8 @@ Route::group(
                 ->name('cn.executiva.sincronizar-inscritos');
             Route::put('congresso-nacional/executiva/{delegado}', [CongressoNacionalController::class, 'updateStatusDelegado'])
                 ->name('cn.executiva.delegado.update');
+            Route::put('congresso-nacional/executiva/documento/{documento}', [CongressoNacionalController::class, 'updateStatusDocumento'])
+                ->name('cn.executiva.documento.update');
         });
     }
 );

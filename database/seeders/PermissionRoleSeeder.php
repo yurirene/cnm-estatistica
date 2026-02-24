@@ -147,7 +147,8 @@ class PermissionRoleSeeder extends Seeder
                 'permissions' => [
                     'dashboard.cn.executiva.index',
                     'dashboard.cn.executiva.delegado.update',
-                    'dashboard.cn.executiva.sincronizar-inscritos'
+                    'dashboard.cn.executiva.sincronizar-inscritos',
+                    'dashboard.cn.executiva.documento.update'
                 ]
             ],
             'secreatria_produtos' => [

@@ -629,9 +629,13 @@ class CongressoNacionalController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
 
+            $documentos = DocumentoRecebido::orderBy('created_at', 'desc')
+                ->get();
+
             return view('dashboard.congresso-nacional.executiva.index', [
                 'delegadosFederacao' => $delegadosFederacao,
-                'delegadosSinodal' => $delegadosSinodal
+                'delegadosSinodal' => $delegadosSinodal,
+                'documentos' => $documentos
             ]);
         } catch (\Throwable $th) {
             LogErroService::registrar([
@@ -691,6 +695,31 @@ class CongressoNacionalController extends Controller
             return response()->json([
                 'status' => false,
                 'mensagem' => $th->getMessage() ?? 'Erro ao atualizar status!'
+            ], 500);
+        }
+    }
+
+    public function updateStatusDocumento(Request $request, DocumentoRecebido $documento): JsonResponse
+    {
+        $request->validate([
+            'status' => 'required|boolean',
+        ]);
+
+        try {
+            $documento->update(['status' => $request->status]);
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Status do documento atualizado com sucesso!'
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return response()->json([
+                'status' => false,
+                'mensagem' => $th->getMessage() ?? 'Erro ao atualizar status do documento!'
             ], 500);
         }
     }
