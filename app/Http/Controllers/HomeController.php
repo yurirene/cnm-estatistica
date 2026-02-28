@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Congresso\CongressoNacionalController;
+use App\Models\CongressoReuniao;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -15,9 +16,10 @@ class HomeController extends Controller
 
     public function congresso()
     {
+        $reuniao = CongressoReuniao::aberta()->first();
         $congressoController = app(CongressoNacionalController::class);
-        $totalizador = $congressoController->getTotalizadorQuorum();
-        $listaSinodaisComFederacoes = $congressoController->getSinodaisComFederacoesQuorum();
+        $totalizador = $congressoController->getTotalizadorQuorum($reuniao?->id);
+        $listaSinodaisComFederacoes = $congressoController->getSinodaisComFederacoesQuorum($reuniao?->id);
 
         return view('congresso', [
             'totalizador' => $totalizador,

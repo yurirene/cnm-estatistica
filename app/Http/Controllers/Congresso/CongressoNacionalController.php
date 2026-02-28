@@ -938,7 +938,7 @@ class CongressoNacionalController extends Controller
     /**
      * Lista sinodais ativas com suas federações e contadores de delegados confirmados
      */
-    public function getSinodaisComFederacoesQuorum()
+    public function getSinodaisComFederacoesQuorum(?int $reuniaoId = null)
     {
         // Buscar sinodais ativas com região
         $sinodais = Sinodal::with('regiao:id,nome')
@@ -956,6 +956,7 @@ class CongressoNacionalController extends Controller
             })
             ->where('sinodais.status', 1)
             ->whereNull('sinodais.deleted_at')
+            ->where('sinodais.reuniao_id', $reuniaoId)
             ->groupBy('sinodais.id', 'sinodais.nome', 'sinodais.sigla', 'sinodais.regiao_id')
             ->selectRaw('COUNT(delegados_sinodal.id) as total_delegados_sinodal')
             ->orderBy('sinodais.nome')
