@@ -16,14 +16,22 @@
         <tr>
             @foreach($coluna_por_grupo as $coluna => $campos)
                 @if(!is_array($campos))
-                    <td>{{ $dado[$campos] }}</td>
+                    @php
+                        $valor = $dado[$campos] ?? '';
+                        $valor = is_array($valor) || is_object($valor) ? json_encode($valor) : (string) $valor;
+                    @endphp
+                    <td>{{ $valor }}</td>
                     @continue
                 @endif
                 @foreach($campos as $subcoluna)
                     @if($subcoluna == 'regiao')
-                    <td>{{ $dado[$coluna][$subcoluna]['nome'] }}</td>
+                    <td>{{ $dado[$coluna][$subcoluna]['nome'] ?? '' }}</td>
                     @else
-                    <td>{{ $dado[$coluna][$subcoluna] ?? '' }}</td>
+                    @php
+                        $valor = $dado[$coluna][$subcoluna] ?? '';
+                        $valor = is_array($valor) || is_object($valor) ? json_encode($valor) : (string) $valor;
+                    @endphp
+                    <td>{{ $valor }}</td>
                     @endif
                 @endforeach
             @endforeach
