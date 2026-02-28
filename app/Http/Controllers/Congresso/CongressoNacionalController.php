@@ -948,15 +948,15 @@ class CongressoNacionalController extends Controller
                 'sinodais.sigla',
                 'sinodais.regiao_id'
             ])
-            ->leftJoin('congresso_nacional_delegados as delegados_sinodal', function($join) {
+            ->leftJoin('congresso_nacional_delegados as delegados_sinodal', function($join) use ($reuniaoId) {
                 $join->on('delegados_sinodal.sinodal_id', '=', 'sinodais.id')
                      ->whereNull('delegados_sinodal.federacao_id')
                      ->where('delegados_sinodal.pago', '=', 1)
-                     ->where('delegados_sinodal.credencial', '=', 1);
+                     ->where('delegados_sinodal.credencial', '=', 1)
+                     ->where('delegados_sinodal.reuniao_id', $reuniaoId);
             })
             ->where('sinodais.status', 1)
             ->whereNull('sinodais.deleted_at')
-            ->where('sinodais.reuniao_id', $reuniaoId)
             ->groupBy('sinodais.id', 'sinodais.nome', 'sinodais.sigla', 'sinodais.regiao_id')
             ->selectRaw('COUNT(delegados_sinodal.id) as total_delegados_sinodal')
             ->orderBy('sinodais.nome')
