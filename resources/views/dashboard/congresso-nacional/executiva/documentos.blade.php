@@ -20,7 +20,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($documentos ?? [] as $documento)
+                        @forelse ($documentos as $documento)
                             <tr>
                                 <td>{{ $documento->titulo }}</td>
                                 <td>{{ $documento->sinodal->nome }}</td>

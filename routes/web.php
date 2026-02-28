@@ -727,6 +727,8 @@ Route::group(
 
             Route::get('congresso-nacional/executiva', [CongressoNacionalController::class, 'indexExecutiva'])
                 ->name('cn.executiva.index');
+            Route::post('congresso-nacional/executiva/reuniao', [CongressoNacionalController::class, 'storeReuniao'])
+                ->name('cn.executiva.reuniao.store');
             Route::get('congresso-nacional/executiva/sincronizar-inscritos', [CongressoNacionalController::class, 'sincronizarInscritos'])
                 ->name('cn.executiva.sincronizar-inscritos');
             Route::put('congresso-nacional/executiva/{delegado}', [CongressoNacionalController::class, 'updateStatusDelegado'])

@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::any('/iClaudia', function() {
     $update_response = file_get_contents("php://input");
     $request = json_decode($update_response, true);
-    
+
     IClaudiaController::process($request);
 });
 
@@ -40,4 +40,5 @@ Route::middleware('api-token-executiva')->group(function () {
     Route::get('/congresso', [SicomController::class, 'getUnidades']);
     Route::get('/executiva/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosExecutiva']);
     Route::get('/congresso/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosCongresso']);
+    Route::get('/congresso-nacional/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosCongressoNacional']);
 });

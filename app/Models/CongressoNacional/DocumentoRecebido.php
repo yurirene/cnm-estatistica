@@ -3,6 +3,7 @@
 namespace App\Models\CongressoNacional;
 
 use App\Casts\FileCast;
+use App\Models\CongressoReuniao;
 use App\Models\Federacao;
 use App\Models\Sinodal;
 use App\Traits\GenericTrait;
@@ -51,6 +52,11 @@ class DocumentoRecebido extends Model
     public function sinodal(): BelongsTo
     {
         return $this->belongsTo(Sinodal::class, 'sinodal_id');
+    }
+
+    public function reuniao(): BelongsTo
+    {
+        return $this->belongsTo(CongressoReuniao::class, 'reuniao_id');
     }
 }
 

@@ -6,13 +6,40 @@
     'titulo' => 'Congresso Nacional - Gerenciamento de Delegados'
 ])
 
+@if(session('mensagem'))
+    <div class="alert alert-{{ session('mensagem')['status'] ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
+        {{ session('mensagem')['texto'] }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+    </div>
+@endif
+
 <div class="container-fluid mt--7">
     <div class="row mb-3">
         <div class="col-12">
-            <div class="d-flex justify-content-end">
-                <a href="{{ route('dashboard.cn.executiva.sincronizar-inscritos') }}" class="btn btn-primary">
-                    <i class="fas fa-sync-alt"></i> Sincronizar Inscritos
-                </a>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    @if($reuniao ?? null)
+                        <div class="card card-body py-2 px-3 mb-0 d-flex flex-row align-items-center gap-2">
+                            <span class="text-muted">Reunião aberta:</span>
+                            <strong>{{ $reuniao->nome }}</strong>
+                            <button type="button" class="btn btn-sm btn-outline-secondary btn-copiar-id-reuniao" data-id="{{ $reuniao->id }}" title="Copiar ID da reunião">
+                                <i class="fas fa-copy"></i> Copiar ID
+                            </button>
+                        </div>
+                    @else
+                        <div class="alert alert-warning mb-0 py-2">
+                            Nenhuma reunião aberta. Cadastre uma reunião para gerenciar delegados e documentos.
+                        </div>
+                    @endif
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovaReuniao">
+                        <i class="fas fa-plus"></i> Nova Reunião
+                    </button>
+                    <a href="{{ route('dashboard.cn.executiva.sincronizar-inscritos') }}" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Sincronizar Inscritos
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -286,6 +313,35 @@
         </div>
     </div>
 </div>
+
+{{-- Modal Nova Reunião --}}
+<div class="modal fade" id="modalNovaReuniao" tabindex="-1" aria-labelledby="modalNovaReuniaoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('dashboard.cn.executiva.reuniao.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNovaReuniaoLabel">Cadastrar Reunião</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Ao cadastrar uma nova reunião, as demais serão automaticamente encerradas (status inativo).</p>
+                    <div class="mb-3">
+                        <label for="reuniao_nome" class="form-label">Nome da reunião <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('nome') is-invalid @enderror" id="reuniao_nome" name="nome" value="{{ old('nome') }}" required maxlength="255" placeholder="Ex: Reunião 2025">
+                        @error('nome')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('js')
@@ -293,6 +349,30 @@
     $(document).ready(() => {
         const ROTA_PAGO = "{{ route('dashboard.cn.executiva.delegado.update', ':id') }}";
         const TOKEN = "{{ csrf_token() }}";
+
+        $('.btn-copiar-id-reuniao').on('click', function() {
+            const id = $(this).data('id').toString();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(id).then(() => {
+                    iziToast.success({ title: 'Copiado!', message: 'ID da reunião copiado: ' + id, position: 'topRight' });
+                }).catch(() => fallbackCopy(id));
+            } else {
+                fallbackCopy(id);
+            }
+        });
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                iziToast.success({ title: 'Copiado!', message: 'ID da reunião: ' + text, position: 'topRight' });
+            } catch (e) {
+                iziToast.info({ title: 'ID da reunião', message: text, position: 'topRight' });
+            }
+            document.body.removeChild(ta);
+        }
 
         $('.check-status').on('change', function() {
             const dados = $(this).data();

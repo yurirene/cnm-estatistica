@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\CongressoNacional\DelegadoCongressoNacional;
 use App\Models\CongressoNacional\DocumentoRecebido;
+use App\Models\CongressoReuniao;
 use App\Models\Federacao;
 use App\Models\Sinodal;
 use App\Rules\Cpf;
@@ -27,16 +28,23 @@ class CongressoNacionalController extends Controller
     {
         try {
             $sinodal = UserService::getInstanciaUsuarioLogado();
-            $delegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)
-                ->whereNull('federacao_id')
-                ->get();
+            $reuniao = CongressoReuniao::aberta()->first();
 
+            $queryDelegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)->whereNull('federacao_id');
+            $queryDocumentos = DocumentoRecebido::where('sinodal_id', $sinodal->id);
+            if ($reuniao) {
+                $queryDelegados->where('reuniao_id', $reuniao->id);
+                $queryDocumentos->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegados = $queryDelegados->get();
             $totalDelegados = $delegados->count();
             $limiteAtingido = $totalDelegados >= 1;
 
-            $documentos = DocumentoRecebido::where('sinodal_id', $sinodal->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $documentos = $queryDocumentos->orderBy('created_at', 'desc')->get();
 
             return view('dashboard.congresso-nacional.sinodal.index', [
                 'delegados' => $delegados,
@@ -63,11 +71,15 @@ class CongressoNacionalController extends Controller
     {
         try {
             $sinodal = UserService::getInstanciaUsuarioLogado();
+            $reuniao = CongressoReuniao::aberta()->first();
 
-            // Verificar limite de 1 delegado por sinodal
-            $totalDelegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)
-                ->whereNull('federacao_id')
-                ->count();
+            $queryTotal = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)->whereNull('federacao_id');
+            if ($reuniao) {
+                $queryTotal->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryTotal->whereNull('reuniao_id');
+            }
+            $totalDelegados = $queryTotal->count();
             if ($totalDelegados >= 1) {
                 return redirect()->route('dashboard.cn.sinodal.index')->with([
                     'mensagem' => [
@@ -112,16 +124,23 @@ class CongressoNacionalController extends Controller
     {
         try {
             $federacao = UserService::getInstanciaUsuarioLogado();
-            $delegados = DelegadoCongressoNacional::where('federacao_id', $federacao->id)
-                ->get();
+            $reuniao = CongressoReuniao::aberta()->first();
 
+            $queryDelegados = DelegadoCongressoNacional::where('federacao_id', $federacao->id);
+            $queryDocumentos = DocumentoRecebido::where('sinodal_id', $federacao->sinodal_id);
+            if ($reuniao) {
+                $queryDelegados->where('reuniao_id', $reuniao->id);
+                $queryDocumentos->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegados = $queryDelegados->get();
             $totalDelegados = $delegados->count();
             $limiteAtingido = $totalDelegados >= 6;
 
-            // Documentos da sinodal relacionada à federação
-            $documentos = DocumentoRecebido::where('sinodal_id', $federacao->sinodal_id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $documentos = $queryDocumentos->orderBy('created_at', 'desc')->get();
 
             return view('dashboard.congresso-nacional.federacao.index', [
                 'delegados' => $delegados,
@@ -148,9 +167,15 @@ class CongressoNacionalController extends Controller
     {
         try {
             $federacao = UserService::getInstanciaUsuarioLogado();
+            $reuniao = CongressoReuniao::aberta()->first();
 
-            // Verificar limite de 6 delegados por federação
-            $totalDelegados = DelegadoCongressoNacional::where('federacao_id', $federacao->id)->count();
+            $queryTotal = DelegadoCongressoNacional::where('federacao_id', $federacao->id);
+            if ($reuniao) {
+                $queryTotal->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryTotal->whereNull('reuniao_id');
+            }
+            $totalDelegados = $queryTotal->count();
             if ($totalDelegados >= 6) {
                 return redirect()->route('dashboard.cn.federacao.index')->with([
                     'mensagem' => [
@@ -215,9 +240,16 @@ class CongressoNacionalController extends Controller
 
         try {
             $federacao = UserService::getInstanciaUsuarioLogado();
+            $reuniao = CongressoReuniao::aberta()->first();
 
-            // Verificar limite de 6 delegados por federação
-            $totalDelegados = DelegadoCongressoNacional::where('federacao_id', $federacao->id)->count();
+            // Verificar limite de 6 delegados por federação (na reunião atual)
+            $queryTotal = DelegadoCongressoNacional::where('federacao_id', $federacao->id);
+            if ($reuniao) {
+                $queryTotal->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryTotal->whereNull('reuniao_id');
+            }
+            $totalDelegados = $queryTotal->count();
             if ($totalDelegados >= 6) {
                 return redirect()->back()->with([
                     'mensagem' => [
@@ -236,7 +268,8 @@ class CongressoNacionalController extends Controller
                 'credencial' => $request->has('credencial') ? 1 : 0,
                 'federacao_id' => $federacao->id,
                 'sinodal_id' => $federacao->sinodal_id,
-                'status' => DelegadoCongressoNacional::STATUS_EM_ANALISE
+                'status' => DelegadoCongressoNacional::STATUS_EM_ANALISE,
+                'reuniao_id' => $reuniao?->id,
             ];
 
             if ($request->has('comissoes') && is_array($request->comissoes)) {
@@ -383,11 +416,16 @@ class CongressoNacionalController extends Controller
 
         try {
             $sinodal = UserService::getInstanciaUsuarioLogado();
+            $reuniao = CongressoReuniao::aberta()->first();
 
-            // Verificar limite de 1 delegado por sinodal
-            $totalDelegados = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)
-                ->whereNull('federacao_id')
-                ->count();
+            // Verificar limite de 1 delegado por sinodal (na reunião atual)
+            $queryTotal = DelegadoCongressoNacional::where('sinodal_id', $sinodal->id)->whereNull('federacao_id');
+            if ($reuniao) {
+                $queryTotal->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryTotal->whereNull('reuniao_id');
+            }
+            $totalDelegados = $queryTotal->count();
             if ($totalDelegados >= 1) {
                 return redirect()->back()->with([
                     'mensagem' => [
@@ -405,7 +443,8 @@ class CongressoNacionalController extends Controller
                 'pago' => $request->has('pago') ? 1 : 0,
                 'credencial' => $request->has('credencial') ? 1 : 0,
                 'sinodal_id' => $sinodal->id,
-                'status' => DelegadoCongressoNacional::STATUS_EM_ANALISE
+                'status' => DelegadoCongressoNacional::STATUS_EM_ANALISE,
+                'reuniao_id' => $reuniao?->id,
             ];
 
             if ($request->has('comissoes') && is_array($request->comissoes)) {
@@ -542,12 +581,14 @@ class CongressoNacionalController extends Controller
 
         try {
             $sinodal = UserService::getInstanciaUsuarioLogado();
+            $reuniao = CongressoReuniao::aberta()->first();
 
             $documento = DocumentoRecebido::create([
                 'titulo' => $request->titulo,
                 'path' => $request->file('arquivo'),
                 'sinodal_id' => $sinodal->id,
-                'status' => DocumentoRecebido::STATUS_DOCUMENTO_PENDENTE
+                'status' => DocumentoRecebido::STATUS_DOCUMENTO_PENDENTE,
+                'reuniao_id' => $reuniao?->id,
             ]);
 
             return redirect()->route('dashboard.cn.sinodal.index')->with([
@@ -616,29 +657,46 @@ class CongressoNacionalController extends Controller
     }
 
     /**
-     * Lista todos os delegados para o secretário executivo
+     * Lista todos os delegados para o secretário executivo (da reunião aberta)
      */
     public function indexExecutiva()
     {
         try {
-            $delegadosFederacao = DelegadoCongressoNacional::with(['federacao', 'sinodal'])
+            $reuniao = CongressoReuniao::aberta()->first();
+
+            $queryDelegados = DelegadoCongressoNacional::with(['federacao', 'sinodal']);
+            $querySinodal = DelegadoCongressoNacional::with('sinodal')
+                ->whereNotNull('sinodal_id')
+                ->whereNull('federacao_id');
+            $queryDocumentos = DocumentoRecebido::with('sinodal');
+
+            if ($reuniao) {
+                $queryDelegados->where('reuniao_id', $reuniao->id);
+                $querySinodal->where('reuniao_id', $reuniao->id);
+                $queryDocumentos->where('reuniao_id', $reuniao->id);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $querySinodal->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegadosFederacao = $queryDelegados
                 ->whereNotNull('federacao_id')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            $delegadosSinodal = DelegadoCongressoNacional::with('sinodal')
-                ->whereNotNull('sinodal_id')
-                ->whereNull('federacao_id')
+            $delegadosSinodal = $querySinodal
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            $documentos = DocumentoRecebido::orderBy('created_at', 'desc')
+            $documentos = $queryDocumentos
+                ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Queries para quórum
-            $totalizador = $this->getTotalizadorQuorum();
+            $totalizador = $this->getTotalizadorQuorum($reuniao?->id);
 
             return view('dashboard.congresso-nacional.executiva.index', [
+                'reuniao' => $reuniao,
                 'delegadosFederacao' => $delegadosFederacao,
                 'delegadosSinodal' => $delegadosSinodal,
                 'documentos' => $documentos,
@@ -654,6 +712,43 @@ class CongressoNacionalController extends Controller
                 'mensagem' => [
                     'status' => false,
                     'texto' => 'Algo deu Errado!'
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * Cadastra uma nova reunião e fecha as demais (status = 0)
+     */
+    public function storeReuniao(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+        ]);
+
+        try {
+            CongressoReuniao::where('status', true)->update(['status' => false]);
+            CongressoReuniao::create([
+                'nome' => $request->nome,
+                'status' => true,
+            ]);
+
+            return redirect()->route('dashboard.cn.executiva.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Reunião cadastrada com sucesso!'
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->route('dashboard.cn.executiva.index')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage() ?? 'Erro ao cadastrar reunião!'
                 ]
             ]);
         }
@@ -892,9 +987,9 @@ class CongressoNacionalController extends Controller
     }
 
     /**
-     * Calcula totalizador para quórum
+     * Calcula totalizador para quórum (opcionalmente filtrado por reunião)
      */
-    public function getTotalizadorQuorum(): array
+    public function getTotalizadorQuorum(?int $reuniaoId = null): array
     {
         // Total de federações ativas
         $totalFederacoes = Federacao::where('status', 1)
@@ -906,26 +1001,31 @@ class CongressoNacionalController extends Controller
             ->whereNull('deleted_at')
             ->count();
 
-        // Federações com ao menos 1 delegado confirmado
-        $federacoesComDelegado = DB::table('federacoes')
+        $queryDelegadosFederacao = DB::table('federacoes')
             ->join('congresso_nacional_delegados', 'congresso_nacional_delegados.federacao_id', '=', 'federacoes.id')
             ->where('federacoes.status', 1)
             ->whereNull('federacoes.deleted_at')
             ->where('congresso_nacional_delegados.pago', 1)
-            ->where('congresso_nacional_delegados.credencial', 1)
-            ->distinct('federacoes.id')
-            ->count('federacoes.id');
+            ->where('congresso_nacional_delegados.credencial', 1);
 
-        // Sinodais com ao menos 1 delegado confirmado
-        $sinodaisComDelegado = DB::table('sinodais')
+        $queryDelegadosSinodal = DB::table('sinodais')
             ->join('congresso_nacional_delegados', 'congresso_nacional_delegados.sinodal_id', '=', 'sinodais.id')
             ->where('sinodais.status', 1)
             ->whereNull('sinodais.deleted_at')
             ->whereNull('congresso_nacional_delegados.federacao_id')
             ->where('congresso_nacional_delegados.pago', 1)
-            ->where('congresso_nacional_delegados.credencial', 1)
-            ->distinct('sinodais.id')
-            ->count('sinodais.id');
+            ->where('congresso_nacional_delegados.credencial', 1);
+
+        if ($reuniaoId !== null) {
+            $queryDelegadosFederacao->where('congresso_nacional_delegados.reuniao_id', $reuniaoId);
+            $queryDelegadosSinodal->where('congresso_nacional_delegados.reuniao_id', $reuniaoId);
+        } else {
+            $queryDelegadosFederacao->whereNull('congresso_nacional_delegados.reuniao_id');
+            $queryDelegadosSinodal->whereNull('congresso_nacional_delegados.reuniao_id');
+        }
+
+        $federacoesComDelegado = $queryDelegadosFederacao->distinct('federacoes.id')->count('federacoes.id');
+        $sinodaisComDelegado = $queryDelegadosSinodal->distinct('sinodais.id')->count('sinodais.id');
 
         // Cálculo de quórum
         $quorumSinodais = ceil(($totalSinodais * 0.5) + 1);
