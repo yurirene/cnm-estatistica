@@ -140,12 +140,6 @@ class SicomService
             });
         return $delegados;
     }
-
-    public static function getDelegadosCongresso($reuniaoId)
-    {
-        return [];
-    }
-
     public static function getDelegadosCongressoNacional($reuniaoId)
     {
         return DelegadoCongressoNacional::where('credencial', true)
