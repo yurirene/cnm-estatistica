@@ -22,13 +22,8 @@ class BaseDadosFormularioExport implements FromView
 
     public function view(): View
     {
-        $dados = FormularioSinodal::with(['sinodal', 'sinodal.regiao'])
-            ->where('ano_referencia', $this->ano)
-            ->get()
-            ->map(fn ($item) => $item->toArray());
-
         return view('export.base_dados_formulario_sinodal', [
-            'dados' => $dados,
+            'dados' => FormularioSinodal::where('ano_referencia',$this->ano)->get(),
             'cabecalho' => $this->headings(),
             'coluna_por_grupo' => $this->cabecalho
         ]);
