@@ -680,13 +680,17 @@ class CongressoNacionalController extends Controller
                 $queryDocumentos->whereNull('reuniao_id');
             }
 
+            $orderPrioridade = "CASE WHEN credencial = 0 AND pago = 1 THEN 0 WHEN credencial = 1 AND pago = 0 THEN 1 ELSE 2 END ASC";
+
             $delegadosFederacao = $queryDelegados
                 ->whereNotNull('federacao_id')
-                ->orderBy('created_at', 'desc')
+                ->orderByRaw($orderPrioridade)
+                ->orderBy('credencial', 'asc')
                 ->get();
 
             $delegadosSinodal = $querySinodal
-                ->orderBy('created_at', 'desc')
+                ->orderByRaw($orderPrioridade)
+                ->orderBy('credencial', 'asc')
                 ->get();
 
             $documentos = $queryDocumentos
