@@ -17,6 +17,7 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -719,6 +720,45 @@ class CongressoNacionalController extends Controller
                 ]
             ]);
         }
+    }
+
+    /**
+     * Exporta todos os delegados (da reunião aberta ou sem reunião) para CSV.
+     */
+    public function exportDelegadosCsv(): StreamedResponse
+    {
+        $reuniao = CongressoReuniao::aberta()->first();
+        $query = DelegadoCongressoNacional::with(['federacao', 'sinodal']);
+
+        if ($reuniao) {
+            $query->where('reuniao_id', $reuniao->id);
+        } else {
+            $query->whereNull('reuniao_id');
+        }
+
+        $orderPrioridade = "CASE WHEN credencial = 0 AND pago = 1 THEN 0 WHEN credencial = 1 AND pago = 0 THEN 1 ELSE 2 END ASC";
+        $delegados = $query->orderByRaw($orderPrioridade)->orderBy('credencial', 'asc')->get();
+
+        $filename = 'delegados-congresso-nacional-' . now()->format('Y-m-d-His') . '.csv';
+
+        return response()->streamDownload(function () use ($delegados) {
+            $out = fopen('php://output', 'w');
+            fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM para Excel
+            fputcsv($out, ['Nome', 'CPF', 'Federação', 'Sinodal', 'Credencial', 'Pago'], ';');
+            foreach ($delegados as $d) {
+                fputcsv($out, [
+                    $d->nome,
+                    $d->cpf,
+                    $d->federacao->nome ?? '-',
+                    $d->sinodal->nome ?? '-',
+                    $d->credencial ? 'Sim' : 'Não',
+                    $d->pago ? 'Sim' : 'Não',
+                ], ';');
+            }
+            fclose($out);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     /**

@@ -727,6 +727,8 @@ Route::group(
 
             Route::get('congresso-nacional/executiva', [CongressoNacionalController::class, 'indexExecutiva'])
                 ->name('cn.executiva.index');
+            Route::get('congresso-nacional/executiva/exportar-delegados-csv', [CongressoNacionalController::class, 'exportDelegadosCsv'])
+                ->name('cn.executiva.exportar-delegados-csv');
             Route::post('congresso-nacional/executiva/reuniao', [CongressoNacionalController::class, 'storeReuniao'])
                 ->name('cn.executiva.reuniao.store');
             Route::get('congresso-nacional/executiva/sincronizar-inscritos', [CongressoNacionalController::class, 'sincronizarInscritos'])

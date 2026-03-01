@@ -39,6 +39,9 @@
                     <a href="{{ route('dashboard.cn.executiva.sincronizar-inscritos') }}" class="btn btn-primary">
                         <i class="fas fa-sync-alt"></i> Sincronizar Inscritos
                     </a>
+                    <a href="{{ route('dashboard.cn.executiva.exportar-delegados-csv') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-csv"></i> Exportar CSV
+                    </a>
                 </div>
             </div>
         </div>
