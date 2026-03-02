@@ -7,7 +7,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
