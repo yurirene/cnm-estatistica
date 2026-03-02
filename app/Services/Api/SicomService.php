@@ -156,6 +156,7 @@ class SicomService
                     'cargo' => empty($delegado->oficial) ? null : $delegado->oficial,
                     'credencial' => $delegado->path_credencial,
                     'unidade_id' => !empty($delegado->federacao_id) ? $delegado->federacao_id : $delegado->sinodal_id,
+                    'sugestao_comissoes' => $delegado->comissoes ?? [],
                 ];
             });
     }
