@@ -18,6 +18,7 @@
                             <th>Status</th>
                             <th>Recebido</th>
                             <th>#</th>
+                            <th>#</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +51,12 @@
                                         Visualizar
                                     </a>
                                 </td>
+                                <td>
+                                    <button onclick="deleteDocumento('{{ $documento->id }}')" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        Excluir
+                                    </button>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -68,7 +75,7 @@
     $(document).ready(() => {
         const ROTA_DOC = "{{ route('dashboard.cn.executiva.documento.update', ':id') }}";
         const TOKEN_DOC = "{{ csrf_token() }}";
-
+        
         $('.check-status-documento').on('change', function() {
             const dados = $(this).data();
             const valor = ($(this).prop('checked'));
@@ -99,5 +106,30 @@
             });
         })
     });
+
+    function deleteDocumento(id) {
+        const ROTA_DELETE_DOC = "{{ route('dashboard.cn.executiva.documento.delete', ':id') }}";
+
+        if (confirm('Tem certeza que deseja excluir este documento?')) {
+            $.ajax({
+                url: ROTA_DELETE_DOC.replace(":id", id),
+                type: "GET",
+                success: function(response) {
+                    iziToast.show({
+                        title: 'Sucesso!',
+                        message: response.mensagem,
+                        position: 'topRight',
+                    });
+                },
+                error: function(error) {
+                    iziToast.show({
+                        title: 'Erro!',
+                        message: error.responseJSON.mensagem,
+                        position: 'topRight',
+                    });
+                }
+            });
+        }
+        }
 </script>
 @endpush

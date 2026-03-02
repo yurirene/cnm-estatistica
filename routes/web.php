@@ -737,6 +737,8 @@ Route::group(
                 ->name('cn.executiva.delegado.update');
             Route::put('congresso-nacional/executiva/{documento}/documento', [CongressoNacionalController::class, 'updateStatusDocumento'])
                 ->name('cn.executiva.documento.update');
+            Route::get('congresso-nacional/executiva/{documento}/documento/delete', [CongressoNacionalController::class, 'deleteDocumento'])
+                ->name('cn.executiva.documento.delete');
         });
     }
 );

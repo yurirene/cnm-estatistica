@@ -1087,4 +1087,39 @@ class CongressoNacionalController extends Controller
             'atingiu_quorum_federacoes' => $federacoesComDelegado >= $quorumFederacoes
         ];
     }
+
+    /**
+     * Exclui um documento
+     */
+    public function deleteDocumento(string $documento): JsonResponse
+    {
+        try {
+            $documento = DocumentoRecebido::findOrFail($documento);
+            try {
+                Storage::delete($documento->getRawOriginal('path'));
+            } catch (\Throwable $th) {
+                LogErroService::registrar([
+                    'message' => $th->getMessage(),
+                    'line' => $th->getLine(),
+                    'file' => $th->getFile()
+                ]);
+            }
+            $documento->delete();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Documento excluído com sucesso!'
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return response()->json([
+                'status' => false,
+                'mensagem' => $th->getMessage() ?? 'Erro ao excluir documento!'
+            ], 500);
+        }
+    }
 }

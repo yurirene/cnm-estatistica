@@ -149,6 +149,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.executiva.delegado.update',
                     'dashboard.cn.executiva.sincronizar-inscritos',
                     'dashboard.cn.executiva.documento.update',
+                    'dashboard.cn.executiva.documento.delete',
                     'dashboard.cn.executiva.exportar-delegados-csv'
                 ]
             ],
