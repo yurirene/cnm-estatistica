@@ -742,7 +742,7 @@ class CongressoNacionalController extends Controller
         return response()->streamDownload(function () use ($delegados) {
             $out = fopen('php://output', 'w');
             fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM para Excel
-            fputcsv($out, ['Nome', 'CPF', 'Federação', 'Sinodal', 'Credencial', 'Pago', 'Comissoes', 'Atualizado em'], ';');
+            fputcsv($out, ['Nome', 'CPF', 'Federação', 'Sinodal', 'Credencial', 'Pago', 'Comissoes', 'Regiao', 'Atualizado em'], ';');
             foreach ($delegados as $d) {
                 fputcsv($out, [
                     $d->nome,
@@ -752,7 +752,8 @@ class CongressoNacionalController extends Controller
                     $d->credencial ? 'Sim' : 'Não',
                     $d->pago ? 'Sim' : 'Não',
                     $d->comissoes ? implode(', ', $d->comissoes) : '-',
-                    $d->updated_at,
+                    $d->sinodal->regiao->nome ?? '-',
+                    $d->updated_at->format('d/m/Y H:i:s'),
                 ], ';');
             }
             fclose($out);
