@@ -16,7 +16,8 @@
                             <th>Sinodal</th>
                             <th>Data de Envio</th>
                             <th>Status</th>
-                            <th>Ações</th>
+                            <th>Recebido</th>
+                            <th>#</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +44,12 @@
                                         >
                                     </div>
                                 </td>
+                                <td>
+                                    <a href="/{{ $documento->path }}" target="_blank" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                        Visualizar
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -65,6 +72,7 @@
         $('.check-status-documento').on('change', function() {
             const dados = $(this).data();
             const valor = ($(this).prop('checked'));
+
             $.ajax({
                 url: ROTA_DOC.replace(":id", dados.documentoId),
                 type: "PUT",
