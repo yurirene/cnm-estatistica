@@ -739,6 +739,17 @@ Route::group(
                 ->name('cn.executiva.documento.update');
             Route::get('congresso-nacional/executiva/{documento}/documento/delete', [CongressoNacionalController::class, 'deleteDocumento'])
                 ->name('cn.executiva.documento.delete');
+                
+            Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-diretoria', [CongressoNacionalController::class, 'exportDiretoria'])
+                ->name('cn.executiva.delegado.exportar-diretoria');
+            Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-relatorio-estatistico', [CongressoNacionalController::class, 'exportRelatorioEstatistico'])
+                ->name('cn.executiva.delegado.exportar-relatorio-estatistico');
+            Route::get('congresso-nacional/executiva/sincronizar-documentos-instancias', [CongressoNacionalController::class, 'sincronizarDocumentosInstancias'])
+                ->name('cn.executiva.sincronizar-documentos-instancias');
+            Route::get('congresso-nacional/executiva/exportar-documentos-instancias-csv', [CongressoNacionalController::class, 'exportDocumentosInstanciasCsv'])
+                ->name('cn.executiva.exportar-documentos-instancias-csv');
+            Route::put('congresso-nacional/executiva/documento-instancia/{documento_instancia}', [CongressoNacionalController::class, 'updateDocumentoInstancia'])
+                ->name('cn.executiva.documento-instancia.update');
         });
     }
 );

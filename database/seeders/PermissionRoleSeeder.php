@@ -150,7 +150,12 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.executiva.sincronizar-inscritos',
                     'dashboard.cn.executiva.documento.update',
                     'dashboard.cn.executiva.documento.delete',
-                    'dashboard.cn.executiva.exportar-delegados-csv'
+                    'dashboard.cn.executiva.exportar-delegados-csv',
+                    'dashboard.cn.executiva.delegado.exportar-diretoria',
+                    'dashboard.cn.executiva.delegado.exportar-relatorio-estatistico',
+                    'dashboard.cn.executiva.sincronizar-documentos-instancias',
+                    'dashboard.cn.executiva.documento-instancia.update',
+                    'dashboard.cn.executiva.exportar-documentos-instancias-csv'
                 ]
             ],
             'secreatria_produtos' => [
