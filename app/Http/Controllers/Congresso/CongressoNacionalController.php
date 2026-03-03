@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Congresso;
 
+use App\Helpers\FormHelper;
 use App\Http\Controllers\Controller;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\CongressoNacional\DelegadoCongressoNacional;
@@ -1456,7 +1457,6 @@ class CongressoNacionalController extends Controller
                 : '0';
 
             $replacements = [
-                '{NOME DA INSTÂNCIA}' => $instancia->nome ?? '',
                 '{ano_referencia}' => (string) $formulario->ano_referencia,
                 '{numero_documento}' => '001',
                 '{ano}' => now()->format('Y'),
@@ -1491,6 +1491,8 @@ class CongressoNacionalController extends Controller
                 '{cidade}' => '',
                 '{estado}' => $estado,
                 '{data_emissao}' => $formulario->updated_at->format('d/m/Y'),
+                'status_entrega' => FormHelper::statusFormatado($formulario->status, 'Entregue', 'Pendente'),
+                '{nome_instancia}' => $instancia->nome ?? '',
             ];
 
             $templatePath = resource_path('templates/estatistico.html');
