@@ -1038,7 +1038,7 @@ class CongressoNacionalController extends Controller
         return response()->streamDownload(function () use ($itens) {
             $out = fopen('php://output', 'w');
             fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM para Excel
-            fputcsv($out, ['Instância', 'Tipo', 'Sinodal', 'Diretoria', 'Estatístico', 'Planejamento', 'Status', 'Atualizado em'], ';');
+            fputcsv($out, ['Instância', 'Tipo', 'Sinodal', 'Diretoria', 'Estatístico', 'Planejamento', 'Status', 'Região', 'Atualizado em'], ';');
             foreach ($itens as $doc) {
                 $nome = $doc->federacao_id
                     ? ($doc->federacao->nome ?? '-')
@@ -1053,6 +1053,7 @@ class CongressoNacionalController extends Controller
                     $doc->estatistico ? 'Sim' : 'Não',
                     $doc->planejamento ? 'Sim' : 'Não',
                     $doc->status ? 'Sim' : 'Não',
+                    $doc->sinodal->regiao->nome ?? '-',
                     $doc->updated_at->format('d/m/Y H:i:s'),
                 ], ';');
             }
