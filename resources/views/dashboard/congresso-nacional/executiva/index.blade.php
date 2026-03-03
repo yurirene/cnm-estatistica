@@ -143,7 +143,7 @@
                 </div>
                 <div class="card-body" style="max-height: 700px; overflow-y: auto;">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="delegados-federacao-table">
                             <thead>
                                 <tr>
                                     <th>Pago</th>
@@ -235,7 +235,7 @@
                 </div>
                 <div class="card-body" style="max-height: 500px; overflow-y: auto;">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="delegados-sinodal-table">
                             <thead>
                                 <tr>
                                     <th>Pago</th>
@@ -411,6 +411,18 @@
                 }
             });
         })
+        $('#delegados-federacao-table').DataTable({
+            lengthMenu: [100, 200, 500, -1],
+            language: {
+                url: '/vendor/datatables/portugues.json',
+            }
+        });
+        $('#delegados-sinodal-table').DataTable({
+            lengthMenu: [100, 200, 500, -1],
+            language: {
+                url: '/vendor/datatables/portugues.json',
+            }
+        });
     })
 </script>
 @endpush

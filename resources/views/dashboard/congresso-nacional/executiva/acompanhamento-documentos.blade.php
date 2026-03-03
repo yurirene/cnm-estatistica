@@ -18,7 +18,7 @@
             </div>
             <div class="card-body" style="max-height: 700px; overflow-y: auto;">
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="documentos-instancias-table">
                         <thead>
                             <tr>
                                 <th>Instância</th>
@@ -43,9 +43,9 @@
                                     </td>
                                     <td>
                                         @if($doc->federacao_id)
-                                            <span class="badge bg-info">Federação</span>
+                                        Federação
                                         @else
-                                            <span class="badge bg-warning">Sinodal</span>
+                                        Sinodal
                                         @endif
                                     </td>
                                     <td>
@@ -164,6 +164,12 @@ $(document).ready(function() {
                 }
             }
         });
+    });
+    $('#documentos-instancias-table').DataTable({
+        lengthMenu: [100, 200, 500, -1],
+        language: {
+            url: '/vendor/datatables/portugues.json',
+        }
     });
 });
 </script>

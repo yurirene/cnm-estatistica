@@ -9,7 +9,7 @@
         </div>
         <div class="card-body" style="max-height: 500px; overflow-y: auto;">
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" id="documentos-recebidos-table">
                     <thead>
                         <tr>
                             <th>Título</th>
@@ -105,6 +105,12 @@
                 }
             });
         })
+        $('#documentos-recebidos-table').DataTable({
+            lengthMenu: [100, 200, 500, -1],
+            language: {
+                url: '/vendor/datatables/portugues.json',
+            }
+        });
     });
 
     function deleteDocumento(id) {
