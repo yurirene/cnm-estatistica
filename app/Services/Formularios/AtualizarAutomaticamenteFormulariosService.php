@@ -28,7 +28,6 @@ class AtualizarAutomaticamenteFormulariosService
                     'ano_referencia' => $anoReferencia,
                     'status' => EstatisticaService::FORMULARIO_NAO_RESPONDIDO
                 ]);
-
             } else {
                 $formularioFederacao = $formularioFederacao->first();
             }
@@ -39,6 +38,7 @@ class AtualizarAutomaticamenteFormulariosService
                 'escolaridade' => $totalizador['escolaridade'],
                 'deficiencias' => $totalizador['deficiencias'],
                 'programacoes_locais' => $totalizador['programacoes'],
+                'estrutura' => $totalizador['estrutura'],
             ]);
 
             self::verificarStatusEntregaFormularioFederacao($local->federacao_id);
@@ -80,6 +80,7 @@ class AtualizarAutomaticamenteFormulariosService
                 'deficiencias' => $totalizador['deficiencias'],
                 'programacoes_federacoes' => $totalizador['programacoes_federacao'],
                 'programacoes_locais' => $totalizador['programacoes_locais'],
+                'estrutura' => $totalizador['estrutura'],
             ]);
 
             self::verificarStatusEntregaFormularioSinodal($federacao->sinodal_id);
