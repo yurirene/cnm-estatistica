@@ -28,6 +28,7 @@
                                 <th>Planejamento</th>
                                 <th>Status</th>
                                 <th>Ações</th>
+                                <th>#</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,6 +112,7 @@
                                             <span class="text-muted small">Sem delegado</span>
                                         @endif
                                     </td>
+                                    <td>{{ $doc->status }}</td>
                                 </tr>
                             @empty
                                 <tr>
