@@ -65,4 +65,27 @@ class CongressoNacionalDocumentosInstancias extends Model
 
         return $query->first();
     }
+
+    public function getDelegadosCredenciadosAttribute(): Collection
+    {
+        public function getTelefonesCredenciadosAttribute(): string
+    {
+        $query = DelegadoCongressoNacional::query()
+            ->where('sinodal_id', $this->sinodal_id)
+            ->where('reuniao_id', $this->reuniao_id);
+
+        if ($this->federacao_id) {
+            $query->where('federacao_id', $this->federacao_id);
+        } else {
+            $query->whereNull('federacao_id');
+        }
+
+        $delegado = $query->where('credencial', true)
+            ->where('pago', true)
+            ->get()
+            ->pluck('telefone');
+
+
+        return $delegados->implode(', ');
+    }
 }
