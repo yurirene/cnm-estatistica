@@ -78,7 +78,7 @@ class CongressoNacionalDocumentosInstancias extends Model
             $query->whereNull('federacao_id');
         }
 
-        $delegado = $query->where('credencial', true)
+        $delegados = $query->where('credencial', true)
             ->where('pago', true)
             ->get()
             ->pluck('telefone');
