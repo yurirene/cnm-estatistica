@@ -66,9 +66,7 @@ class CongressoNacionalDocumentosInstancias extends Model
         return $query->first();
     }
 
-    public function getDelegadosCredenciadosAttribute(): Collection
-    {
-        public function getTelefonesCredenciadosAttribute(): string
+    public function getTelefonesCredenciadosAttribute(): string
     {
         $query = DelegadoCongressoNacional::query()
             ->where('sinodal_id', $this->sinodal_id)
