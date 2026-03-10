@@ -884,6 +884,12 @@ class CongressoNacionalController extends Controller
             }
 
             $delegado->update($dados);
+            $delegado->refresh();
+
+            if ($delegado->credencial && $delegado->pago) {
+                $delegado->status = DelegadoCongressoNacional::STATUS_CONFIRMADA;
+                $delegado->save();
+            }
 
             return response()->json([
                 'status' => true,
@@ -1105,9 +1111,17 @@ class CongressoNacionalController extends Controller
                 if (empty($delegado)) {
                     continue;
                 }
+                
+                if ($delegado->credencial && $delegado->pago && $delegado->status != DelegadoCongressoNacional::STATUS_CONFIRMADA) {
+                    $delegado->status = DelegadoCongressoNacional::STATUS_CONFIRMADA;
+                    $delegado->save();
+                    $atualizados++;
+                    continue;
+                }
 
                 // Verificar se o pagamento está confirmado
                 $paymentStatus = $inscrito['payment_status'] ?? '';
+
                 if (!in_array($paymentStatus, DelegadoCongressoNacional::STATUS_PAGAMENTO_CONFIRMADO)) {
                     continue;
                 }
