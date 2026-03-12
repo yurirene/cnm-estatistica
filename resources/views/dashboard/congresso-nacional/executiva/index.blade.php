@@ -35,8 +35,8 @@
                     <a href="{{ route('dashboard.cn.executiva.exportar-delegados-csv') }}" class="btn btn-outline-primary">
                         <i class="fas fa-file-csv"></i> Exportar CSV
                     </a>
-                    <a href="{{ route('dashboard.cn.executiva.exportar-arquivos-reuniao-zip') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-file-zip"></i> Exportar ZIP
+                    <a href="{{ route('dashboard.cn.executiva.exportar-arquivos-reuniao') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-zip"></i> Exportar ZIP por região
                     </a>
                 </div>
             </div>

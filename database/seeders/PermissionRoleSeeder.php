@@ -156,7 +156,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.executiva.sincronizar-documentos-instancias',
                     'dashboard.cn.executiva.documento-instancia.update',
                     'dashboard.cn.executiva.exportar-documentos-instancias-csv',
-                    'dashboard.cn.executiva.exportar-arquivos-reuniao-zip'
+                    'dashboard.cn.executiva.exportar-arquivos-reuniao-zip',
+                    'dashboard.cn.executiva.exportar-arquivos-reuniao'
                 ]
             ],
             'secreatria_produtos' => [

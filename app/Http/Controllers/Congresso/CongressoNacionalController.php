@@ -10,6 +10,7 @@ use App\Models\CongressoNacional\DocumentoRecebido;
 use App\Models\CongressoNacionalDocumentosInstancias;
 use App\Models\CongressoReuniao;
 use App\Models\Federacao;
+use App\Models\Regiao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
 use App\Models\Sinodal;
@@ -1074,19 +1075,17 @@ class CongressoNacionalController extends Controller
     }
 
     /**
-     * Exporta todos os arquivos da reunião (credenciais e documentos recebidos) em um ZIP para download.
-     * Nomenclatura: credencial_{regiao}_{sigla_unidade}_{nome_delegado}.ext e doc_{regiao}_{sigla_unidade}_{titulo}.ext
-     * (sem acentuação, snake_case).
+     * Página com links para download do ZIP de arquivos da reunião, divididos por região.
      */
-    public function exportArquivosReuniaoZip(): BinaryFileResponse|RedirectResponse
+    public function indexExportarArquivosReuniao(): View|RedirectResponse
     {
         try {
             $reuniao = CongressoReuniao::aberta()->first();
             $reuniaoId = $reuniao?->id;
 
-            $queryDelegados = DelegadoCongressoNacional::with(['federacao.regiao', 'sinodal.regiao'])
+            $queryDelegados = DelegadoCongressoNacional::with(['federacao', 'sinodal'])
                 ->whereNotNull('path_credencial');
-            $queryDocumentos = DocumentoRecebido::with(['sinodal.regiao']);
+            $queryDocumentos = DocumentoRecebido::with('sinodal');
 
             if ($reuniaoId) {
                 $queryDelegados->where('reuniao_id', $reuniaoId);
@@ -1099,12 +1098,73 @@ class CongressoNacionalController extends Controller
             $delegados = $queryDelegados->get();
             $documentos = $queryDocumentos->get();
 
-            // Nome fixo no servidor: sempre sobrescreve, evita acúmulo de ZIPs em caso de erro ou múltiplas exportações
+            $regiaoIds = collect();
+            foreach ($delegados as $d) {
+                $rid = $d->federacao?->regiao_id ?? $d->sinodal?->regiao_id;
+                if ($rid) {
+                    $regiaoIds->push($rid);
+                }
+            }
+            foreach ($documentos as $doc) {
+                if ($doc->sinodal?->regiao_id) {
+                    $regiaoIds->push($doc->sinodal->regiao_id);
+                }
+            }
+            $regiaoIds = $regiaoIds->unique()->filter()->values();
+            $regioes = Regiao::whereIn('id', $regiaoIds)->orderBy('nome')->get();
+
+            return view('dashboard.congresso-nacional.executiva.exportar-arquivos-reuniao', [
+                'reuniao' => $reuniao,
+                'regioes' => $regioes,
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => ['status' => false, 'texto' => $th->getMessage() ?? 'Erro ao carregar página.']
+            ]);
+        }
+    }
+
+    /**
+     * Exporta os arquivos da reunião de uma região em ZIP (credenciais e documentos recebidos).
+     * Nomenclatura: credencial_{regiao}_{sigla_unidade}_{nome_delegado}.ext e doc_{regiao}_{sigla_unidade}_{titulo}.ext
+     * (sem acentuação, snake_case).
+     */
+    public function exportArquivosReuniaoZip(Regiao $regiao): BinaryFileResponse|RedirectResponse
+    {
+        try {
+            $reuniao = CongressoReuniao::aberta()->first();
+            $reuniaoId = $reuniao?->id;
+
+            $queryDelegados = DelegadoCongressoNacional::with(['federacao.regiao', 'sinodal.regiao'])
+                ->whereNotNull('path_credencial')
+                ->where(function ($q) use ($regiao) {
+                    $q->whereHas('federacao', fn ($f) => $f->where('regiao_id', $regiao->id))
+                        ->orWhereHas('sinodal', fn ($s) => $s->where('regiao_id', $regiao->id));
+                });
+            $queryDocumentos = DocumentoRecebido::with(['sinodal.regiao'])
+                ->whereHas('sinodal', fn ($s) => $s->where('regiao_id', $regiao->id));
+
+            if ($reuniaoId) {
+                $queryDelegados->where('reuniao_id', $reuniaoId);
+                $queryDocumentos->where('reuniao_id', $reuniaoId);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegados = $queryDelegados->get();
+            $documentos = $queryDocumentos->get();
+
             $dir = storage_path('app/temp');
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
-            $zipPath = $dir . '/arquivos-reuniao-export.zip';
+            $zipPath = $dir . '/arquivos-reuniao-export-' . $regiao->id . '.zip';
 
             $zip = new ZipArchive();
             if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
@@ -1114,20 +1174,22 @@ class CongressoNacionalController extends Controller
             }
 
             $nomesUsados = [];
+            $totalArquivos = 0;
 
             foreach ($delegados as $delegado) {
                 $rawPath = $delegado->getRawOriginal('path_credencial');
                 if (!$rawPath || !Storage::exists($rawPath)) {
                     continue;
                 }
-                $regiao = $delegado->federacao?->regiao?->nome ?? $delegado->sinodal?->regiao?->nome ?? 'sem_regiao';
+                $regiaoNome = $delegado->federacao?->regiao?->nome ?? $delegado->sinodal?->regiao?->nome ?? 'sem_regiao';
                 $siglaUnidade = $delegado->federacao?->sigla ?? $delegado->sinodal?->sigla ?? 'sem_sigla';
                 $nomeDelegado = $delegado->nome ?? 'sem_nome';
                 $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
-                $base = 'credencial_' . $this->slugParaArquivo($regiao) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($nomeDelegado);
+                $base = 'credencial_' . $this->slugParaArquivo($regiaoNome) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($nomeDelegado);
                 $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
                 $zip->addFile(Storage::path($rawPath), $nomeArquivo);
                 $zip->setCompressionName($nomeArquivo, ZipArchive::CM_DEFLATE, 9);
+                $totalArquivos++;
             }
 
             foreach ($documentos as $documento) {
@@ -1135,19 +1197,28 @@ class CongressoNacionalController extends Controller
                 if (!$rawPath || !Storage::exists($rawPath)) {
                     continue;
                 }
-                $regiao = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
+                $regiaoNome = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
                 $siglaUnidade = $documento->sinodal?->sigla ?? 'sem_sigla';
                 $titulo = $documento->titulo ?? 'sem_titulo';
                 $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
-                $base = 'doc_' . $this->slugParaArquivo($regiao) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($titulo);
+                $base = 'doc_' . $this->slugParaArquivo($regiaoNome) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($titulo);
                 $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
                 $zip->addFile(Storage::path($rawPath), $nomeArquivo);
                 $zip->setCompressionName($nomeArquivo, ZipArchive::CM_DEFLATE, 9);
+                $totalArquivos++;
             }
 
             $zip->close();
 
-            $nomeDownload = 'arquivos-reuniao-' . ($reuniao?->nome ? Str::slug($reuniao->nome, '-') : now()->format('Y-m-d')) . '.zip';
+            if ($totalArquivos === 0) {
+                @unlink($zipPath);
+                return redirect()->route('dashboard.cn.executiva.exportar-arquivos-reuniao')->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Nenhum arquivo encontrado para a região ' . $regiao->nome . '.']
+                ]);
+            }
+
+            $slugRegiao = Str::slug($regiao->nome, '-');
+            $nomeDownload = 'arquivos-reuniao-' . $slugRegiao . '-' . ($reuniao?->nome ? Str::slug($reuniao->nome, '-') : now()->format('Y-m-d')) . '.zip';
 
             return response()->download($zipPath, $nomeDownload, [
                 'Content-Type' => 'application/zip',
