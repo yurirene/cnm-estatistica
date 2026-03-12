@@ -1127,6 +1127,7 @@ class CongressoNacionalController extends Controller
                 $base = 'credencial_' . $this->slugParaArquivo($regiao) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($nomeDelegado);
                 $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
                 $zip->addFile(Storage::path($rawPath), $nomeArquivo);
+                $zip->setCompressionName($nomeArquivo, ZipArchive::CM_DEFLATE, 9);
             }
 
             foreach ($documentos as $documento) {
@@ -1141,6 +1142,7 @@ class CongressoNacionalController extends Controller
                 $base = 'doc_' . $this->slugParaArquivo($regiao) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($titulo);
                 $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
                 $zip->addFile(Storage::path($rawPath), $nomeArquivo);
+                $zip->setCompressionName($nomeArquivo, ZipArchive::CM_DEFLATE, 9);
             }
 
             $zip->close();
