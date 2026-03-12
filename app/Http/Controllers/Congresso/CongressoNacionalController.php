@@ -22,6 +22,7 @@ use App\Services\LogErroService;
 use App\Services\UserService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use ZipArchive;
 
 class CongressoNacionalController extends Controller
 {
@@ -1071,6 +1074,121 @@ class CongressoNacionalController extends Controller
     }
 
     /**
+     * Exporta todos os arquivos da reunião (credenciais e documentos recebidos) em um ZIP para download.
+     * Nomenclatura: credencial_{regiao}_{sigla_unidade}_{nome_delegado}.ext e doc_{regiao}_{sigla_unidade}_{titulo}.ext
+     * (sem acentuação, snake_case).
+     */
+    public function exportArquivosReuniaoZip(): BinaryFileResponse|RedirectResponse
+    {
+        try {
+            $reuniao = CongressoReuniao::aberta()->first();
+            $reuniaoId = $reuniao?->id;
+
+            $queryDelegados = DelegadoCongressoNacional::with(['federacao.regiao', 'sinodal.regiao'])
+                ->whereNotNull('path_credencial');
+            $queryDocumentos = DocumentoRecebido::with(['sinodal.regiao']);
+
+            if ($reuniaoId) {
+                $queryDelegados->where('reuniao_id', $reuniaoId);
+                $queryDocumentos->where('reuniao_id', $reuniaoId);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegados = $queryDelegados->get();
+            $documentos = $queryDocumentos->get();
+
+            $zipPath = storage_path('app/temp/arquivos-reuniao-' . now()->format('Y-m-d-His') . '.zip');
+            $dir = dirname($zipPath);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $zip = new ZipArchive();
+            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                return redirect()->back()->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Não foi possível criar o arquivo ZIP.']
+                ]);
+            }
+
+            $nomesUsados = [];
+
+            foreach ($delegados as $delegado) {
+                $rawPath = $delegado->getRawOriginal('path_credencial');
+                if (!$rawPath || !Storage::exists($rawPath)) {
+                    continue;
+                }
+                $regiao = $delegado->federacao?->regiao?->nome ?? $delegado->sinodal?->regiao?->nome ?? 'sem_regiao';
+                $siglaUnidade = $delegado->federacao?->sigla ?? $delegado->sinodal?->sigla ?? 'sem_sigla';
+                $nomeDelegado = $delegado->nome ?? 'sem_nome';
+                $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+                $base = 'credencial_' . $this->slugParaArquivo($regiao) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($nomeDelegado);
+                $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
+                $zip->addFile(Storage::path($rawPath), $nomeArquivo);
+            }
+
+            foreach ($documentos as $documento) {
+                $rawPath = $documento->getRawOriginal('path');
+                if (!$rawPath || !Storage::exists($rawPath)) {
+                    continue;
+                }
+                $regiao = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
+                $siglaUnidade = $documento->sinodal?->sigla ?? 'sem_sigla';
+                $titulo = $documento->titulo ?? 'sem_titulo';
+                $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+                $base = 'doc_' . $this->slugParaArquivo($regiao) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($titulo);
+                $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
+                $zip->addFile(Storage::path($rawPath), $nomeArquivo);
+            }
+
+            $zip->close();
+
+            $nomeDownload = 'arquivos-reuniao-' . ($reuniao?->nome ? Str::slug($reuniao->nome, '-') : now()->format('Y-m-d')) . '.zip';
+
+            return response()->download($zipPath, $nomeDownload, [
+                'Content-Type' => 'application/zip',
+            ])->deleteFileAfterSend(true);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => ['status' => false, 'texto' => $th->getMessage() ?? 'Erro ao exportar arquivos.']
+            ]);
+        }
+    }
+
+    /**
+     * Converte texto para uso em nome de arquivo: sem acentuação, snake_case.
+     */
+    private function slugParaArquivo(?string $texto): string
+    {
+        if ($texto === null || trim($texto) === '') {
+            return 'sem_nome';
+        }
+        return Str::slug($texto, '_');
+    }
+
+    /**
+     * Garante nome único dentro do ZIP (evita sobrescrever).
+     */
+    private function nomeUnicoNoZip(string $nomeArquivo, array &$nomesUsados): string
+    {
+        $nome = $nomeArquivo;
+        $cont = 0;
+        while (isset($nomesUsados[$nome])) {
+            $cont++;
+            $info = pathinfo($nomeArquivo);
+            $nome = ($info['filename'] ?? $nomeArquivo) . '_' . $cont . (isset($info['extension']) ? '.' . $info['extension'] : '');
+        }
+        $nomesUsados[$nome] = true;
+        return $nome;
+    }
+
+    /**
      * Sincroniza os inscritos do Congresso Nacional com a API externa
      */
     public function sincronizarInscritos(): RedirectResponse
@@ -1544,4 +1662,6 @@ class CongressoNacionalController extends Controller
             ]);
         }
     }
+
+    
 }

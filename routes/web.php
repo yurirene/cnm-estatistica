@@ -748,6 +748,8 @@ Route::group(
                 ->name('cn.executiva.sincronizar-documentos-instancias');
             Route::get('congresso-nacional/executiva/exportar-documentos-instancias-csv', [CongressoNacionalController::class, 'exportDocumentosInstanciasCsv'])
                 ->name('cn.executiva.exportar-documentos-instancias-csv');
+            Route::get('congresso-nacional/executiva/exportar-arquivos-reuniao-zip', [CongressoNacionalController::class, 'exportArquivosReuniaoZip'])
+                ->name('cn.executiva.exportar-arquivos-reuniao-zip');
             Route::put('congresso-nacional/executiva/documento-instancia/{documento_instancia}', [CongressoNacionalController::class, 'updateDocumentoInstancia'])
                 ->name('cn.executiva.documento-instancia.update');
         });

@@ -108,7 +108,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.edit',
                     'dashboard.cn.federacao.delegado.store',
                     'dashboard.cn.federacao.delegado.update',
-                    'dashboard.cn.federacao.delegado.delete'
+                    'dashboard.cn.federacao.delegado.delete',
+                    'dashboard.cn.executiva.exportar-arquivos-reuniao-zip'
                 ]
             ],
             'local' => [

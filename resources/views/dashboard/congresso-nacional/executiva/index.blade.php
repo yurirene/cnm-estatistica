@@ -6,15 +6,8 @@
     'titulo' => 'Congresso Nacional - Gerenciamento de Delegados'
 ])
 
-@if(session('mensagem'))
-    <div class="alert alert-{{ session('mensagem')['status'] ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
-        {{ session('mensagem')['texto'] }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
-    </div>
-@endif
-
 <div class="container-fluid mt--7">
-    <div class="row mb-3">
+    <div class="row mb-3 mt-5">
         <div class="col-12">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div class="d-flex flex-wrap align-items-center gap-2">
@@ -41,6 +34,9 @@
                     </a>
                     <a href="{{ route('dashboard.cn.executiva.exportar-delegados-csv') }}" class="btn btn-outline-primary">
                         <i class="fas fa-file-csv"></i> Exportar CSV
+                    </a>
+                    <a href="{{ route('dashboard.cn.executiva.exportar-arquivos-reuniao-zip') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-zip"></i> Exportar ZIP
                     </a>
                 </div>
             </div>
@@ -129,6 +125,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            @if(session('mensagem'))
+                <div class="alert alert-{{ session('mensagem')['status'] ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
+                    {{ session('mensagem')['texto'] }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                </div>
+            @endif
         </div>
     </div>
     <div class="row mt-5">
