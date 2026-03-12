@@ -109,7 +109,6 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.store',
                     'dashboard.cn.federacao.delegado.update',
                     'dashboard.cn.federacao.delegado.delete',
-                    'dashboard.cn.executiva.exportar-arquivos-reuniao-zip'
                 ]
             ],
             'local' => [
@@ -156,7 +155,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.executiva.delegado.exportar-relatorio-estatistico',
                     'dashboard.cn.executiva.sincronizar-documentos-instancias',
                     'dashboard.cn.executiva.documento-instancia.update',
-                    'dashboard.cn.executiva.exportar-documentos-instancias-csv'
+                    'dashboard.cn.executiva.exportar-documentos-instancias-csv',
+                    'dashboard.cn.executiva.exportar-arquivos-reuniao-zip'
                 ]
             ],
             'secreatria_produtos' => [
