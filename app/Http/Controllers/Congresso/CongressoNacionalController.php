@@ -1099,11 +1099,12 @@ class CongressoNacionalController extends Controller
             $delegados = $queryDelegados->get();
             $documentos = $queryDocumentos->get();
 
-            $zipPath = storage_path('app/temp/arquivos-reuniao-' . now()->format('Y-m-d-His') . '.zip');
-            $dir = dirname($zipPath);
+            // Nome fixo no servidor: sempre sobrescreve, evita acúmulo de ZIPs em caso de erro ou múltiplas exportações
+            $dir = storage_path('app/temp');
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
+            $zipPath = $dir . '/arquivos-reuniao-export.zip';
 
             $zip = new ZipArchive();
             if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
