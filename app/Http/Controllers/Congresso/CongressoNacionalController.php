@@ -2,26 +2,38 @@
 
 namespace App\Http\Controllers\Congresso;
 
+use App\Helpers\FormHelper;
 use App\Http\Controllers\Controller;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\CongressoNacional\DelegadoCongressoNacional;
 use App\Models\CongressoNacional\DocumentoRecebido;
+use App\Models\CongressoNacionalDocumentosInstancias;
 use App\Models\CongressoReuniao;
 use App\Models\Federacao;
+use App\Models\Regiao;
+use App\Models\FormularioFederacao;
+use App\Models\FormularioSinodal;
 use App\Models\Sinodal;
 use App\Rules\Cpf;
 use App\Services\AvisoService;
 use App\Services\DatatableAjaxService;
+use App\Services\Estatistica\EstatisticaService;
+use App\Services\Instancias\DiretoriaService;
 use App\Services\LogErroService;
 use App\Services\UserService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use ZipArchive;
 
 class CongressoNacionalController extends Controller
 {
@@ -681,30 +693,43 @@ class CongressoNacionalController extends Controller
                 $queryDocumentos->whereNull('reuniao_id');
             }
 
-            $orderPrioridade = "CASE WHEN credencial = 0 AND pago = 1 THEN 0 WHEN credencial = 1 AND pago = 0 THEN 1 ELSE 2 END ASC";
+            $orderPrioridade = "CASE WHEN credencial = 0 AND pago = 1 THEN 0 WHEN credencial = 1 AND pago = 0 THEN 1 ELSE 2 END ASC, created_at desc";
 
             $delegadosFederacao = $queryDelegados
                 ->whereNotNull('federacao_id')
                 ->orderByRaw($orderPrioridade)
-                ->orderBy('credencial', 'asc')
                 ->get();
 
             $delegadosSinodal = $querySinodal
                 ->orderByRaw($orderPrioridade)
-                ->orderBy('credencial', 'asc')
                 ->get();
 
             $documentos = $queryDocumentos
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            $totalizador = $this->getTotalizadorQuorum($reuniao?->id);
+            $reuniaoId = $reuniao?->id;
+            $documentosInstancias = CongressoNacionalDocumentosInstancias::with(['federacao', 'sinodal'])
+                ->where('reuniao_id', $reuniaoId)
+                ->orderByRaw('federacao_id IS NULL DESC')
+                ->orderBy('sinodal_id')
+                ->orderBy('federacao_id')
+                ->get();
+
+            $primeiroDelegadoPorInstancia = $this->getPrimeiroDelegadoPorInstancia($documentosInstancias, $reuniaoId);
+            foreach ($documentosInstancias as $doc) {
+                $chave = $doc->sinodal_id . '|' . ($doc->federacao_id ?? '');
+                $doc->setRelation('primeiro_delegado', $primeiroDelegadoPorInstancia[$chave] ?? null);
+            }
+
+            $totalizador = $this->getTotalizadorQuorum($reuniaoId);
 
             return view('dashboard.congresso-nacional.executiva.index', [
                 'reuniao' => $reuniao,
                 'delegadosFederacao' => $delegadosFederacao,
                 'delegadosSinodal' => $delegadosSinodal,
                 'documentos' => $documentos,
+                'documentosInstancias' => $documentosInstancias,
                 'totalizador' => $totalizador
             ]);
         } catch (\Throwable $th) {
@@ -720,6 +745,39 @@ class CongressoNacionalController extends Controller
                 ]
             ]);
         }
+    }
+
+    /**
+     * Retorna um mapa [ chave => primeiro delegado ] por instância (sinodal_id|federacao_id),
+     * onde o delegado é o primeiro registrado (menor id) para aquela instância na reunião.
+     */
+    private function getPrimeiroDelegadoPorInstancia($documentosInstancias, $reuniaoId): array
+    {
+        if ($documentosInstancias->isEmpty()) {
+            return [];
+        }
+
+        $query = DelegadoCongressoNacional::query()->orderBy('id');
+        if ($reuniaoId !== null) {
+            $query->where('reuniao_id', $reuniaoId);
+        } else {
+            $query->whereNull('reuniao_id');
+        }
+
+        $sinodalIds = $documentosInstancias->pluck('sinodal_id')->unique()->filter()->values();
+        $query->whereIn('sinodal_id', $sinodalIds);
+
+        $delegados = $query->get();
+
+        $map = [];
+        foreach ($delegados as $d) {
+            $chave = $d->sinodal_id . '|' . ($d->federacao_id ?? '');
+            if (!isset($map[$chave])) {
+                $map[$chave] = $d;
+            }
+        }
+
+        return $map;
     }
 
     /**
@@ -744,7 +802,7 @@ class CongressoNacionalController extends Controller
         return response()->streamDownload(function () use ($delegados) {
             $out = fopen('php://output', 'w');
             fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM para Excel
-            fputcsv($out, ['Nome', 'CPF', 'Federação', 'Sinodal', 'Credencial', 'Pago'], ';');
+            fputcsv($out, ['Nome', 'CPF', 'Federação', 'Sinodal', 'Credencial', 'Pago', 'Comissoes', 'Regiao', 'Atualizado em'], ';');
             foreach ($delegados as $d) {
                 fputcsv($out, [
                     $d->nome,
@@ -753,6 +811,9 @@ class CongressoNacionalController extends Controller
                     $d->sinodal->nome ?? '-',
                     $d->credencial ? 'Sim' : 'Não',
                     $d->pago ? 'Sim' : 'Não',
+                    $d->comissoes ? implode(', ', $d->comissoes) : '-',
+                    $d->sinodal->regiao->nome ?? '-',
+                    $d->updated_at->format('d/m/Y H:i:s'),
                 ], ';');
             }
             fclose($out);
@@ -827,6 +888,12 @@ class CongressoNacionalController extends Controller
             }
 
             $delegado->update($dados);
+            $delegado->refresh();
+
+            if ($delegado->credencial && $delegado->pago) {
+                $delegado->status = DelegadoCongressoNacional::STATUS_CONFIRMADA;
+                $delegado->save();
+            }
 
             return response()->json([
                 'status' => true,
@@ -871,6 +938,331 @@ class CongressoNacionalController extends Controller
     }
 
     /**
+     * Sincroniza as instâncias (sinodais e federações) a partir dos delegados da reunião aberta
+     * e cadastra/atualiza em congresso_nacional_documentos_instancias (unique: reuniao_id, sinodal_id, federacao_id).
+     */
+    public function sincronizarDocumentosInstancias(): RedirectResponse
+    {
+        try {
+            $reuniao = CongressoReuniao::aberta()->first();
+            $reuniaoId = $reuniao?->id;
+
+            $query = DelegadoCongressoNacional::select('sinodal_id', 'federacao_id')
+                ->whereNotNull('sinodal_id');
+
+            if ($reuniaoId) {
+                $query->where('reuniao_id', $reuniaoId);
+            } else {
+                $query->whereNull('reuniao_id');
+            }
+
+            $pares = $query->distinct()->get();
+            $inseridos = 0;
+
+            foreach ($pares as $par) {
+                CongressoNacionalDocumentosInstancias::updateOrCreate(
+                    [
+                        'reuniao_id' => $reuniaoId,
+                        'sinodal_id' => $par->sinodal_id,
+                        'federacao_id' => $par->federacao_id,
+                    ],
+                    [
+                        'reuniao_id' => $reuniaoId,
+                        'sinodal_id' => $par->sinodal_id,
+                        'federacao_id' => $par->federacao_id,
+                    ]
+                );
+                $inseridos++;
+            }
+
+            return redirect()->route('dashboard.cn.executiva.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => "Sincronização concluída. {$inseridos} instância(s) atualizada(s)."
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->route('dashboard.cn.executiva.index')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage() ?? 'Erro ao sincronizar documentos das instâncias.'
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * Atualiza um campo (diretoria, estatistico, planejamento, status) de um registro de documento instância.
+     */
+    public function updateDocumentoInstancia(Request $request, CongressoNacionalDocumentosInstancias $documentoInstancia): JsonResponse
+    {
+        $request->validate([
+            'campo' => 'required|string|in:diretoria,estatistico,planejamento,status',
+            'valor' => 'required|boolean',
+        ]);
+
+        try {
+            $campo = $request->campo;
+            $documentoInstancia->update([$campo => $request->valor]);
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Campo atualizado com sucesso!'
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return response()->json([
+                'status' => false,
+                'mensagem' => $th->getMessage() ?? 'Erro ao atualizar.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Exporta a tabela de documentos das instâncias (reunião aberta) para CSV.
+     */
+    public function exportDocumentosInstanciasCsv(): StreamedResponse
+    {
+        $reuniao = CongressoReuniao::aberta()->first();
+        $reuniaoId = $reuniao?->id;
+
+        $query = CongressoNacionalDocumentosInstancias::with(['federacao', 'sinodal'])
+            ->where('reuniao_id', $reuniaoId)
+            ->orderByRaw('federacao_id IS NULL DESC')
+            ->orderBy('sinodal_id')
+            ->orderBy('federacao_id');
+
+        $itens = $query->get();
+
+        $filename = 'documentos-instancias-' . now()->format('Y-m-d-His') . '.csv';
+
+        return response()->streamDownload(function () use ($itens) {
+            $out = fopen('php://output', 'w');
+            fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM para Excel
+            fputcsv($out, ['Instância', 'Tipo', 'Sinodal', 'Diretoria', 'Estatístico', 'Planejamento', 'Status', 'Região', 'Contatos Credenciados', 'Atualizado em'], ';');
+            foreach ($itens as $doc) {
+                $nome = $doc->federacao_id
+                    ? ($doc->federacao->nome ?? '-')
+                    : ($doc->sinodal->nome ?? '-');
+                $tipo = $doc->federacao_id ? 'Federação' : 'Sinodal';
+                $sinodalNome = $doc->sinodal->nome ?? '-';
+                fputcsv($out, [
+                    $nome,
+                    $tipo,
+                    $sinodalNome,
+                    $doc->diretoria ? 'Sim' : 'Não',
+                    $doc->estatistico ? 'Sim' : 'Não',
+                    $doc->planejamento ? 'Sim' : 'Não',
+                    $doc->status ? 'Sim' : 'Não',
+                    $doc->sinodal->regiao->nome ?? '-',
+                    $doc->telefones_credenciados,
+                    $doc->updated_at->format('d/m/Y H:i:s'),
+                ], ';');
+            }
+            fclose($out);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * Página com links para download do ZIP de arquivos da reunião, divididos por região.
+     */
+    public function indexExportarArquivosReuniao(): View|RedirectResponse
+    {
+        try {
+            $reuniao = CongressoReuniao::aberta()->first();
+            $reuniaoId = $reuniao?->id;
+
+            $queryDelegados = DelegadoCongressoNacional::with(['federacao', 'sinodal'])
+                ->whereNotNull('path_credencial');
+            $queryDocumentos = DocumentoRecebido::with('sinodal');
+
+            if ($reuniaoId) {
+                $queryDelegados->where('reuniao_id', $reuniaoId);
+                $queryDocumentos->where('reuniao_id', $reuniaoId);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegados = $queryDelegados->get();
+            $documentos = $queryDocumentos->get();
+
+            $regiaoIds = collect();
+            foreach ($delegados as $d) {
+                $rid = $d->federacao?->regiao_id ?? $d->sinodal?->regiao_id;
+                if ($rid) {
+                    $regiaoIds->push($rid);
+                }
+            }
+            foreach ($documentos as $doc) {
+                if ($doc->sinodal?->regiao_id) {
+                    $regiaoIds->push($doc->sinodal->regiao_id);
+                }
+            }
+            $regiaoIds = $regiaoIds->unique()->filter()->values();
+            $regioes = Regiao::whereIn('id', $regiaoIds)->orderBy('nome')->get();
+
+            return view('dashboard.congresso-nacional.executiva.exportar-arquivos-reuniao', [
+                'reuniao' => $reuniao,
+                'regioes' => $regioes,
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => ['status' => false, 'texto' => $th->getMessage() ?? 'Erro ao carregar página.']
+            ]);
+        }
+    }
+
+    /**
+     * Exporta os arquivos da reunião de uma região em ZIP (credenciais e documentos recebidos).
+     * Nomenclatura: credencial_{regiao}_{sigla_unidade}_{nome_delegado}.ext e doc_{regiao}_{sigla_unidade}_{titulo}.ext
+     * (sem acentuação, snake_case).
+     */
+    public function exportArquivosReuniaoZip(Regiao $regiao): BinaryFileResponse|RedirectResponse
+    {
+        try {
+            $reuniao = CongressoReuniao::aberta()->first();
+            $reuniaoId = $reuniao?->id;
+
+            $queryDelegados = DelegadoCongressoNacional::with(['federacao.regiao', 'sinodal.regiao'])
+                ->whereNotNull('path_credencial')
+                ->where(function ($q) use ($regiao) {
+                    $q->whereHas('federacao', fn ($f) => $f->where('regiao_id', $regiao->id))
+                        ->orWhereHas('sinodal', fn ($s) => $s->where('regiao_id', $regiao->id));
+                });
+            $queryDocumentos = DocumentoRecebido::with(['sinodal.regiao'])
+                ->whereHas('sinodal', fn ($s) => $s->where('regiao_id', $regiao->id));
+
+            if ($reuniaoId) {
+                $queryDelegados->where('reuniao_id', $reuniaoId);
+                $queryDocumentos->where('reuniao_id', $reuniaoId);
+            } else {
+                $queryDelegados->whereNull('reuniao_id');
+                $queryDocumentos->whereNull('reuniao_id');
+            }
+
+            $delegados = $queryDelegados->get();
+            $documentos = $queryDocumentos->get();
+
+            $dir = storage_path('app/temp');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $zipPath = $dir . '/arquivos-reuniao-export-' . $regiao->id . '.zip';
+
+            $zip = new ZipArchive();
+            if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                return redirect()->back()->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Não foi possível criar o arquivo ZIP.']
+                ]);
+            }
+
+            $nomesUsados = [];
+            $totalArquivos = 0;
+
+            foreach ($delegados as $delegado) {
+                $rawPath = $delegado->getRawOriginal('path_credencial');
+                if (!$rawPath || !Storage::exists($rawPath)) {
+                    continue;
+                }
+                $regiaoNome = $delegado->federacao?->regiao?->nome ?? $delegado->sinodal?->regiao?->nome ?? 'sem_regiao';
+                $siglaUnidade = $delegado->federacao?->sigla ?? $delegado->sinodal?->sigla ?? 'sem_sigla';
+                $nomeDelegado = $delegado->nome ?? 'sem_nome';
+                $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+                $base = 'credencial_' . $this->slugParaArquivo($regiaoNome) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($nomeDelegado);
+                $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
+                $zip->addFile(Storage::path($rawPath), $nomeArquivo);
+                $zip->setCompressionName($nomeArquivo, ZipArchive::CM_DEFLATE, 9);
+                $totalArquivos++;
+            }
+
+            foreach ($documentos as $documento) {
+                $rawPath = $documento->getRawOriginal('path');
+                if (!$rawPath || !Storage::exists($rawPath)) {
+                    continue;
+                }
+                $regiaoNome = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
+                $siglaUnidade = $documento->sinodal?->sigla ?? 'sem_sigla';
+                $titulo = $documento->titulo ?? 'sem_titulo';
+                $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+                $base = 'doc_' . $this->slugParaArquivo($regiaoNome) . '_' . $this->slugParaArquivo($siglaUnidade) . '_' . $this->slugParaArquivo($titulo);
+                $nomeArquivo = $this->nomeUnicoNoZip($base . '.' . $ext, $nomesUsados);
+                $zip->addFile(Storage::path($rawPath), $nomeArquivo);
+                $zip->setCompressionName($nomeArquivo, ZipArchive::CM_DEFLATE, 9);
+                $totalArquivos++;
+            }
+
+            $zip->close();
+
+            if ($totalArquivos === 0) {
+                @unlink($zipPath);
+                return redirect()->route('dashboard.cn.executiva.exportar-arquivos-reuniao')->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Nenhum arquivo encontrado para a região ' . $regiao->nome . '.']
+                ]);
+            }
+
+            $slugRegiao = Str::slug($regiao->nome, '-');
+            $nomeDownload = 'arquivos-reuniao-' . $slugRegiao . '-' . ($reuniao?->nome ? Str::slug($reuniao->nome, '-') : now()->format('Y-m-d')) . '.zip';
+
+            return response()->download($zipPath, $nomeDownload, [
+                'Content-Type' => 'application/zip',
+            ])->deleteFileAfterSend(true);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => ['status' => false, 'texto' => $th->getMessage() ?? 'Erro ao exportar arquivos.']
+            ]);
+        }
+    }
+
+    /**
+     * Converte texto para uso em nome de arquivo: sem acentuação, snake_case.
+     */
+    private function slugParaArquivo(?string $texto): string
+    {
+        if ($texto === null || trim($texto) === '') {
+            return 'sem_nome';
+        }
+        return Str::slug($texto, '_');
+    }
+
+    /**
+     * Garante nome único dentro do ZIP (evita sobrescrever).
+     */
+    private function nomeUnicoNoZip(string $nomeArquivo, array &$nomesUsados): string
+    {
+        $nome = $nomeArquivo;
+        $cont = 0;
+        while (isset($nomesUsados[$nome])) {
+            $cont++;
+            $info = pathinfo($nomeArquivo);
+            $nome = ($info['filename'] ?? $nomeArquivo) . '_' . $cont . (isset($info['extension']) ? '.' . $info['extension'] : '');
+        }
+        $nomesUsados[$nome] = true;
+        return $nome;
+    }
+
+    /**
      * Sincroniza os inscritos do Congresso Nacional com a API externa
      */
     public function sincronizarInscritos(): RedirectResponse
@@ -911,9 +1303,17 @@ class CongressoNacionalController extends Controller
                 if (empty($delegado)) {
                     continue;
                 }
+                
+                if ($delegado->credencial && $delegado->pago && $delegado->status != DelegadoCongressoNacional::STATUS_CONFIRMADA) {
+                    $delegado->status = DelegadoCongressoNacional::STATUS_CONFIRMADA;
+                    $delegado->save();
+                    $atualizados++;
+                    continue;
+                }
 
                 // Verificar se o pagamento está confirmado
                 $paymentStatus = $inscrito['payment_status'] ?? '';
+
                 if (!in_array($paymentStatus, DelegadoCongressoNacional::STATUS_PAGAMENTO_CONFIRMADO)) {
                     continue;
                 }
@@ -1087,4 +1487,255 @@ class CongressoNacionalController extends Controller
             'atingiu_quorum_federacoes' => $federacoesComDelegado >= $quorumFederacoes
         ];
     }
+
+    /**
+     * Exclui um documento
+     */
+    public function deleteDocumento(string $documento): JsonResponse
+    {
+        try {
+            $documento = DocumentoRecebido::findOrFail($documento);
+            try {
+                Storage::delete($documento->getRawOriginal('path'));
+            } catch (\Throwable $th) {
+                LogErroService::registrar([
+                    'message' => $th->getMessage(),
+                    'line' => $th->getLine(),
+                    'file' => $th->getFile()
+                ]);
+            }
+            $documento->delete();
+
+            return response()->json([
+                'status' => true,
+                'mensagem' => 'Documento excluído com sucesso!'
+            ]);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return response()->json([
+                'status' => false,
+                'mensagem' => $th->getMessage() ?? 'Erro ao excluir documento!'
+            ], 500);
+        }
+    }
+
+    /**
+     * Exporta a diretoria (sinodal ou federação) em PDF conforme o tipo do usuário logado,
+     * usando o template resources/templates/diretoria.html.
+     */
+    public function exportDiretoria(DelegadoCongressoNacional $delegado): Response|RedirectResponse
+    {
+        try {
+            $tipo = $delegado->federacao_id ? DiretoriaService::TIPO_DIRETORIA_FEDERACAO : DiretoriaService::TIPO_DIRETORIA_SINODAL;
+            $instancia = $delegado->federacao ?? $delegado->sinodal;
+            $instanciaId = $delegado->federacao_id ?? $delegado->sinodal_id;
+            $diretoria = DiretoriaService::getDiretoria($tipo, $instanciaId);
+            if (!$diretoria) {
+                return redirect()->back()->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Diretoria não encontrada para esta instância.']
+                ]);
+            }
+
+            $dados = DiretoriaService::getDiretoriaTabela($instanciaId, $tipo);
+            $cargos = $dados['cargos'] ?? [];
+
+            $labelSecretarioCausas = $tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL
+                ? 'Secretário Sinodal'
+                : 'Secretário Presbiterial';
+
+            $replacements = [
+                '{numero_oficio}' => '001',
+                '{ano}' => now()->format('Y'),
+                '{nome_instancia}' => $instancia->nome ?? '',
+                '{nome_presidente}' => $cargos['Presidente']['nome'] ?? '',
+                '{tel_presidente}' => $cargos['Presidente']['contato'] ?? '',
+                '{nome_vice}' => $cargos['Vice-Presidente']['nome'] ?? '',
+                '{tel_vice}' => $cargos['Vice-Presidente']['contato'] ?? '',
+                '{nome_secretario_executivo}' => $cargos['Secretário-Executivo']['nome'] ?? '',
+                '{tel_secretario_executivo}' => $cargos['Secretário-Executivo']['contato'] ?? '',
+                '{nome_primeiro_secretario}' => $cargos['Primeiro(a) Secretário(a)']['nome'] ?? '',
+                '{tel_primeiro_secretario}' => $cargos['Primeiro(a) Secretário(a)']['contato'] ?? '',
+                '{nome_segundo_secretario}' => $cargos['Segundo(a) Secretário(a)']['nome'] ?? '',
+                '{tel_segundo_secretario}' => $cargos['Segundo(a) Secretário(a)']['contato'] ?? '',
+                '{nome_tesoureiro}' => $cargos['Tesoureiro(a)']['nome'] ?? '',
+                '{tel_tesoureiro}' => $cargos['Tesoureiro(a)']['contato'] ?? '',
+                '{nome_secretario_causas}' => $cargos[$labelSecretarioCausas]['nome'] ?? '',
+                '{tel_secretario_causas}' => $cargos[$labelSecretarioCausas]['contato'] ?? '',
+                '{data_atualizacao}' => $dados['atualizacao'] ?? now()->format('d/m/Y'),
+            ];
+
+            $estado = optional($instancia->estado ?? null)->nome
+                ?? optional($instancia->regiao ?? null)->nome
+                ?? '';
+            $replacements['{cidade}'] = '';
+            $replacements['{estado}'] = $estado;
+
+            $templatePath = resource_path('templates/diretoria.html');
+            if (!is_readable($templatePath)) {
+                return redirect()->back()->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Template de diretoria não encontrado.']
+                ]);
+            }
+
+            $html = file_get_contents($templatePath);
+            $html = str_replace(array_keys($replacements), array_values($replacements), $html);
+
+            $pdf = Pdf::loadHTML($html);
+            $pdf->setPaper('A4', 'portrait');
+            $nomeArquivo = 'diretoria-' . ($tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL ? 'sinodal' : 'federacao')
+                . '-' . now()->format('Y-m-d-His') . '.pdf';
+
+            if (request()->boolean('exibir')) {
+                return $pdf->stream($nomeArquivo, ['Attachment' => false]);
+            }
+            return $pdf->download($nomeArquivo);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage() ?? 'Erro ao exportar diretoria.'
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * Exporta o relatório estatístico do ano corrente em PDF usando o template
+     * resources/templates/estatistico.html. Sinodal ou federação conforme o delegado.
+     * Lança erro se não existir formulário estatístico do ano corrente.
+     */
+    public function exportRelatorioEstatistico(DelegadoCongressoNacional $delegado): Response|RedirectResponse
+    {
+        try {
+            $tipo = $delegado->federacao_id ? DiretoriaService::TIPO_DIRETORIA_FEDERACAO : DiretoriaService::TIPO_DIRETORIA_SINODAL;
+            $instancia = $delegado->federacao ?? $delegado->sinodal;
+            $instanciaId = $delegado->federacao_id ?? $delegado->sinodal_id;
+
+            $anoCorrente = EstatisticaService::getAnoReferencia();
+
+            if ($tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL) {
+                $formulario = FormularioSinodal::where('sinodal_id', $instanciaId)
+                    ->where('ano_referencia', $anoCorrente)
+                    ->first();
+            } else {
+                $formulario = FormularioFederacao::where('federacao_id', $instanciaId)
+                    ->where('ano_referencia', $anoCorrente)
+                    ->first();
+            }
+
+            if (!$formulario) {
+                return redirect()->back()->with([
+                    'mensagem' => [
+                        'status' => false,
+                        'texto' => "Não existe formulário estatístico para o ano corrente ({$anoCorrente}). Preencha o formulário antes de exportar."
+                    ]
+                ]);
+            }
+
+            $formulario->load($tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL ? 'sinodal.regiao' : 'federacao.estado');
+            $perfil = $formulario->perfil ?? [];
+            $escolaridade = $formulario->escolaridade ?? [];
+            $estadoCivil = $formulario->estado_civil ?? [];
+            $programacoes = $formulario->programacoes ?? [];
+            $estrutura = $formulario->estrutura ?? [];
+
+            $dadosDiretoria = DiretoriaService::getDiretoriaTabela((string) $instanciaId, $tipo);
+            $nomePresidente = $dadosDiretoria['cargos']['Presidente']['nome'] ?? '';
+
+            $estado = $tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL
+                ? (optional($instancia->regiao)->nome ?? '')
+                : (optional($instancia->estado)->nome ?? '');
+
+            $umpsOrg = $estrutura['ump_organizada'] ?? '0';
+            $umpsNaoOrg = $estrutura['ump_nao_organizada'] ?? '0';
+            $fedOrg = $tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL
+                ? ($estrutura['federacao_organizada'] ?? '0')
+                : '1';
+            $fedNaoOrg = $tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL
+                ? ($estrutura['federacao_nao_organizada'] ?? '0')
+                : '0';
+
+            $replacements = [
+                '{ano_referencia}' => (string) $formulario->ano_referencia,
+                '{numero_documento}' => '001',
+                '{ano}' => now()->format('Y'),
+                '{ativos}' => (string) ($perfil['ativos'] ?? '0'),
+                '{cooperadores}' => (string) ($perfil['cooperadores'] ?? '0'),
+                '{menores_19}' => (string) ($perfil['menor19'] ?? '0'),
+                '{entre_19_23}' => (string) ($perfil['de19a23'] ?? '0'),
+                '{entre_24_29}' => (string) ($perfil['de24a29'] ?? '0'),
+                '{entre_30_35}' => (string) ($perfil['de30a35'] ?? '0'),
+                '{homens}' => (string) ($perfil['homens'] ?? '0'),
+                '{mulheres}' => (string) ($perfil['mulheres'] ?? '0'),
+                '{fundamental}' => (string) ($escolaridade['fundamental'] ?? '0'),
+                '{medio}' => (string) ($escolaridade['medio'] ?? '0'),
+                '{tecnico}' => (string) ($escolaridade['tecnico'] ?? '0'),
+                '{superior}' => (string) ($escolaridade['superior'] ?? '0'),
+                '{pos}' => (string) ($escolaridade['pos'] ?? '0'),
+                '{solteiros}' => (string) ($estadoCivil['solteiros'] ?? '0'),
+                '{casados}' => (string) ($estadoCivil['casados'] ?? '0'),
+                '{divorciados}' => (string) ($estadoCivil['divorciados'] ?? '0'),
+                '{viuvos}' => (string) ($estadoCivil['viuvos'] ?? '0'),
+                '{com_filhos}' => (string) ($estadoCivil['filhos'] ?? '0'),
+                '{social}' => (string) ($programacoes['social'] ?? '0'),
+                '{evangelistico}' => (string) ($programacoes['evangelistico'] ?? '0'),
+                '{espiritual}' => (string) ($programacoes['espiritual'] ?? '0'),
+                '{recreativo}' => (string) ($programacoes['recreativo'] ?? '0'),
+                '{oracao}' => (string) ($programacoes['oracao'] ?? '0'),
+                '{umps_org}' => (string) $umpsOrg,
+                '{umps_nao_org}' => (string) $umpsNaoOrg,
+                '{fed_org}' => (string) $fedOrg,
+                '{fed_nao_org}' => (string) $fedNaoOrg,
+                '{nome_presidente}' => $nomePresidente,
+                '{cidade}' => '',
+                '{estado}' => $estado,
+                '{data_emissao}' => $formulario->updated_at->format('d/m/Y'),
+                'status_entrega' => FormHelper::statusFormatado($formulario->status, 'Entregue', 'Pendente'),
+                '{nome_instancia}' => $instancia->nome ?? '',
+            ];
+
+            $templatePath = resource_path('templates/estatistico.html');
+            if (!is_readable($templatePath)) {
+                return redirect()->back()->with([
+                    'mensagem' => ['status' => false, 'texto' => 'Template do relatório estatístico não encontrado.']
+                ]);
+            }
+
+            $html = file_get_contents($templatePath);
+            $html = str_replace(array_keys($replacements), array_values($replacements), $html);
+
+            $pdf = Pdf::loadHTML($html);
+            $pdf->setPaper('A4', 'portrait');
+            $nomeArquivo = 'relatorio-estatistico-' . ($tipo === DiretoriaService::TIPO_DIRETORIA_SINODAL ? 'sinodal' : 'federacao')
+                . '-' . $anoCorrente . '-' . now()->format('Y-m-d-His') . '.pdf';
+
+            if (request()->boolean('exibir')) {
+                return $pdf->stream($nomeArquivo, ['Attachment' => false]);
+            }
+            return $pdf->download($nomeArquivo);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage() ?? 'Erro ao exportar relatório estatístico.'
+                ]
+            ]);
+        }
+    }
+
+    
 }

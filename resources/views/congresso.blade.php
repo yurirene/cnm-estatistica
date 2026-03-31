@@ -449,19 +449,32 @@
             const sinodaisRegiao = sinodaisPorRegiao[regiaoNome] || [];
             let totalDelegados = 0;
             let totalFederacoes = 0;
+            let totalSinodaisPresentes = 0;
+            let totalFederacoesPresentes = 0;
 
             sinodaisRegiao.forEach(sinodal => {
-                totalDelegados += parseInt(sinodal.total_delegados_sinodal || 0);
-                totalFederacoes += sinodal.federacoes?.length || 0;
-                sinodal.federacoes?.forEach(fed => {
-                    totalDelegados += parseInt(fed.total_delegados || 0);
+                const delegadosSinodal = parseInt(sinodal.total_delegados_sinodal || 0);
+                totalDelegados += delegadosSinodal;
+                const federacoes = sinodal.federacoes || [];
+                totalFederacoes += federacoes.length;
+                let sinodalTemDelegado = delegadosSinodal > 0;
+                federacoes.forEach(fed => {
+                    const countFed = parseInt(fed.total_delegados || 0);
+                    totalDelegados += countFed;
+                    if (countFed > 0) {
+                        totalFederacoesPresentes++;
+                        sinodalTemDelegado = true;
+                    }
                 });
+                if (sinodalTemDelegado) totalSinodaisPresentes++;
             });
 
             return {
                 totalDelegados,
                 totalSinodais: sinodaisRegiao.length,
-                totalFederacoes
+                totalSinodaisPresentes,
+                totalFederacoes,
+                totalFederacoesPresentes
             };
         }
 
@@ -553,11 +566,11 @@
                                     </div>
                                     <div class="regiao-stat">
                                         <span>Sinodais:</span>
-                                        <span class="regiao-stat-value">${totais.totalSinodais}</span>
+                                        <span class="regiao-stat-value">${totais.totalSinodaisPresentes} / ${totais.totalSinodais}</span>
                                     </div>
                                     <div class="regiao-stat">
                                         <span>Federações:</span>
-                                        <span class="regiao-stat-value">${totais.totalFederacoes}</span>
+                                        <span class="regiao-stat-value">${totais.totalFederacoesPresentes} / ${totais.totalFederacoes}</span>
                                     </div>
                                 </div>
                             </div>

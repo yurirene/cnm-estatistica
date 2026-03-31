@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Relatório Estatístico</title>
+
+<style>
+    body {
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+        line-height: 1.6;
+        margin: 1cm 1cm 1cm 1cm;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 16pt;
+        margin-bottom: 5px;
+    }
+
+    .subtitulo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .oficio-numero {
+        text-align: right;
+        margin-bottom: 25px;
+    }
+
+    .assunto {
+        margin-bottom: 20px;
+    }
+
+    .conteudo {
+        text-align: justify;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        margin-top: 25px;
+        margin-bottom: 10px;
+        font-size: 12pt;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+    }
+
+    table, td {
+        border: 1px solid #000;
+    }
+
+    td {
+        padding: 6px 8px;
+    }
+
+    td:last-child {
+        text-align: right;
+        width: 80px;
+    }
+
+    .assinatura {
+        margin-top: 60px;
+        text-align: center;
+    }
+
+    .linha {
+        margin-top: 60px;
+        border-top: 1px solid #000;
+        width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 5px;
+    }
+
+    .rodape {
+        margin-top: 40px;
+        text-align: center;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>RELATÓRIO ESTATÍSTICO</h1>
+<div class="subtitulo">
+    Ano Base: {ano_referencia} - {status_entrega}
+</div>
+
+<div class="assunto">
+    <strong>Assunto:</strong> Relatório Estatístico Anual
+</div>
+
+<div class="conteudo">
+    Apresentamos o Relatório Estatístico da {nome_instancia} referente ao ano de 
+    <strong>{ano_referencia}</strong>, contendo as informações 
+    atualizadas.
+</div>
+
+<h3>1. Perfil dos Sócios</h3>
+<table>
+<tr><td>Ativos</td><td>{ativos}</td></tr>
+<tr><td>Cooperadores</td><td>{cooperadores}</td></tr>
+<tr><td>Menores de 19 anos</td><td>{menores_19}</td></tr>
+<tr><td>Entre 19 e 23 anos</td><td>{entre_19_23}</td></tr>
+<tr><td>Entre 24 e 29 anos</td><td>{entre_24_29}</td></tr>
+<tr><td>Entre 30 e 35 anos</td><td>{entre_30_35}</td></tr>
+<tr><td>Homens</td><td>{homens}</td></tr>
+<tr><td>Mulheres</td><td>{mulheres}</td></tr>
+</table>
+
+<h3>2. Escolaridade</h3>
+<table>
+<tr><td>Ensino Fundamental</td><td>{fundamental}</td></tr>
+<tr><td>Ensino Médio</td><td>{medio}</td></tr>
+<tr><td>Ensino Técnico</td><td>{tecnico}</td></tr>
+<tr><td>Ensino Superior</td><td>{superior}</td></tr>
+<tr><td>Pós-Graduação</td><td>{pos}</td></tr>
+</table>
+
+<h3>3. Estado Civil</h3>
+<table>
+<tr><td>Solteiros</td><td>{solteiros}</td></tr>
+<tr><td>Casados</td><td>{casados}</td></tr>
+<tr><td>Divorciados</td><td>{divorciados}</td></tr>
+<tr><td>Viúvos</td><td>{viuvos}</td></tr>
+<tr><td>Com filhos</td><td>{com_filhos}</td></tr>
+</table>
+
+<h3>4. Programações Realizadas</h3>
+<table>
+<tr><td>Social</td><td>{social}</td></tr>
+<tr><td>Evangelístico/Missional</td><td>{evangelistico}</td></tr>
+<tr><td>Espiritual</td><td>{espiritual}</td></tr>
+<tr><td>Recreativo</td><td>{recreativo}</td></tr>
+<tr><td>Oração e Vigílias</td><td>{oracao}</td></tr>
+</table>
+
+<h3>5. Estrutura Organizacional</h3>
+<table>
+<tr><td>UMPs Organizadas</td><td>{umps_org}</td></tr>
+<tr><td>UMPs não Organizadas</td><td>{umps_nao_org}</td></tr>
+<tr><td>Federações Organizadas</td><td>{fed_org}</td></tr>
+<tr><td>Federações não Organizadas</td><td>{fed_nao_org}</td></tr>
+</table>
+
+<div class="assinatura">
+    <div class="linha">
+        {nome_presidente}<br>
+        Presidente
+    </div>
+</div>
+
+<div class="rodape">
+    Atualizado em: {data_emissao}
+</div>
+
+</body>
+</html>

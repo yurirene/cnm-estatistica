@@ -7,16 +7,18 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="max-height: 500px; overflow-y: auto;">
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" id="documentos-recebidos-table">
                     <thead>
                         <tr>
                             <th>Título</th>
                             <th>Sinodal</th>
                             <th>Data de Envio</th>
                             <th>Status</th>
-                            <th>Ações</th>
+                            <th>Recebido</th>
+                            <th>#</th>
+                            <th>#</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +45,18 @@
                                         >
                                     </div>
                                 </td>
+                                <td>
+                                    <a href="/{{ $documento->path }}" target="_blank" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                        Visualizar
+                                    </a>
+                                </td>
+                                <td>
+                                    <button onclick="deleteDocumento('{{ $documento->id }}')" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        Excluir
+                                    </button>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -61,10 +75,11 @@
     $(document).ready(() => {
         const ROTA_DOC = "{{ route('dashboard.cn.executiva.documento.update', ':id') }}";
         const TOKEN_DOC = "{{ csrf_token() }}";
-
+        
         $('.check-status-documento').on('change', function() {
             const dados = $(this).data();
             const valor = ($(this).prop('checked'));
+
             $.ajax({
                 url: ROTA_DOC.replace(":id", dados.documentoId),
                 type: "PUT",
@@ -90,6 +105,37 @@
                 }
             });
         })
+        $('#documentos-recebidos-table').DataTable({
+            lengthMenu: [100, 200, 500, -1],
+            language: {
+                url: '/vendor/datatables/portugues.json',
+            }
+        });
     });
+
+    function deleteDocumento(id) {
+        const ROTA_DELETE_DOC = "{{ route('dashboard.cn.executiva.documento.delete', ':id') }}";
+
+        if (confirm('Tem certeza que deseja excluir este documento?')) {
+            $.ajax({
+                url: ROTA_DELETE_DOC.replace(":id", id),
+                type: "GET",
+                success: function(response) {
+                    iziToast.show({
+                        title: 'Sucesso!',
+                        message: response.mensagem,
+                        position: 'topRight',
+                    });
+                },
+                error: function(error) {
+                    iziToast.show({
+                        title: 'Erro!',
+                        message: error.responseJSON.mensagem,
+                        position: 'topRight',
+                    });
+                }
+            });
+        }
+        }
 </script>
 @endpush

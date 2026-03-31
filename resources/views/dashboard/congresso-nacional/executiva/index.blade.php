@@ -6,15 +6,8 @@
     'titulo' => 'Congresso Nacional - Gerenciamento de Delegados'
 ])
 
-@if(session('mensagem'))
-    <div class="alert alert-{{ session('mensagem')['status'] ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
-        {{ session('mensagem')['texto'] }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
-    </div>
-@endif
-
 <div class="container-fluid mt--7">
-    <div class="row mb-3">
+    <div class="row mb-3 mt-5">
         <div class="col-12">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div class="d-flex flex-wrap align-items-center gap-2">
@@ -41,6 +34,9 @@
                     </a>
                     <a href="{{ route('dashboard.cn.executiva.exportar-delegados-csv') }}" class="btn btn-outline-primary">
                         <i class="fas fa-file-csv"></i> Exportar CSV
+                    </a>
+                    <a href="{{ route('dashboard.cn.executiva.exportar-arquivos-reuniao') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-zip"></i> Exportar ZIP por região
                     </a>
                 </div>
             </div>
@@ -131,6 +127,16 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xl-12">
+            @if(session('mensagem'))
+                <div class="alert alert-{{ session('mensagem')['status'] ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
+                    {{ session('mensagem')['texto'] }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                </div>
+            @endif
+        </div>
+    </div>
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
@@ -141,9 +147,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="max-height: 700px; overflow-y: auto;">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="delegados-federacao-table">
                             <thead>
                                 <tr>
                                     <th>Pago</th>
@@ -233,9 +239,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="max-height: 500px; overflow-y: auto;">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="delegados-sinodal-table">
                             <thead>
                                 <tr>
                                     <th>Pago</th>
@@ -313,6 +319,11 @@
     <div class="row mt-5">
         <div class="col-md-12">
             @include('dashboard.congresso-nacional.executiva.documentos')
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            @include('dashboard.congresso-nacional.executiva.acompanhamento-documentos')
         </div>
     </div>
 </div>
@@ -406,6 +417,18 @@
                 }
             });
         })
+        $('#delegados-federacao-table').DataTable({
+            lengthMenu: [100, 200, 500, -1],
+            language: {
+                url: '/vendor/datatables/portugues.json',
+            }
+        });
+        $('#delegados-sinodal-table').DataTable({
+            lengthMenu: [100, 200, 500, -1],
+            language: {
+                url: '/vendor/datatables/portugues.json',
+            }
+        });
     })
 </script>
 @endpush

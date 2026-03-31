@@ -212,172 +212,192 @@ class FormularioFederacaoService
                     'evangelistica' => 0,
                     'espiritual' => 0,
                     'recreativo' => 0,
+                ],
+                "estrutura" => [
+                    "ump_organizada" => 0,
+                    "ump_nao_organizada" => 0,
+                    "nro_repasse" => 0,
+                    "nro_sem_repasse" => 0
                 ]
             ];
 
             foreach ($formularios as $formulario) {
-                    $totalizador['aci'] += (
-                        isset($formulario->aci['valor'])
-                        ? FormHelper::converterParaFloat($formulario->aci['valor'])
-                        : 0
-                    );
-                    $totalizador['perfil']['ativos'] += (
-                        isset($formulario->perfil['ativos'])
-                        ? intval($formulario->perfil['ativos'])
-                        : 0
-                    );
-                    $totalizador['perfil']['cooperadores'] += (
-                        isset($formulario->perfil['cooperadores'])
-                        ? intval($formulario->perfil['cooperadores'])
-                        : 0
-                    );
-                    $totalizador['perfil']['homens'] += (
-                        isset($formulario->perfil['homens'])
-                        ? intval($formulario->perfil['homens'])
-                        : 0
-                    );
-                    $totalizador['perfil']['mulheres'] += (
-                        isset($formulario->perfil['mulheres'])
-                        ? intval($formulario->perfil['mulheres'])
-                        : 0
-                    );
-                    $totalizador['perfil']['menor19'] += (
-                        isset($formulario->perfil['menor19'])
-                        ? intval($formulario->perfil['menor19'])
-                        : 0
-                    );
-                    $totalizador['perfil']['de19a23'] += (
-                        isset($formulario->perfil['de19a23'])
-                        ? intval($formulario->perfil['de19a23'])
-                        : 0
-                    );
-                    $totalizador['perfil']['de24a29'] += (
-                        isset($formulario->perfil['de24a29'])
-                        ? intval($formulario->perfil['de24a29'])
-                        : 0
-                    );
-                    $totalizador['perfil']['de30a35'] += (
-                        isset($formulario->perfil['de30a35'])
-                        ? intval($formulario->perfil['de30a35'])
-                        : 0
-                    );
-                    $totalizador['escolaridade']['fundamental'] += (
-                        isset($formulario->escolaridade['fundamental'])
-                        ? intval($formulario->escolaridade['fundamental'])
-                        : 0
-                    );
-                    $totalizador['escolaridade']['medio'] += (
-                        isset($formulario->escolaridade['medio'])
-                        ? intval($formulario->escolaridade['medio'])
-                        : 0
-                    );
-                    $totalizador['escolaridade']['tecnico'] += (
-                        isset($formulario->escolaridade['tecnico'])
-                        ? intval($formulario->escolaridade['tecnico'])
-                        : 0
-                    );
-                    $totalizador['escolaridade']['superior'] += (
-                        isset($formulario->escolaridade['superior'])
-                        ? intval($formulario->escolaridade['superior'])
-                        : 0
-                    );
-                    $totalizador['escolaridade']['pos'] += (
-                        isset($formulario->escolaridade['pos'])
-                        ? intval($formulario->escolaridade['pos'])
-                        : 0
-                    );
-                    $totalizador['estado_civil']['solteiros'] += (
-                        isset($formulario->estado_civil['solteiros'])
-                        ? intval($formulario->estado_civil['solteiros'])
-                        : 0
-                    );
-                    $totalizador['estado_civil']['casados'] += (
-                        isset($formulario->estado_civil['casados'])
-                        ? intval($formulario->estado_civil['casados'])
-                        : 0
-                    );
-                    $totalizador['estado_civil']['divorciados'] += (
-                        isset($formulario->estado_civil['divorciados'])
-                        ? intval($formulario->estado_civil['divorciados'])
-                        : 0
-                    );
-                    $totalizador['estado_civil']['viuvos'] += (
-                        isset($formulario->estado_civil['viuvos'])
-                        ? intval($formulario->estado_civil['viuvos'])
-                        : 0
-                    );
-                    $totalizador['estado_civil']['filhos'] += (
-                        isset($formulario->estado_civil['filhos'])
-                        ? intval($formulario->estado_civil['filhos'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['surdos'] += (
-                        isset($formulario->deficiencias['surdos'])
-                        ? intval($formulario->deficiencias['surdos'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['auditiva'] += (
-                        isset($formulario->deficiencias['auditiva'])
-                        ? intval($formulario->deficiencias['auditiva'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['cegos'] += (
-                        isset($formulario->deficiencias['cegos'])
-                        ? intval($formulario->deficiencias['cegos'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['baixa_visao'] += (
-                        isset($formulario->deficiencias['baixa_visao'])
-                        ? intval($formulario->deficiencias['baixa_visao'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['fisica_inferior'] += (
-                        isset($formulario->deficiencias['fisica_inferior'])
-                        ? intval($formulario->deficiencias['fisica_inferior'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['fisica_superior'] += (
-                        isset($formulario->deficiencias['fisica_superior'])
-                        ? intval($formulario->deficiencias['fisica_superior'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['neurologico'] += (
-                        isset($formulario->deficiencias['neurologico'])
-                        ? intval($formulario->deficiencias['neurologico'])
-                        : 0
-                    );
-                    $totalizador['deficiencias']['intelectual'] += (
-                        isset($formulario->deficiencias['intelectual'])
-                        ? intval($formulario->deficiencias['intelectual'])
-                        : 0
-                    );
+                $totalizador['estrutura']['nro_repasse'] += (
+                    isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'S'
+                    ? 1
+                    : 0
+                );
+                $totalizador['estrutura']['nro_sem_repasse'] += (
+                    isset($formulario->aci['repasse']) && $formulario->aci['repasse'] == 'N'
+                    ? 1
+                    : 0
+                );
+                $totalizador['aci'] += (
+                    isset($formulario->aci['valor'])
+                    ? FormHelper::converterParaFloat($formulario->aci['valor'])
+                    : 0
+                );
+                $totalizador['perfil']['ativos'] += (
+                    isset($formulario->perfil['ativos'])
+                    ? intval($formulario->perfil['ativos'])
+                    : 0
+                );
+                $totalizador['perfil']['cooperadores'] += (
+                    isset($formulario->perfil['cooperadores'])
+                    ? intval($formulario->perfil['cooperadores'])
+                    : 0
+                );
+                $totalizador['perfil']['homens'] += (
+                    isset($formulario->perfil['homens'])
+                    ? intval($formulario->perfil['homens'])
+                    : 0
+                );
+                $totalizador['perfil']['mulheres'] += (
+                    isset($formulario->perfil['mulheres'])
+                    ? intval($formulario->perfil['mulheres'])
+                    : 0
+                );
+                $totalizador['perfil']['menor19'] += (
+                    isset($formulario->perfil['menor19'])
+                    ? intval($formulario->perfil['menor19'])
+                    : 0
+                );
+                $totalizador['perfil']['de19a23'] += (
+                    isset($formulario->perfil['de19a23'])
+                    ? intval($formulario->perfil['de19a23'])
+                    : 0
+                );
+                $totalizador['perfil']['de24a29'] += (
+                    isset($formulario->perfil['de24a29'])
+                    ? intval($formulario->perfil['de24a29'])
+                    : 0
+                );
+                $totalizador['perfil']['de30a35'] += (
+                    isset($formulario->perfil['de30a35'])
+                    ? intval($formulario->perfil['de30a35'])
+                    : 0
+                );
+                $totalizador['escolaridade']['fundamental'] += (
+                    isset($formulario->escolaridade['fundamental'])
+                    ? intval($formulario->escolaridade['fundamental'])
+                    : 0
+                );
+                $totalizador['escolaridade']['medio'] += (
+                    isset($formulario->escolaridade['medio'])
+                    ? intval($formulario->escolaridade['medio'])
+                    : 0
+                );
+                $totalizador['escolaridade']['tecnico'] += (
+                    isset($formulario->escolaridade['tecnico'])
+                    ? intval($formulario->escolaridade['tecnico'])
+                    : 0
+                );
+                $totalizador['escolaridade']['superior'] += (
+                    isset($formulario->escolaridade['superior'])
+                    ? intval($formulario->escolaridade['superior'])
+                    : 0
+                );
+                $totalizador['escolaridade']['pos'] += (
+                    isset($formulario->escolaridade['pos'])
+                    ? intval($formulario->escolaridade['pos'])
+                    : 0
+                );
+                $totalizador['estado_civil']['solteiros'] += (
+                    isset($formulario->estado_civil['solteiros'])
+                    ? intval($formulario->estado_civil['solteiros'])
+                    : 0
+                );
+                $totalizador['estado_civil']['casados'] += (
+                    isset($formulario->estado_civil['casados'])
+                    ? intval($formulario->estado_civil['casados'])
+                    : 0
+                );
+                $totalizador['estado_civil']['divorciados'] += (
+                    isset($formulario->estado_civil['divorciados'])
+                    ? intval($formulario->estado_civil['divorciados'])
+                    : 0
+                );
+                $totalizador['estado_civil']['viuvos'] += (
+                    isset($formulario->estado_civil['viuvos'])
+                    ? intval($formulario->estado_civil['viuvos'])
+                    : 0
+                );
+                $totalizador['estado_civil']['filhos'] += (
+                    isset($formulario->estado_civil['filhos'])
+                    ? intval($formulario->estado_civil['filhos'])
+                    : 0
+                );
+                $totalizador['deficiencias']['surdos'] += (
+                    isset($formulario->deficiencias['surdos'])
+                    ? intval($formulario->deficiencias['surdos'])
+                    : 0
+                );
+                $totalizador['deficiencias']['auditiva'] += (
+                    isset($formulario->deficiencias['auditiva'])
+                    ? intval($formulario->deficiencias['auditiva'])
+                    : 0
+                );
+                $totalizador['deficiencias']['cegos'] += (
+                    isset($formulario->deficiencias['cegos'])
+                    ? intval($formulario->deficiencias['cegos'])
+                    : 0
+                );
+                $totalizador['deficiencias']['baixa_visao'] += (
+                    isset($formulario->deficiencias['baixa_visao'])
+                    ? intval($formulario->deficiencias['baixa_visao'])
+                    : 0
+                );
+                $totalizador['deficiencias']['fisica_inferior'] += (
+                    isset($formulario->deficiencias['fisica_inferior'])
+                    ? intval($formulario->deficiencias['fisica_inferior'])
+                    : 0
+                );
+                $totalizador['deficiencias']['fisica_superior'] += (
+                    isset($formulario->deficiencias['fisica_superior'])
+                    ? intval($formulario->deficiencias['fisica_superior'])
+                    : 0
+                );
+                $totalizador['deficiencias']['neurologico'] += (
+                    isset($formulario->deficiencias['neurologico'])
+                    ? intval($formulario->deficiencias['neurologico'])
+                    : 0
+                );
+                $totalizador['deficiencias']['intelectual'] += (
+                    isset($formulario->deficiencias['intelectual'])
+                    ? intval($formulario->deficiencias['intelectual'])
+                    : 0
+                );
 
-                    $totalizador['programacoes']['social'] += (
-                        isset($formulario->programacoes['social'])
-                        ? intval($formulario->programacoes['social'])
-                        : 0
-                    );
-                    $totalizador['programacoes']['oracao'] += (
-                        isset($formulario->programacoes['oracao'])
-                        ? intval($formulario->programacoes['oracao'])
-                        : 0
-                    );
-                    $totalizador['programacoes']['evangelistica'] += (
-                        isset($formulario->programacoes['evangelistica'])
-                        ? intval($formulario->programacoes['evangelistica'])
-                        : 0
-                    );
-                    $totalizador['programacoes']['espiritual'] += (
-                        isset($formulario->programacoes['espiritual'])
-                        ? intval($formulario->programacoes['espiritual'])
-                        : 0
-                    );
-                    $totalizador['programacoes']['recreativo'] += (
-                        isset($formulario->programacoes['recreativo'])
-                        ? intval($formulario->programacoes['recreativo'])
-                        : 0
-                    );
+                $totalizador['programacoes']['social'] += (
+                    isset($formulario->programacoes['social'])
+                    ? intval($formulario->programacoes['social'])
+                    : 0
+                );
+                $totalizador['programacoes']['oracao'] += (
+                    isset($formulario->programacoes['oracao'])
+                    ? intval($formulario->programacoes['oracao'])
+                    : 0
+                );
+                $totalizador['programacoes']['evangelistica'] += (
+                    isset($formulario->programacoes['evangelistica'])
+                    ? intval($formulario->programacoes['evangelistica'])
+                    : 0
+                );
+                $totalizador['programacoes']['espiritual'] += (
+                    isset($formulario->programacoes['espiritual'])
+                    ? intval($formulario->programacoes['espiritual'])
+                    : 0
+                );
+                $totalizador['programacoes']['recreativo'] += (
+                    isset($formulario->programacoes['recreativo'])
+                    ? intval($formulario->programacoes['recreativo'])
+                    : 0
+                );
             }
+
+            $totalizador['estrutura']['ump_organizada'] = Local::where('federacao_id', $id)->where('status', 1)->count();
+            $totalizador['estrutura']['ump_nao_organizada'] = Local::where('federacao_id', $id)->where('status', 0)->count();
+
             return $totalizador;
         } catch (\Throwable $th) {
 

@@ -735,8 +735,25 @@ Route::group(
                 ->name('cn.executiva.sincronizar-inscritos');
             Route::put('congresso-nacional/executiva/{delegado}', [CongressoNacionalController::class, 'updateStatusDelegado'])
                 ->name('cn.executiva.delegado.update');
-            Route::put('congresso-nacional/executiva/documento/{documento}', [CongressoNacionalController::class, 'updateStatusDocumento'])
+            Route::put('congresso-nacional/executiva/{documento}/documento', [CongressoNacionalController::class, 'updateStatusDocumento'])
                 ->name('cn.executiva.documento.update');
+            Route::get('congresso-nacional/executiva/{documento}/documento/delete', [CongressoNacionalController::class, 'deleteDocumento'])
+                ->name('cn.executiva.documento.delete');
+                
+            Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-diretoria', [CongressoNacionalController::class, 'exportDiretoria'])
+                ->name('cn.executiva.delegado.exportar-diretoria');
+            Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-relatorio-estatistico', [CongressoNacionalController::class, 'exportRelatorioEstatistico'])
+                ->name('cn.executiva.delegado.exportar-relatorio-estatistico');
+            Route::get('congresso-nacional/executiva/sincronizar-documentos-instancias', [CongressoNacionalController::class, 'sincronizarDocumentosInstancias'])
+                ->name('cn.executiva.sincronizar-documentos-instancias');
+            Route::get('congresso-nacional/executiva/exportar-documentos-instancias-csv', [CongressoNacionalController::class, 'exportDocumentosInstanciasCsv'])
+                ->name('cn.executiva.exportar-documentos-instancias-csv');
+            Route::get('congresso-nacional/executiva/exportar-arquivos-reuniao', [CongressoNacionalController::class, 'indexExportarArquivosReuniao'])
+                ->name('cn.executiva.exportar-arquivos-reuniao');
+            Route::get('congresso-nacional/executiva/exportar-arquivos-reuniao-zip/{regiao}', [CongressoNacionalController::class, 'exportArquivosReuniaoZip'])
+                ->name('cn.executiva.exportar-arquivos-reuniao-zip');
+            Route::put('congresso-nacional/executiva/documento-instancia/{documento_instancia}', [CongressoNacionalController::class, 'updateDocumentoInstancia'])
+                ->name('cn.executiva.documento-instancia.update');
         });
     }
 );
