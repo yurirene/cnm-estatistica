@@ -153,7 +153,7 @@ class FormularioFederacaoService
     {
         try {
             return FormularioFederacao::where('federacao_id', auth()->user()->federacao_id)
-                ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+                ->whereIn('status', [EstatisticaService::FORMULARIO_ENTREGUE, EstatisticaService::FORMULARIO_RESPOSTA_PARCIAL])
                 ->get()
                 ->pluck('ano_referencia', 'id');
         } catch (\Throwable $th) {

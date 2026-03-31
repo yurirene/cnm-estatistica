@@ -146,7 +146,7 @@ class FormularioSinodalService
     {
         try {
             return FormularioSinodal::where('sinodal_id', auth()->user()->sinodal_id)
-                ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+                ->whereIn('status', [EstatisticaService::FORMULARIO_ENTREGUE, EstatisticaService::FORMULARIO_RESPOSTA_PARCIAL])
                 ->get()
                 ->pluck('ano_referencia', 'id');
         } catch (\Throwable $th) {
@@ -295,7 +295,7 @@ class FormularioSinodalService
             foreach ($formularios as $formulario) {
                 $totalizador = self::somarCampos($formulario, $totalizador);
             }
-            
+
             $federacoesAtivas = Federacao::where('sinodal_id', $id)
                 ->where('status', true)
                 ->get()
@@ -305,11 +305,11 @@ class FormularioSinodalService
                 ->get();
 
             $totalizadorAtivas['perfil']['ativos'] = 0;
-            
+
             foreach ($formulariosFederacoesAtivas as $formularioFederacaoAtiva) {
                 $totalizadorAtivas = self::somarCampos($formularioFederacaoAtiva, $totalizadorAtivas, true);
             }
-            
+
             $totalSocios = $totalizadorAtivas['perfil']['ativos'];
             $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
             $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;

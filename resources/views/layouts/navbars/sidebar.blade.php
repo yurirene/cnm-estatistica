@@ -193,9 +193,9 @@
                     <a class="nav-link" href="{{ route('dashboard.ce-sinodal.index') }}">
                         <i class="fas fa-gavel"></i>
                         Comissão Executiva
-                        <span class="ms-2 badge badge-danger blob text-white">
+                        <!-- <span class="ms-2 badge badge-danger blob text-white">
                             <i class="fas fa-info"></i>
-                        </span>
+                        </span> -->
                     </a>
                 </li>
                 @endcan
@@ -326,7 +326,7 @@
                     </a>
                 </li>
                 @endcan
-                
+
                 @can('rota-permitida', ['dashboard.transferencias.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.transferencias.index', ['ump' => true]) }}">
