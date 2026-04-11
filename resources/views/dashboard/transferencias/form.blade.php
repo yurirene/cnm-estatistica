@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Sinodais'
+    'titulo' => 'Transferências',
 ])
 
 <div class="container-fluid mt--7">

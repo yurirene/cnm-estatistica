@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-'titulo' => 'Diretoria ' . $tipo
+    'titulo' => 'Diretoria ' . $tipo,
+    'url_tutorial' => config('tutoriais.diretoria.index')
 ])
 
 <div class="container-fluid mt--7">

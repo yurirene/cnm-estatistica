@@ -4,7 +4,7 @@
 
 @include('dashboard.partes.head', [
     'titulo' => 'Transferências',
-    'url_tutorial' => 'https://www.youtube.com/embed/hIza8973bBA?si=-bSuLjT93u8MNCa2'
+    'url_tutorial' => config('tutoriais.transferencias.index')
 ])
     
 <div class="container-fluid mt--7">

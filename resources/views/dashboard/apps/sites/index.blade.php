@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Sites'
+    'titulo' => 'Sites',
+    'url_tutorial' => config('tutoriais.site.index')
 ])
 
 

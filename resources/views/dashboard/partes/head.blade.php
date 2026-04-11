@@ -4,7 +4,6 @@
         <h2 class=" text-white">{{$subtitulo ?? ''}}</h2>
         <div class="header-body">
             @if(isset($botaoRetorno))
-
             <a class="btn btn-outline-white" href="{{$botaoRetorno}}">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>

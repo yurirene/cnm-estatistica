@@ -38,6 +38,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link nav-link-icon" href="{{ route('coletor-dados.login') }}">
+                        <i class="ni ni-single-02"></i>
+                        <span class="nav-link-inner--text">Coletor de Dados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link nav-link-icon" href="https://sisvoto.ump.app.br">
                         <i class="ni ni-button-play"></i>
                         <span class="nav-link-inner--text">SISVOTO</span>

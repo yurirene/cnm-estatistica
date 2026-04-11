@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Federações'
+    'titulo' => 'Federações',
+    'url_tutorial' => config('tutoriais.federacoes.index')
 ])
     
 <div class="container-fluid mt--7">

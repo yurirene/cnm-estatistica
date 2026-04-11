@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@include('dashboard.partes.head', [
+    'titulo' => 'Início',
+    'url_tutorial' => config('tutoriais.index.federacao'),
+    'remover' => true
+])
 @include('dashboard.index.federacao.cards',[
     'totalizadores' => DashboardHelper::getTotalizadores()
 ])

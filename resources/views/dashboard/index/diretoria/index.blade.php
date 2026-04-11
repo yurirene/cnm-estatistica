@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('dashboard.partes.head', [
+        'titulo' => 'Início',
+        'remover' => true,
+        'url_tutorial' => config('tutoriais.index.vice')
+    ])
     @include('dashboard.index.diretoria.cards', [
         'totalizador' => DashboardHelper::getTotalizadores()
     ])

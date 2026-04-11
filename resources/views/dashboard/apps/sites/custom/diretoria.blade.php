@@ -86,7 +86,7 @@
             <input type="hidden" id="cargo_foto" name="cargo" />
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="subtm" class="btn btn-primary">Alterar</button>
+                <button type="submit" class="btn btn-primary">Alterar</button>
             </div>
 
             {!! Form::close() !!}

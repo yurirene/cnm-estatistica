@@ -4,6 +4,7 @@
 
 @include('dashboard.partes.head', [
     'titulo' => 'Formulário Complementar',
+    'url_tutorial' => config('tutoriais.formulario-complementar.index')
 ])
 
 <div class="container-fluid mt--7">

@@ -2,6 +2,11 @@
 
 @section('content')
 
+@include('dashboard.partes.head', [
+    'titulo' => 'Tesouraria',
+    'url_tutorial' => config('tutoriais.tesouraria.index'),
+    'remover' => true
+])
 @include('dashboard.apps.tesouraria.cards',[
     'totalizadores' => $totalizadores
 ])

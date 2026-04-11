@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'UMPs Locais'
+    'titulo' => 'UMPs Locais',
+    'url_tutorial' => config('tutoriais.umps-locais.index')
 ])
     
 <div class="container-fluid mt--7">

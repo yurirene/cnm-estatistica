@@ -12,6 +12,7 @@ use App\Models\FormularioLocal;
 use App\Models\FormularioSinodal;
 use App\Models\Local;
 use App\Models\User;
+use App\Services\Estatistica\EstatisticaService;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -99,7 +100,9 @@ class FormularioComplementarService
     ): ?Model {
         $classe = self::CLASSES_INSTANCIAS[$tipo];
         $instancia = $classe::find($instanciaId);
-        $formulario = FormularioComplementarSinodal::where('sinodal_id', $instancia->sinodal_id)->first();
+        $formulario = FormularioComplementarSinodal::where('sinodal_id', $instancia->sinodal_id)
+            ->where('ano', EstatisticaService::getAnoReferencia())
+            ->first();
 
         if ($formulario == null) {
             return null;

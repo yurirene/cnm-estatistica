@@ -6,7 +6,7 @@
             <div class="header-body text-center mb-7">
                 <div class="row justify-content-center mt-4">
                     <div class="col-lg-5 col-md-6">
-                        <h1 class="text-white">Coletor Dados CNM</h1>
+                        <h1 class="text-white">Coletor de Dados CNM</h1>
                     </div>
                 </div>
             </div>

@@ -259,13 +259,6 @@
                 @endcan
                 @endcannot
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.tutoriais.index') }}">
-                        <i class="fas fa-video"></i> Tutoriais
-                    </a>
-                </li>
-
-
                 @can('rota-permitida', ['dashboard.apps.liberacao'])
 
                 <li class="nav-item">

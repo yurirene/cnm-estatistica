@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Formulários - Sinodal'
+    'titulo' => 'Formulários - Sinodal',
+    'url_tutorial' => config('tutoriais.estatistica.sinodal')
 ])
 
 <div class="container-fluid mt--7">
