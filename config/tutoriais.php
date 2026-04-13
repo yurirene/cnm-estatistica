@@ -12,7 +12,7 @@ return [
         'index' => 'https://www.youtube.com/embed/azTjFX3otiA?si=vaSCCecJ-mVqXkLo'
     ],
     'umps-locais' => [
-        'index' => ''
+        'index' => 'https://www.youtube.com/embed/He0A_alHuiY?si=juunOKtCO2TX5-d6'
     ],
     'estatistica' => [
         'federacao' => 'https://www.youtube.com/embed/8PhROhQVyiY?si=OWxTaq6AEn_2IT5l',
@@ -33,14 +33,14 @@ return [
         'sec-executivo' => '',
         'sinodal' => 'https://www.youtube.com/embed/cAPAojlduPs?si=FKlUGoC2TYUgFw1A',
         'federacao' => 'https://www.youtube.com/embed/cAPAojlduPs?si=GRsibaMoGs6nqqOp',
-        'ump-local' => 'https://www.youtube.com/embed/cAPAojlduPs?si=GRsibaMoGs6nqqOp',
+        'ump-local' => 'https://www.youtube.com/embed/fx0LkGHq-oc?si=YXdQaRwVtOOGDiUH',
         'estatistica' => '',
     ],
     'site' => [
-        'index' => ''
+        'index' => 'https://www.youtube.com/embed/vwQamemdpoY?si=KGOxbbAdcMphuVsc'
     ],
     'tesouraria' => [
-        'index' => 'https://www.youtube.com/embed/hIza8973bBA?si=-bSuLjT93u8MNCa2'
+        'index' => 'https://www.youtube.com/embed/WyN8HnuCiW0?si=mDmK7hnudcWMja_0'
     ],
 
 ];
