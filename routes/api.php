@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DiretoriaLoginValidationController;
 use App\Http\Controllers\Api\SicomController;
 use App\Http\Controllers\IClaudiaController;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/diretoria/validar-login', DiretoriaLoginValidationController::class);
 
 Route::any('/iClaudia', function() {
     $update_response = file_get_contents("php://input");
@@ -41,3 +43,4 @@ Route::middleware('api-token-executiva')->group(function () {
     Route::get('/executiva/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosExecutiva']);
     Route::get('/congresso-nacional/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosCongressoNacional']);
 });
+

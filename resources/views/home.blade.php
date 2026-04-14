@@ -82,6 +82,9 @@
             <a href="{{ route('dashboard.home') }}" class="btn">Plataforma UMP</a>
         </div>
         <div class="buttons">
+            <a href="{{ route('coletor-dados.login') }}" class="btn">Coletor de Dados</a>
+        </div>
+        <div class="buttons">
             <a href="{{ route('estatistica') }}" class="btn">Painel de Estatística</a>
         </div>
         
