@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\DiretoriaLoginValidationController;
+use App\Http\Controllers\Api\LinktreeController;
 use App\Http\Controllers\Api\SicomController;
 use App\Http\Controllers\IClaudiaController;
 use Illuminate\Http\Request;
@@ -21,7 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/diretoria/validar-login', DiretoriaLoginValidationController::class);
+Route::post('/linktree/validar-login', [LinktreeController::class, 'login']);
+Route::get('/linktree/links', [LinktreeController::class, 'links']);
+Route::post('/linktree/links', [LinktreeController::class, 'addLink']);
 
 Route::any('/iClaudia', function() {
     $update_response = file_get_contents("php://input");

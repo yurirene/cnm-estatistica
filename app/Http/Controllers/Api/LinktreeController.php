@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\LinkTree;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class DiretoriaLoginValidationController extends Controller
+class LinktreeController extends Controller
 {
     /**
      * Valida e-mail e senha e confirma se o usuário pertence à diretoria.
      */
-    public function __invoke(Request $request): JsonResponse
+    public function login(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'email' => ['required', 'string', 'email'],
@@ -43,6 +44,35 @@ class DiretoriaLoginValidationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login válido para diretoria.',
+        ]);
+    }
+
+    public function links()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Links encontrados com sucesso.',
+            'data' => LinkTree::all()->map(function ($link) {
+                return [
+                    'id' => $link->id,
+                    'name' => $link->name,
+                    'url' => $link->url,
+                ];
+            }),
+        ]);
+    }
+
+    public function addLink(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string'],
+            'url' => ['required', 'string'],
+        ]);
+        LinkTree::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Link adicionado com sucesso.',
         ]);
     }
 }
