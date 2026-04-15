@@ -75,4 +75,14 @@ class LinktreeController extends Controller
             'message' => 'Link adicionado com sucesso.',
         ]);
     }
+
+    public function removerLink(Request $request, LinkTree $link): JsonResponse
+    {
+        $link->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Link removido com sucesso.',
+        ]);
+    }
 }

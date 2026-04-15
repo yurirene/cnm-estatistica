@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/linktree/validar-login', [LinktreeController::class, 'login']);
 Route::get('/linktree/links', [LinktreeController::class, 'links']);
 Route::post('/linktree/links', [LinktreeController::class, 'addLink']);
+Route::delete('/linktree/remover-link/{link}', [LinktreeController::class, 'removerLink']);
 
 Route::any('/iClaudia', function() {
     $update_response = file_get_contents("php://input");
