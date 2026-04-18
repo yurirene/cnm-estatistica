@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -95,6 +96,11 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
             }
+        });
+
+        LogViewer::auth(function ($request) {
+            return $request->user()
+                && $request->user()->role->name == User::ROLE_ADMINISTRADOR;
         });
 
     }
