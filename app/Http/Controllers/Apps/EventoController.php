@@ -9,6 +9,7 @@ use App\Models\Apps\Site\Site;
 use App\Models\Sinodal;
 use App\Services\Apps\EventoService;
 use App\Services\Apps\SiteService;
+use App\Services\LogErroService;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -33,6 +34,11 @@ class EventoController extends Controller
                 'aba' => 'evento'
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -59,6 +65,11 @@ class EventoController extends Controller
                 'sigla' => $sinodal->sigla
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             throw $th;
         }
     }
@@ -80,6 +91,11 @@ class EventoController extends Controller
                 'status' => true,
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->route('meusite.evento', $sigla)->with([
                 'status' => false,
             ]);
@@ -100,6 +116,11 @@ class EventoController extends Controller
                 'mensagem' => 'Status atualizado com Sucesso!'
             ], 200);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return response()->json([
                 'mensagem' => 'Erro ao atualizar!',
                 'mensagem_erro' => $th->getMessage()
@@ -125,6 +146,11 @@ class EventoController extends Controller
                 'aba' => 'evento'
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -151,6 +177,11 @@ class EventoController extends Controller
                 'status' => $retorno
             ], 200);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return response()->json([
                 'mensagem' => 'Erro ao atualizar!',
                 'mensagem_erro' => $th->getMessage()
@@ -177,6 +208,11 @@ class EventoController extends Controller
                 'aba' => 'inscritos'
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->route('dashboard.apps.sites.index')->with([
                 'mensagem' => [
                     'status' => true,
@@ -207,6 +243,11 @@ class EventoController extends Controller
                 'aba' => 'inscritos'
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->route('dashboard.apps.sites.index')->with([
                 'mensagem' => [
                     'status' => true,
@@ -216,6 +257,4 @@ class EventoController extends Controller
             ]);
         }
     }
-
-
 }
