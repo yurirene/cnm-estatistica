@@ -26,6 +26,7 @@ class Resolucao extends Model
         'responsavel_id',
         'criado_por',
         'anexos',
+        'nao_notificar',
         'ultimo_alerta_prazo_em',
     ];
 
@@ -36,6 +37,7 @@ class Resolucao extends Model
         'data_aprovacao' => 'date',
         'prazo_final' => 'date',
         'anexos' => 'array',
+        'nao_notificar' => 'boolean',
         'ultimo_alerta_prazo_em' => 'date',
     ];
 
@@ -78,5 +80,15 @@ class Resolucao extends Model
     public function scopeConcluidas(Builder $query): Builder
     {
         return $query->where('status', ResolucaoStatus::Concluido->value);
+    }
+
+    public function scopeComNotificacao(Builder $query): Builder
+    {
+        return $query->where('nao_notificar', false);
+    }
+
+    public function deveNotificar(): bool
+    {
+        return !$this->nao_notificar;
     }
 }

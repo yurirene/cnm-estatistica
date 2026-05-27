@@ -22,7 +22,15 @@ class ResolucoesDataTable extends DataTable
                 ]);
             })
             ->editColumn('numero', fn (Resolucao $r) => "<strong>{$r->numero}</strong>")
-            ->editColumn('titulo', fn (Resolucao $r) => e(Str::limit($r->titulo, 50)))
+            ->editColumn('titulo', function (Resolucao $r) {
+                $titulo = e(Str::limit($r->titulo, 50));
+
+                if ($r->nao_notificar) {
+                    $titulo .= ' <span class="badge badge-secondary" title="Sem notificações Telegram"><i class="fas fa-bell-slash"></i></span>';
+                }
+
+                return $titulo;
+            })
             ->editColumn('origem', fn (Resolucao $r) => Str::title($r->origem->value))
             ->editColumn('status', function (Resolucao $r) {
                 $classe = match ($r->status) {
@@ -65,7 +73,7 @@ class ResolucoesDataTable extends DataTable
                 return $data;
             })
             ->editColumn('responsavel.name', fn (Resolucao $r) => e($r->responsavel?->name ?? '—'))
-            ->rawColumns(['numero', 'status', 'prioridade', 'prazo_final', 'action']);
+            ->rawColumns(['numero', 'titulo', 'status', 'prioridade', 'prazo_final', 'action']);
     }
 
     public function query(Resolucao $model)

@@ -19,6 +19,7 @@
             data-prazo-final="{{ $resolucao->prazo_final?->format('Y-m-d') }}"
             data-responsavel-id="{{ $resolucao->responsavel_id }}"
             data-responsavel-text="{{ $resolucao->responsavel ? $resolucao->responsavel->name . ' (' . $resolucao->responsavel->email . ')' : '' }}"
+            data-nao-notificar="{{ $resolucao->nao_notificar ? '1' : '0' }}"
         >
             Editar
         </button>

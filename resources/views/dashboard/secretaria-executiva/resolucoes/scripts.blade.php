@@ -76,8 +76,10 @@
             form.find('[name="prioridade"]').val(button.data('prioridade'));
             form.find('[name="data_aprovacao"]').val(button.data('data-aprovacao'));
             form.find('[name="prazo_final"]').val(button.data('prazo-final'));
+            form.find('[name="nao_notificar"]').prop('checked', button.data('nao-notificar') == 1);
         } else {
             form[0].reset();
+            form.find('[name="nao_notificar"]').prop('checked', false);
         }
     });
 

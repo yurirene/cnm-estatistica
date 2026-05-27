@@ -73,6 +73,16 @@
                     </div>
                     @endif
                 </div>
+                <div class="form-check mb-3">
+                    {!! Form::checkbox('nao_notificar', 1, false, [
+                        'class' => 'form-check-input',
+                        'id' => 'nao_notificar',
+                    ]) !!}
+                    {!! Form::label('nao_notificar', 'Não notificar via Telegram', ['class' => 'form-check-label']) !!}
+                    <small class="form-text text-muted d-block">
+                        Quando marcado, esta resolução não envia alertas no Telegram (criação e lembretes de prazo).
+                    </small>
+                </div>
                 <div class="form-group">
                     {!! Form::label('anexos[]', 'Anexos') !!}
                     {!! Form::file('anexos[]', ['class' => 'form-control', 'multiple' => true, 'accept' => '.pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png']) !!}

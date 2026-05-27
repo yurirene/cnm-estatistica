@@ -73,6 +73,7 @@ class ResolucaoService
             'data_aprovacao' => $dados['data_aprovacao'],
             'prazo_final' => $dados['prazo_final'] ?? null,
             'responsavel_id' => $dados['responsavel_id'] ?? null,
+            'nao_notificar' => (bool) ($dados['nao_notificar'] ?? false),
             'numero' => self::gerarNumero(),
             'criado_por' => $criador->id,
             'anexos' => self::processarUploadAnexos($anexos) ?: null,
@@ -150,6 +151,7 @@ class ResolucaoService
 
         $resolucoes = Resolucao::query()
             ->with('responsavel')
+            ->comNotificacao()
             ->whereNotIn('status', [ResolucaoStatus::Concluido->value, ResolucaoStatus::Cancelado->value])
             ->whereNotNull('prazo_final')
             ->where(function ($query) use ($hoje, $limite) {
@@ -261,6 +263,10 @@ class ResolucaoService
 
     public static function notificarResponsavel(Resolucao $resolucao): void
     {
+        if (!$resolucao->deveNotificar()) {
+            return;
+        }
+
         $responsavel = $resolucao->responsavel;
 
         if (empty($responsavel?->telegram_chat_id)) {
@@ -324,7 +330,19 @@ class ResolucaoService
             'data_aprovacao' => self::parseData($linha['data_aprovacao'] ?? ''),
             'prazo_final' => !empty($linha['prazo_final']) ? self::parseData($linha['prazo_final']) : null,
             'responsavel_id' => $responsavelId,
+            'nao_notificar' => self::parseBooleano($linha['nao_notificar'] ?? ''),
         ];
+    }
+
+    protected static function parseBooleano(string $valor): bool
+    {
+        $valor = strtolower(trim($valor));
+
+        if ($valor === '') {
+            return false;
+        }
+
+        return in_array($valor, ['1', 'sim', 's', 'true', 'yes', 'y'], true);
     }
 
     protected static function parseData(string $valor): string

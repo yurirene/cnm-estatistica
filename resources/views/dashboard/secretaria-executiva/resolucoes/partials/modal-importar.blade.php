@@ -15,7 +15,7 @@
             <div class="modal-body">
                 <p class="text-muted">
                     Utilize o modelo CSV com separador <strong>;</strong> ou <strong>,</strong>.
-                    Campos: titulo, descricao, origem, status, prioridade, data_aprovacao, prazo_final, responsavel_email (opcional).
+                    Campos: titulo, descricao, origem, status, prioridade, data_aprovacao, prazo_final, responsavel_email (opcional), nao_notificar (opcional: sim/1).
                 </p>
                 <a href="{{ route('dashboard.secretaria-executiva.resolucoes.modelo-importacao') }}" class="btn btn-sm btn-outline-secondary mb-3">
                     <i class="fas fa-download"></i> Baixar modelo

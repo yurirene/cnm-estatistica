@@ -11,6 +11,13 @@ use Illuminate\Validation\Rule;
 
 class StoreResolucaoRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'nao_notificar' => $this->boolean('nao_notificar'),
+        ]);
+    }
+
     public function authorize(): bool
     {
         return ResolucaoService::isGestor($this->user());
@@ -27,6 +34,7 @@ class StoreResolucaoRequest extends FormRequest
             'data_aprovacao' => ['required', 'date'],
             'prazo_final' => ['nullable', 'date', 'after_or_equal:data_aprovacao'],
             'responsavel_id' => ['nullable', 'uuid', 'exists:users,id'],
+            'nao_notificar' => ['sometimes', 'boolean'],
             'anexos' => ['nullable', 'array'],
             'anexos.*' => ['file', 'max:10240', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png'],
         ];
