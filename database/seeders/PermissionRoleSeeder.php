@@ -144,7 +144,8 @@ class PermissionRoleSeeder extends Seeder
                     'digestos',
                     'helpdesk',
                     'comissao-executiva',
-                    'secretaria-executiva'
+                    'secretaria-executiva',
+                    'tarefas',
                 ],
                 'permissions' => [
                     'dashboard.cn.executiva.index',

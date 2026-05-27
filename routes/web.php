@@ -36,6 +36,7 @@ use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
 use App\Http\Controllers\ResolucaoController;
+use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -782,6 +783,19 @@ Route::group([
             ->name('secretaria-executiva.responsaveis');
         Route::put('/secretaria-executiva/perfil/telegram', [ResolucaoController::class, 'atualizarTelegram'])
             ->name('secretaria-executiva.telegram.update');
+    });
+
+    Route::group(['modulo' => 'tarefas'], function () {
+        Route::get('/tarefas', [TarefaController::class, 'index'])
+            ->name('tarefas.index');
+        Route::post('/tarefas', [TarefaController::class, 'store'])
+            ->name('tarefas.store');
+        Route::put('/tarefas/{tarefa}', [TarefaController::class, 'update'])
+            ->name('tarefas.update');
+        Route::get('/tarefas/{tarefa}/delete', [TarefaController::class, 'destroy'])
+            ->name('tarefas.delete');
+        Route::get('/tarefas/{tarefa}/encerrar', [TarefaController::class, 'encerrar'])
+            ->name('tarefas.encerrar');
     });
 });
 

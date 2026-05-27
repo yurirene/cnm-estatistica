@@ -195,6 +195,14 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.tarefas.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.tarefas.index') }}">
+                        <i class="fas fa-check-square"></i> Tarefas
+                    </a>
+                </li>
+                @endcan
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">
