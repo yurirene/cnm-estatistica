@@ -28,7 +28,8 @@ class User extends Authenticatable
         'local_id',
         'federacao_id',
         'sinodal_id',
-        'regiao_id'
+        'regiao_id',
+        'telegram_chat_id',
     ];
 
     protected $hidden = [

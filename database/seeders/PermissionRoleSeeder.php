@@ -27,7 +27,8 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'acesso-apps',
                     'avisos',
-                    'helpdesk'
+                    'helpdesk',
+                    'secretaria-executiva'
                 ]
             ],
             'diretoria' => [
@@ -142,7 +143,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'digestos',
                     'helpdesk',
-                    'comissao-executiva'
+                    'comissao-executiva',
+                    'secretaria-executiva'
                 ],
                 'permissions' => [
                     'dashboard.cn.executiva.index',

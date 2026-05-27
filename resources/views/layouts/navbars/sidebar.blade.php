@@ -187,6 +187,14 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.secretaria-executiva.resolucoes.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.secretaria-executiva.resolucoes.index') }}">
+                        <i class="fas fa-tasks"></i> Resoluções
+                    </a>
+                </li>
+                @endcan
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">

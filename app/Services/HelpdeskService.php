@@ -29,7 +29,7 @@ class HelpdeskService
         $mensagem .= "Título: {$request['titulo']}" . PHP_EOL;
         $mensagem .= "Descrição: {$request['descricao']}" . PHP_EOL;
         $mensagem .= "Usuário: {$usuario}";
-        TelegramService::sendMessage($mensagem);
+        TelegramService::sendMessage(config('app.telegram_chat_id'), $mensagem);
     }
 
 }

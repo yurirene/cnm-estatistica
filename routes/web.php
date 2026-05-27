@@ -35,6 +35,7 @@ use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
+use App\Http\Controllers\ResolucaoController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -757,6 +758,32 @@ Route::group(
         });
     }
 );
+
+// SECRETARIA EXECUTIVA - RESOLUÇÕES
+Route::group([
+    'middleware' => ['auth', 'auth-sistema'],
+    'prefix' => 'dashboard',
+    'as' => 'dashboard.',
+], function () {
+    Route::group(['modulo' => 'secretaria-executiva'], function () {
+        Route::get('/secretaria-executiva/resolucoes', [ResolucaoController::class, 'index'])
+            ->name('secretaria-executiva.resolucoes.index');
+        Route::post('/secretaria-executiva/resolucoes', [ResolucaoController::class, 'store'])
+            ->name('secretaria-executiva.resolucoes.store');
+        Route::put('/secretaria-executiva/resolucoes/{resolucao}', [ResolucaoController::class, 'update'])
+            ->name('secretaria-executiva.resolucoes.update');
+        Route::get('/secretaria-executiva/resolucoes/{resolucao}/delete', [ResolucaoController::class, 'destroy'])
+            ->name('secretaria-executiva.resolucoes.delete');
+        Route::post('/secretaria-executiva/resolucoes/importar', [ResolucaoController::class, 'importar'])
+            ->name('secretaria-executiva.resolucoes.importar');
+        Route::get('/secretaria-executiva/resolucoes/modelo-importacao', [ResolucaoController::class, 'modeloImportacao'])
+            ->name('secretaria-executiva.resolucoes.modelo-importacao');
+        Route::get('/secretaria-executiva/responsaveis', [ResolucaoController::class, 'responsaveis'])
+            ->name('secretaria-executiva.responsaveis');
+        Route::put('/secretaria-executiva/perfil/telegram', [ResolucaoController::class, 'atualizarTelegram'])
+            ->name('secretaria-executiva.telegram.update');
+    });
+});
 
 //TRANSFERENCIAS
 Route::group([

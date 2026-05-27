@@ -47,7 +47,7 @@ class LogErroService
                 $mensagem .= ucfirst($campo) . ': ' . $info . PHP_EOL;
             }
 
-            TelegramService::sendMessage($mensagem);
+            TelegramService::sendMessage(config('app.telegram_chat_id'), $mensagem);
 
         } catch (\Throwable $th) {
             Log::error([
