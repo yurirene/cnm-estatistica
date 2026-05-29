@@ -6,6 +6,7 @@ use App\DataTables\TarefasDataTable;
 use App\Http\Requests\Tarefas\StoreTarefaRequest;
 use App\Http\Requests\Tarefas\UpdateTarefaRequest;
 use App\Models\Tarefa;
+use App\Services\LogErroService;
 use App\Services\TarefaService;
 use Illuminate\Http\RedirectResponse;
 use Throwable;
@@ -22,6 +23,11 @@ class TarefaController extends Controller
                 'usuario' => auth()->user(),
             ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->route('dashboard.home')->with([
                 'mensagem' => [
                     'status' => false,
@@ -43,6 +49,11 @@ class TarefaController extends Controller
                 ],
             ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -64,6 +75,11 @@ class TarefaController extends Controller
                 ],
             ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -89,6 +105,11 @@ class TarefaController extends Controller
                 ],
             ]);
         } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
