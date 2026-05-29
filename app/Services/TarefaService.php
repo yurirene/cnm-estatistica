@@ -10,22 +10,25 @@ use Illuminate\Support\Facades\Auth;
 
 class TarefaService
 {
-    public static function queryParaUsuario(?User $user = null)
+    public static function queryBaseUsuario(?User $user = null)
     {
         $user = $user ?? Auth::user();
 
-        return Tarefa::query()
+        return Tarefa::query()->where('user_id', $user->id);
+    }
+
+    public static function queryParaUsuario(?User $user = null)
+    {
+        return self::queryBaseUsuario($user)
             ->with('usuario:id,name,email,telegram_chat_id')
-            ->where('user_id', $user->id)
             ->latest();
     }
 
     public static function estatisticas(?User $user = null): array
     {
-        $base = self::queryParaUsuario($user);
         $hoje = now()->toDateString();
 
-        $stats = (clone $base)
+        $stats = self::queryBaseUsuario($user)
             ->selectRaw('COUNT(*) as total')
             ->selectRaw('SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as concluidas', [TarefaStatus::Concluido->value])
             ->selectRaw(

@@ -21,10 +21,10 @@ class ResolucaoService
 {
     public const DIAS_ALERTA_ANTECEDENCIA = 7;
 
-    public static function queryParaUsuario(?User $user = null)
+    public static function queryBaseUsuario(?User $user = null)
     {
         $user = $user ?? Auth::user();
-        $query = Resolucao::query()->with(['responsavel:id,name,email', 'criador:id,name,email']);
+        $query = Resolucao::query();
 
         if (!self::isGestor($user)) {
             $query->where('responsavel_id', $user->id);
@@ -33,13 +33,19 @@ class ResolucaoService
         return $query;
     }
 
+    public static function queryParaUsuario(?User $user = null)
+    {
+        return self::queryBaseUsuario($user)
+            ->with(['responsavel:id,name,email', 'criador:id,name,email'])
+            ->latest();
+    }
+
     public static function estatisticas(?User $user = null): array
     {
-        $base = self::queryParaUsuario($user);
         $hoje = now()->toDateString();
         $limiteProximas = now()->addDays(self::DIAS_ALERTA_ANTECEDENCIA)->toDateString();
 
-        $stats = (clone $base)
+        $stats = self::queryBaseUsuario($user)
             ->selectRaw('COUNT(*) as total')
             ->selectRaw('SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as concluidas', [ResolucaoStatus::Concluido->value])
             ->selectRaw(
