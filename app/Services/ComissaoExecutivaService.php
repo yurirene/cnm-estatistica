@@ -113,6 +113,11 @@ class ComissaoExecutivaService
 
             DB::commit();
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             DB::rollBack();
             throw $th;
         }
