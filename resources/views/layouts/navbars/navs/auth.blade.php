@@ -9,7 +9,7 @@
         </a>
         <!-- Form -->
         <!-- User -->
-        <ul class="navbar-nav align-items-center d-none d-md-flex">
+        <ul class="navbar-nav align-items-center ml-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link pr-0"
                     href="#" role="button"
@@ -18,9 +18,11 @@
                     aria-expanded="false"
                 >
                     <div class="media align-items-center">
+                        <span class="mb-0 text-white" aria-hidden="true">
+                            <i class="fas fa-user-circle fa-lg"></i>
+                        </span>
                         <div class="media-body ml-2 d-none d-lg-block">
-                            <span class="mb-0 text-sm  font-weight-bold">
-                                <i class="fas fa-user-circle mr-1"></i>
+                            <span class="mb-0 text-sm font-weight-bold">
                                 {{ auth()->user()->name }}
                             </span>
                         </div>

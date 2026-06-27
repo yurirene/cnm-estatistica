@@ -38,4 +38,8 @@
 @include('dashboard.index.produtos.index')
 @endcan
 
+@can('permitido', ['presidente'])
+@include('dashboard.index.presidente.index')
+@endcan
+
 @endsection

@@ -10,6 +10,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\User;
 use App\Services\Estatistica\EstatisticaService;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 
 class MapaService
@@ -17,7 +18,9 @@ class MapaService
 
     public static function getEstadosUsuario()
     {
-        $estados = Estado::where('regiao_id', auth()->user()->regiao_id)
+        $estados = Estado::when(!Gate::check(['presidente']), function ($query) {
+                return $query->where('regiao_id', auth()->user()->regiao_id);
+            })
             ->get()
             ->map(function($item) {
                 return 'br-' . strtolower($item->sigla);
@@ -51,7 +54,7 @@ class MapaService
         try {
             $sigla = explode('-', $estado);
             $estado = Estado::where('sigla', strtoupper($sigla[1]))->first();
-            $ano = EstatisticaService::getAnoReferencia();
+            $ano = EstatisticaService::getAnoReferencia() - 1;
             $formularios = FormularioLocal::whereHas('local', function ($sql) use ($estado) {
                 return $sql->where('estado_id', $estado->id);
             })
@@ -61,6 +64,7 @@ class MapaService
                     return $sql->where('ano_referencia', $ano);
                 })
                 ->get();
+
             $total = 0;
             foreach ($formularios as $formulario) {
                 $total += (intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']));
