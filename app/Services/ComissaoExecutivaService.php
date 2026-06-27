@@ -35,12 +35,6 @@ class ComissaoExecutivaService
                 'relatorio_estatistico' => isset($dados['relatorio_estatistico']) ? 1 : 0
             ]);
 
-            /*
-             if (!self::sincronizarSIGCE($reuniao->toArray(), 'nova-reuniao')) {
-                throw new Exception("Erro de comunicação com o SIGCE");
-            }
-            */
-
             DB::commit();
 
             return $reuniao;
@@ -87,10 +81,6 @@ class ComissaoExecutivaService
         try {
             $reuniao->delete();
 
-            if (!self::sincronizarSIGCE($reuniao->toArray(), 'deletar-reuniao')) {
-                throw new Exception("Erro de comunicação com o SIGCE");
-            }
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -106,10 +96,6 @@ class ComissaoExecutivaService
             $reuniao->update([
                 'status' => false
             ]);
-
-            if (!self::sincronizarSIGCE($reuniao->toArray(), 'atualizar-reuniao')) {
-                throw new Exception("Erro de comunicação com o SIGCE");
-            }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -172,31 +158,6 @@ class ComissaoExecutivaService
     public static function getTiposDocumentos(): array
     {
         return DocumentoRecebido::TIPOS_DOCUMENTOS;
-    }
-
-    public static function sincronizarSIGCE($reuniao, $endpoint): bool
-    {
-        $baseURL = config('app.url_integracao_sigce');
-        $headers = [
-            'Content-Type' => 'application/json',
-        ];
-        $dados = [
-            'reuniao' => $reuniao,
-            'chave' => config('app.chave_integracao_sigce')
-        ];
-
-        $client = new Client($headers);
-        $request = $client->request(
-            'POST',
-            "{$baseURL}/reuniao/{$endpoint}",
-            [
-                'form_params' => $dados
-            ]
-        );
-
-        $responseCode = $request->getStatusCode();
-
-        return $responseCode == 200;
     }
 
     public static function confirmarDocumento(string $documetoId): void
