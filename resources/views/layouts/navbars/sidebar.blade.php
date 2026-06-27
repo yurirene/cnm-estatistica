@@ -203,6 +203,14 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.arquivos.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.arquivos.index') }}">
+                        <i class="fab fa-google-drive"></i> Arquivos
+                    </a>
+                </li>
+                @endcan
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">
@@ -349,6 +357,18 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         Problemas e Sugestões
                     </a>
+                </li>
+
+                <li class="nav-item d-md-none">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#trocar-senha">
+                        <i class="ni ni-settings-gear-65"></i> Trocar Senha
+                    </a>
+                </li>
+                <li class="nav-item d-md-none">
+                    <button type="button" class="nav-link btn btn-link text-left w-100"
+                        onclick="document.getElementById('logout-form').submit();">
+                        <i class="ni ni-user-run"></i> {{ __('Logout') }}
+                    </button>
                 </li>
             </ul>
             <hr class="my-3">

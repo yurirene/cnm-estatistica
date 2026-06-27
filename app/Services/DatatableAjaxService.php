@@ -10,6 +10,8 @@ use App\Models\Pesquisas\Pesquisa;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Instancias\DiretoriaService;
+use App\Services\Instancias\PresidenciaService;
+use Illuminate\Support\Facades\Gate;
 
 class DatatableAjaxService
 {
@@ -179,11 +181,15 @@ class DatatableAjaxService
                     });
             }
             if ($instancia == 'Sinodal') {
-                $query = Sinodal::when($id, function ($sql) use ($id) {
+                if (Gate::check(['presidente'])) {
+                    $query = Sinodal::query();
+                } else {
+                    $query = Sinodal::when($id, function ($sql) use ($id) {
                         return $sql->where('regiao_id', $id);
                     }, function ($sql) {
                         return $sql->where('regiao_id', auth()->user()->regiao_id);
                     });
+                }
             }
             if ($instancia == 'Local') {
                 $query = Local::when($id, function ($sql) use ($id) {
@@ -244,6 +250,11 @@ class DatatableAjaxService
                         $retorno['aci_repassada'] = "R$" . ($relatorioDoAno->isNotEmpty() ? $relatorioDoAno->first()->aci['valor_repassado'] : 0);
                         $retorno['federacoes'] = "{$totalRelatoriosFederacoes}/{$totalFederacoes}"; 
                         $retorno['locais'] = "{$totalRelatoriosLocais}/{$totalLocais}"; 
+                        
+                        if (Gate::check(['presidente'])) {
+                            $retorno['progresso'] = PresidenciaService::porcentagem($totalLocais, $totalRelatoriosLocais);
+                            $retorno['regiao'] = $item->regiao->nome ?? '-';
+                        }
                     }
 
                     return $retorno;

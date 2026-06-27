@@ -10,6 +10,7 @@ use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
+use App\Services\Instancias\PresidenciaService;
 use App\Services\Instancias\SinodalService;
 use App\Services\Produtos\ProdutoService;
 use Illuminate\Support\Facades\Gate;
@@ -35,6 +36,8 @@ class DashboardHelper
             $service = app()->make(EstatisticaService::class);
         } elseif (Gate::check(['secreatria_produtos'])) {
             $service = app()->make(ProdutoService::class);
+        } elseif (Gate::check(['presidente'])) {
+            $service = app()->make(PresidenciaService::class);
         }
 
         return $service;

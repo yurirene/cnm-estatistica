@@ -30,6 +30,7 @@ class User extends Authenticatable
         'sinodal_id',
         'regiao_id',
         'telegram_chat_id',
+        'google_drive_folder',
     ];
 
     protected $hidden = [
@@ -60,6 +61,15 @@ class User extends Authenticatable
     public const ROLE_TESOURARIA = 'tesouraria';
     public const ROLE_ADMINISTRADOR = 'administrador';
     public const ROLE_SEC_EXECUTIVA = 'executiva';
+    public const ROLE_PRESIDENTE = 'presidente';
+    public const ROLE_SECRETARIADO_COMUM = 'secretariado_comum';
+
+    public const ROLES_ARQUIVOS = [
+        self::ROLE_SECRETARIADO_COMUM,
+        self::ROLE_DIRETORIA,
+        self::ROLE_SEC_EXECUTIVA,
+        self::ROLE_PRESIDENTE,
+    ];
 
     public function regiao(): BelongsTo
     {

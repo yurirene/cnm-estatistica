@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 
 class Sinodal extends Model
 {
@@ -98,7 +99,7 @@ class Sinodal extends Model
 
     public function scopeQuery($query)
     {
-        if (auth()->user()->admin) {
+        if (auth()->user()->admin || Gate::check(['presidente'])) {
             return $query;
         }
         return $query->where('regiao_id', auth()->user()->regiao_id);
