@@ -35,6 +35,7 @@ use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
+use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\ResolucaoController;
 use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TutorialController;
@@ -796,6 +797,23 @@ Route::group([
             ->name('tarefas.delete');
         Route::get('/tarefas/{tarefa}/encerrar', [TarefaController::class, 'encerrar'])
             ->name('tarefas.encerrar');
+    });
+
+    Route::group(['modulo' => 'arquivos'], function () {
+        Route::get('/arquivos', [ArquivoController::class, 'index'])
+            ->name('arquivos.index');
+        Route::post('/arquivos/upload', [ArquivoController::class, 'upload'])
+            ->name('arquivos.upload');
+        Route::post('/arquivos/pasta', [ArquivoController::class, 'criarPasta'])
+            ->name('arquivos.pasta');
+        Route::get('/arquivos/download', [ArquivoController::class, 'download'])
+            ->name('arquivos.download');
+        Route::get('/arquivos/visualizar', [ArquivoController::class, 'visualizar'])
+            ->name('arquivos.visualizar');
+        Route::put('/arquivos/renomear', [ArquivoController::class, 'renomear'])
+            ->name('arquivos.renomear');
+        Route::post('/arquivos/excluir', [ArquivoController::class, 'excluir'])
+            ->name('arquivos.excluir');
     });
 });
 

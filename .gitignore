@@ -2,6 +2,8 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/app/google-drive-service-account.json
+/storage/app/plataforma-ump-*.json
 /vendor
 .env
 .env.backup
