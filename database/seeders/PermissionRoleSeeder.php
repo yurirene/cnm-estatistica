@@ -31,6 +31,18 @@ class PermissionRoleSeeder extends Seeder
                     'secretaria-executiva'
                 ]
             ],
+            'presidente' => [
+                'resources' => [
+                    'helpdesk',
+                    'detalhamento',
+                ],
+                'permissions' => [
+                    'dashboard.sinodais.index',
+                    'dashboard.datatables.informacao-federacoes',
+                    'dashboard.datatables.formularios-entregues',
+                    'dashboard.formularios-sinodal.export'
+                ]
+            ],
             'diretoria' => [
                 'resources' => [
                     'sinodais',
@@ -133,10 +145,6 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk'
                 ],
                 'permissions' => [
-                    'dasbhoard.produtos.index',
-                    'dashboard.produtos.datatable.produtos',
-                    'dashboard.produtos.datatable.estoque',
-                    'dashboard.produtos.datatable.consignacao',
                 ]
             ],
             'executiva' => [
@@ -188,36 +196,6 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk'
                 ],
                 'permissions' => [                ]
-            ],
-            'presidente' => [
-                'resources' => [
-                    'helpdesk',
-                    'comissao-executiva'
-                ],
-                'permissions' => [
-                    'dashboard.produtos.index',
-                    'dashboard.produtos.relatorios',
-                    'dashboard.produtos.relatorios.gerar',
-                    'dashboard.produtos.datatable.produtos',
-                    'dashboard.produtos.datatable.estoque',
-                    'dashboard.produtos.datatable.consignacao',
-                ]
-            ],
-            'produtos_vendedor' => [
-                'resources' => [],
-                'permissions' => [
-                    'dashboard.pedidos.index',
-                    'dashboard.pedidos.store',
-                ]
-            ],
-            'produtos_caixa' => [
-                'resources' => [],
-                'permissions' => [
-                    'dashboard.pedidos.caixa',
-                    'dashboard.pedidos.separar',
-                    'dashboard.pedidos.pagar',
-                    'dashboard.pedidos.cancelar'
-                ]
             ]
         ];
         DB::table('permission_role')->truncate();

@@ -133,6 +133,13 @@
         .btn-lg, .btn-group-lg > .btn {
             padding: 0.65rem 1rem;
         }
+
+        @media (max-width: 991.98px) {
+            #navbar-main .navbar-nav .nav-link {
+                padding-right: 0.75rem;
+                padding-left: 0.75rem;
+            }
+        }
     </style>
     <script>
 
