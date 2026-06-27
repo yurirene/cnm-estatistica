@@ -61,6 +61,13 @@
                         </div>
                         @endif
                     </div>
+
+                    @can('isAdmin')
+                    @if(isset($usuario) && in_array($usuario->role->name, \App\Models\User::ROLES_ARQUIVOS))
+                    @include('dashboard.usuarios.partials.google-drive')
+                    @endif
+                    @endcan
+
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.usuarios.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}

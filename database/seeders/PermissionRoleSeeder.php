@@ -35,6 +35,7 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'helpdesk',
                     'detalhamento',
+                    'arquivos',
                 ],
                 'permissions' => [
                     'dashboard.sinodais.index',
@@ -50,7 +51,7 @@ class PermissionRoleSeeder extends Seeder
                     'detalhamento',
                     'helpdesk',
                     'comissao-executiva',
-                    'pedidos'
+                    'arquivos',
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -154,6 +155,7 @@ class PermissionRoleSeeder extends Seeder
                     'comissao-executiva',
                     'secretaria-executiva',
                     'tarefas',
+                    'arquivos',
                 ],
                 'permissions' => [
                     'dashboard.cn.executiva.index',
@@ -193,7 +195,8 @@ class PermissionRoleSeeder extends Seeder
             ],
             'secretariado_comum' => [
                 'resources' => [
-                    'helpdesk'
+                    'helpdesk',
+                    'arquivos',
                 ],
                 'permissions' => [                ]
             ]

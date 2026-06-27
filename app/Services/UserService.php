@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -110,7 +111,11 @@ class UserService
 
             $usuario->update($data);
 
-            return $usuario;
+            if (Gate::allows('isAdmin')) {
+                self::atualizarPastaGoogleDrive($usuario->fresh(), $request);
+            }
+
+            return $usuario->fresh();
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -259,6 +264,39 @@ class UserService
             $instancia = $usuario->local;
         }
         return $instancia;
+    }
+
+    public static function atualizarPastaGoogleDrive(User $usuario, Request $request): void
+    {
+        if (! Gate::allows('isAdmin')) {
+            return;
+        }
+
+        if (! in_array($usuario->role->name, User::ROLES_ARQUIVOS, true)) {
+            return;
+        }
+
+        if (! $request->has('google_drive_folder')) {
+            return;
+        }
+
+        $request->validate([
+            'google_drive_folder' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            GoogleDriveService::sincronizarPastaUsuario(
+                $usuario,
+                $request->input('google_drive_folder') ?: null
+            );
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile(),
+            ]);
+            throw new Exception('Não foi possível configurar a pasta do Google Drive para este usuário.');
+        }
     }
 
 }
