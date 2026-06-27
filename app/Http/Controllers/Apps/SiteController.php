@@ -9,6 +9,7 @@ use App\Models\Apps\Site\Site;
 use App\Models\Sinodal;
 use App\Services\Apps\EventoService;
 use App\Services\Apps\SiteService;
+use App\Services\LogErroService;
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
@@ -42,6 +43,11 @@ class SiteController extends Controller
             ], 200);
         } catch (\Throwable $th) {
 
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
 
             return response()->json([
                 'mensagem' => 'Erro ao atualizar!',
@@ -62,6 +68,11 @@ class SiteController extends Controller
             $variaveis = SiteService::montar($sinodal, $site->configuracoes);
             return view("sites.modelo_{$site->modelo_id}", $variaveis);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -82,6 +93,11 @@ class SiteController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -102,6 +118,11 @@ class SiteController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -122,6 +143,11 @@ class SiteController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -142,6 +168,11 @@ class SiteController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,
@@ -163,6 +194,11 @@ class SiteController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
             return redirect()->back()->with([
                 'mensagem' => [
                     'status' => false,

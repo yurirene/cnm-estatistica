@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-'titulo' => 'Diretoria ' . $tipo
+    'titulo' => 'Diretoria ' . $tipo,
+    'url_tutorial' => config('tutoriais.diretoria.index')
 ])
 
 <div class="container-fluid mt--7">
@@ -82,6 +83,13 @@
                                 <i class='fas fa-save'></i>
                                 Atualizar
                             </button>
+
+                            @if (isset($notificarCe) && $notificarCe)
+                            <a href="{{ route('dashboard.diretoria-sinodal.notificar-ce') }}" class="btn btn-primary">
+                                <i class='fas fa-bullhorn'></i>
+                                Notificar
+                            </a>
+                            @endif
                         </div>
                     </div>
                     {!! Form::close() !!}

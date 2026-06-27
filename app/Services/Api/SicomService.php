@@ -2,6 +2,8 @@
 
 namespace App\Services\Api;
 
+use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
+use App\Models\CongressoNacional\DelegadoCongressoNacional;
 use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\Sinodal;
@@ -42,22 +44,22 @@ class SicomService
     public static function validarTokenSinodal($sinodalId)
     {
         $sinodal = Sinodal::find($sinodalId);
-        
+
         if (!$sinodal) {
             return false;
         }
-        
+
         return true;
     }
 
     public static function validarTokenFederacao($federacaoId)
     {
         $federacao = Federacao::find($federacaoId);
-        
+
         if (!$federacao) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -74,5 +76,88 @@ class SicomService
         }
 
         return $isTokenValid;
+    }
+
+    public static function getSinodais()
+    {
+        $sinodais = Sinodal::where('status', true)
+            ->get()
+            ->map(function($sinodal) {
+                return [
+                    'id' => $sinodal->id,
+                    'nome' => $sinodal->nome,
+                    'sigla' => $sinodal->sigla,
+                    'regiao' => $sinodal->regiao->nome,
+                ];
+            });
+        return $sinodais;
+    }
+
+    public static function getUnidades()
+    {
+        $unidades = Sinodal::where('status', true)
+            ->with('federacoes', function($query) {
+                $query->where('status', true);
+            })
+            ->get()
+            ->map(function($unidade) {
+                return [
+                    'id' => $unidade->id,
+                    'nome' => $unidade->nome,
+                    'sigla' => $unidade->sigla,
+                    'regiao' => $unidade->regiao->nome,
+                    'federacoes' => $unidade->federacoes->map(function($federacao) {
+                        return [
+                            'id' => $federacao->id,
+                            'nome' => $federacao->nome,
+                            'sigla' => $federacao->sigla,
+                            'regiao' => $federacao->regiao->nome,
+                        ];
+                    })
+                ];
+            });
+
+        return $unidades;
+    }
+
+    public static function getDelegadosExecutiva($reuniaoId)
+    {
+        $delegados = DelegadoComissaoExecutiva::where('status', 2)
+            ->where('credencial', true)
+            ->where('reuniao_id', $reuniaoId)
+            ->get()
+            ->map(function($delegado) {
+                return [
+                    'id' => $delegado->id,
+                    'nome' => $delegado->nome,
+                    'cpf' => $delegado->cpf,
+                    'telefone' => $delegado->telefone,
+                    'tipo' => $delegado->suplente ? 2 : 1,
+                    'cargo' => empty($delegado->oficial) ? null : $delegado->oficial,
+                    'credencial' => $delegado->path_credencial,
+                    'unidade_id' => $delegado->sinodal_id,
+                ];
+            });
+        return $delegados;
+    }
+    public static function getDelegadosCongressoNacional($reuniaoId)
+    {
+        return DelegadoCongressoNacional::where('credencial', true)
+            ->where('pago', true)
+            ->where('reuniao_id', $reuniaoId)
+            ->get()
+            ->map(function($delegado) {
+                return [
+                    'id' => $delegado->id,
+                    'nome' => $delegado->nome,
+                    'cpf' => $delegado->cpf,
+                    'telefone' => $delegado->telefone,
+                    'tipo' => 1,
+                    'cargo' => empty($delegado->oficial) ? null : $delegado->oficial,
+                    'credencial' => $delegado->path_credencial,
+                    'unidade_id' => !empty($delegado->federacao_id) ? $delegado->federacao_id : $delegado->sinodal_id,
+                    'sugestao_comissoes' => $delegado->comissoes ?? [],
+                ];
+            });
     }
 }

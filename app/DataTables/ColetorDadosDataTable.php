@@ -43,7 +43,9 @@ class ColetorDadosDataTable extends DataTable
      */
     public function query(ColetorDados $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()
+            ->where('local_id', auth()->user()->local_id)
+            ->orderBy('created_at', 'desc');
     }
 
     /**
@@ -109,7 +111,7 @@ class ColetorDadosDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Formularios' . date('YmdHis');
     }

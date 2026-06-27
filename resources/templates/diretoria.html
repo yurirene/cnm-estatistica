@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Ofício - Diretoria Eleita</title>
+
+<style>
+    body {
+        font-family: "Times New Roman", serif;
+        font-size: 11pt;
+        line-height: 1.4;
+        margin: 2.5cm 2.5cm 2.5cm 2.5cm;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .header h1 {
+        font-size: 14pt;
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    .destinatario {
+        margin-bottom: 10px;
+    }
+
+    .assunto {
+        margin-bottom: 10px;
+    }
+
+    .assunto strong {
+        text-decoration: underline;
+    }
+
+    .conteudo {
+        text-align: justify;
+        margin-bottom: 10px;
+    }
+
+    .conteudo p {
+        margin: 6px 0;
+    }
+
+    .diretoria {
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+
+    .diretoria table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10.5pt;
+    }
+
+    .diretoria td {
+        padding: 3px 0;
+        vertical-align: top;
+    }
+
+    .cargo {
+        font-weight: bold;
+        width: 160px;
+    }
+
+    .telefone {
+        width: 140px;
+        text-align: right;
+    }
+
+    .assinatura {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .linha-assinatura {
+        margin-top: 50px;
+        border-top: 1px solid #000;
+        width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 5px;
+    }
+
+    .rodape {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 10pt;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+    <h1>DIRETORIA ELEITA</h1>
+</div>
+
+<div class="destinatario">
+    À<br>
+    Confederação Nacional de Mocidade
+</div>
+
+<div class="assunto">
+    <strong>Assunto:</strong> Diretoria Eleita
+</div>
+
+<div class="conteudo">
+
+    <p>Queridos irmãos,</p>
+
+    <p>
+        Conforme deliberação do último Congresso da 
+        <strong>{nome_instancia}</strong>, comunicamos a composição da 
+        Diretoria eleita para o respectivo mandato:
+    </p>
+
+    <div class="diretoria">
+        <table>
+            <tr>
+                <td class="cargo">Presidente:</td>
+                <td>{nome_presidente}</td>
+                <td class="telefone">Tel: {tel_presidente}</td>
+            </tr>
+            <tr>
+                <td class="cargo">Vice-Presidente:</td>
+                <td>{nome_vice}</td>
+                <td class="telefone">Tel: {tel_vice}</td>
+            </tr>
+            <tr>
+                <td class="cargo">Secretário-Executivo:</td>
+                <td>{nome_secretario_executivo}</td>
+                <td class="telefone">Tel: {tel_secretario_executivo}</td>
+            </tr>
+            <tr>
+                <td class="cargo">1º Secretário:</td>
+                <td>{nome_primeiro_secretario}</td>
+                <td class="telefone">Tel: {tel_primeiro_secretario}</td>
+            </tr>
+            <tr>
+                <td class="cargo">2º Secretário:</td>
+                <td>{nome_segundo_secretario}</td>
+                <td class="telefone">Tel: {tel_segundo_secretario}</td>
+            </tr>
+            <tr>
+                <td class="cargo">Tesoureiro:</td>
+                <td>{nome_tesoureiro}</td>
+                <td class="telefone">Tel: {tel_tesoureiro}</td>
+            </tr>
+            <tr>
+                <td class="cargo">Secretário de Causas:</td>
+                <td>{nome_secretario_causas}</td>
+                <td class="telefone">Tel: {tel_secretario_causas}</td>
+            </tr>
+        </table>
+    </div>
+
+    <p>
+        Rogamos as orações desta Confederação e colocamo-nos à disposição
+        para servir com zelo e dedicação.
+    </p>
+
+    <p>Fraternalmente,</p>
+
+</div>
+
+<div class="assinatura">
+    <div class="linha-assinatura">
+        {nome_presidente}<br>
+        Presidente
+    </div>
+</div>
+
+<div class="rodape">
+    Atualizado em: {data_atualizacao}
+</div>
+
+</body>
+</html>

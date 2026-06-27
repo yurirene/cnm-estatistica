@@ -2,24 +2,33 @@
 
 namespace App\Services;
 
-use TelegramBot\Api\BotApi;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
-    
-    /**
-     * Método Responsável poor enviar a mensagem
-     * @param string $message
-     * @return boolean
-     */
-    public static function sendMessage($message)
+    public static function sendMessage(string $chatId, string $message): bool
     {
+        $token = env('TELEGRAM_BOT_TOKEN');
+
+        if (empty($token) || empty($chatId)) {
+            return false;
+        }
+
         try {
-            $obBotApi = new BotApi(config('app.telegram_token'));
-            return $obBotApi->sendMessage(config('app.telegram_chat_id'), $message);
+            $response = Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
+                'chat_id' => $chatId,
+                'text' => $message,
+                'parse_mode' => 'HTML',
+            ]);
+
+            return $response->successful();
         } catch (\Throwable $th) {
+            Log::error('Falha ao enviar mensagem Telegram', [
+                'message' => $th->getMessage(),
+            ]);
+
+            return false;
         }
     }
-    
 }

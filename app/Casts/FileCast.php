@@ -37,7 +37,9 @@ class FileCast implements CastsAttributes
         }
 
         if (!empty($attributes[$key])) {
-            Storage::delete($model->getRawOriginal($key));
+            try {
+                Storage::delete($model->getRawOriginal($key));
+            } catch (\Throwable $th) {}
         }
 
         $filename = $key . '_' . time() . '.' . $value->getClientOriginalExtension();

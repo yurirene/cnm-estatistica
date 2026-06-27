@@ -151,7 +151,7 @@
                     </a>
                 </li>
                 @endcan
-                
+
                 @can('rota-permitida', ['dashboard.formulario-complementar-federacao.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formulario-complementar-federacao.index') }}">
@@ -187,15 +187,31 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.secretaria-executiva.resolucoes.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.secretaria-executiva.resolucoes.index') }}">
+                        <i class="fas fa-tasks"></i> Resoluções
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.tarefas.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.tarefas.index') }}">
+                        <i class="fas fa-check-square"></i> Tarefas
+                    </a>
+                </li>
+                @endcan
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.ce-sinodal.index') }}">
                         <i class="fas fa-gavel"></i>
                         Comissão Executiva
-                        <span class="ms-2 badge badge-danger blob text-white">
+                        <!-- <span class="ms-2 badge badge-danger blob text-white">
                             <i class="fas fa-info"></i>
-                        </span>
+                        </span> -->
                     </a>
                 </li>
                 @endcan
@@ -259,13 +275,6 @@
                 @endcan
                 @endcannot
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.tutoriais.index') }}">
-                        <i class="fas fa-video"></i> Tutoriais
-                    </a>
-                </li>
-
-
                 @can('rota-permitida', ['dashboard.apps.liberacao'])
 
                 <li class="nav-item">
@@ -293,24 +302,47 @@
                     </a>
                 </li>
                 @endcan
-                @can('apps', 'tesouraria')
-                <a class="nav-link"
-                    href="#meusapps"
-                    data-toggle="collapse"
-                    aria-expanded="false"
-                >
-                    <i class="fas fa-tablet-alt"></i> Meus Apps
-                </a>
-                <ul class="collapse list-unstyled" id="meusapps" >
-                    <li class="nav-item ml-3">
-                        <a  class="nav-link" href="{{ route('dashboard.apps.tesouraria.index') }}">
-                            <i class="fas fa-dollar-sign"></i>
-                            Tesouraria
-                        </a>
-                    </li>
-                </ul>
+                @can('rota-permitida', ['dashboard.apps.tesouraria.index'])
+                <li class="nav-item">
+                    <a  class="nav-link" href="{{ route('dashboard.apps.tesouraria.index') }}">
+                        <i class="fas fa-dollar-sign"></i>
+                        Tesouraria
+                    </a>
+                </li>
                 @endcan
                 @endcannot
+
+                @can('rota-permitida', ['dashboard.cn.federacao.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.cn.federacao.index') }}">
+                        <i class="fas fa-id-badge"></i> Congresso Nacional
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.cn.sinodal.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.cn.sinodal.index') }}">
+                        <i class="fas fa-id-badge"></i> Congresso Nacional
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.cn.executiva.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.cn.executiva.index') }}">
+                        <i class="fas fa-id-badge"></i> Congresso Nacional
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.transferencias.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.transferencias.index', ['ump' => true]) }}">
+                        <i class="fas fa-exchange-alt"></i> Transferências
+                    </a>
+                </li>
+                @endcan
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.helpdesk.index') }}">

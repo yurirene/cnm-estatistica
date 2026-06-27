@@ -67,6 +67,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-4 p-2">
+                    <div class="card h-100 border">
+                        <div class="card-header">
+                            ACI
+                        </div>
+                        <div class="card-body">
+                            @include('dashboard.formularios.local.export.aci')
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

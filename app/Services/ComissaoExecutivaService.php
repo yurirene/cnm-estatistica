@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\ComissaoExecutiva\DocumentoRecebido;
+use App\Models\ComissaoExecutiva\DocumentosAutomaticos;
 use App\Models\ComissaoExecutiva\Reuniao;
+use App\Services\Formularios\FormularioSinodalService;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +30,9 @@ class ComissaoExecutivaService
                 'ano' => $dados['ano'],
                 'local' => $dados['local'],
                 'aberto' => isset($dados['aberto']) ? 1 : 0,
-                'visible' => true
+                'visible' => true,
+                'diretoria' => isset($dados['diretoria']) ? 1 : 0,
+                'relatorio_estatistico' => isset($dados['relatorio_estatistico']) ? 1 : 0
             ]);
 
             /*
@@ -56,13 +60,10 @@ class ComissaoExecutivaService
             $reuniao->update([
                 'ano' => $dados['ano'],
                 'local' => $dados['local'],
-                'aberto' => isset($dados['aberto']) ? 1 : 0
+                'aberto' => isset($dados['aberto']) ? 1 : 0,
+                'diretoria' => isset($dados['diretoria']) ? 1 : 0,
+                'relatorio_estatistico' => isset($dados['relatorio_estatistico']) ? 1 : 0
             ]);
-
-
-            // if (!self::sincronizarSIGCE($reuniao->toArray(), 'atualizar-reuniao')) {
-            //     throw new Exception("Erro de comunicação com o SIGCE");
-            // }
 
             DB::commit();
 
@@ -271,10 +272,172 @@ class ComissaoExecutivaService
     {
         $delegado->update([
             'nome' => $dados['nome'],
-            'cpf' => $dados['cpf'],
+            'telefone' => $dados['telefone'],
+            'oficial' => $dados['oficial'],
             'status' => $dados['status'],
             'pago' => $dados['pago'] ?? false,
             'credencial' => $dados['credencial'] ?? false
         ]);
+    }
+
+    public static function sincronizarInscritos(Reuniao $reuniao): void
+    {
+        $url = config('app.evento_url') . '/reuniao/listar-inscritos/' . $reuniao->id;
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . config('app.evento_api_token')
+        ];
+
+        $response = Http::withHeaders($headers)->post($url);
+
+        if ($response->failed()) {
+            throw new Exception("Erro ao sincronizar inscritos");
+        }
+
+        $inscritos = $response->json();
+        foreach ($inscritos as $inscrito) {
+            $cpf = self::formatarCpf($inscrito['cpf']);
+            $delegado = DelegadoComissaoExecutiva::where('cpf', $cpf)
+                ->where('reuniao_id', $reuniao->id)
+                ->first();
+
+            if (empty($delegado) || !in_array($inscrito['payment_status'], DelegadoComissaoExecutiva::STATUS_PAGAMENTO_CONFIRMADO)) {
+                continue;
+            }
+
+            $delegado->update([
+                'status' => $delegado->credencial ? DelegadoComissaoExecutiva::STATUS_CONFIRMADA : DelegadoComissaoExecutiva::STATUS_EM_ANALISE,
+                'telefone' => $inscrito['phone'],
+                'pago' => true
+            ]);
+        }
+    }
+
+    /**
+     * Formata CPF no padrão 000.000.000-00
+     *
+     * @param string $cpf CPF sem formatação (apenas números)
+     * @return string CPF formatado
+     */
+    public static function formatarCpf(string $cpf): string
+    {
+        // Remove caracteres não numéricos
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+
+        // Verifica se tem 11 dígitos
+        if (strlen($cpf) !== 11) {
+            return $cpf; // Retorna o CPF original se não tiver 11 dígitos
+        }
+
+        // Formata no padrão 000.000.000-00
+        return substr($cpf, 0, 3) . '.' .
+               substr($cpf, 3, 3) . '.' .
+               substr($cpf, 6, 3) . '-' .
+               substr($cpf, 9, 2);
+    }
+
+    public static function getDocumentosAutomaticosEntregues(string $reuniao): array
+    {
+        $reuniao = Reuniao::where('id', $reuniao)->first();
+        $instancia = UserService::getCampoInstanciaDB();
+
+        if (empty($reuniao)) {
+            return [];
+        }
+
+        $documentos = [];
+
+        $documentosAutomaticos = DocumentosAutomaticos::where('reuniao_id', $reuniao->id)
+            ->where($instancia['campo'], $instancia['id'])
+            ->first();
+
+        if (!empty($documentosAutomaticos)) {
+            $documentosAutomaticos = $documentosAutomaticos->toArray();
+        } else {
+            $documentosAutomaticos = [];
+        }
+
+        if ($reuniao->diretoria == 1) {
+            $documentos['diretoria'] = isset($documentosAutomaticos['diretoria']) ? true : false;
+        }
+
+        if ($reuniao->relatorio_estatistico == 1) {
+            $documentos['relatorio_estatistico'] = isset($documentosAutomaticos['relatorio_estatistico']) ? true : false;
+        }
+
+        return $documentos;
+    }
+
+    public static function deveNotificarDiretoria(): bool
+    {
+        $reuniao = Reuniao::where('status', 1)->where('aberto', 1)->first();
+
+        if (!$reuniao) {
+            return false;
+        }
+
+        return (bool) $reuniao->diretoria;
+    }
+
+    public static function deveNotificarRelatorioEstatistico(): bool
+    {
+        $reuniao = Reuniao::where('status', 1)
+            ->where('aberto', 1)
+            ->first();
+
+        if (empty($reuniao)) {
+            return false;
+        }
+
+        return (bool) $reuniao->relatorio_estatistico;
+    }
+
+    public static function notificarRelatorioEstatistico(): void
+    {
+        $reuniao = Reuniao::where('status', 1)
+            ->where('aberto', 1)
+            ->first();
+
+        if (empty($reuniao)) {
+            throw new Exception("Nenhuma reunião está aberta para envio de notificação");
+        }
+
+        $instancia = UserService::getCampoInstanciaDB();
+
+        DB::beginTransaction();
+
+        try {
+            $formulario = FormularioSinodalService::getFormularioAnoCorrente();
+
+            if (empty($formulario)) {
+                throw new Exception("Nenhum formulário de relatório estatístico encontrado");
+            }
+
+            DocumentosAutomaticos::updateOrCreate(
+                [
+                    $instancia['campo'] => $instancia['id'],
+                    'reuniao_id' => $reuniao->id
+                ],
+                [
+                    'reuniao_id' => $reuniao->id,
+                    $instancia['campo'] => $instancia['id'],
+                    'relatorio_estatistico' => $formulario->toArray()
+                ]
+            );
+
+            $formulario->update([
+                'reuniao_notificada' => $reuniao->id
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            throw new Exception("Erro ao notificar relatório estatístico");
+        }
     }
 }

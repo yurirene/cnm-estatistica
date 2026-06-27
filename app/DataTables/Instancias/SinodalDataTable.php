@@ -53,7 +53,7 @@ class SinodalDataTable extends DataTable
      * Get query source of dataTable.
      *
      * @param \App\Models\Sinodal $model
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(Sinodal $model)
@@ -117,7 +117,7 @@ class SinodalDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Sinodais_' . date('YmdHis');
     }

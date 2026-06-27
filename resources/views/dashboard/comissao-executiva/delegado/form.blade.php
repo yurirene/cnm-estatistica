@@ -8,7 +8,7 @@
 ) !!}
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-2">
         {!! Form::label('status', 'Status') !!}
         {!! Form::select(
             'status',
@@ -35,17 +35,37 @@
             ) !!}
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="form-group">
-            {!! Form::label('cpf', 'CPF') !!}
+            {!! Form::label('telefone', 'Telefone') !!}
             {!! Form::text(
-                'cpf',
+                'telefone',
                 null,
                 [
-                    'class' => 'form-control isCpf',
+                    'class' => 'form-control isTelefone',
                     'required' => true,
                     'autocomplete' => 'off',
-                    'placeholder' => '000.000.000-00'
+                    'placeholder' => '(99) 99999-9999'
+                ]
+            ) !!}
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            {!! Form::label('cpf', 'Oficial') !!}
+            {!! Form::select(
+                'oficial',
+                [
+                    '0' => 'Não',
+                    '1' => 'Diácono',
+                    '2' => 'Presbítero'
+                ],
+                null,
+                [
+                    'class' => 'form-control',
+                    'required' => true,
+                    'autocomplete' => 'off',
+                    'readonly' => !empty($delegado) && $delegado->credencial == 1
                 ]
             ) !!}
         </div>

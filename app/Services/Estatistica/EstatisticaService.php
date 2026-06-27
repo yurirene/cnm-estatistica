@@ -69,6 +69,7 @@ class EstatisticaService
     {
         $formulario_base = FormularioSinodal::with(['sinodal', 'sinodal.regiao'])
             ->where('ano_referencia', $request['ano_referencia'])
+            ->whereNotNull('aci')
             ->first()
             ->toArray();
         $dados = collect($formulario_base)->except([
@@ -105,7 +106,7 @@ class EstatisticaService
                 $somente_colunas,
                 $request['ano_referencia']
             ),
-            'base_dados_' . date('d_m_Y') . '.xlsx'
+            'base_dados_' . $request['ano_referencia'] . '_' . date('his') . '.xlsx'
         );
 
     }

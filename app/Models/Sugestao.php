@@ -9,7 +9,9 @@ class Sugestao extends Model
 
     protected $table = 'sugestoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $dates = ['created_at'];
+    protected $casts = [
+        'created_at' => 'date'
+    ];
 
     public function usuario()
     {

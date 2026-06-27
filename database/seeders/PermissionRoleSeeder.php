@@ -27,7 +27,8 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'acesso-apps',
                     'avisos',
-                    'helpdesk'
+                    'helpdesk',
+                    'secretaria-executiva'
                 ]
             ],
             'diretoria' => [
@@ -43,7 +44,10 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.datatables.informacao-federacoes',
                     'dashboard.datatables.formularios-entregues',
                     'dashboard.formularios-sinodal.export',
-                    'dashboard.usuarios.resetar-senha'
+                    'dashboard.usuarios.resetar-senha',
+                    'dashboard.transferencias.index',
+                    'dashboard.transferencias.transferir-federacao',
+                    'dashboard.transferencias.transferir-ump'
                 ]
             ],
             'sinodal' => [
@@ -51,15 +55,14 @@ class PermissionRoleSeeder extends Seeder
                     'federacoes',
                     'formularios-sinodais',
                     'tutoriais',
-                    'apps',
                     'detalhamento',
                     'helpdesk',
                     'diretoria-sinodal',
                     'ce-sinodal',
                     'formulario-complementar-sinodal',
-                    'pesquisas'
-                    'ce-sinodal',
-                    'sites'
+                    'pesquisas',
+                    'sites',
+                    'tesouraria'
                 ],
                 'permissions' => [
                     'dashboard.sinodais.get-ranking',
@@ -70,7 +73,17 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
+                    'dashboard.cn.sinodal.index',
+                    'dashboard.cn.sinodal.delegado.create',
+                    'dashboard.cn.sinodal.delegado.edit',
+                    'dashboard.cn.sinodal.delegado.store',
+                    'dashboard.cn.sinodal.delegado.update',
+                    'dashboard.cn.sinodal.delegado.delete',
+                    'dashboard.cn.sinodal.documento.store',
+                    'dashboard.cn.sinodal.documento.delete',
+                    'dashboard.transferencias.index',
+                    'dashboard.transferencias.transferir-ump'
                 ]
             ],
             'federacao' => [
@@ -82,6 +95,7 @@ class PermissionRoleSeeder extends Seeder
                     'diretoria-federacao',
                     'diretoria',
                     'formulario-complementar-federacao',
+                    'tesouraria'
                 ],
                 'permissions' => [
                     'dashboard.federacoes.update-info',
@@ -89,7 +103,13 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.formularios-local.export',
                     'dashboard.formularios-federacao.export',
                     'dashboard.avisos.listar',
-                    'dashboard.avisos.visualizado'
+                    'dashboard.avisos.visualizado',
+                    'dashboard.cn.federacao.index',
+                    'dashboard.cn.federacao.delegado.create',
+                    'dashboard.cn.federacao.delegado.edit',
+                    'dashboard.cn.federacao.delegado.store',
+                    'dashboard.cn.federacao.delegado.update',
+                    'dashboard.cn.federacao.delegado.delete',
                 ]
             ],
             'local' => [
@@ -98,7 +118,8 @@ class PermissionRoleSeeder extends Seeder
                     'tutoriais',
                     'helpdesk',
                     'diretoria-local',
-                    'coletor-dados'
+                    'coletor-dados',
+                    'tesouraria'
                 ],
                 'permissions' => [
                     'dashboard.locais.update-info',
@@ -122,7 +143,24 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'digestos',
                     'helpdesk',
-                    'comissao-executiva'
+                    'comissao-executiva',
+                    'secretaria-executiva',
+                    'tarefas',
+                ],
+                'permissions' => [
+                    'dashboard.cn.executiva.index',
+                    'dashboard.cn.executiva.delegado.update',
+                    'dashboard.cn.executiva.sincronizar-inscritos',
+                    'dashboard.cn.executiva.documento.update',
+                    'dashboard.cn.executiva.documento.delete',
+                    'dashboard.cn.executiva.exportar-delegados-csv',
+                    'dashboard.cn.executiva.delegado.exportar-diretoria',
+                    'dashboard.cn.executiva.delegado.exportar-relatorio-estatistico',
+                    'dashboard.cn.executiva.sincronizar-documentos-instancias',
+                    'dashboard.cn.executiva.documento-instancia.update',
+                    'dashboard.cn.executiva.exportar-documentos-instancias-csv',
+                    'dashboard.cn.executiva.exportar-arquivos-reuniao-zip',
+                    'dashboard.cn.executiva.exportar-arquivos-reuniao'
                 ]
             ],
             'secreatria_produtos' => [

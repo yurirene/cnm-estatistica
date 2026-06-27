@@ -14,8 +14,9 @@ class Evento extends Model
     protected $casts = [
         'form' => 'array',
         'data_inicio' => DateCast::class,
-        'data_fim' => DateCast::class
+        'data_fim' => DateCast::class,
+        'created_at' => 'date',
+        'updated_at' => 'date'
     ];
-    protected $dates = ['created_at', 'updated_at'];
 
 }

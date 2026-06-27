@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@include('dashboard.partes.head', [
+    'titulo' => 'Início',
+    'url_tutorial' => config('tutoriais.index.sinodal'),
+    'remover' => true
+])
 @include('dashboard.index.sinodal.cards',[
     'totalizador' => DashboardHelper::getTotalizadores()
 ])

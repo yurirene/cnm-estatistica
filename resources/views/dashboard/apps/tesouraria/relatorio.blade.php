@@ -15,7 +15,7 @@
                     'ano',
                     $anos,
                     null,
-                    ['class' => 'form-control isDateRange','id' => 'ano']
+                    ['class' => 'form-control','id' => 'ano']
                 ) !!}
             </div>
             <div class="col-lg-3 col-md-6">

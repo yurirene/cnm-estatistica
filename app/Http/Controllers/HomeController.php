@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Congresso\CongressoNacionalController;
+use App\Models\CongressoReuniao;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index()
     {
-        return redirect()->route('dashboard.home');
+        return view('home');
+    }
+
+    public function congresso()
+    {
+        $reuniao = CongressoReuniao::aberta()->first();
+        $congressoController = app(CongressoNacionalController::class);
+        $totalizador = $congressoController->getTotalizadorQuorum($reuniao?->id);
+        $listaSinodaisComFederacoes = $congressoController->getSinodaisComFederacoesQuorum($reuniao?->id);
+
+        return view('congresso', [
+            'totalizador' => $totalizador,
+            'listaSinodaisComFederacoes' => $listaSinodaisComFederacoes
+        ]);
     }
 }

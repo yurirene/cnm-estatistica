@@ -9,6 +9,7 @@ use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ColetorDadosController;
 use App\Http\Controllers\ComissaoExecutivaController;
 use App\Http\Controllers\ComprovanteACIController;
+use App\Http\Controllers\Congresso\CongressoNacionalController;
 use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DelegadoComissaoExecutivaController;
 use App\Http\Controllers\DetalhamentoController;
 use App\Http\Controllers\DigestoController;
+use App\Http\Controllers\TransferenciasController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
@@ -33,6 +35,8 @@ use App\Http\Controllers\Produtos\ProdutoController;
 use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
+use App\Http\Controllers\ResolucaoController;
+use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TutorialController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -62,8 +66,10 @@ Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
     ->name('digesto.exibir');
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])
     ->name('estatistica');
+Route::get('/congresso', [App\Http\Controllers\HomeController::class, 'congresso'])
+    ->name('congresso');
 
-Route::get('/coletor-dados/login', [ColetorDadosController::class, 'login'])
+Route::get('/coletor-dados/acessar', [ColetorDadosController::class, 'login'])
     ->name('coletor-dados.login');
 Route::get('/coletor-dados', [ColetorDadosController::class, 'externo'])
     ->name('coletor-dados.externo');
@@ -197,6 +203,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('formularios-sinodal.export');
         Route::post('/formularios-sinodais-salvar', [FormularioSinodalController::class, 'salvarPreenchimento'])
             ->name('formularios-sinodais.apenas-salvar');
+        Route::get('/formularios-sinodais-notificar-ce', [FormularioSinodalController::class, 'notificarCE'])
+            ->name('formularios-sinodais.notificar-ce');
     });
 });
 
@@ -536,7 +544,7 @@ Route::group(
         'as' => 'dashboard.'
     ],
     function () {
-        Route::group(['modulo' => 'apps'], function () {
+        Route::group(['modulo' => 'tesouraria'], function () {
             //TESOURARIA
 
             Route::resource('/apps/tesouraria', TesourariaController::class)
@@ -591,6 +599,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
     Route::group(['modulo' => 'diretoria-sinodal'], function () {
         Route::get('/diretoria-sinodal', [DiretoriasSinodalController::class, 'index'])->name('diretoria-sinodal.index');
         Route::put('/diretoria-sinodal/{diretoria}/update', [DiretoriasSinodalController::class, 'update'])->name('diretoria-sinodal.update');
+        Route::get('/diretoria-sinodal/notificar-ce', [DiretoriasSinodalController::class, 'notificarCe'])->name('diretoria-sinodal.notificar-ce');
     });
 
     Route::group(['modulo' => 'diretoria-federacao'], function () {
@@ -628,6 +637,9 @@ Route::group(
                 ->names('comissao-executiva')
                 ->parameter('comissao-executiva', 'reuniao')
                 ->except(['destroy']);
+
+            Route::get('comissao-executiva/{reuniao}/sincronizar-inscritos', [ComissaoExecutivaController::class, 'sincronizarInscritos'])
+                ->name('comissao-executiva.sincronizar-inscritos');
             Route::get('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
                 ->name('comissao-executiva.delete');
             Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])
@@ -673,3 +685,132 @@ Route::group(
         );
     }
 );
+
+//CONGRESSO NACIONAL
+Route::group(
+    [
+        'middleware' => ['auth', 'auth-sistema'],
+        'prefix' => 'dashboard',
+        'as' => 'dashboard.'
+    ],
+    function () {
+        Route::group(['modulo' => 'congresso-nacional'], function () {
+            Route::get('congresso-nacional/federacao', [CongressoNacionalController::class, 'indexFederacao'])
+                ->name('cn.federacao.index');
+            Route::get('congresso-nacional/federacao/delegado/create', [CongressoNacionalController::class, 'createFederacao'])
+                ->name('cn.federacao.delegado.create');
+            Route::get('congresso-nacional/federacao/delegado/{delegado}/edit', [CongressoNacionalController::class, 'editFederacao'])
+                ->name('cn.federacao.delegado.edit');
+            Route::post('congresso-nacional/federacao/delegado', [CongressoNacionalController::class, 'storeDelegadoFederacao'])
+                ->name('cn.federacao.delegado.store');
+            Route::put('congresso-nacional/federacao/delegado/{delegado}', [CongressoNacionalController::class, 'updateDelegadoFederacao'])
+                ->name('cn.federacao.delegado.update');
+            Route::get('congresso-nacional/federacao/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteFederacao'])
+                ->name('cn.federacao.delegado.delete');
+
+            Route::get('congresso-nacional/sinodal', [CongressoNacionalController::class, 'indexSinodal'])
+                ->name('cn.sinodal.index');
+            Route::get('congresso-nacional/sinodal/delegado/create', [CongressoNacionalController::class, 'createSinodal'])
+                ->name('cn.sinodal.delegado.create');
+            Route::get('congresso-nacional/sinodal/delegado/{delegado}/edit', [CongressoNacionalController::class, 'editSinodal'])
+                ->name('cn.sinodal.delegado.edit');
+            Route::post('congresso-nacional/sinodal/delegado', [CongressoNacionalController::class, 'storeDelegadoSinodal'])
+                ->name('cn.sinodal.delegado.store');
+            Route::put('congresso-nacional/sinodal/delegado/{delegado}', [CongressoNacionalController::class, 'updateDelegadoSinodal'])
+                ->name('cn.sinodal.delegado.update');
+            Route::get('congresso-nacional/sinodal/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteSinodal'])
+                ->name('cn.sinodal.delegado.delete');
+
+            // Rotas para Documentos (apenas sinodal)
+            Route::post('congresso-nacional/sinodal/documento', [CongressoNacionalController::class, 'storeDocumentoSinodal'])
+                ->name('cn.sinodal.documento.store');
+            Route::get('congresso-nacional/sinodal/documento/{documento}/delete', [CongressoNacionalController::class, 'deleteDocumentoSinodal'])
+                ->name('cn.sinodal.documento.delete');
+
+            Route::get('congresso-nacional/executiva', [CongressoNacionalController::class, 'indexExecutiva'])
+                ->name('cn.executiva.index');
+            Route::get('congresso-nacional/executiva/exportar-delegados-csv', [CongressoNacionalController::class, 'exportDelegadosCsv'])
+                ->name('cn.executiva.exportar-delegados-csv');
+            Route::post('congresso-nacional/executiva/reuniao', [CongressoNacionalController::class, 'storeReuniao'])
+                ->name('cn.executiva.reuniao.store');
+            Route::get('congresso-nacional/executiva/sincronizar-inscritos', [CongressoNacionalController::class, 'sincronizarInscritos'])
+                ->name('cn.executiva.sincronizar-inscritos');
+            Route::put('congresso-nacional/executiva/{delegado}', [CongressoNacionalController::class, 'updateStatusDelegado'])
+                ->name('cn.executiva.delegado.update');
+            Route::put('congresso-nacional/executiva/{documento}/documento', [CongressoNacionalController::class, 'updateStatusDocumento'])
+                ->name('cn.executiva.documento.update');
+            Route::get('congresso-nacional/executiva/{documento}/documento/delete', [CongressoNacionalController::class, 'deleteDocumento'])
+                ->name('cn.executiva.documento.delete');
+                
+            Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-diretoria', [CongressoNacionalController::class, 'exportDiretoria'])
+                ->name('cn.executiva.delegado.exportar-diretoria');
+            Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-relatorio-estatistico', [CongressoNacionalController::class, 'exportRelatorioEstatistico'])
+                ->name('cn.executiva.delegado.exportar-relatorio-estatistico');
+            Route::get('congresso-nacional/executiva/sincronizar-documentos-instancias', [CongressoNacionalController::class, 'sincronizarDocumentosInstancias'])
+                ->name('cn.executiva.sincronizar-documentos-instancias');
+            Route::get('congresso-nacional/executiva/exportar-documentos-instancias-csv', [CongressoNacionalController::class, 'exportDocumentosInstanciasCsv'])
+                ->name('cn.executiva.exportar-documentos-instancias-csv');
+            Route::get('congresso-nacional/executiva/exportar-arquivos-reuniao', [CongressoNacionalController::class, 'indexExportarArquivosReuniao'])
+                ->name('cn.executiva.exportar-arquivos-reuniao');
+            Route::get('congresso-nacional/executiva/exportar-arquivos-reuniao-zip/{regiao}', [CongressoNacionalController::class, 'exportArquivosReuniaoZip'])
+                ->name('cn.executiva.exportar-arquivos-reuniao-zip');
+            Route::put('congresso-nacional/executiva/documento-instancia/{documento_instancia}', [CongressoNacionalController::class, 'updateDocumentoInstancia'])
+                ->name('cn.executiva.documento-instancia.update');
+        });
+    }
+);
+
+// SECRETARIA EXECUTIVA - RESOLUÇÕES
+Route::group([
+    'middleware' => ['auth', 'auth-sistema'],
+    'prefix' => 'dashboard',
+    'as' => 'dashboard.',
+], function () {
+    Route::group(['modulo' => 'secretaria-executiva'], function () {
+        Route::get('/secretaria-executiva/resolucoes', [ResolucaoController::class, 'index'])
+            ->name('secretaria-executiva.resolucoes.index');
+        Route::post('/secretaria-executiva/resolucoes', [ResolucaoController::class, 'store'])
+            ->name('secretaria-executiva.resolucoes.store');
+        Route::put('/secretaria-executiva/resolucoes/{resolucao}', [ResolucaoController::class, 'update'])
+            ->name('secretaria-executiva.resolucoes.update');
+        Route::get('/secretaria-executiva/resolucoes/{resolucao}/delete', [ResolucaoController::class, 'destroy'])
+            ->name('secretaria-executiva.resolucoes.delete');
+        Route::post('/secretaria-executiva/resolucoes/importar', [ResolucaoController::class, 'importar'])
+            ->name('secretaria-executiva.resolucoes.importar');
+        Route::get('/secretaria-executiva/resolucoes/modelo-importacao', [ResolucaoController::class, 'modeloImportacao'])
+            ->name('secretaria-executiva.resolucoes.modelo-importacao');
+        Route::get('/secretaria-executiva/responsaveis', [ResolucaoController::class, 'responsaveis'])
+            ->name('secretaria-executiva.responsaveis');
+        Route::put('/secretaria-executiva/perfil/telegram', [ResolucaoController::class, 'atualizarTelegram'])
+            ->name('secretaria-executiva.telegram.update');
+    });
+
+    Route::group(['modulo' => 'tarefas'], function () {
+        Route::get('/tarefas', [TarefaController::class, 'index'])
+            ->name('tarefas.index');
+        Route::post('/tarefas', [TarefaController::class, 'store'])
+            ->name('tarefas.store');
+        Route::put('/tarefas/{tarefa}', [TarefaController::class, 'update'])
+            ->name('tarefas.update');
+        Route::get('/tarefas/{tarefa}/delete', [TarefaController::class, 'destroy'])
+            ->name('tarefas.delete');
+        Route::get('/tarefas/{tarefa}/encerrar', [TarefaController::class, 'encerrar'])
+            ->name('tarefas.encerrar');
+    });
+});
+
+//TRANSFERENCIAS
+Route::group([
+    'middleware' => ['auth', 'auth-sistema'],
+    'prefix' => 'dashboard',
+    'as' => 'dashboard.'
+], function () {
+    Route::group(['modulo' => 'transferencias'], function () {
+        Route::get('/transferencias', [TransferenciasController::class, 'index'])
+            ->name('transferencias.index');
+        Route::post('/transferencias/transferir-federacao', [TransferenciasController::class, 'transferirFederacao'])
+            ->name('transferencias.transferir-federacao');
+        Route::post('/transferencias/transferir-ump', [TransferenciasController::class, 'transferirUmp'])
+            ->name('transferencias.transferir-ump');
+    });
+});

@@ -99,7 +99,7 @@ class AvisosDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Avisos_' . date('YmdHis');
     }

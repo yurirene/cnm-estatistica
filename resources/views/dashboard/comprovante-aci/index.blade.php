@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Comprovantes ACI'
+    'titulo' => 'Comprovantes ACI',
+    'url_tutorial' => config('tutoriais.comprovante-aci.index')
 ])
 
 <div class="container-fluid mt--7">

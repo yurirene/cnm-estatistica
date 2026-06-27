@@ -6,11 +6,13 @@ use App\Models\Apps\App;
 use App\Models\Apps\Site\Evento;
 use App\Models\Apps\Site\Galeria;
 use App\Models\Apps\Site\Site;
+use App\Models\ComissaoExecutiva\DocumentosAutomaticos;
 use App\Models\Diretorias\DiretoriaSinodal;
 use App\Models\Estatistica\Ranking;
 
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -23,11 +25,25 @@ class Sinodal extends Model
 
     protected $table = 'sinodais';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $dates = ['data_organizacao'];
+    protected $casts = [
+        'data_organizacao' => 'date'
+    ];
 
     public function getDataOrganizacaoFormatadaAttribute()
     {
-        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+        if (is_null($this->data_organizacao)) {
+            return 'Sem Informação';
+        }
+
+        if (is_string($this->data_organizacao)) {
+            return Carbon::parse($this->data_organizacao)->format('d/m/Y');
+        }
+
+        if ($this->data_organizacao instanceof Carbon) {
+            return $this->data_organizacao->format('d/m/Y');
+        }
+
+        return 'Sem Informação';
     }
 
     public function regiao()
@@ -88,9 +104,19 @@ class Sinodal extends Model
         return $query->where('regiao_id', auth()->user()->regiao_id);
     }
 
+    public function scopeMinhaRegiao($query)
+    {
+        return $query->where('regiao_id', auth()->user()->regiao_id);
+    }
+
     public function diretoria()
     {
         return $this->hasOne(DiretoriaSinodal::class, 'sinodal_id');
+    }
+
+    public function documentosAutomaticos()	
+    {
+        return $this->hasMany(DocumentosAutomaticos::class, 'sinodal_id');
     }
 
     protected function getDadosFederacaoLocalCacheKey(): string
@@ -104,7 +130,7 @@ class Sinodal extends Model
     }
 
     public function getDadosFederacaoLocalAttribute(): array
-    {     
+    {
         $dados = Cache::remember(
             $this->getDadosFederacaoLocalCacheKey(),
             now()->addDay(),

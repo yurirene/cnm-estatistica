@@ -270,7 +270,7 @@
             $('.isYear').mask('0000');
             $('.isCpf').mask('999.999.999-99');
         })(jQuery)
-        $('.isTelefone').mask('(99)99999-9999');
+        $('.isTelefone').mask('(99) 99999-9999');
     </script>
     <script>
         $(document).ready(function() {

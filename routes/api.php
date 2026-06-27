@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\LinktreeController;
 use App\Http\Controllers\Api\SicomController;
 use App\Http\Controllers\IClaudiaController;
 use Illuminate\Http\Request;
@@ -20,11 +21,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/linktree/validar-login', [LinktreeController::class, 'login']);
+Route::get('/linktree/links', [LinktreeController::class, 'links']);
+Route::post('/linktree/links', [LinktreeController::class, 'addLink']);
+Route::delete('/linktree/remover-link/{link}', [LinktreeController::class, 'removerLink']);
 
 Route::any('/iClaudia', function() {
     $update_response = file_get_contents("php://input");
     $request = json_decode($update_response, true);
-    
+
     IClaudiaController::process($request);
 });
 
@@ -34,3 +39,11 @@ Route::middleware('api-token-sicom')->group(function () {
     Route::get('/federacoes/{sinodalId}', [SicomController::class, 'getFederacoes']);
     Route::get('/federacoes/{federacaoId}/umps-locais', [SicomController::class, 'getUmpsLocais']);
 });
+
+Route::middleware('api-token-executiva')->group(function () {
+    Route::get('/executiva/sinodais', [SicomController::class, 'getSinodais']);
+    Route::get('/congresso', [SicomController::class, 'getUnidades']);
+    Route::get('/executiva/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosExecutiva']);
+    Route::get('/congresso-nacional/{reuniaoId}/delegados', [SicomController::class, 'getDelegadosCongressoNacional']);
+});
+

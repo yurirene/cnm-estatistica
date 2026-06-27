@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Formulários - Sinodal'
+    'titulo' => 'Formulários - Sinodal',
+    'url_tutorial' => config('tutoriais.estatistica.sinodal')
 ])
 
 <div class="container-fluid mt--7">
@@ -132,6 +133,11 @@
                     @endif
                     @if(!$formularioEntregue)
                     <button class="btn btn-warning" id="apenas-salvar" type="button">Apenas Salvar</button>
+                    @endif
+                    @if(isset($notificarCE) && $notificarCE)
+                    <a href="{{ route('dashboard.formularios-sinodais.notificar-ce') }}" class="btn btn-primary" id="notificar-ce">
+                        <i class="fas fa-bullhorn"></i> Notificar
+                    </a>
                     @endif
                     {!! Form::close() !!}
                 </div>

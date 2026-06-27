@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Apps\App;
 use App\Models\Diretorias\DiretoriaFederacao;
 use App\Traits\GenericTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,12 +18,26 @@ class Federacao extends Model
     protected $table = 'federacoes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    protected $dates = ['data_organizacao'];
+    protected $casts = [
+        'data_organizacao' => 'date'
+    ];
 
 
     public function getDataOrganizacaoFormatadaAttribute()
     {
-        return !is_null($this->data_organizacao) ?  $this->data_organizacao->format('d/m/Y') : 'Sem Informação';
+        if (is_null($this->data_organizacao)) {
+            return 'Sem Informação';
+        }
+
+        if (is_string($this->data_organizacao)) {
+            return Carbon::parse($this->data_organizacao)->format('d/m/Y');
+        }
+
+        if ($this->data_organizacao instanceof Carbon) {
+            return $this->data_organizacao->format('d/m/Y');
+        }
+
+        return 'Sem Informação';
     }
 
     public function regiao()
@@ -90,7 +105,7 @@ class Federacao extends Model
     }
 
     public function getDadosDatatableAttribute(): array
-    {     
+    {
         $dados = Cache::remember(
             $this->getDadosDatatableCacheKey(),
             now()->addDay(),

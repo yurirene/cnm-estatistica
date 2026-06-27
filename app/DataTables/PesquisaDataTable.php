@@ -161,7 +161,7 @@ class PesquisaDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'PESQUISA_' . date('YmdHis');
     }

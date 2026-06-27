@@ -16,9 +16,10 @@ class DocumentoRecebido extends Model
 
     protected $table = 'comissao_executiva_documentos_recebidos';
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $dates = ['created_at', 'updated_at'];
     protected $casts = [
-        'path' => FileCast::class
+        'path' => FileCast::class,
+        'created_at' => 'date',
+        'updated_at' => 'date'
     ];
 
 

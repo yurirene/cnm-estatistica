@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+
+@include('dashboard.partes.head', [
+    'titulo' => 'Início',
+    'url_tutorial' => config('tutoriais.index.ump-local'),
+    'remover' => true
+])
 @include('dashboard.index.local.cards', [
     'totalizadores' => DashboardHelper::getTotalizadores()
 ])

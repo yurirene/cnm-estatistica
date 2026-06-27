@@ -1,4 +1,4 @@
-@if($formularioComplementarSinodal != null)
+@if(!is_null($formularioComplementarSinodal) && $formularioComplementarSinodal->formulario != null)
 <h3>Formulário Complementar Sinodal</h3>
 <div class="row">
     <div class="col">
@@ -7,7 +7,7 @@
 </div>
 @endif
 
-@if($formularioComplementarFederacao != null)
+@if(!is_null($formularioComplementarFederacao) && $formularioComplementarFederacao->formulario != null)
 <h3>Formulário Complementar Federação</h3>
 <div class="row">
     <div class="col">
@@ -19,7 +19,7 @@
 @push('js')
 <script>
     jQuery(function($) {
-        @if($formularioComplementarSinodal != null)
+        @if(!is_null($formularioComplementarSinodal) && $formularioComplementarSinodal->formulario != null)
         $('#formulario-renderizado-sinodal').formRender({
             dataType: 'json',
             formData: JSON.parse(@json($formularioComplementarSinodal->formulario))
@@ -34,11 +34,11 @@
                     input.value = respostasSinodal[key];
                 }
             });
-            
+
             @endif
         @endif
 
-        @if($formularioComplementarFederacao != null)
+        @if(!is_null($formularioComplementarFederacao) && $formularioComplementarFederacao->formulario != null)
         $('#formulario-renderizado-federacao').formRender({
             dataType: 'json',
             formData: JSON.parse(@json($formularioComplementarFederacao->formulario))

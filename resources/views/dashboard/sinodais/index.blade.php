@@ -3,7 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Sinodais'
+    'titulo' => 'Sinodais',
+    'url_tutorial' => config('tutoriais.sinodais.index')
 ])
     
 <div class="container-fluid mt--7">

@@ -35,5 +35,18 @@
             Diretoria
         </button>
         @endif
+        @if(isset($transferir) && $transferir == true)
+        <button
+        type="button"
+        class="dropdown-item"
+        data-toggle="modal"
+        data-id="{{$id}}"
+        data-nome="{{$nome}}"
+        data-origem="{{$origem_nome}}"
+        data-target="#modal_transferir"
+        >
+            Transferir
+        </button>
+        @endif
     </div>
 </div>
