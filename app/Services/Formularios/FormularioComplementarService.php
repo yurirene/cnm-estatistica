@@ -343,7 +343,7 @@ class FormularioComplementarService
         }
 
         foreach ($respostas as $federacao => $resposta) {
-            $respostaArray = json_decode($resposta, true);
+            $respostaArray = is_array($resposta) ? $resposta : json_decode($resposta, true);
 
             foreach ($chaves as $chave) {
                 if (isset($respostaArray[$chave])) {
@@ -377,7 +377,7 @@ class FormularioComplementarService
         }
 
         foreach ($respostas as $local => $resposta) {
-            $respostaArray = json_decode($resposta, true);
+            $respostaArray = is_array($resposta) ? $resposta : json_decode($resposta, true);
 
             foreach ($chaves as $chave) {
                 if (isset($respostaArray[$chave])) {
