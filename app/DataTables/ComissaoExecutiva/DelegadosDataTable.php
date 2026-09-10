@@ -9,6 +9,7 @@ use App\Models\ComissaoExecutiva\DocumentoRecebido;
 use App\Models\ComissaoExecutiva\Reuniao;
 use App\Models\Sinodal;
 use App\Models\User;
+use App\Services\ComissaoExecutivaService;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
@@ -87,7 +88,7 @@ class DelegadosDataTable extends DataTable
                 return implode(' ', $retorno);
             })
             ->editColumn('oficial', function ($sql) {
-                return $sql->oficial ?? '-';
+                return ComissaoExecutivaService::TIPOS_OFICIAIS[$sql->oficial] ?? '-';
             })
             ->editColumn('suplente', function ($sql) {
                 return $sql->suplente ? 'Suplente' : 'Delegado';

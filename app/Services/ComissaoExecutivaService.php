@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\Storage;
 class ComissaoExecutivaService
 {
 
+    public const DIACONO = 1;
+    public const PRESBITERO = 2;
+
+    public const TIPOS_OFICIAIS = [
+        self::DIACONO => 'Diacono',
+        self::PRESBITERO => 'Presbítero'
+    ];
+
     public static function store(array $dados): ?Reuniao
     {
         DB::beginTransaction();
@@ -212,6 +220,7 @@ class ComissaoExecutivaService
         $delegado = DelegadoComissaoExecutiva::create([
             'nome' => $dados['nome'],
             'cpf' => $dados['cpf'],
+            'oficial' => $dados['oficial'] ?? null,
             'reuniao_id' => $reuniao['id'],
             'sinodal_id' => $sinodal->id,
             'suplente' => $dados['suplente'] ?? 0,
