@@ -69,6 +69,7 @@ class FormularioLocalService
                     )
                 ]
             );
+            self::registrarEnvio($formulario);
             EstatisticaService::atualizarRelatorioGeral();
             AtualizarAutomaticamenteFormulariosService::atualizarFederacao($formulario);
             DB::commit();
@@ -96,6 +97,20 @@ class FormularioLocalService
             throw new Exception("Erro ao Atualizar");
 
         }
+    }
+
+    /**
+     * Grava enviado_em somente na ação do botão Enviar.
+     * A atualização automática da federação/sinodal não deve alterar este campo.
+     */
+    private static function registrarEnvio(FormularioLocal $formulario): void
+    {
+        if (!is_null($formulario->enviado_em)) {
+            return;
+        }
+
+        $formulario->enviado_em = now();
+        $formulario->save();
     }
 
     public static function verificarColeta()

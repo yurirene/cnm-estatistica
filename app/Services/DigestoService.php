@@ -80,20 +80,76 @@ class DigestoService
             return $sql->where('ano', request()->ano);
         })
         ->when(request()->filled('chave'), function($sql) {
-            return $sql->where('texto', 'like', '%' . request()->chave . '%');
+            $termo = self::formatarTermoFullText(request()->chave);
+
+            if ($termo === '') {
+                return $sql->whereRaw('1 = 0');
+            }
+
+            return $sql->whereRaw(
+                'MATCH(titulo, texto) AGAINST(? IN BOOLEAN MODE)',
+                [$termo]
+            )->orderByRaw(
+                'MATCH(titulo, texto) AGAINST(? IN BOOLEAN MODE) DESC',
+                [$termo]
+            );
         })
         ->get()
         ->map(function($item) {
             $texto = '';
             if (request()->filled('chave')) {
-                $inicio = strpos($item->texto, request()->chave);
-                $texto = substr($item->texto, $inicio, 60);
+                $inicio = mb_stripos($item->texto, request()->chave);
+                if ($inicio === false) {
+                    foreach (preg_split('/\s+/', request()->chave, -1, PREG_SPLIT_NO_EMPTY) as $palavra) {
+                        $inicio = mb_stripos($item->texto, $palavra);
+                        if ($inicio !== false) {
+                            break;
+                        }
+                    }
+                }
+                $texto = $inicio !== false ? mb_substr($item->texto, $inicio, 60) : '';
             }
             $item->texto_formatado = $texto;
             $item->path = str_replace('/' . self::PATH_DIR, '', $item->path);
             return $item;
         })
         ->toArray();
+    }
+
+    /**
+     * Monta o termo da busca FULLTEXT em BOOLEAN MODE.
+     * Cada palavra vira +palavra* (obrigatória e com prefixo).
+     */
+    private static function formatarTermoFullText(string $chave): string
+    {
+        $chave = trim($chave);
+
+        if ($chave === '') {
+            return '';
+        }
+
+        if (preg_match('/^".+"$/', $chave)) {
+            $frase = trim($chave, '"');
+            $frase = preg_replace('/[+\-><()~*@]+/', ' ', $frase);
+            $frase = trim(preg_replace('/\s+/', ' ', $frase));
+
+            return $frase !== '' ? '"' . $frase . '"' : '';
+        }
+
+        $termos = preg_split('/\s+/', $chave, -1, PREG_SPLIT_NO_EMPTY);
+
+        return collect($termos)
+            ->map(function (string $termo) {
+                $termo = preg_replace('/[+\-><()~*"@]+/', '', $termo);
+
+                if ($termo === '' || mb_strlen($termo) < 3) {
+                    return null;
+                }
+
+                return '+' . $termo . '*';
+            })
+            ->filter()
+            ->implode(' ');
     }
 
     /**

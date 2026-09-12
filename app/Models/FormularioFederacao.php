@@ -12,7 +12,7 @@ class FormularioFederacao extends Model
     use SoftDeletes;
 
     protected $table = 'formularios_federacao_v1';
-    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at', 'enviado_em'];
 
     protected $casts = [
         'perfil' => 'array',
@@ -23,7 +23,8 @@ class FormularioFederacao extends Model
         'estrutura' => 'array',
         'programacoes_locais' => 'array',
         'programacoes' => 'array',
-        'campo_extra_sinodal' => 'array'
+        'campo_extra_sinodal' => 'array',
+        'enviado_em' => 'datetime'
     ];
 
     public function federacao()
