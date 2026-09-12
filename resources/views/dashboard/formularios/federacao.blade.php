@@ -107,6 +107,10 @@
                     <h3>Programações</h3>
                     @include('dashboard.formularios.federacao.programacoes')
 
+                    <hr class="my-3">
+
+                    <h3>Organização</h3>
+                    @include('dashboard.formularios.federacao.organizacao')
 
                     <hr class="my-3">
 

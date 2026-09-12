@@ -261,6 +261,23 @@
                     </div>
                 </div>
             </div>
+            <div class="mt-3 col-xl-6 col-md-12">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Discipulado</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @include('dashboard.partes.skeleton')
+                        <div class="table-responsive">
+                            <canvas id="discipulado"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

@@ -20,6 +20,8 @@ class FormularioLocal extends Model
         'escolaridade' => 'array',
         'estado_civil' => 'array',
         'programacoes' => 'array',
+        'discipulado' => 'array',
+        'organizacao' => 'array',
         'campo_extra_sinodal' => 'array',
         'campo_extra_federacao' => 'array',
         'enviado_em' => 'datetime'

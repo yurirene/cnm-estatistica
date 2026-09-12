@@ -14,6 +14,7 @@ class EstatisticaGeral extends Model
         'deficiencias' => 'array',
         'aci' => 'array',
         'escolaridade' => 'array',
+        'discipulado' => 'array',
         'estado_civil' => 'array',
         'estrutura' => 'array',
         'programacoes_locais' => 'array',

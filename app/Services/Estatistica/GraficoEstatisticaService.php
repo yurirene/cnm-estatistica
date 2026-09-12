@@ -151,6 +151,24 @@ class GraficoEstatisticaService extends AbstractGrafico
             'tipo' => 'bar'
         ],
         [
+            'nome' => 'discipulado',
+            'coluna' => 'discipulado',
+            'titulo' => 'Nº de Jovens',
+            'campos' => [
+                'trilha_cnm',
+                'discipulando_cnm',
+                'discipulando_outro',
+                'sendo_discipulados',
+            ],
+            'labels' => [
+                'Fizeram a Trilha da CNM',
+                'Discipulando pelo método da CNM',
+                'Discipulando por outro método',
+                'Sendo discipulados'
+            ],
+            'tipo' => 'bar'
+        ],
+        [
             'nome' => 'distribuicao',
         ],
     ];

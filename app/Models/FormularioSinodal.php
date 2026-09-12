@@ -18,6 +18,8 @@ class FormularioSinodal extends Model
         'programacoes_federacoes' => 'array',
         'programacoes_locais' => 'array',
         'programacoes' => 'array',
+        'discipulado' => 'array',
+        'organizacao' => 'array',
         'estrutura' => 'array',
         'enviado_em' => 'datetime'
     ];

@@ -79,6 +79,28 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-4 p-2">
+                    <div class="card h-100 border">
+                        <div class="card-header">
+                            Discipulado
+                        </div>
+                        <div class="card-body">
+                            @include('dashboard.formularios.local.export.discipulado')
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 p-2">
+                    <div class="card h-100 border">
+                        <div class="card-header">
+                            Organização
+                        </div>
+                        <div class="card-body">
+                            @include('dashboard.formularios.local.export.organizacao')
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

@@ -71,6 +71,10 @@
                 $('#resumo-fisica_superior').text(json.data.deficiencias.fisica_superior)
                 $('#resumo-neurologico').text(json.data.deficiencias.neurologico)
                 $('#resumo-intelectual').text(json.data.deficiencias.intelectual)
+                $('#resumo-trilha_cnm').text(json.data.discipulado?.trilha_cnm ?? 0)
+                $('#resumo-discipulando_cnm').text(json.data.discipulado?.discipulando_cnm ?? 0)
+                $('#resumo-discipulando_outro').text(json.data.discipulado?.discipulando_outro ?? 0)
+                $('#resumo-sendo_discipulados').text(json.data.discipulado?.sendo_discipulados ?? 0)
             },
         });
         $('#formulario_ump').show();
@@ -112,6 +116,14 @@
                 $('#fisica_superior').text(json.data.resumo.fisica_superior)
                 $('#neurologico').text(json.data.resumo.neurologico)
                 $('#intelectual').text(json.data.resumo.intelectual)
+                $('#trilha_cnm').text(json.data.resumo.trilha_cnm)
+                $('#discipulando_cnm').text(json.data.resumo.discipulando_cnm)
+                $('#discipulando_outro').text(json.data.resumo.discipulando_outro)
+                $('#sendo_discipulados').text(json.data.resumo.sendo_discipulados)
+                $('#treinamentos_promovidos').text(json.data.resumo.treinamentos_promovidos)
+                $('#treinamentos_participados_federacao').text(json.data.resumo.treinamentos_participados_federacao)
+                $('#treinamentos_participados_sinodal').text(json.data.resumo.treinamentos_participados_sinodal)
+                $('#treinamentos_participados_cnm').text(json.data.resumo.treinamentos_participados_cnm)
                 $('#social').text(json.data.resumo.social)
                 $('#evangelistico').text(json.data.resumo.evangelistico)
                 $('#espiritual').text(json.data.resumo.espiritual)

@@ -60,6 +60,7 @@ class FormularioFederacaoService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+            $organizacao = CamposFormularioService::mapearInteiros($request->organizacao);
             $estrutura = array_map(function($item) {
                 return intval($item);
             }, $request->estrutura);
@@ -75,6 +76,8 @@ class FormularioFederacaoService
                     'deficiencias' => $totalizador['deficiencias'],
                     'programacoes_locais' => $totalizador['programacoes'],
                     'programacoes' => $programacoes,
+                    'discipulado' => $totalizador['discipulado'],
+                    'organizacao' => $organizacao,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
                     'federacao_id' => $request->federacao_id,
@@ -231,6 +234,7 @@ class FormularioFederacaoService
                     'espiritual' => 0,
                     'recreativo' => 0,
                 ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
                 "estrutura" => [
                     "ump_organizada" => 0,
                     "ump_nao_organizada" => 0,
@@ -410,6 +414,10 @@ class FormularioFederacaoService
                     isset($formulario->programacoes['recreativo'])
                     ? intval($formulario->programacoes['recreativo'])
                     : 0
+                );
+                $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+                    $totalizador['discipulado'],
+                    $formulario
                 );
             }
 

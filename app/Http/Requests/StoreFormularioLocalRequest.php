@@ -116,12 +116,16 @@ class StoreFormularioLocalRequest extends FormRequest
             'estado_civil' => ['array', 'required', 'min:5'],
             'deficiencias' => ['array', 'required', 'min:9'],
             'programacoes' => ['array', 'required', 'min:5'],
+            'discipulado' => ['array', 'required', 'min:4'],
+            'organizacao' => ['array', 'required', 'min:3'],
             'aci' => ['array', 'required', 'min:2'],
             'perfil.*' => ['min:0'],
             'escolaridade.*' => ['min:0'],
             'estado_civil.*' => ['min:0'],
             'deficiencias.*' => ['min:0'],
             'programacoes.*' => ['min:0'],
+            'discipulado.*' => ['min:0'],
+            'organizacao.*' => ['min:0'],
 
         ];
         if (in_array($role, ['sinodal', 'federacao'])) {
@@ -149,6 +153,9 @@ class StoreFormularioLocalRequest extends FormRequest
             'deficiencia.intelectual.required' => 'O :attribute é obrigatório',
 
             'programacoes.*.required' => 'O :attribute é obrigatório',
+
+            'discipulado.*.required' => 'O :attribute é obrigatório',
+            'organizacao.*.required' => 'O :attribute é obrigatório',
 
             'aci.repasse.required' => 'O :attribute é obrigatório',
 
@@ -196,6 +203,15 @@ class StoreFormularioLocalRequest extends FormRequest
             'programacoes.espiritual' => 'Espiritual',
             'programacoes.recreativo' => 'Recreativo',
             'programacoes.oracao' => 'Reunião de Oração e Vigília',
+
+            'discipulado.trilha_cnm' => 'jovens que fizeram a trilha da CNM',
+            'discipulado.discipulando_cnm' => 'jovens discipulando pelo método da CNM',
+            'discipulado.discipulando_outro' => 'jovens discipulando por outro método',
+            'discipulado.sendo_discipulados' => 'jovens sendo discipulados',
+
+            'organizacao.treinamentos_participados_federacao' => 'treinamentos participados da Federação',
+            'organizacao.treinamentos_participados_sinodal' => 'treinamentos participados da Sinodal',
+            'organizacao.treinamentos_participados_cnm' => 'treinamentos participados da CNM',
 
 
         ];
