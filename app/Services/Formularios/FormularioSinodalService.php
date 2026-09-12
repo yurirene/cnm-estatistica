@@ -56,7 +56,7 @@ class FormularioSinodalService
 
             $totalizador = TotalizadorFormularioSinodalService::totalizador($request->sinodal_id);
 
-            FormularioSinodal::updateOrCreate(
+            $formulario = FormularioSinodal::updateOrCreate(
                 [
                     'ano_referencia' => $anoReferencia,
                     'sinodal_id' => $request->sinodal_id
@@ -78,6 +78,10 @@ class FormularioSinodalService
                         : EstatisticaService::FORMULARIO_ENTREGUE
                 ]
             );
+
+            if (!$apenasSalvar) {
+                self::registrarEnvio($formulario);
+            }
 
             EstatisticaService::atualizarRelatorioGeral();
         } catch (\Throwable $th) {
@@ -103,6 +107,19 @@ class FormularioSinodalService
             throw new Exception("Erro ao Atualizar");
 
         }
+    }
+
+    /**
+     * Grava enviado_em somente na ação do botão Enviar/Atualizar.
+     */
+    private static function registrarEnvio(FormularioSinodal $formulario): void
+    {
+        if (!is_null($formulario->enviado_em)) {
+            return;
+        }
+
+        $formulario->enviado_em = now();
+        $formulario->save();
     }
 
     public static function verificarColeta()

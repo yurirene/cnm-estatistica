@@ -20,7 +20,7 @@ class ComissaoExecutivaService
     public const PRESBITERO = 2;
 
     public const TIPOS_OFICIAIS = [
-        self::DIACONO => 'Diacono',
+        self::DIACONO => 'Diácono',
         self::PRESBITERO => 'Presbítero'
     ];
 

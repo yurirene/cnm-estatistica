@@ -23,8 +23,8 @@ class Digesto extends Model
     public function getTextoSelecionadoAttribute()
     {
         if (request()->filled('chave')) {
-            $inicio = strpos($this->texto, request()->chave);
-            return substr($this->texto, $inicio, 40);
+            $inicio = mb_stripos($this->texto ?? '', request()->chave);
+            return $inicio !== false ? mb_substr($this->texto, $inicio, 40) : '';
         }
         return '';
     }

@@ -11,7 +11,7 @@ class FormularioLocal extends Model
     use SoftDeletes;
 
     protected $table = 'formularios_local_v1';
-    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at', 'enviado_em'];
 
     protected $casts = [
         'perfil' => 'array',
@@ -21,7 +21,8 @@ class FormularioLocal extends Model
         'estado_civil' => 'array',
         'programacoes' => 'array',
         'campo_extra_sinodal' => 'array',
-        'campo_extra_federacao' => 'array'
+        'campo_extra_federacao' => 'array',
+        'enviado_em' => 'datetime'
     ];
 
     public function local()
