@@ -76,12 +76,16 @@
                 $('#resumo-discipulando_cnm').text(json.data.discipulado?.discipulando_cnm ?? 0)
                 $('#resumo-discipulando_outro').text(json.data.discipulado?.discipulando_outro ?? 0)
                 $('#resumo-sendo_discipulados').text(json.data.discipulado?.sendo_discipulados ?? 0)
+                if (typeof feRenderTotalizadorGraficos === 'function') {
+                    feRenderTotalizadorGraficos(json.data);
+                }
             },
         });
         $('#formulario_ump').show();
     });
 
     $('#visualizar').on('click', function() {
+        $('#formulario_ump').hide();
         $.ajax({
             type: "POST",
             url: '{{ route("dashboard.formularios-sinodais.view") }}',
@@ -90,56 +94,7 @@
                 id: $('#ano').val()
             },
             success: function(json) {
-                $('#ano_referencia').text(json.data.resumo.ano_referencia)
-                $('#aci').text(json.data.resumo.aci?.formatMoney(2, "", ".", ","))
-                $('#ativos').text(json.data.resumo.ativos)
-                $('#cooperadores').text(json.data.resumo.cooperadores)
-                $('#homens').text(json.data.resumo.homens)
-                $('#mulheres').text(json.data.resumo.mulheres)
-                $('#menor19').text(json.data.resumo.menor19)
-                $('#de19a23').text(json.data.resumo.de19a23)
-                $('#de24a29').text(json.data.resumo.de24a29)
-                $('#de30a35').text(json.data.resumo.de30a35)
-                $('#fundamental').text(json.data.resumo.fundamental)
-                $('#medio').text(json.data.resumo.medio)
-                $('#tecnico').text(json.data.resumo.tecnico)
-                $('#superior').text(json.data.resumo.superior)
-                $('#pos').text(json.data.resumo.pos)
-                $('#solteiros').text(json.data.resumo.solteiros)
-                $('#casados').text(json.data.resumo.casados)
-                $('#divorciados').text(json.data.resumo.divorciados)
-                $('#viuvos').text(json.data.resumo.viuvos)
-                $('#filhos').text(json.data.resumo.filhos)
-                $('#surdos').text(json.data.resumo.surdos)
-                $('#auditiva').text(json.data.resumo.auditiva)
-                $('#cegos').text(json.data.resumo.cegos)
-                $('#baixa_visao').text(json.data.resumo.baixa_visao)
-                $('#fisica_inferior').text(json.data.resumo.fisica_inferior)
-                $('#fisica_superior').text(json.data.resumo.fisica_superior)
-                $('#neurologico').text(json.data.resumo.neurologico)
-                $('#intelectual').text(json.data.resumo.intelectual)
-                $('#trilha_cnm').text(json.data.resumo.trilha_cnm)
-                $('#discipulando_cnm').text(json.data.resumo.discipulando_cnm)
-                $('#discipulando_outro').text(json.data.resumo.discipulando_outro)
-                $('#sendo_discipulados').text(json.data.resumo.sendo_discipulados)
-                $('#treinamentos_promovidos').text(json.data.resumo.treinamentos_promovidos)
-                $('#treinamentos_participados_federacao').text(json.data.resumo.treinamentos_participados_federacao)
-                $('#treinamentos_participados_sinodal').text(json.data.resumo.treinamentos_participados_sinodal)
-                $('#treinamentos_participados_cnm').text(json.data.resumo.treinamentos_participados_cnm)
-                $('#social').text(json.data.resumo.social)
-                $('#evangelistico').text(json.data.resumo.evangelistico)
-                $('#espiritual').text(json.data.resumo.espiritual)
-                $('#recreativo').text(json.data.resumo.recreativo)
-                $('#oracao').text(json.data.resumo.oracao)
-
-                Chart.helpers.each(Chart.instances, function(instance){
-                    instance.destroy();
-                });
-                montarGraficoPerfil(json.data.grafico.perfil);
-                montarGraficoProgramacao(json.data.grafico.programacoes);
-                montarGraficoEscolaridade(json.data.grafico.escolaridade);
-
-                $('#resumo-card').show();
+                feRenderResumo(json.data.resumo);
             },
         });
     });

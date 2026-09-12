@@ -144,6 +144,7 @@
     <script>
 
     </script>
+    @stack('css')
 </head>
 
 <body class="{{ $class ?? '' }}">

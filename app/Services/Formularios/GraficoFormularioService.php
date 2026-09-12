@@ -45,14 +45,26 @@ class GraficoFormularioService
             'treinamentos_participados_federacao' => $dados->organizacao['treinamentos_participados_federacao'] ?? 0,
             'treinamentos_participados_sinodal' => $dados->organizacao['treinamentos_participados_sinodal'] ?? 0,
             'treinamentos_participados_cnm' => $dados->organizacao['treinamentos_participados_cnm'] ?? 0,
+            'social' => $dados->programacoes['social'] ?? 0,
+            'evangelistico' => $dados->programacoes['evangelistico'] ?? 0,
+            'espiritual' => $dados->programacoes['espiritual'] ?? 0,
+            'recreativo' => $dados->programacoes['recreativo'] ?? 0,
+            'oracao' => $dados->programacoes['oracao'] ?? 0,
+            'aci' => self::extrairValorAci($dados),
+            'aci_repasse' => data_get($dados, 'aci.repasse', 'N'),
+            'tem_estrutura' => !empty($dados->estrutura) && is_array($dados->estrutura),
+            'ump_organizada' => data_get($dados, 'estrutura.ump_organizada', 0),
+            'ump_nao_organizada' => data_get($dados, 'estrutura.ump_nao_organizada', 0),
+            'federacao_organizada' => data_get($dados, 'estrutura.federacao_organizada', 0),
+            'federacao_nao_organizada' => data_get($dados, 'estrutura.federacao_nao_organizada', 0),
         ];
-        if ($dados->programacoes) {
-            $retorno['social'] = $dados->programacoes['social'] ?? 0;
-            $retorno['evangelistico'] = $dados->programacoes['evangelistico'] ?? 0;
-            $retorno['espiritual'] = $dados->programacoes['espiritual'] ?? 0;
-            $retorno['recreativo'] = $dados->programacoes['recreativo'] ?? 0;
-            $retorno['oracao'] = $dados->programacoes['oracao'] ?? 0;
-        }
+        $retorno['total_socios'] = intval($retorno['ativos']) + intval($retorno['cooperadores']);
+        $retorno['total_programacoes'] = intval($retorno['social'])
+            + intval($retorno['evangelistico'])
+            + intval($retorno['espiritual'])
+            + intval($retorno['recreativo'])
+            + intval($retorno['oracao']);
+
         return $retorno;
     }
 
@@ -120,6 +132,22 @@ class GraficoFormularioService
         ];
 
         return $retorno;
+    }
+
+    private static function extrairValorAci($dados): float
+    {
+        $aci = $dados->aci ?? null;
+        if (!is_array($aci)) {
+            return 0;
+        }
+        $raw = $aci['valor'] ?? $aci['valor_repassado'] ?? 0;
+        if (is_numeric($raw)) {
+            return (float) $raw;
+        }
+        if (is_string($raw) && $raw !== '') {
+            return \App\Helpers\FormHelper::converterParaFloat($raw);
+        }
+        return 0;
     }
 
     public static function processarDadosPorcentagem(array $dados)

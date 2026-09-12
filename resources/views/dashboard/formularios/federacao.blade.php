@@ -56,7 +56,7 @@
         @include('dashboard.formularios.federacao.respostas')
     @endif
     @if($coleta)
-    <div class="row mt-5" id="formulario_ump" style="display: none;">
+    <div class="row mt-5 fe-ui" id="formulario_ump" style="display: none;">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
                 <div class="card-header border-0">
@@ -67,14 +67,11 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            Ano Referência
-                            <input type="text" class="form-control" value="{{ $ano_referencia }}" disabled />
-                        </div>
+                    <div class="fe-year-row">
+                        <label>Ano referência</label>
+                        <input type="text" class="fe-control form-control" value="{{ $ano_referencia }}" disabled />
                     </div>
-                    <hr>
-
+                    <div class="fe-divider"></div>
 
                     @if(!is_null($formulario))
                     {!! Form::model(
@@ -82,67 +79,67 @@
                         [
                             'route' => ['dashboard.formularios-federacoes.store'],
                             'method' => 'POST',
-                            'class' => 'form-horizontal'
+                            'class' => 'form-horizontal',
+                            'novalidate' => true,
+                            'id' => 'formulario-estatistico-form'
                         ]) !!}
                     @else
                     {!! Form::open(
                         [
                             'method' => 'POST',
                             'route' => 'dashboard.formularios-federacoes.store',
-                            'class' => 'form-horizontal'
+                            'class' => 'form-horizontal',
+                            'novalidate' => true,
+                            'id' => 'formulario-estatistico-form'
                         ]
                     ) !!}
                     @endif
 
-
-                    <h3>Dados obtidos do Relatório Estatístico das UMPs Locais</h3>
+                    <h4 class="fe-section-title">Dados obtidos do Relatório Estatístico das UMPs Locais</h4>
                     @include('dashboard.formularios.federacao.totalizador')
 
-                    <hr class="my-3">
-
-                    <h3>Estrutura</h3>
+                    <div class="fe-divider"></div>
+                    <h4 class="fe-section-title">Estrutura</h4>
                     @include('dashboard.formularios.federacao.estrutura')
 
-                    <hr class="my-3">
-                    <h3>Programações</h3>
+                    <div class="fe-divider"></div>
+                    <h4 class="fe-section-title">Programações</h4>
                     @include('dashboard.formularios.federacao.programacoes')
 
-                    <hr class="my-3">
-
-                    <h3>Organização</h3>
+                    <div class="fe-divider"></div>
+                    <h4 class="fe-section-title">Organização</h4>
                     @include('dashboard.formularios.federacao.organizacao')
 
-                    <hr class="my-3">
-
-                    <h3>ACI</h3>
+                    <div class="fe-divider"></div>
+                    <h4 class="fe-section-title">ACI</h4>
                     @include('dashboard.formularios.federacao.aci')
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {!! Form::hidden(
-                                'federacao_id',
-                                auth()->user()->federacao_id ,
-                                [
-                                    'id' => 'federacao_id',
-                                    'class' => 'form-control',
-                                    'required'=>true,
-                                    'autocomplete' => 'off'
-                                ]
-                            ) !!}
-                        </div>
-                    </div>
-                    
+
+                    {!! Form::hidden(
+                        'federacao_id',
+                        auth()->user()->federacao_id ,
+                        [
+                            'id' => 'federacao_id',
+                            'class' => 'form-control',
+                            'required'=>true,
+                            'autocomplete' => 'off'
+                        ]
+                    ) !!}
+
                     @include('dashboard.formularios.federacao.complementar')
 
-                    @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
-                    <div class="btn-group pull-right">
-                    {!! Form::submit('Enviar', ['class' => 'btn btn-success']) !!}
+                    <div class="fe-wizard-nav">
+                        <div></div>
+                        <div class="fe-nav-right">
+                            @if(!$formularioEntregue)
+                            <button class="fe-btn fe-btn-outline" id="apenas-salvar" type="button">Apenas salvar</button>
+                            @endif
+                            @if($qualidade_entrega['porcentagem'] >= $qualidade_entrega['minimo'])
+                                {!! Form::submit('Enviar formulário', ['class' => 'fe-btn fe-btn-primary']) !!}
+                            @else
+                                <button class="fe-btn fe-btn-danger" type="button" disabled>Enviar formulário</button>
+                            @endif
+                        </div>
                     </div>
-                    @else
-                    <button class="btn btn-danger" disabled>Enviar</button>
-                    @endif
-                    @if(!$formularioEntregue)
-                    <button class="btn btn-warning" id="apenas-salvar" type="button">Apenas Salvar</button>
-                    @endif
                     {!! Form::close() !!}
                 </div>
             </div>
@@ -152,8 +149,14 @@
 </div>
 @endsection
 
+@push('css')
+<link rel="stylesheet" href="{{ asset('css/formulario-estatistico.css') }}">
+@endpush
+
 @push('js')
 
+@include('dashboard.formularios._js.formulario')
+@include('dashboard.formularios._js.resumo')
 @include('dashboard.formularios.federacao.js.script')
 
 @endpush
