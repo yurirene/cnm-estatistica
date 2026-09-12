@@ -11,7 +11,7 @@
                         <span class="text-nowrap">{{ $membro['contato'] }}</span>
                     </p>
                     <button
-                        class="btn btn-sm btn-warning"
+                        class="btn btn-sm btn-primary"
                         data-toggle="modal"
                         data-target="#modal-edicao"
                         data-cargo="{{ $membro['cargo'] }}"

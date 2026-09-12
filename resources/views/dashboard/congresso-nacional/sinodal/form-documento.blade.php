@@ -42,7 +42,7 @@
         <div class="form-group">
             <label>&nbsp;</label>
             <div>
-                <button class="btn btn-success">Enviar Documento</button>
+                <button class="btn btn-primary">Enviar Documento</button>
             </div>
         </div>
     </div>

@@ -21,7 +21,7 @@
                     {!! Form::open(['method' => 'POST', 'route' => 'dashboard.pesquisas.responder', 'files' => true]) !!}
                     {!! Form::hidden('pesquisa_id', $pesquisa->id) !!}
                     <div id="formulario-renderizado"></div>
-                    {!! Form::submit('Responder', ['class' => 'btn btn-success']) !!}
+                    {!! Form::submit('Responder', ['class' => 'btn btn-primary']) !!}
                     <a href="{{ route('dashboard.pesquisas.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                 </div>

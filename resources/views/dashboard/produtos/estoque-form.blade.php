@@ -51,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($estoque) ? 'Atualizar' : 'Cadastrar')}}</button>
+                    <button class="btn btn-primary"><i class='fas fa-save'></i> {{(isset($estoque) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.produtos.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                 </div>

@@ -84,7 +84,7 @@
     <div class="card-footer p-2">
         <div class="row">
             <div class="col text-center">
-                <button type="button" class="btn btn-info btn-sm"
+                <button type="button" class="btn btn-secondary btn-sm"
                     data-toggle="modal"
                     data-target="#modal_informacoes_federacoes"
                     data-nome="{{$nome}}"

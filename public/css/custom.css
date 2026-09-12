@@ -60,7 +60,7 @@ div.toggle.btn {
 }
 
 .text-dark-success {
-    color: #198754;
+    color: var(--color-good);
 }
 
 ::-webkit-scrollbar {
@@ -103,7 +103,7 @@ div.toggle.btn {
 }
 
 .blob {
-	background: #f5365c;
+	background: var(--color-accent);
 	box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
 	transform: scale(1);
 	animation: pulse 2s infinite;

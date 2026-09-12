@@ -22,6 +22,7 @@
     <link href="/vendor/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" href="{{ asset('argon') }}/css/argon.css?v=1.0.1" rel="stylesheet">
     <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/tokens.css?v=20260912">
 
     <link rel="stylesheet" href="/datatables/datatables.min.css">
     <link rel="stylesheet" href="/vendor/datepicker/bootstrap-datepicker.min.css"/>
@@ -57,15 +58,6 @@
             float: right;
         }
 
-        .bg-active {
-            background: #5e72e4;
-            color: white !important;
-            border-radius: 0 2em 2em 0;
-        }
-        .bg-active i {
-            color: white !important;
-        }
-
         .paginate_button.page-item.previous a,
         .paginate_button.page-item.next a {
             width: 100px;
@@ -96,7 +88,7 @@
         .custom-acordion {
             font-family: inherit;
             font-weight: 600;
-            color: #32325d;
+            color: var(--color-ink);
             font-size: .8125rem;
         }
 
@@ -106,10 +98,10 @@
         .select2-container--default .select2-selection--multiple {
 
             min-height: calc(2.60rem + 2px);
-            border-color: #9ba4d6;
+            border-color: var(--color-line-strong);
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #5e72e4;
+            background-color: var(--color-accent);
             color: white;
             font-size: 0.875rem;
             line-height: 2rem;
@@ -145,6 +137,7 @@
 
     </script>
     @stack('css')
+    <link rel="stylesheet" href="/css/theme.css?v=20260912">
 </head>
 
 <body class="{{ $class ?? '' }}">
@@ -253,8 +246,8 @@
                     text: "Deseja apagar o registro?",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#B0483A',
+                    cancelButtonColor: '#767B94',
                     confirmButtonText: 'Sim!',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
@@ -480,8 +473,8 @@
             text: "Deseja apagar o registro?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#B0483A',
+            cancelButtonColor: '#767B94',
             confirmButtonText: 'Sim!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
@@ -497,8 +490,8 @@
             text: texto,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#3D57C4',
+            cancelButtonColor: '#767B94',
             confirmButtonText: 'Sim!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {

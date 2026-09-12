@@ -79,7 +79,7 @@
                         </div>
 
                         <div class="col-md-12">
-                            <button class="btn btn-success">
+                            <button class="btn btn-primary">
                                 <i class='fas fa-save'></i>
                                 Atualizar
                             </button>

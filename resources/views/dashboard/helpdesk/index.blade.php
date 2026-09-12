@@ -102,7 +102,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">
+                    <button class="btn btn-primary" type="submit">
                         <i class="fas fa-paper-plane"></i>
                         Enviar
                     </button>

@@ -23,6 +23,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link type="text/css" href="{{ asset('argon') }}/css/argon.css?v=1.0.1" rel="stylesheet">
     <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/tokens.css?v=20260912">
 
     <link rel="stylesheet" href="/datatables/datatables.min.css">
     <link rel="stylesheet"
@@ -77,15 +78,6 @@
             float: right;
         }
 
-        .bg-active {
-            background: #5e72e4;
-            color: white !important;
-            border-radius: 0 2em 2em 0;
-        }
-        .bg-active i {
-            color: white !important;
-        }
-
         .paginate_button.page-item.previous a,
         .paginate_button.page-item.next a {
             width: 100px;
@@ -116,7 +108,7 @@
         .custom-acordion {
             font-family: inherit;
             font-weight: 600;
-            color: #32325d;
+            color: var(--color-ink);
             font-size: .8125rem;
         }
 
@@ -126,10 +118,10 @@
         .select2-container--default .select2-selection--multiple {
 
             min-height: calc(2.60rem + 2px);
-            border-color: #9ba4d6;
+            border-color: var(--color-line-strong);
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #5e72e4;
+            background-color: var(--color-accent);
             color: white;
             font-size: 0.875rem;
             line-height: 2rem;
@@ -148,6 +140,7 @@
             height: 44px !important;
         }
     </style>
+    <link rel="stylesheet" href="/css/theme.css?v=20260912">
 </head>
 
 <body class="{{ $class ?? '' }}">

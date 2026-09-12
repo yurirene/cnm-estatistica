@@ -1,20 +1,20 @@
 .fe-ui {
-    --fe-blue-deep: #1B2A63;
-    --fe-blue: #2E43A0;
-    --fe-blue-mid: #3D57C4;
-    --fe-blue-pale: #EEF0FB;
-    --fe-blue-line: #DEE2F5;
-    --fe-ink: #20243A;
-    --fe-muted: #767B94;
-    --fe-line: #E7E7EE;
-    --fe-surface: #fff;
-    --fe-good: #3F8358;
-    --fe-good-bg: #E6F2EA;
-    --fe-warn: #B9862F;
-    --fe-warn-bg: #FBF0DC;
-    --fe-bad: #B0483A;
-    --fe-bad-bg: #FBE9E5;
-    --fe-radius: 10px;
+    --fe-blue-deep: var(--color-banner-from);
+    --fe-blue: var(--color-primary);
+    --fe-blue-mid: var(--color-accent);
+    --fe-blue-pale: var(--color-pale);
+    --fe-blue-line: var(--color-line-strong);
+    --fe-ink: var(--color-ink);
+    --fe-muted: var(--color-muted);
+    --fe-line: var(--color-line);
+    --fe-surface: var(--color-surface);
+    --fe-good: var(--color-good);
+    --fe-good-bg: var(--color-good-bg);
+    --fe-warn: var(--color-warn);
+    --fe-warn-bg: var(--color-warn-bg);
+    --fe-bad: var(--color-bad);
+    --fe-bad-bg: var(--color-bad-bg);
+    --fe-radius: var(--color-radius);
     color: var(--fe-ink);
 }
 

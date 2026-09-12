@@ -39,7 +39,7 @@
         </div>
         <div class="row">
             <div class="col text-center">
-                <a href="#" class="btn btn-info btn-sm">Mais Informações</a>
+                <a href="#" class="btn btn-secondary btn-sm">Mais Informações</a>
             </div>
         </div>
     </div>

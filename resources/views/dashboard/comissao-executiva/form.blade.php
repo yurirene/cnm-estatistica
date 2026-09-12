@@ -119,7 +119,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <button class="btn btn-success">
+                                <button class="btn btn-primary">
                                     {{ isset($reuniao) ? 'Atualizar' : 'Cadastrar' }}
                                 </button>
 

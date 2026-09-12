@@ -38,7 +38,7 @@
 </div>
 
 <div class="mt-3">
-    {!! Form::submit("Salvar", ['class' => 'btn btn-success']) !!}
+    {!! Form::submit("Salvar", ['class' => 'btn btn-primary']) !!}
     <a href="{{ route('dashboard.pesquisas.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
 
 </div>

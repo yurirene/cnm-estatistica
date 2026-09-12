@@ -26,7 +26,7 @@
                     @endif
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovaReuniao">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovaReuniao">
                         <i class="fas fa-plus"></i> Nova Reunião
                     </button>
                     <a href="{{ route('dashboard.cn.executiva.sincronizar-inscritos') }}" class="btn btn-primary">
@@ -196,7 +196,7 @@
                                         <td>{!! $delegado->status_formatado !!}</td>
                                         <td>
                                             @if($delegado->path_credencial)
-                                                <a href="/{{ $delegado->path_credencial }}" target="_blank" class="btn btn-sm btn-info">
+                                                <a href="/{{ $delegado->path_credencial }}" target="_blank" class="btn btn-sm btn-primary">
                                                     <i class="fas fa-eye"></i> Ver Credencial
                                                 </a>
                                             @endif
@@ -286,7 +286,7 @@
                                         <td>{!! $delegado->status_formatado !!}</td>
                                         <td>
                                             @if($delegado->path_credencial ?? null)
-                                                <a href="/{{ $delegado->path_credencial }}" target="_blank" class="btn btn-sm btn-info">
+                                                <a href="/{{ $delegado->path_credencial }}" target="_blank" class="btn btn-sm btn-primary">
                                                     <i class="fas fa-eye"></i> Ver Credencial
                                                 </a>
                                             @endif
@@ -350,7 +350,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success">Cadastrar</button>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </div>
             </form>
         </div>

@@ -68,13 +68,13 @@
                     @endif
                     @endcan
 
-                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
+                    <button class="btn btn-priamary"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.usuarios.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                     @if (isset($usuario))
                     {!! Form::open(['method' => 'POST', 'url' => route("dashboard.usuarios.reset-senha", $usuario->id), "class" => 'mt-5']) !!}
                     <div class="btn-group pull-right">
-                    {!! Form::submit('Resetar Senha', ['class' => 'btn btn-warning']) !!}
+                    {!! Form::submit('Resetar Senha', ['class' => 'btn btn-secondary']) !!}
                     </div>
                     {!! Form::close() !!}
                     @endif
