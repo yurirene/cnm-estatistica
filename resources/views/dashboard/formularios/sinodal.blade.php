@@ -107,6 +107,11 @@
 
                     <hr class="my-3">
 
+                    <h3>Organização</h3>
+                    @include('dashboard.formularios.sinodal.organizacao')
+
+                    <hr class="my-3">
+
                     <h3>ACI</h3>
                     @include('dashboard.formularios.sinodal.aci')
                     <div class="col-md-4">

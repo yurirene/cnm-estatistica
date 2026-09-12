@@ -13,6 +13,7 @@ use App\Models\Parametro;
 use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
 use App\Services\Formularios\AtualizarAutomaticamenteFormulariosService;
+use App\Services\Formularios\CamposFormularioService;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -336,6 +337,7 @@ class EstatisticaService
                 'estado_civil' => $totalizador['estado_civil'],
                 'escolaridade' => $totalizador['escolaridade'],
                 'deficiencias' => $totalizador['deficiencias'],
+                'discipulado' => $totalizador['discipulado'],
                 'programacoes_locais' => $totalizador['programacoes']['locais'],
                 'programacoes_federacoes' => $totalizador['programacoes']['federacoes'],
                 'programacoes_sinodais' => $totalizador['programacoes']['sinodais'],
@@ -411,6 +413,7 @@ class EstatisticaService
                     'neurologico' => 0,
                     'intelectual' => 0,
                 ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
                 'programacoes' => [
                     'sinodais' => [
                         'social' => 0,
@@ -605,6 +608,10 @@ class EstatisticaService
                     isset($formulario->programacoes['recreativo'])
                         ? intval($formulario->programacoes['recreativo'])
                         : 0
+                );
+                $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+                    $totalizador['discipulado'],
+                    $formulario
                 );
             }
 

@@ -124,6 +124,16 @@
 
                     <hr class="my-3">
 
+                    <h3>Discipulado</h3>
+                    @include('dashboard.formularios.local.discipulado')
+
+                    <hr class="my-3">
+
+                    <h3>Organização</h3>
+                    @include('dashboard.formularios.local.organizacao')
+
+                    <hr class="my-3">
+
                     <h3>ACI</h3>
                     @include('dashboard.formularios.local.aci')
                     <div class="col-md-4">

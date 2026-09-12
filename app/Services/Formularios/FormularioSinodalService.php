@@ -50,6 +50,7 @@ class FormularioSinodalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+            $organizacao = CamposFormularioService::mapearInteiros($request->organizacao);
             $estrutura = array_map(function($item) {
                 return intval($item);
             }, $request->estrutura);
@@ -70,6 +71,8 @@ class FormularioSinodalService
                     'programacoes_federacoes' => $totalizador['programacoes_federacao'],
                     'programacoes_locais' => $totalizador['programacoes_locais'],
                     'programacoes' => $programacoes,
+                    'discipulado' => $totalizador['discipulado'],
+                    'organizacao' => $organizacao,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
                     'sinodal_id' => $request->sinodal_id,
@@ -306,7 +309,8 @@ class FormularioSinodalService
                     'evangelistica' => 0,
                     'espiritual' => 0,
                     'recreativo' => 0,
-                ]
+                ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
             ];
 
             foreach ($formularios as $formulario) {
@@ -394,6 +398,10 @@ class FormularioSinodalService
         $totalizador['programacoes_locais']['evangelistica'] += (isset($formulario->programacoes_locais['evangelistica']) ? intval($formulario->programacoes_locais['evangelistica']) : 0);
         $totalizador['programacoes_locais']['espiritual'] += (isset($formulario->programacoes_locais['espiritual']) ? intval($formulario->programacoes_locais['espiritual']) : 0);
         $totalizador['programacoes_locais']['recreativo'] += (isset($formulario->programacoes_locais['recreativo']) ? intval($formulario->programacoes_locais['recreativo']) : 0);
+        $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+            $totalizador['discipulado'],
+            $formulario
+        );
 
         return $totalizador;
     }

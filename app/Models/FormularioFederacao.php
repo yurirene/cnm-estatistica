@@ -23,6 +23,8 @@ class FormularioFederacao extends Model
         'estrutura' => 'array',
         'programacoes_locais' => 'array',
         'programacoes' => 'array',
+        'discipulado' => 'array',
+        'organizacao' => 'array',
         'campo_extra_sinodal' => 'array',
         'enviado_em' => 'datetime'
     ];

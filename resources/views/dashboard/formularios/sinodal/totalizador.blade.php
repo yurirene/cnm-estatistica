@@ -161,3 +161,28 @@
         </p>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-3">
+        <p>
+            <h4>Discipulado</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Jovens que fizeram a trilha da CNM
+                    <span class="badge badge-primary badge-pill"><b id="resumo-trilha_cnm"></b></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Jovens discipulando pelo método da CNM
+                    <span class="badge badge-primary badge-pill"><b id="resumo-discipulando_cnm"></b></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Jovens discipulando por outro método
+                    <span class="badge badge-primary badge-pill"><b id="resumo-discipulando_outro"></b></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Jovens sendo discipulados
+                    <span class="badge badge-primary badge-pill"><b id="resumo-sendo_discipulados"></b></span>
+                </li>
+            </ul>
+        </p>
+    </div>
+</div>

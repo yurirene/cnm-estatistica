@@ -43,6 +43,8 @@ class FormularioLocalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+            $discipulado = CamposFormularioService::mapearInteiros($request->discipulado);
+            $organizacao = CamposFormularioService::mapearInteiros($request->organizacao);
 
             $anoReferencia = EstatisticaService::getAnoReferencia();
             $formulario = FormularioLocal::updateOrCreate(
@@ -56,6 +58,8 @@ class FormularioLocalService
                     'escolaridade' => $escolaridade,
                     'deficiencias' => $deficiencias,
                     'programacoes' => $programacoes,
+                    'discipulado' => $discipulado,
+                    'organizacao' => $organizacao,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
                     'local_id' => $request->local_id,

@@ -37,6 +37,14 @@ class GraficoFormularioService
             'fisica_superior' => $dados->deficiencias['fisica_superior'] ?? 0,
             'neurologico' => $dados->deficiencias['neurologico'] ?? 0,
             'intelectual' => $dados->deficiencias['intelectual'] ?? 0,
+            'trilha_cnm' => $dados->discipulado['trilha_cnm'] ?? 0,
+            'discipulando_cnm' => $dados->discipulado['discipulando_cnm'] ?? 0,
+            'discipulando_outro' => $dados->discipulado['discipulando_outro'] ?? 0,
+            'sendo_discipulados' => $dados->discipulado['sendo_discipulados'] ?? 0,
+            'treinamentos_promovidos' => $dados->organizacao['treinamentos_promovidos'] ?? 0,
+            'treinamentos_participados_federacao' => $dados->organizacao['treinamentos_participados_federacao'] ?? 0,
+            'treinamentos_participados_sinodal' => $dados->organizacao['treinamentos_participados_sinodal'] ?? 0,
+            'treinamentos_participados_cnm' => $dados->organizacao['treinamentos_participados_cnm'] ?? 0,
         ];
         if ($dados->programacoes) {
             $retorno['social'] = $dados->programacoes['social'] ?? 0;
