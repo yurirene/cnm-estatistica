@@ -10,6 +10,7 @@ use App\Models\Pesquisas\Pesquisa;
 use App\Models\ValorAciAno;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Instancias\DashboardExecutivoService;
 use App\Services\Instancias\DiretoriaService;
 use App\Services\Instancias\PresidenciaService;
 use Illuminate\Support\Facades\Gate;
@@ -204,8 +205,11 @@ class DatatableAjaxService
                     });
             }
             $anoReferencia = self::resolverAnoReferencia();
-            $formulariosEntregues = $query
-                ->where('status', true)
+            $queryBase = $query->where('status', true);
+            if ($instancia == 'Sinodal') {
+                $queryBase->with(['diretoria', 'regiao']);
+            }
+            $formulariosEntregues = $queryBase
                 ->get()
                 ->map(function ($item) use ($instancia, $anoReferencia){
                     $relatorioDoAno = $item->relatorios()
@@ -255,7 +259,30 @@ class DatatableAjaxService
                         $retorno['aci_necessaria'] = "R$" . number_format($total, 2, ',', '.');
                         $retorno['aci_repassada'] = "R$" . ($relatorioDoAno->isNotEmpty() ? $relatorioDoAno->first()->aci['valor_repassado'] : 0);
                         $retorno['federacoes'] = "{$totalRelatoriosFederacoes}/{$totalFederacoes}"; 
-                        $retorno['locais'] = "{$totalRelatoriosLocais}/{$totalLocais}"; 
+                        $retorno['locais'] = "{$totalRelatoriosLocais}/{$totalLocais}";
+                        $retorno['zero_resposta'] = $totalLocais > 0 && $totalRelatoriosLocais === 0;
+
+                        if ($relatorioDoAno->count() && $totalFederacoes === $totalRelatoriosFederacoes && $totalLocais > 0 && $totalRelatoriosLocais === $totalLocais) {
+                            $retorno['status'] = 'completo';
+                        } elseif ($relatorioDoAno->count() || $totalRelatoriosFederacoes > 0 || $totalRelatoriosLocais > 0) {
+                            $retorno['status'] = 'parcial';
+                        } else {
+                            $retorno['status'] = 'pendente';
+                        }
+
+                        $semRepasse = DashboardExecutivoService::parseValorAci(
+                            $relatorioDoAno->isNotEmpty() ? ($relatorioDoAno->first()->aci['valor_repassado'] ?? 0) : 0
+                        ) <= 0;
+                        $semLider = empty(optional($item->diretoria)->presidente)
+                            && empty(optional($item->diretoria)->secretario_executivo);
+
+                        $retorno['whatsapp'] = $retorno['status'] === 'completo'
+                            ? null
+                            : DashboardExecutivoService::whatsappSinodal($item, $anoReferencia, [
+                                'zero_resposta' => $retorno['zero_resposta'],
+                                'sem_repasse' => $semRepasse,
+                                'sem_lider' => $semLider,
+                            ]);
                         
                         if (Gate::check(['presidente'])) {
                             $retorno['progresso'] = PresidenciaService::porcentagem($totalLocais, $totalRelatoriosLocais);
