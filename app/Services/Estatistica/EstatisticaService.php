@@ -786,9 +786,9 @@ class EstatisticaService
                 'total' => $totalizador['estrutura']['umps_organizadas']
             ];
 
-            $totalizador['qualidade'] = (
-                ($formularios_locais->count() * 100) / $totalizador['estrutura']['umps_organizadas']
-            );
+            $totalizador['qualidade'] = $totalizador['estrutura']['umps_organizadas'] > 0
+                ? (($formularios_locais->count() * 100) / $totalizador['estrutura']['umps_organizadas'])
+                : 0;
 
             return $totalizador;
         } catch (\Throwable $th) {

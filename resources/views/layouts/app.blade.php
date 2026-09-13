@@ -137,7 +137,7 @@
 
     </script>
     @stack('css')
-    <link rel="stylesheet" href="/css/theme.css?v=20260912-5">
+    <link rel="stylesheet" href="/css/theme.css?v=20260913-painel">
 </head>
 
 <body class="{{ $class ?? '' }}">

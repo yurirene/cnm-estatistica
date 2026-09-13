@@ -10,6 +10,7 @@ use App\Services\AdministradorService;
 use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Gamificacao\GamificacaoConsultaService;
+use App\Services\Instancias\DashboardExecutivoService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\PresidenciaService;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Gate;
 
 class DashboardHelper
 {
+    private static ?array $heroCache = null;
+    private static ?array $qualidadeCache = null;
 
     public static function make()
     {
@@ -123,7 +126,50 @@ class DashboardHelper
 
     public static function getQualidadeEntregaRelatorios(): array
     {
-        return DiretoriaNacionalService::getQualidadeEntregaRelatorios();
+        if (self::$qualidadeCache === null) {
+            self::$qualidadeCache = DashboardExecutivoService::getQualidade();
+        }
+        return self::$qualidadeCache;
+    }
+
+    public static function getDashboardHero(): array
+    {
+        if (self::$heroCache === null) {
+            self::$heroCache = DashboardExecutivoService::getHero();
+        }
+        return self::$heroCache;
+    }
+
+    public static function getRankingUrgencia(int $limite = 5): array
+    {
+        return DashboardExecutivoService::getRankingUrgencia($limite);
+    }
+
+    public static function getAnoReferencia(): int
+    {
+        return (int) EstatisticaService::getAnoReferencia();
+    }
+
+    public static function getAnosReferenciaFormularios(): array
+    {
+        $anos = collect(EstatisticaService::getAnoReferenciaFormularios())
+            ->mapWithKeys(function ($ano) {
+                $ano = (int) $ano;
+                return [$ano => $ano];
+            });
+
+        $anoAtual = self::getAnoReferencia();
+        $anos->put($anoAtual, $anoAtual);
+
+        return $anos->sortKeysDesc()->toArray();
+    }
+
+    public static function getRegioes(): array
+    {
+        return Regiao::query()
+            ->orderBy('nome')
+            ->pluck('nome', 'id')
+            ->toArray();
     }
 
     public static function getAnoReferencia(): int

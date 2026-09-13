@@ -140,7 +140,7 @@
             height: 44px !important;
         }
     </style>
-    <link rel="stylesheet" href="/css/theme.css?v=20260912">
+    <link rel="stylesheet" href="/css/theme.css?v=20260913-painel">
 </head>
 
 <body class="{{ $class ?? '' }}">
