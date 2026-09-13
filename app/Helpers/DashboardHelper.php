@@ -172,6 +172,33 @@ class DashboardHelper
             ->toArray();
     }
 
+    public static function getAnoReferencia(): int
+    {
+        return (int) EstatisticaService::getAnoReferencia();
+    }
+
+    public static function getAnosReferenciaFormularios(): array
+    {
+        $anos = collect(EstatisticaService::getAnoReferenciaFormularios())
+            ->mapWithKeys(function ($ano) {
+                $ano = (int) $ano;
+                return [$ano => $ano];
+            });
+
+        $anoAtual = self::getAnoReferencia();
+        $anos->put($anoAtual, $anoAtual);
+
+        return $anos->sortKeysDesc()->toArray();
+    }
+
+    public static function getRegioes(): array
+    {
+        return Regiao::query()
+            ->orderBy('nome')
+            ->pluck('nome', 'id')
+            ->toArray();
+    }
+
     public static function getGamificacao(): ?\App\Services\Gamificacao\DTOs\PainelInicioDTO
     {
         try {
