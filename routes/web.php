@@ -66,6 +66,8 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])
     ->name('home');
 Route::get('/digesto', [DigestoController::class, 'digesto'])
     ->name('digesto');
+Route::get('/digesto/exportar', [DigestoController::class, 'exportar'])
+    ->name('digesto.exportar');
 Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
     ->name('digesto.exibir');
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])

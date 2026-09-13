@@ -3,22 +3,58 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-'titulo' => 'Digestos'
+    'titulo' => 'Digestos'
 ])
 
-<div class="container-fluid mt--7">
+@php
+    $incompletos = (int) ($completude['incompletos'] ?? 0);
+    $total = (int) ($completude['total'] ?? 0);
+    $statusAtual = request('status');
+@endphp
+
+<div class="container-fluid mt--7 digesto-admin">
     <div class="row mt-5">
         <div class="col-xl-12 mb-5 mb-xl-0">
             <div class="card shadow p-3">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0">Digestos</h3>
-                        </div>
-                    </div>
-                </div>
                 <div class="card-body">
-                    <div class="table-responsive"> 
+                    @if($incompletos > 0)
+                        <div class="digesto-completude">
+                            <div class="n">{{ $incompletos }}</div>
+                            <div class="t">
+                                de {{ $total }} documentos estão sem <b>Tipo</b>, <b>Nº do documento</b> ou <b>Comissão</b>
+                                preenchidos — eles aparecem incompletos na busca pública do Digesto.
+                            </div>
+                            <button type="button" class="btn" id="digesto-ver-incompletos">Ver incompletos</button>
+                        </div>
+                    @endif
+
+                    <div class="digesto-admin-toolbar">
+                        <div class="digesto-admin-toolbar-left">
+                            <a href="{{ route('dashboard.digestos.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Novo Digesto
+                            </a>
+                            <select id="digesto-filtro-reuniao" class="form-control">
+                                <option value="">Reunião: Todas</option>
+                                @foreach($tipos as $id => $nome)
+                                    <option value="{{ $id }}" @selected((string) request('tipo_reuniao') === (string) $id)>{{ $nome }}</option>
+                                @endforeach
+                            </select>
+                            <select id="digesto-filtro-ano" class="form-control">
+                                <option value="">Ano: Todos</option>
+                                @foreach($anos as $ano)
+                                    <option value="{{ $ano }}" @selected((string) request('ano') === (string) $ano)>{{ $ano }}</option>
+                                @endforeach
+                            </select>
+                            <select id="digesto-filtro-status" class="form-control">
+                                <option value="">Status: Todos</option>
+                                <option value="completo" @selected($statusAtual === 'completo')>Completo</option>
+                                <option value="incompleto" @selected($statusAtual === 'incompleto')>Incompleto</option>
+                            </select>
+                        </div>
+                        <input type="search" id="digesto-busca-titulo" class="form-control digesto-tbl-search" placeholder="Pesquisar título...">
+                    </div>
+
+                    <div class="table-responsive">
                         {!! $dataTable->table(['class' => 'table w-100']) !!}
                     </div>
                 </div>
@@ -26,30 +62,32 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalTexto" tabindex="-1" role="dialog" aria-labelledby="modalTextoLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTextoLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('js')
+<script>
+    $(document).on('preXhr.dt', '#digesto-table', function (e, settings, data) {
+        data.tipo_reuniao = $('#digesto-filtro-reuniao').val();
+        data.ano = $('#digesto-filtro-ano').val();
+        data.status = $('#digesto-filtro-status').val();
+    });
+</script>
 {!! $dataTable->scripts() !!}
 <script>
-    
+    $(function () {
+        var table = $('#digesto-table').DataTable();
+
+        $('#digesto-filtro-reuniao, #digesto-filtro-ano, #digesto-filtro-status').on('change', function () {
+            table.ajax.reload();
+        });
+
+        $('#digesto-busca-titulo').on('keyup', function () {
+            table.search(this.value).draw();
+        });
+
+        $('#digesto-ver-incompletos').on('click', function () {
+            $('#digesto-filtro-status').val('incompleto').trigger('change');
+        });
+    });
 </script>
 @endpush
