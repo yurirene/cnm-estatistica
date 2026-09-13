@@ -13,6 +13,7 @@ use App\Http\Controllers\Congresso\CongressoNacionalController;
 use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GamificacaoPainelController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DelegadoComissaoExecutivaController;
 use App\Http\Controllers\DetalhamentoController;
@@ -21,6 +22,8 @@ use App\Http\Controllers\TransferenciasController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
+use App\Http\Controllers\Estatistica\GamificacaoConfiguracaoController;
+use App\Http\Controllers\Estatistica\GamificacaoEventoController;
 use App\Http\Controllers\Formularios\FormularioComplementarFederacaoController;
 use App\Http\Controllers\Formularios\FormularioComplementarSinodalController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
@@ -100,6 +103,13 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         ->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])
         ->name('trocar-senha');
+});
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'game-cnm-painel'], function () {
+        Route::get('/game-cnm/painel', [GamificacaoPainelController::class, 'index'])
+            ->name('game-cnm.painel');
+    });
 });
 
 
@@ -339,6 +349,8 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('comprovante-aci.store');
         Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])
             ->name('comprovante-aci.status');
+        Route::get('/comprovante-aci/{comprovante}/meta-atingida', [ComprovanteACIController::class, 'metaAtingida'])
+            ->name('comprovante-aci.meta-atingida');
     });
 });
 
@@ -349,12 +361,26 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('estatistica.index');
         Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])
             ->name('estatistica.atualizarParametro');
+        Route::post('/estatistica/atualizarValorAciAno', [EstatisticaController::class, 'atualizarValorAciAno'])
+            ->name('estatistica.atualizarValorAciAno');
         Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])
             ->name('estatistica.exportarExcel');
         Route::get('/estatistica/atualizar-ranking', [EstatisticaController::class, 'atualizarRanking'])
             ->name('estatistica.atualizar-ranking');
         Route::get('/estatistica/atualizar-tudo', [EstatisticaController::class, 'atualizarTodosOsDados'])
             ->name('estatistica.atualizar-tudo');
+        Route::get('/game-cnm', [GamificacaoConfiguracaoController::class, 'index'])
+            ->name('game-cnm.index');
+        Route::post('/game-cnm', [GamificacaoConfiguracaoController::class, 'update'])
+            ->name('game-cnm.update');
+        Route::post('/game-cnm/recalcular', [GamificacaoConfiguracaoController::class, 'recalcular'])
+            ->name('game-cnm.recalcular');
+        Route::get('/game-cnm/eventos', [GamificacaoEventoController::class, 'index'])
+            ->name('game-cnm.eventos.index');
+        Route::post('/game-cnm/eventos', [GamificacaoEventoController::class, 'store'])
+            ->name('game-cnm.eventos.store');
+        Route::delete('/game-cnm/eventos/{conquista}', [GamificacaoEventoController::class, 'destroy'])
+            ->name('game-cnm.eventos.destroy');
     });
 });
 

@@ -7,6 +7,7 @@ use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Pesquisas\Pesquisa;
+use App\Models\ValorAciAno;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Instancias\DiretoriaService;
@@ -216,7 +217,8 @@ class DatatableAjaxService
                     $retorno = [
                         'id' => $item->id,
                         'nome' => $item->nome,
-                        'entregue' => $relatorioDoAno->count()
+                        'entregue' => $relatorioDoAno->count(),
+                        'impacto' => $relatorioDoAno->count() ? '' : 'Estatística em risco',
                     ];
 
                     if ($instancia == 'Sinodal') {
@@ -247,7 +249,7 @@ class DatatableAjaxService
                                         }
                                     })->count();
                             })->count();
-                        $valorACI = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+                        $valorACI = ValorAciAno::valorPara((int) $anoReferencia);
                         $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
                         $total = $totalSocios * $valorACI * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
                         $retorno['aci_necessaria'] = "R$" . number_format($total, 2, ',', '.');

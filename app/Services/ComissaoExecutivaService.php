@@ -7,6 +7,7 @@ use App\Models\ComissaoExecutiva\DocumentoRecebido;
 use App\Models\ComissaoExecutiva\DocumentosAutomaticos;
 use App\Models\ComissaoExecutiva\Reuniao;
 use App\Services\Formularios\FormularioSinodalService;
+use App\Services\Gamificacao\GamificacaoHook;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -221,6 +222,7 @@ class ComissaoExecutivaService
             'nome' => $dados['nome'],
             'cpf' => $dados['cpf'],
             'oficial' => $dados['oficial'] ?? null,
+            'telefone' => $dados['telefone'] ?? null,
             'reuniao_id' => $reuniao['id'],
             'sinodal_id' => $sinodal->id,
             'suplente' => $dados['suplente'] ?? 0,
@@ -234,7 +236,9 @@ class ComissaoExecutivaService
 
         $delegado->update([
             'nome' => $dados['nome'],
-            'cpf' => $dados['cpf']
+            'cpf' => $dados['cpf'],
+            'telefone' => $dados['telefone'] ?? null,
+            'oficial' => $dados['oficial'] ?? null
         ]);
 
         if (!empty($dados['credencial'])) {
@@ -253,6 +257,10 @@ class ComissaoExecutivaService
             'pago' => $dados['pago'] ?? false,
             'credencial' => $dados['credencial'] ?? false
         ]);
+
+        if (! empty($delegado->sinodal_id)) {
+            GamificacaoHook::aposComissaoExecutiva($delegado->sinodal_id);
+        }
     }
 
     public static function sincronizarInscritos(Reuniao $reuniao): void
@@ -285,6 +293,10 @@ class ComissaoExecutivaService
                 'telefone' => $inscrito['phone'],
                 'pago' => true
             ]);
+
+            if (! empty($delegado->sinodal_id)) {
+                GamificacaoHook::aposComissaoExecutiva($delegado->sinodal_id);
+            }
         }
     }
 

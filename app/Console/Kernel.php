@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('resolucoes:alertar-prazos')->dailyAt('08:00');
         $schedule->command('tarefas:alertar')->dailyAt('08:30');
+        $schedule->command('gamificacao:recalcular')->dailyAt('02:15');
     }
 
     /**

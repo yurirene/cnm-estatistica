@@ -158,12 +158,15 @@ class SinodalService
                     'total_federacoes' => $federacoes->where('status', true)->count(),
                     'total_umps' => $umps->where('status', true)->count(),
                     'total_socios' => 0,
+                    'total_socios_ativos' => 0,
                 ];
             }
             $total_socios = 0;
+            $total_socios_ativos = 0;
             $total_umps = 0;
             foreach ($formularios as $formulario) {
                 $total_umps += isset($formulario->estrutura) ? intval($formulario->estrutura['ump_organizada']) : 0;
+                $total_socios_ativos += intval($formulario->perfil['ativos'] ?? 0);
                 $total_socios += intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']);
             }
             return [
@@ -174,7 +177,8 @@ class SinodalService
                 'total_umps' => ($total_umps == 0 && $umps->where('status', true)->count() > 0)
                     ? $umps->where('status', true)->count()
                     : $total_umps,
-                'total_socios' => $total_socios
+                'total_socios' => $total_socios,
+                'total_socios_ativos' => $total_socios_ativos,
             ];
         } catch (\Throwable $th) {
             throw $th;

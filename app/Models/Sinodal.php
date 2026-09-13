@@ -9,6 +9,7 @@ use App\Models\Apps\Site\Site;
 use App\Models\ComissaoExecutiva\DocumentosAutomaticos;
 use App\Models\Diretorias\DiretoriaSinodal;
 use App\Models\Estatistica\Ranking;
+use App\Models\Gamificacao\Placar;
 
 use App\Traits\GenericTrait;
 use App\Traits\Uuid;
@@ -75,6 +76,11 @@ class Sinodal extends Model
     public function ranking()
     {
         return $this->hasOne(Ranking::class, 'sinodal_id');
+    }
+
+    public function placaresGamificacao()
+    {
+        return $this->hasMany(Placar::class, 'sinodal_id');
     }
 
     public function site()

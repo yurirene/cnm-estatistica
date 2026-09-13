@@ -27,7 +27,11 @@ class PermissionsSeeder extends Seeder
                 'store' => 'Cadastrar',
                 'edit' => 'Editar',
                 'update' => 'Atualizar',
-                'datatable' => 'DataTable'
+                'datatable' => 'DataTable',
+                'recalcular' => 'Recalcular',
+                'meta-atingida' => 'Meta atingida',
+                'destroy' => 'Remover',
+                'painel' => 'Painel',
             ];
 
             $routes = collect(Route::getRoutes())->filter(function ($route) {

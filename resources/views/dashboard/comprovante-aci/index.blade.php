@@ -21,10 +21,25 @@
 @push('js')
 {!! $dataTable->scripts() !!}
 <script>
+    window.initComprovanteAciTooltips = function () {
+        $('#comprovantes-table [data-toggle="tooltip"]').each(function () {
+            var $el = $(this);
+            if (typeof $el.tooltip !== 'function') {
+                return;
+            }
+            if ($el.data('bs.tooltip')) {
+                $el.tooltip('dispose');
+            }
+            $el.tooltip({
+                container: 'body',
+                trigger: 'hover focus',
+                placement: 'top'
+            });
+        });
+    };
 
-$(document).ready(function() {
-
-});
-
+    $(document).on('draw.dt', '#comprovantes-table', function () {
+        window.initComprovanteAciTooltips();
+    });
 </script>
 @endpush

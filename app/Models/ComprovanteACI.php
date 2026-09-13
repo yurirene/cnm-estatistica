@@ -9,10 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class ComprovanteACI extends Model
 {
-    
+    public const STATUS_APROVADO = 1;
+    public const STATUS_PENDENTE = 0;
+    public const STATUS_META_ATINGIDA = 2;
+
+    public const STATUS_LABELS = [
+        self::STATUS_PENDENTE => ['texto' => 'Pendente', 'cor' => 'danger'],
+        self::STATUS_APROVADO => ['texto' => 'Confirmado', 'cor' => 'success'],
+        self::STATUS_META_ATINGIDA => ['texto' => 'Meta atingida', 'cor' => 'info'],
+    ];
 
     protected $table = 'comprovantes_aci';
     protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $casts = [
+        'status' => 'integer',
+    ];
 
     public function sinodal()
     {

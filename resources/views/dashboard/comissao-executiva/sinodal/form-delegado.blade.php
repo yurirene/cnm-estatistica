@@ -51,7 +51,7 @@
     </div>
     <div class="col-md-3 mt-2">
         <div class="form-group">
-            {!! Form::label('cpf', 'Telefone') !!}
+            {!! Form::label('telefone', 'Telefone') !!}
             {!! Form::text(
                 'telefone',
                 null,

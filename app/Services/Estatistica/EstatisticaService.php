@@ -12,6 +12,7 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
+use App\Models\ValorAciAno;
 use App\Services\Formularios\AtualizarAutomaticamenteFormulariosService;
 use App\Services\Formularios\CamposFormularioService;
 use Illuminate\Support\Collection;
@@ -35,9 +36,55 @@ class EstatisticaService
             $parametro->update([
                 'valor' => $valor
             ]);
+            self::sincronizarValorAciAno($parametro->nome, $valor);
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public static function atualizarValorAciAno(array $request): void
+    {
+        $ano = (int) ($request['ano'] ?? 0);
+        if ($ano < 2000) {
+            throw new \InvalidArgumentException('Ano inválido');
+        }
+
+        ValorAciAno::sincronizar($ano, $request['valor'] ?? 0);
+        self::espelharValorAciCorrente($ano, ValorAciAno::parseValor($request['valor'] ?? 0));
+    }
+
+    private static function sincronizarValorAciAno(string $nome, mixed $valor): void
+    {
+        if ($nome === 'valor_aci') {
+            $ano = (int) self::getAnoReferencia();
+            if ($ano > 0) {
+                ValorAciAno::sincronizar($ano, $valor);
+            }
+
+            return;
+        }
+
+        if ($nome === 'ano_referencia') {
+            $ano = (int) $valor;
+            $valorAci = Parametro::where('nome', 'valor_aci')->first()?->valor;
+            if ($ano > 0 && $valorAci !== null) {
+                ValorAciAno::firstOrCreate(
+                    ['ano' => $ano],
+                    ['valor' => ValorAciAno::parseValor($valorAci)]
+                );
+            }
+        }
+    }
+
+    private static function espelharValorAciCorrente(int $ano, float $valor): void
+    {
+        if ($ano !== (int) self::getAnoReferencia()) {
+            return;
+        }
+
+        Parametro::where('nome', 'valor_aci')->update([
+            'valor' => number_format($valor, 2, ',', '.'),
+        ]);
     }
 
     public static function getParametros() : Collection
