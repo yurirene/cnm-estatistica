@@ -17,7 +17,7 @@ class Digesto extends Model
 
     public function getTipoFormatadoAttribute()
     {
-        return $this->tipo->nome;
+        return $this->tipo->nome ?? '';
     }
 
     public function getTextoSelecionadoAttribute()
