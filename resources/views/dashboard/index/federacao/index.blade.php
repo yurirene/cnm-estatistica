@@ -43,6 +43,11 @@
     </div>
     <div class="row">
         <div class="col-xl-12 mt-3">
+            @include('dashboard.index.partes.analise-estatistica')
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 mt-3">
             @include('dashboard.index.gamificacao.tabela-entrega', [
                 'game' => $game,
                 'colunaNome' => 'UMP Local',

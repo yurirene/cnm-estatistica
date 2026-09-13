@@ -2410,4 +2410,15 @@ body:has(.digesto-busca) .header.bg-gradient-primary {
     }
 }
 
+.analise-lista {
+    margin: 0 0 12px;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.exec-panel .analise-lista {
+    font-size: 13px;
+}
+
 

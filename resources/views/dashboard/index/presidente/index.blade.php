@@ -13,6 +13,12 @@
         ])
 
         <div class="row">
+            <div class="col-xl-12 mt-3">
+                @include('dashboard.index.partes.analise-estatistica', ['variante' => 'exec'])
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-xl-4 mt-3">
                 @include('dashboard.index.partes.executivo.qualidade')
             </div>
