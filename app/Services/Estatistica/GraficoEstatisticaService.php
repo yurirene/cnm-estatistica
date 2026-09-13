@@ -11,15 +11,18 @@ class GraficoEstatisticaService extends AbstractGrafico
 
     private static $dados = [];
 
+    public const CORES = [
+        'umps' => '#2E9E8F',
+        'fed' => '#8B2E45',
+        'sin' => '#1B2A63',
+        'blue' => '#2E43A0',
+        'pale' => '#DCE0F5',
+        'gold' => '#D9A441',
+        'sand' => '#D9C9A3',
+        'gray' => '#8890B0',
+    ];
+
     public const GRAFICOS = [
-        [
-            'nome' => 'tipo_socios',
-            'coluna' => 'perfil',
-            'titulo' => 'Nº de Sócios',
-            'campos' => ['ativos', 'cooperadores'],
-            'labels' => ['Ativos', 'Cooperadores'],
-            'tipo' => 'pie'
-        ],
         [
             'nome' => 'genero',
             'coluna' => 'perfil',
@@ -54,128 +57,19 @@ class GraficoEstatisticaService extends AbstractGrafico
         ],
         [
             'nome' => 'deficiencias',
-            'coluna' => 'deficiencias',
-            'titulo' => 'Nº de Sócios',
-            'campos' => [
-                ['cegos', 'baixa_visao'],
-                ['auditiva', 'surdos'],
-                ['fisica_inferior', 'fisica_superior'],
-                ['neurologico', 'intelectual'],
-            ],
-            'labels' => ['Visual', 'Auditiva', 'Física', 'Mental'],
-            'labels_map' => [
-                ['Cegos', 'Baixa Visão'],
-                ['Auditiva (Parcial)', 'Surdos'],
-                ['Física/Motora membros inferiores', 'Física/Motora membros superiores'],
-                ['Neurológicos', 'Intelectual']
-            ],
-            'tipo' => 'groupBar'
+            'tipo' => 'deficienciasBar'
         ],
         [
             'nome' => 'repasse_aci',
-            'coluna' => 'aci',
-            'titulo' => 'Quantidade',
-            'campos' => [
-                ['locais', 'locais_nao'],
-                ['federacoes', 'federacoes_nao'],
-                ['sinodais', 'sinodais_nao'],
-            ],
-            'labels' => [
-                'UMPs Repassaram',
-                'UMPs Não Repassaram',
-                'Federações Repassaram',
-                'Federações Não Repassaram',
-                'Sinodais Repassaram',
-                'Sinodais Não Repassaram'
-            ],
-            'tipo' => 'multiPie'
+            'tipo' => 'aciGrouped'
         ],
         [
-            'nome' => 'programacoes_umps',
-            'coluna' => 'programacoes.locais',
-            'titulo' => 'Nº de Programções',
-            'campos' => [
-                'social',
-                'oracao',
-                'evangelistico',
-                'espiritual',
-                'recreativo',
-            ],
-            'labels' => [
-                'Social',
-                'Oração',
-                'Evangelística/Missionária',
-                'Espiritual',
-                'Recreativa'
-            ],
-            'tipo' => 'bar'
-        ],
-        [
-            'nome' => 'programacoes_sinodais',
-            'coluna' => 'programacoes.sinodais',
-            'titulo' => 'Nº de Programções',
-            'campos' => [
-                'social',
-                'oracao',
-                'evangelistico',
-                'espiritual',
-                'recreativo',
-            ],
-            'labels' => [
-                'Social',
-                'Oração',
-                'Evangelística/Missionária',
-                'Espiritual',
-                'Recreativa'
-            ],
-            'tipo' => 'bar'
-        ],
-        [
-            'nome' => 'programacoes_federacoes',
-            'coluna' => 'programacoes.federacoes',
-            'titulo' => 'Nº de Programções',
-            'campos' => [
-                'social',
-                'oracao',
-                'evangelistico',
-                'espiritual',
-                'recreativo',
-            ],
-            'labels' => [
-                'Social',
-                'Oração',
-                'Evangelística/Missionária',
-                'Espiritual',
-                'Recreativa'
-            ],
-            'tipo' => 'bar'
-        ],
-        [
-            'nome' => 'discipulado',
-            'coluna' => 'discipulado',
-            'titulo' => 'Nº de Jovens',
-            'campos' => [
-                'trilha_cnm',
-                'discipulando_cnm',
-                'discipulando_outro',
-                'sendo_discipulados',
-            ],
-            'labels' => [
-                'Fizeram a Trilha da CNM',
-                'Discipulando pelo método da CNM',
-                'Discipulando por outro método',
-                'Sendo discipulados'
-            ],
-            'tipo' => 'bar'
+            'nome' => 'programacoes',
+            'tipo' => 'programacoesStacked'
         ],
         [
             'nome' => 'distribuicao',
         ],
-    ];
-
-    public const GRAFICOS_COMPLEXOS = [
-        'deficiencias',
-        'repasse_aci'
     ];
 
     /**
@@ -186,31 +80,47 @@ class GraficoEstatisticaService extends AbstractGrafico
      */
     public static function graficos(array $request): array
     {
+        $request = self::normalizarFiltro($request);
+        self::$dados = EstatisticaService::getDadosRelatorioGeral($request['ano'], $request['regiao']);
 
-        $retorno = [];
+        $retorno = ['graficos' => []];
         foreach (self::GRAFICOS as $grafico) {
-
-            if (in_array($grafico['nome'], self::GRAFICOS_COMPLEXOS)) {
-                $dados = self::dadosComplexos(
-                    $grafico['coluna'],
-                    $grafico['campos'],
-                    $request,
-                    $grafico['labels_map'] ?? []
-                );
-            } else if ($grafico['nome'] == 'distribuicao') {
+            if ($grafico['nome'] == 'distribuicao') {
                 $retorno['graficos'][] = [
                     'dados' => self::getDadosDistribuicao($request),
                     'config' => [],
                     'id' => $grafico['nome']
                 ];
                 continue;
-            } else {
-                $dados = self::dados(
-                    $grafico['coluna'],
-                    $grafico['campos'],
-                    $request
-                );
             }
+
+            if (($grafico['tipo'] ?? '') === 'deficienciasBar') {
+                $retorno['graficos'][] = [
+                    'config' => self::deficienciasBar(),
+                    'id' => $grafico['nome'],
+                ];
+                continue;
+            }
+            if (($grafico['tipo'] ?? '') === 'aciGrouped') {
+                $retorno['graficos'][] = [
+                    'config' => self::aciGrouped(),
+                    'id' => $grafico['nome'],
+                ];
+                continue;
+            }
+            if (($grafico['tipo'] ?? '') === 'programacoesStacked') {
+                $retorno['graficos'][] = [
+                    'config' => self::programacoesStacked(),
+                    'id' => $grafico['nome'],
+                ];
+                continue;
+            }
+
+            $dados = self::dados(
+                $grafico['coluna'],
+                $grafico['campos'],
+                $request
+            );
             $dados['label'] = $grafico['labels'];
             $dados['titulo'] = $grafico['titulo'];
             $dadosGrafico = call_user_func_array(
@@ -227,17 +137,37 @@ class GraficoEstatisticaService extends AbstractGrafico
                 'id' => $grafico['nome']
             ];
         }
+
+        $umps = (int) (self::$dados['estrutura']['umps_organizadas'] ?? 0);
         $retorno['totalizadores'] = [
             'total_sinodais' => self::$dados['estrutura']['sinodais_organizadas'],
             'total_federacoes' => self::$dados['estrutura']['federacoes_organizadas'],
             'total_umps' => self::$dados['estrutura']['umps_organizadas'],
-            'total_socios' => self::$dados['perfil']['ativos'] + self::$dados['perfil']['cooperadores'],
+            'total_socios' => (self::$dados['perfil']['ativos'] ?? 0) + (self::$dados['perfil']['cooperadores'] ?? 0),
             'relatorios_sinodais' => self::$dados['abrangencia']['sinodais']['respondido'] . ' / ' . self::$dados['abrangencia']['sinodais']['total'],
             'relatorios_federacoes' => self::$dados['abrangencia']['federacoes']['respondido'] . ' / ' . self::$dados['abrangencia']['federacoes']['total'],
             'relatorios_umps_locais' => self::$dados['abrangencia']['locais']['respondido'] . ' / ' . self::$dados['abrangencia']['locais']['total'],
-            'qualidade_relatorio' => round(self::$dados['qualidade'], 2)  . "%",
+            'qualidade_relatorio' => ($umps > 0 ? round((float) self::$dados['qualidade'], 1) : 0) . '%',
         ];
-        return $retorno;
+
+        return array_merge($retorno, PainelNacionalService::complemento($request, self::$dados));
+    }
+
+    public static function normalizarFiltro(array $request): array
+    {
+        $ano = (int) ($request['ano'] ?? EstatisticaService::getAnoReferencia());
+        $regiao = $request['regiao'] ?? null;
+        if ($regiao === '' || $regiao === null) {
+            $regiao = null;
+        } else {
+            $regiao = (int) $regiao;
+            $regiao = $regiao > 0 ? $regiao : null;
+        }
+
+        return [
+            'ano' => $ano,
+            'regiao' => $regiao,
+        ];
     }
 
     /**
@@ -315,6 +245,167 @@ class GraficoEstatisticaService extends AbstractGrafico
         return $data;
     }
 
+    public static function deficienciasBar(): array
+    {
+        $grupos = [
+            ['Visual', ['cegos', 'baixa_visao'], self::CORES['blue']],
+            ['Auditiva', ['auditiva', 'surdos'], self::CORES['umps']],
+            ['Física', ['fisica_inferior', 'fisica_superior'], self::CORES['gold']],
+            ['Neuro/Intelectual', ['neurologico', 'intelectual'], self::CORES['fed']],
+        ];
+        $labels = [];
+        $valores = [];
+        $cores = [];
+        foreach ($grupos as $grupo) {
+            $labels[] = $grupo[0];
+            $total = 0;
+            foreach ($grupo[1] as $campo) {
+                $total += (int) (self::$dados['deficiencias'][$campo] ?? 0);
+            }
+            $valores[] = $total;
+            $cores[] = $grupo[2];
+        }
+
+        return [
+            'type' => 'bar',
+            'data' => [
+                'labels' => $labels,
+                'datasets' => [[
+                    'label' => 'Sócios',
+                    'data' => $valores,
+                    'backgroundColor' => $cores,
+                    'borderRadius' => 6,
+                    'maxBarThickness' => 70,
+                ]],
+            ],
+            'options' => [
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'plugins' => [
+                    'legend' => ['display' => false],
+                ],
+                'scales' => [
+                    'y' => ['beginAtZero' => true],
+                    'x' => ['grid' => ['display' => false]],
+                ],
+            ],
+        ];
+    }
+
+    public static function aciGrouped(): array
+    {
+        $aci = self::$dados['aci'] ?? [];
+
+        return [
+            'type' => 'bar',
+            'data' => [
+                'labels' => ['UMPs Locais', 'Federações', 'Sinodais'],
+                'datasets' => [
+                    [
+                        'label' => 'Repassaram',
+                        'data' => [
+                            (int) ($aci['locais'] ?? 0),
+                            (int) ($aci['federacoes'] ?? 0),
+                            (int) ($aci['sinodais'] ?? 0),
+                        ],
+                        'backgroundColor' => self::CORES['umps'],
+                        'borderRadius' => 5,
+                    ],
+                    [
+                        'label' => 'Não repassaram',
+                        'data' => [
+                            (int) ($aci['locais_nao'] ?? 0),
+                            (int) ($aci['federacoes_nao'] ?? 0),
+                            (int) ($aci['sinodais_nao'] ?? 0),
+                        ],
+                        'backgroundColor' => self::CORES['pale'],
+                        'borderRadius' => 5,
+                    ],
+                ],
+            ],
+            'options' => [
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'plugins' => [
+                    'legend' => ['position' => 'bottom'],
+                ],
+                'scales' => [
+                    'y' => ['beginAtZero' => true],
+                    'x' => ['grid' => ['display' => false]],
+                ],
+            ],
+        ];
+    }
+
+    public static function programacoesStacked(): array
+    {
+        $niveis = [
+            'Sinodais' => self::$dados['programacoes']['sinodais'] ?? [],
+            'Federações' => self::$dados['programacoes']['federacoes'] ?? [],
+            'UMPs Locais' => self::$dados['programacoes']['locais'] ?? [],
+        ];
+        $categorias = [
+            'social' => 'Social',
+            'oracao' => 'Oração',
+            'evangelistico' => 'Evang./Miss.',
+            'espiritual' => 'Espiritual',
+            'recreativo' => 'Recreativa',
+        ];
+        $cores = [
+            self::CORES['fed'],
+            self::CORES['sin'],
+            self::CORES['gold'],
+            self::CORES['umps'],
+            self::CORES['blue'],
+        ];
+        $labels = array_keys($niveis);
+        $datasets = [];
+        $i = 0;
+        foreach ($categorias as $chave => $label) {
+            $data = [];
+            foreach ($niveis as $row) {
+                $soma = array_sum(array_map('intval', $row));
+                $valor = (int) ($row[$chave] ?? 0);
+                $data[] = $soma > 0 ? round(($valor * 100) / $soma, 1) : 0;
+            }
+            $datasets[] = [
+                'label' => $label,
+                'data' => $data,
+                'backgroundColor' => $cores[$i],
+            ];
+            $i++;
+        }
+
+        return [
+            'type' => 'bar',
+            'data' => [
+                'labels' => $labels,
+                'datasets' => $datasets,
+            ],
+            'options' => [
+                'indexAxis' => 'y',
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'plugins' => [
+                    'legend' => ['position' => 'bottom'],
+                ],
+                'scales' => [
+                    'x' => [
+                        'stacked' => true,
+                        'max' => 100,
+                        'ticks' => [
+                            'callback' => null,
+                        ],
+                    ],
+                    'y' => [
+                        'stacked' => true,
+                        'grid' => ['display' => false],
+                    ],
+                ],
+            ],
+            'percentTicks' => true,
+        ];
+    }
 
     /**
      * Gerador de Gráfico do Tipo Pizza
@@ -417,9 +508,11 @@ class GraficoEstatisticaService extends AbstractGrafico
                 ],
                 "options" => [
                     "responsive" => true,
+                    "maintainAspectRatio" => false,
+                    "cutout" => '68%',
                     "plugins" => [
                         "legend" => [
-                            "position" => 'top',
+                            "position" => 'bottom',
                         ],
                         "title" => [
                             "display" => false,
