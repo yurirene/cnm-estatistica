@@ -406,10 +406,10 @@ class FormularioSinodalService
         return $totalizador;
     }
 
-    public static function getFormularioDaSinodal($sinodal) : ?FormularioSinodal
+    public static function getFormularioDaSinodal($sinodal, ?int $ano = null) : ?FormularioSinodal
     {
         return FormularioSinodal::where('sinodal_id', $sinodal)
-            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+            ->where('ano_referencia', $ano ?: EstatisticaService::getAnoReferencia())
             ->first();
     }
 

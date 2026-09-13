@@ -59,6 +59,9 @@
                             <div class="col">
                                 <h2 class=" mb-0">Entrega de Formulários</h2>
                             </div>
+                            <div class="col-auto">
+                                @include('dashboard.index.partes.filtro-ano-referencia')
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -263,6 +266,15 @@
 @push('js')
 
 <script>
+    function getAnoReferenciaFiltro() {
+        return $('#filtro-ano-referencia').val();
+    }
+
+    function urlComAnoReferencia(url) {
+        var separator = url.indexOf('?') === -1 ? '?' : '&';
+        return url + separator + 'ano_referencia=' + encodeURIComponent(getAnoReferenciaFiltro());
+    }
+
     $(function() {
         var rotaExport = "{{ route('dashboard.formularios-sinodal.export', ':id') }}";
         $('#sinodal-entregues-table').DataTable({
@@ -271,14 +283,19 @@
             responsive: true,
             processing: true,
             serverSide: true,
-            ajax: '{{ route("dashboard.datatables.formularios-entregues", "Sinodal") }}',
+            ajax: {
+                url: '{{ route("dashboard.datatables.formularios-entregues", "Sinodal") }}',
+                data: function (d) {
+                    d.ano_referencia = getAnoReferenciaFiltro();
+                }
+            },
             columns: [
                 {
                     render: function (data, type, result) {
                         var imprimir = '';
                         if (result.entregue == 1) {
                             imprimir = `<a
-                            href="${rotaExport.replace(':id', result.id)}"
+                            href="${rotaExport.replace(':id', result.id)}?ano_referencia=${getAnoReferenciaFiltro()}"
                             class="btn btn-sm btn-primary"
                             target="_blank"
                             >
@@ -311,20 +328,28 @@
                 {data: 'aci_necessaria'}
             ]
         });
+
+        $('#filtro-ano-referencia').on('change', function () {
+            $('#sinodal-entregues-table').DataTable().ajax.reload();
+        });
     });
 
 
     $('#sinodal-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
-        var route = '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Federacao", "id" => ":id"]) }}'.replace(':id', id);
+        var route = urlComAnoReferencia(
+            '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Federacao", "id" => ":id"]) }}'.replace(':id', id)
+        );
         carregarDataTableFederacao(route);
     });
 
     $('#local-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
-        var route = '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Local", "id" => ":id"]) }}'.replace(':id', id);
+        var route = urlComAnoReferencia(
+            '{{ route("dashboard.datatables.formularios-entregues", ["instancia" => "Local", "id" => ":id"]) }}'.replace(':id', id)
+        );
         carregarDataTableLocal(route);
     });
 
