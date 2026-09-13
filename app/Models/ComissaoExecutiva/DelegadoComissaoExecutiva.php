@@ -29,6 +29,7 @@ class DelegadoComissaoExecutiva extends Model
     public const STATUS_PENDENTE = 0;
     public const STATUS_EM_ANALISE = 1;
     public const STATUS_CONFIRMADA = 2;
+    public const STATUS_PRESENTE = 3;
 
     //status pagamento
     public const STATUS_PAGAMENTO_CONFIRMADO = ['paid', 'confirmed'];
@@ -37,14 +38,16 @@ class DelegadoComissaoExecutiva extends Model
         self::STATUS_REJEITADA => 'Rejeitada',
         self::STATUS_PENDENTE => 'Pendente',
         self::STATUS_EM_ANALISE => 'Em análise',
-        self::STATUS_CONFIRMADA => 'Confirmada'
+        self::STATUS_CONFIRMADA => 'Confirmada',
+        self::STATUS_PRESENTE => 'Presente'
     ];
 
     public const STATUS_LABELS = [
         self::STATUS_REJEITADA => '<span class="badge bg-danger">Rejeitada</span>',
         self::STATUS_PENDENTE => '<span class="badge bg-warning">Pendente</span>',
         self::STATUS_EM_ANALISE => '<span class="badge bg-primary">Em análise</span>',
-        self::STATUS_CONFIRMADA => '<span class="badge bg-success">Confirmada</span>'
+        self::STATUS_CONFIRMADA => '<span class="badge bg-success">Confirmada</span>',
+        self::STATUS_PRESENTE => '<span class="badge bg-success">Presente</span>'
     ];
 
     public function getStatusFormatadoAttribute(): string

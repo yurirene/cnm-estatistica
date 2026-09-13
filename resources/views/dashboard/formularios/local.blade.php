@@ -16,7 +16,7 @@
         ['title' => 'Escolaridade', 'desc' => 'Nível de ensino concluído pelos sócios.'],
         ['title' => 'Deficiência', 'desc' => 'Toque no ícone “i” para ver a definição de cada categoria.'],
         ['title' => 'Programações', 'desc' => 'Atividades realizadas pela UMP ao longo do ano.'],
-        ['title' => 'Discipulado', 'desc' => 'Os dois primeiros campos são calculados automaticamente a partir do Formulário Complementar.'],
+        ['title' => 'Discipulado', 'desc' => 'Informações sobre o discipulado da UMP.'],
         ['title' => 'Organização', 'desc' => 'Participação em treinamentos oferecidos pelas instâncias superiores.'],
         ['title' => 'ACI', 'desc' => 'Confirmação do repasse anual da contribuição para a Federação.'],
     ];
@@ -84,7 +84,7 @@
                                 @if($coleta)
                                     <button type="button" id="responder" class="btn btn-primary mb-2 ml-1">
                                         <span>Responder</span>
-                                        <span class="badge blob">{{$ano_referencia}}</span>
+                                        <span class="badge blob bg-danger">{{$ano_referencia}}</span>
                                     </button>
                                     <a href="{{ route('dashboard.coletor-dados.index') }}" id="coleta-dados" class="btn btn-primary mb-2 ml-1">
                                         <span class="text-white">Coletor de Dados</span>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Apps\App;
 use App\Models\Diretorias\DiretoriaFederacao;
+use App\Models\Gamificacao\Placar;
 use App\Traits\GenericTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -75,6 +76,11 @@ class Federacao extends Model
     public function relatorios()
     {
         return $this->hasMany(FormularioFederacao::class, 'federacao_id');
+    }
+
+    public function placaresGamificacao()
+    {
+        return $this->hasMany(Placar::class, 'federacao_id');
     }
 
     public function apps()

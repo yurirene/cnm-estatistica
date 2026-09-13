@@ -179,6 +179,28 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.game-cnm.painel'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.game-cnm.painel') }}">
+                        <i class="fas fa-trophy"></i> Game CNM
+                    </a>
+                </li>
+                @elsecan('rota-permitida', ['dashboard.game-cnm.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.game-cnm.index') }}">
+                        <i class="fas fa-trophy"></i> Game CNM
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.game-cnm.eventos.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.game-cnm.eventos.index') }}">
+                        <i class="fas fa-calendar-check"></i> Eventos
+                    </a>
+                </li>
+                @endcan
+
                 @can('rota-permitida', ['dashboard.comissao-executiva.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.comissao-executiva.index') }}">

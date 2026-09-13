@@ -21,6 +21,11 @@
         @if(isset($status) && $status == true)
         <a class="dropdown-item" href="{{ route($route.'.status', $id) }}">Alterar Status</a>
         @endif
+        @if(!empty($metaAtingida))
+        <a class="dropdown-item" href="{{ route($route.'.meta-atingida', $id) }}">
+            {{ !empty($jaMetaAtingida) ? 'Remover meta atingida' : 'Meta atingida' }}
+        </a>
+        @endif
         @if(isset($configuracoes) && $configuracoes == true)
         <a class="dropdown-item" href="{{ route($route.'.configuracoes', $id) }}">Configurações</a>
         @endif
