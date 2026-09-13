@@ -128,10 +128,12 @@ class FormularioSinodalController extends Controller
         }
     }
 
-    public function SinodalExport($sinodal)
+    public function SinodalExport(Request $request, $sinodal)
     {
+        $ano = $request->integer('ano_referencia') ?: null;
+
         return view('dashboard.formularios.sinodal.export', [
-            'formulario' => FormularioSinodalService::getFormularioDaSinodal($sinodal)
+            'formulario' => FormularioSinodalService::getFormularioDaSinodal($sinodal, $ano)
         ]);
     }
 

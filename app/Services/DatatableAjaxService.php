@@ -183,7 +183,11 @@ class DatatableAjaxService
             }
             if ($instancia == 'Sinodal') {
                 if (Gate::check(['presidente'])) {
-                    $query = Sinodal::query();
+                    $regiaoId = self::resolverRegiaoId();
+                    $query = Sinodal::query()
+                        ->when($regiaoId, function ($sql) use ($regiaoId) {
+                            return $sql->where('regiao_id', $regiaoId);
+                        });
                 } else {
                     $query = Sinodal::when($id, function ($sql) use ($id) {
                         return $sql->where('regiao_id', $id);
@@ -199,11 +203,11 @@ class DatatableAjaxService
                         return $sql->where('federacao_id', auth()->user()->federacao_id);
                     });
             }
+            $anoReferencia = self::resolverAnoReferencia();
             $formulariosEntregues = $query
                 ->where('status', true)
                 ->get()
-                ->map(function ($item) use ($instancia){
-                    $anoReferencia = EstatisticaService::getAnoReferencia();
+                ->map(function ($item) use ($instancia, $anoReferencia){
                     $relatorioDoAno = $item->relatorios()
                         ->where('ano_referencia', $anoReferencia)
                         ->when($instancia != 'Local', function ($sql) {
@@ -272,6 +276,23 @@ class DatatableAjaxService
         }
    }
 
+    private static function resolverAnoReferencia(): int
+    {
+        $ano = (int) request()->input('ano_referencia');
+
+        if ($ano >= 2000 && $ano <= ((int) date('Y') + 1)) {
+            return $ano;
+        }
+
+        return (int) EstatisticaService::getAnoReferencia();
+    }
+
+    private static function resolverRegiaoId(): ?int
+    {
+        $regiaoId = (int) request()->input('regiao_id');
+
+        return $regiaoId > 0 ? $regiaoId : null;
+    }
 
     /**
      * Retorna lista das sinodais informando se entregaram os formulários
