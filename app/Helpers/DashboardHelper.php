@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Services\AdministradorService;
 use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\EstatisticaInteligente\AnaliseConsultaService;
+use App\Services\EstatisticaInteligente\Enums\NivelEstatisticoEnum;
 use App\Services\Gamificacao\GamificacaoConsultaService;
 use App\Services\Instancias\DashboardExecutivoService;
 use App\Services\Instancias\FederacaoService;
@@ -172,33 +174,6 @@ class DashboardHelper
             ->toArray();
     }
 
-    public static function getAnoReferencia(): int
-    {
-        return (int) EstatisticaService::getAnoReferencia();
-    }
-
-    public static function getAnosReferenciaFormularios(): array
-    {
-        $anos = collect(EstatisticaService::getAnoReferenciaFormularios())
-            ->mapWithKeys(function ($ano) {
-                $ano = (int) $ano;
-                return [$ano => $ano];
-            });
-
-        $anoAtual = self::getAnoReferencia();
-        $anos->put($anoAtual, $anoAtual);
-
-        return $anos->sortKeysDesc()->toArray();
-    }
-
-    public static function getRegioes(): array
-    {
-        return Regiao::query()
-            ->orderBy('nome')
-            ->pluck('nome', 'id')
-            ->toArray();
-    }
-
     public static function getGamificacao(): ?\App\Services\Gamificacao\DTOs\PainelInicioDTO
     {
         try {
@@ -206,6 +181,62 @@ class DashboardHelper
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * @return array{
+     *     titulo: string,
+     *     resumo: string,
+     *     conteudo: array<string, mixed>,
+     *     ano: int,
+     *     ano_anterior: int
+     * }|null
+     */
+    public static function getAnaliseEstatistica(): ?array
+    {
+        $alvo = self::resolverNivelAnalise();
+        if ($alvo === null) {
+            return null;
+        }
+
+        try {
+            return app(AnaliseConsultaService::class)->buscar(
+                $alvo['nivel'],
+                $alvo['id'],
+                self::getAnoReferencia()
+            );
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @return array{nivel: NivelEstatisticoEnum, id: string}|null
+     */
+    private static function resolverNivelAnalise(): ?array
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return null;
+        }
+
+        if (Gate::check('local') && $user->local_id) {
+            return ['nivel' => NivelEstatisticoEnum::Local, 'id' => (string) $user->local_id];
+        }
+        if (Gate::check('federacao') && $user->federacao_id) {
+            return ['nivel' => NivelEstatisticoEnum::Federacao, 'id' => (string) $user->federacao_id];
+        }
+        if (Gate::check('sinodal') && $user->sinodal_id) {
+            return ['nivel' => NivelEstatisticoEnum::Sinodal, 'id' => (string) $user->sinodal_id];
+        }
+        if (Gate::check('diretoria') && $user->regiao_id) {
+            return ['nivel' => NivelEstatisticoEnum::Regiao, 'id' => (string) $user->regiao_id];
+        }
+        if (Gate::check('presidente')) {
+            return ['nivel' => NivelEstatisticoEnum::Nacional, 'id' => ''];
+        }
+
+        return null;
     }
 
 }

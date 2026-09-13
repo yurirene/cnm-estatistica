@@ -13,6 +13,7 @@ use App\Models\Sinodal;
 use App\Models\User;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Gamificacao\GamificacaoHook;
+use App\Services\EstatisticaInteligente\EstatisticaInteligenteHook;
 use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;
@@ -101,6 +102,7 @@ class FormularioFederacaoService
             AtualizarAutomaticamenteFormulariosService::atualizarSinodal($formulario);
             DB::commit();
             GamificacaoHook::aposFormularioFederacao($request->federacao_id);
+            EstatisticaInteligenteHook::aposFormularioFederacao($request->federacao_id);
         } catch (\Throwable $th) {
             DB::rollBack();
             LogErroService::registrar([

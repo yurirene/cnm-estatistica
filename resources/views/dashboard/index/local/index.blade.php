@@ -50,6 +50,11 @@
             @include('dashboard.index.avisos')
         </div>
     </div>
+    <div class="row">
+        <div class="col-xl-12 mt-3 mb-4">
+            @include('dashboard.index.partes.analise-estatistica')
+        </div>
+    </div>
 </div>
 
 <!-- Modal -->

@@ -11,6 +11,7 @@ use App\Models\ValorAciAno;
 use App\Services\ComprovanteAciService;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Gamificacao\GamificacaoHook;
+use App\Services\EstatisticaInteligente\EstatisticaInteligenteHook;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
 use Exception;
@@ -90,6 +91,7 @@ class FormularioSinodalService
 
             EstatisticaService::atualizarRelatorioGeral();
             GamificacaoHook::aposFormularioSinodal($request->sinodal_id);
+            EstatisticaInteligenteHook::aposFormularioSinodal($request->sinodal_id);
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
