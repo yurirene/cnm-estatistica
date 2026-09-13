@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\AdministradorService;
 use App\Services\Instancias\DiretoriaNacionalService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Gamificacao\GamificacaoConsultaService;
 use App\Services\Instancias\FederacaoService;
 use App\Services\Instancias\LocalService;
 use App\Services\Instancias\PresidenciaService;
@@ -122,6 +123,15 @@ class DashboardHelper
     public static function getQualidadeEntregaRelatorios(): array
     {
         return DiretoriaNacionalService::getQualidadeEntregaRelatorios();
+    }
+
+    public static function getGamificacao(): ?\App\Services\Gamificacao\DTOs\PainelInicioDTO
+    {
+        try {
+            return app(GamificacaoConsultaService::class)->painelDoUsuarioLogado();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
 }

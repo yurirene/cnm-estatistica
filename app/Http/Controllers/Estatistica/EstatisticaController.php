@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Estatistica;
 
 use App\Http\Controllers\Controller;
+use App\Models\ValorAciAno;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Estatistica\GraficoEstatisticaService;
 use Illuminate\Http\Request;
@@ -15,9 +16,11 @@ class EstatisticaController extends Controller
     {
         $parametros = EstatisticaService::getParametros();
         $anos_referencias = EstatisticaService::getAnoReferenciaFormularios();
+        $valoresAciAno = ValorAciAno::query()->orderByDesc('ano')->get();
         return view('dashboard.estatistica.index',[
             'parametros' => $parametros,
-            'anos_referencias' => $anos_referencias
+            'anos_referencias' => $anos_referencias,
+            'valoresAciAno' => $valoresAciAno,
         ]);
     }
 
@@ -33,6 +36,16 @@ class EstatisticaController extends Controller
             return response()->json(['mensagem' => 'Parâmetro Atualizado'], 200);
         } catch (Throwable $th) {
             return response()->json(['mensagem' => 'Erro ao Atualizar Parâmetro'], 500);
+        }
+    }
+
+    public function atualizarValorAciAno(Request $request)
+    {
+        try {
+            EstatisticaService::atualizarValorAciAno($request->all());
+            return response()->json(['mensagem' => 'Valor da ACI do ano atualizado'], 200);
+        } catch (Throwable $th) {
+            return response()->json(['mensagem' => 'Erro ao atualizar valor da ACI do ano'], 500);
         }
     }
 

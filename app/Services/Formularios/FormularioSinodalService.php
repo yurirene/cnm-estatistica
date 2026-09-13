@@ -7,8 +7,10 @@ use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
 use App\Models\Parametro;
+use App\Models\ValorAciAno;
 use App\Services\ComprovanteAciService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Gamificacao\GamificacaoHook;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
 use Exception;
@@ -87,6 +89,7 @@ class FormularioSinodalService
             }
 
             EstatisticaService::atualizarRelatorioGeral();
+            GamificacaoHook::aposFormularioSinodal($request->sinodal_id);
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -332,7 +335,7 @@ class FormularioSinodalService
             }
 
             $totalSocios = $totalizadorAtivas['perfil']['ativos'];
-            $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+            $paramValorAci = ValorAciAno::valorPara((int) EstatisticaService::getAnoReferencia());
             $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
             $aciNecessaria = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
             $totalizador['aci_necessaria'] = $aciNecessaria;

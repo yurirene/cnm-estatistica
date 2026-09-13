@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
 
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(GamificacaoConfiguracaoService::class);
     }
 
     /**
@@ -31,5 +32,10 @@ class AppServiceProvider extends ServiceProvider
                     'yuri@ump.net.br',
                 ]);
         });
+
+        try {
+            app(GamificacaoConfiguracaoService::class)->aplicar();
+        } catch (\Throwable) {
+        }
     }
 }

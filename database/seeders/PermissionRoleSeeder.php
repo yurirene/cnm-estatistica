@@ -96,7 +96,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.sinodal.documento.store',
                     'dashboard.cn.sinodal.documento.delete',
                     'dashboard.transferencias.index',
-                    'dashboard.transferencias.transferir-ump'
+                    'dashboard.transferencias.transferir-ump',
+                    'dashboard.game-cnm.painel',
                 ]
             ],
             'federacao' => [
@@ -123,6 +124,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.store',
                     'dashboard.cn.federacao.delegado.update',
                     'dashboard.cn.federacao.delegado.delete',
+                    'dashboard.game-cnm.painel',
                 ]
             ],
             'local' => [

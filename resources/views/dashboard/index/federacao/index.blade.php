@@ -4,86 +4,53 @@
 @include('dashboard.partes.head', [
     'titulo' => 'Início',
     'url_tutorial' => config('tutoriais.index.federacao'),
-    'remover' => true
+    'remover' => true,
 ])
-@include('dashboard.index.federacao.cards',[
-    'totalizadores' => DashboardHelper::getTotalizadores()
+@include('dashboard.index.federacao.cards', [
+    'totalizadores' => DashboardHelper::getTotalizadores(),
 ])
 
-@php $federacao = DashboardHelper::getInfo(); @endphp
+@php
+    $federacao = DashboardHelper::getInfo();
+    $game = DashboardHelper::getGamificacao();
+@endphp
 
 <div class="container-fluid mt--7">
-
     <div class="row">
         <div class="col-xl-6">
             <div class="card shadow h-100">
                 <div class="card-header bg-transparent">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h2 class=" mb-0">Informações</h2>
-                        </div>
-                        <div class="col">
-                            <ul class="nav nav-pills justify-content-end">
-                                <li class="nav-item mr-2 mr-md-0">
-                                    <a href="#" class="nav-link py-2 px-3 active"  data-toggle="modal" data-target="#modalEditar">
-                                        <span class="d-none d-md-block">Editar</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="mb-0">Informações</h2>
+                        <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalEditar">
+                            Editar
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <h3><span class="badge badge-primary">Nome:</span> {{ $federacao->nome }}</h3>
-                            <h3><span class="badge badge-primary">Presbitério:</span> {{ $federacao->presbiterio }}</h3>
-                            <h3><span class="badge badge-primary">Data de Organização:</span> {{ $federacao->data_organizacao_formatada }}</h3>
-                            <h3><span class="badge badge-primary">Redes Sociais:</span> {{ $federacao->midias_sociais }}</h3>
-                        </div>
+                    <div class="info-list">
+                        <div class="info-row"><span class="k">NOME</span><span class="v">{{ $federacao->nome }}</span></div>
+                        <div class="info-row"><span class="k">PRESBITÉRIO</span><span class="v">{{ $federacao->presbiterio }}</span></div>
+                        <div class="info-row"><span class="k">DATA DE ORGANIZAÇÃO</span><span class="v">{{ $federacao->data_organizacao_formatada }}</span></div>
+                        <div class="info-row"><span class="k">REDES SOCIAIS</span><span class="v">{{ $federacao->midias_sociais }}</span></div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-xl-6 mb-5 mb-xl-0">
-            @include('dashboard.index.avisos')
+            @include('dashboard.index.avisos', ['game' => $game])
         </div>
-
     </div>
     <div class="row">
         <div class="col-xl-12 mt-3">
-            <div class="card shadow h-100">
-                <div class="card-header bg-transparent">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h2 class=" mb-0">Entrega de Formulários</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <div class="table-responsive">
-                                <table id="formularios-entregues-table" class="table">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">#</th>
-                                            <th class="text-center">Federação</th>
-                                            <th class="text-center">Status</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('dashboard.index.gamificacao.tabela-entrega', [
+                'game' => $game,
+                'colunaNome' => 'UMP Local',
+            ])
         </div>
     </div>
 </div>
 
-<!-- Modal -->
 <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -129,10 +96,8 @@
     </div>
 </div>
 @endsection
-@push('js')
 
 @push('js')
-
 <script>
     $(function() {
         var rotaExport = "{{ route('dashboard.formularios-local.export', ':id') }}";
@@ -148,15 +113,11 @@
                     render: function (data, type, result) {
                         var imprimir = '';
                         if (result.entregue == 1) {
-                            imprimir = `<a
-                            href="${rotaExport.replace(':id', result.id)}"
-                            class="btn btn-sm btn-primary"
-                            target="_blank"
-                            >
+                            imprimir = `<a href="${rotaExport.replace(':id', result.id)}" class="btn btn-sm btn-primary" target="_blank">
                                 <i class="fas fa-print"></i>
                             </a>`;
                         }
-                        return imprimir;
+                        return imprimir || '—';
                     }
                 },
                 {data: 'nome'},
@@ -167,6 +128,14 @@
                         </span>`;
                     }
                 },
+                {
+                    data: 'impacto',
+                    render: function (data, type, result) {
+                        return result.impacto
+                            ? `<span style="color:var(--color-bad);font-weight:600;">${result.impacto}</span>`
+                            : '—';
+                    }
+                }
             ]
         });
     });
