@@ -13,6 +13,7 @@ use App\Services\LogErroService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ComissaoExecutivaController extends Controller
 {
@@ -64,6 +65,54 @@ class ComissaoExecutivaController extends Controller
                 'texto' => 'Inscritos sincronizados com sucesso!'
             ]
         ]);
+    }
+
+    public function downloadDocumentos(Reuniao $reuniao): BinaryFileResponse|RedirectResponse
+    {
+        try {
+            $zip = ComissaoExecutivaService::gerarZipDocumentos($reuniao);
+
+            return response()->download($zip['path'], $zip['downloadName'], [
+                'Content-Type' => 'application/zip',
+            ])->deleteFileAfterSend(true);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage() ?: 'Erro ao baixar os documentos.'
+                ]
+            ]);
+        }
+    }
+
+    public function downloadCredenciais(Reuniao $reuniao): BinaryFileResponse|RedirectResponse
+    {
+        try {
+            $zip = ComissaoExecutivaService::gerarZipCredenciais($reuniao);
+
+            return response()->download($zip['path'], $zip['downloadName'], [
+                'Content-Type' => 'application/zip',
+            ])->deleteFileAfterSend(true);
+        } catch (\Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => $th->getMessage() ?: 'Erro ao baixar as credenciais.'
+                ]
+            ]);
+        }
     }
 
 
