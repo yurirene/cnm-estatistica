@@ -397,29 +397,23 @@ class ComissaoExecutivaService
                 ->where('tipo', '!=', DocumentoRecebido::TIPO_CREDENCIAL_SINODAL)
         )->get();
 
-        $entradas = [];
-        $nomesUsados = [];
-
+        $itens = [];
         foreach ($documentos as $documento) {
             $rawPath = $documento->getRawOriginal('path');
             if (!$rawPath || !Storage::exists($rawPath)) {
                 continue;
             }
 
-            $regiaoNome = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
-            $siglaUnidade = $documento->sinodal?->sigla ?? 'sem_sigla';
-            $titulo = $documento->titulo ?? 'sem_titulo';
-            $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
-            $base = 'doc_' . self::slugParaArquivo($regiaoNome)
-                . '_' . self::slugParaArquivo($siglaUnidade)
-                . '_' . self::slugParaArquivo($titulo);
-            $nomeArquivo = self::nomeUnicoNoZip($base . ($ext !== '' ? '.' . $ext : ''), $nomesUsados);
-
-            $entradas[] = [
+            $itens[] = [
+                'sigla' => $documento->sinodal?->sigla ?? $documento->sinodal?->nome,
+                'titulo' => $documento->titulo,
+                'criado_em' => optional($documento->created_at)->format('Y-m-d H:i:s'),
                 'path' => Storage::path($rawPath),
-                'nome' => $nomeArquivo,
+                'ext' => pathinfo($rawPath, PATHINFO_EXTENSION),
             ];
         }
+
+        $entradas = self::montarEntradasDocumentosPorSinodal($itens);
 
         return self::gerarZipReuniao(
             $reuniao,
@@ -525,13 +519,63 @@ class ComissaoExecutivaService
         while (isset($nomesUsados[$nome])) {
             $cont++;
             $info = pathinfo($nomeArquivo);
-            $nome = ($info['filename'] ?? $nomeArquivo)
+            $diretorio = $info['dirname'] ?? '';
+            $prefixo = ($diretorio !== '' && $diretorio !== '.') ? $diretorio . '/' : '';
+            $nome = $prefixo
+                . ($info['filename'] ?? $nomeArquivo)
                 . '_' . $cont
                 . (isset($info['extension']) ? '.' . $info['extension'] : '');
         }
         $nomesUsados[$nome] = true;
 
         return $nome;
+    }
+
+    /**
+     * Ordena documentos por sinodal e numera o início do arquivo para manter a sequência no ZIP.
+     *
+     * @param array<int, array{sigla:?string, titulo:?string, criado_em?:?string, path:string, ext:?string}> $documentos
+     * @return array<int, array{path: string, nome: string}>
+     */
+    public static function montarEntradasDocumentosPorSinodal(array $documentos): array
+    {
+        usort($documentos, function (array $a, array $b): int {
+            $sigla = strcasecmp(
+                self::slugParaArquivo($a['sigla'] ?? null),
+                self::slugParaArquivo($b['sigla'] ?? null)
+            );
+            if ($sigla !== 0) {
+                return $sigla;
+            }
+
+            $titulo = strcasecmp(
+                self::slugParaArquivo($a['titulo'] ?? null),
+                self::slugParaArquivo($b['titulo'] ?? null)
+            );
+            if ($titulo !== 0) {
+                return $titulo;
+            }
+
+            return strcmp((string) ($a['criado_em'] ?? ''), (string) ($b['criado_em'] ?? ''));
+        });
+
+        $nomesUsados = [];
+        $entradas = [];
+
+        foreach ($documentos as $indice => $documento) {
+            $seq = str_pad((string) ($indice + 1), 3, '0', STR_PAD_LEFT);
+            $sigla = self::slugParaArquivo($documento['sigla'] ?? null);
+            $titulo = self::slugParaArquivo($documento['titulo'] ?? null);
+            $ext = $documento['ext'] ?? '';
+            $nome = $seq . '_' . $sigla . '_' . $titulo . ($ext !== '' ? '.' . $ext : '');
+
+            $entradas[] = [
+                'path' => $documento['path'],
+                'nome' => self::nomeUnicoNoZip($nome, $nomesUsados),
+            ];
+        }
+
+        return $entradas;
     }
 
     /**

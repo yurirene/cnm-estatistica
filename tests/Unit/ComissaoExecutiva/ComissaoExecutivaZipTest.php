@@ -29,6 +29,21 @@ class ComissaoExecutivaZipTest extends TestCase
         $this->assertSame('doc_abc_2.pdf', $terceiro);
     }
 
+    public function test_documentos_ficam_agrupados_por_sinodal_em_ordem(): void
+    {
+        $entradas = ComissaoExecutivaService::montarEntradasDocumentosPorSinodal([
+            ['sigla' => 'UMPP', 'titulo' => 'Ofício', 'criado_em' => '2026-01-02', 'path' => '/tmp/a', 'ext' => 'pdf'],
+            ['sigla' => 'CSMSET', 'titulo' => 'Ata 2', 'criado_em' => '2026-01-03', 'path' => '/tmp/b', 'ext' => 'pdf'],
+            ['sigla' => 'CSMSET', 'titulo' => 'Ata 1', 'criado_em' => '2026-01-01', 'path' => '/tmp/c', 'ext' => 'pdf'],
+        ]);
+
+        $this->assertSame([
+            '001_csmset_ata_1.pdf',
+            '002_csmset_ata_2.pdf',
+            '003_umpp_oficio.pdf',
+        ], array_column($entradas, 'nome'));
+    }
+
     public function test_montar_zip_adiciona_arquivos_e_evita_nomes_duplicados(): void
     {
         $dir = sys_get_temp_dir() . '/ce-zip-test-' . uniqid();
