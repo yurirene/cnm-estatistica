@@ -37,7 +37,7 @@ class DigestoDataTable extends DataTable
                 return $this->celulaOpcional($sql->numero_documento);
             })
             ->editColumn('comissao', function ($sql) {
-                return $this->celulaOpcional($sql->comissao);
+                return filled($sql->comissao) ? e($sql->comissao) : '—';
             })
             ->addColumn('status', function ($sql) {
                 if (DigestoService::estaIncompleto($sql)) {
@@ -76,9 +76,7 @@ class DigestoDataTable extends DataTable
                 return $query->whereNotNull('tipo_documento')
                     ->where('tipo_documento', '!=', '')
                     ->whereNotNull('numero_documento')
-                    ->where('numero_documento', '!=', '')
-                    ->whereNotNull('comissao')
-                    ->where('comissao', '!=', '');
+                    ->where('numero_documento', '!=', '');
             });
     }
 
@@ -105,6 +103,12 @@ class DigestoDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(80)
+                ->addClass('text-center')
+                ->title(''),
             Column::make('titulo')->title('Título'),
             Column::make('ano')->title('Ano')->width(70),
             Column::make('tipo_reuniao_id')->title('Reunião')->searchable(false),
@@ -114,13 +118,7 @@ class DigestoDataTable extends DataTable
             Column::computed('status')
                 ->title('Status')
                 ->searchable(false)
-                ->orderable(false),
-            Column::computed('action')
-                ->exportable(false)
-                ->printable(false)
-                ->width(80)
-                ->addClass('text-center')
-                ->title(''),
+                ->orderable(false)
         ];
     }
 

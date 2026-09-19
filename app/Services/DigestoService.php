@@ -130,8 +130,7 @@ class DigestoService
     public static function estaIncompleto(Digesto $digesto): bool
     {
         return ! filled($digesto->tipo_documento)
-            || ! filled($digesto->numero_documento)
-            || ! filled($digesto->comissao);
+            || ! filled($digesto->numero_documento);
     }
 
     public static function aplicarIncompleto(Builder $query): Builder
@@ -140,9 +139,7 @@ class DigestoService
             $q->whereNull('tipo_documento')
                 ->orWhere('tipo_documento', '')
                 ->orWhereNull('numero_documento')
-                ->orWhere('numero_documento', '')
-                ->orWhereNull('comissao')
-                ->orWhere('comissao', '');
+                ->orWhere('numero_documento', '');
         });
     }
 
@@ -162,6 +159,7 @@ class DigestoService
         $nome = basename((string) $digesto->path);
         $absoluto = public_path(ltrim((string) $digesto->path, '/'));
         $existe = filled($digesto->path) && is_file($absoluto);
+        $extensao = strtolower(pathinfo($nome, PATHINFO_EXTENSION));
 
         return [
             'nome' => $nome,
@@ -169,6 +167,7 @@ class DigestoService
             'tamanho' => $existe ? self::formatarTamanho((int) filesize($absoluto)) : null,
             'enviado_em' => optional($digesto->created_at)->format('d/m/Y'),
             'url' => $digesto->path,
+            'previsivel' => $existe && $extensao === 'pdf',
         ];
     }
 

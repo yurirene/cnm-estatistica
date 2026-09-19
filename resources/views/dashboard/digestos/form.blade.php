@@ -9,7 +9,7 @@
 
 @php
     $editando = isset($digesto);
-    $arquivo = $arquivo ?? ['nome' => '', 'existe' => false, 'tamanho' => null, 'enviado_em' => null, 'url' => null];
+    $arquivo = $arquivo ?? ['nome' => '', 'existe' => false, 'tamanho' => null, 'enviado_em' => null, 'url' => null, 'previsivel' => false];
     $comissoes = $comissoes ?? [];
 @endphp
 
@@ -67,13 +67,13 @@
                                     <div class="col-12">
                                         <div class="form-group">
                                             {!! Form::label('comissao', 'Comissão') !!}
-                                            {!! Form::text('comissao', null, ['class' => 'form-control', 'autocomplete' => 'off', 'id' => 'comissao', 'list' => 'comissoes-list', 'placeholder' => 'Comece a digitar para buscar...']) !!}
+                                            {!! Form::text('comissao', null, ['class' => 'form-control', 'autocomplete' => 'off', 'id' => 'comissao', 'list' => 'comissoes-list', 'placeholder' => 'Opcional']) !!}
                                             <datalist id="comissoes-list">
                                                 @foreach($comissoes as $comissao)
                                                     <option value="{{ $comissao }}">
                                                 @endforeach
                                             </datalist>
-                                            <small class="form-text text-muted">Selecione uma comissão existente para manter os filtros de busca consistentes.</small>
+                                            <small class="form-text text-muted">Opcional. Preencha apenas se o documento pertencer a uma comissão.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -100,9 +100,24 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-primary" id="digesto-escolher-arquivo">
-                                        {{ $editando ? 'Substituir arquivo' : 'Escolher arquivo' }}
-                                    </button>
+                                    <div class="digesto-file-actions">
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            id="digesto-visualizar-arquivo"
+                                            @disabled(empty($arquivo['url']) && empty($arquivo['nome']))>
+                                            <i class="far fa-eye"></i> Visualizar
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="digesto-escolher-arquivo">
+                                            {{ $editando ? 'Substituir arquivo' : 'Escolher arquivo' }}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="digesto-file-frame-wrap" id="digesto-file-frame-wrap" @if(empty($arquivo['previsivel'])) style="display: none;" @endif>
+                                    <iframe
+                                        id="digesto-file-iframe"
+                                        src="{{ !empty($arquivo['previsivel']) ? $arquivo['url'] : '' }}"
+                                        title="Pré-visualização do arquivo"
+                                    ></iframe>
                                 </div>
                             </div>
 
@@ -150,7 +165,6 @@
                                     <div class="digesto-check-item pending" data-check="reuniao"><span class="ic">!</span>Tipo de reunião e ano definidos</div>
                                     <div class="digesto-check-item pending" data-check="tipo"><span class="ic">!</span>Tipo de documento selecionado</div>
                                     <div class="digesto-check-item pending" data-check="numero"><span class="ic">!</span>Número do documento informado</div>
-                                    <div class="digesto-check-item pending" data-check="comissao"><span class="ic">!</span>Comissão vinculada</div>
                                     <div class="digesto-check-item pending" data-check="arquivo"><span class="ic">!</span>Arquivo anexado</div>
                                     <div class="digesto-check-item pending" data-check="texto"><span class="ic">!</span>Texto indexado para busca</div>
                                 </div>
@@ -159,6 +173,28 @@
                     </div>
 
                     {!! Form::close() !!}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="digesto-modal-arquivo" tabindex="-1" role="dialog" aria-labelledby="digesto-modal-arquivo-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="digesto-modal-arquivo-titulo">{{ $arquivo['nome'] ?: 'Arquivo' }}</h5>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <iframe id="digesto-modal-iframe" title="Arquivo do digesto"></iframe>
+                <div class="p-4 text-center" id="digesto-modal-sem-preview" style="display: none;">
+                    <p class="mb-2">Este formato não pode ser exibido no navegador.</p>
+                    <a href="{{ $arquivo['url'] ?: '#' }}" target="_blank" rel="noopener" id="digesto-modal-download" class="btn btn-primary">
+                        Abrir arquivo
+                    </a>
                 </div>
             </div>
         </div>
@@ -216,7 +252,6 @@
             marcar('reuniao', texto('tipo_reuniao_id') !== '' && texto('ano') !== '');
             marcar('tipo', texto('tipo_documento') !== '');
             marcar('numero', texto('numero_documento') !== '');
-            marcar('comissao', texto('comissao') !== '');
             marcar('arquivo', temArquivo);
             marcar('texto', texto('texto') !== '');
         }
@@ -267,6 +302,60 @@
 
         var arquivoInput = document.getElementById('arquivo');
         var escolher = document.getElementById('digesto-escolher-arquivo');
+        var visualizar = document.getElementById('digesto-visualizar-arquivo');
+        var iframePagina = document.getElementById('digesto-file-iframe');
+        var iframeWrap = document.getElementById('digesto-file-frame-wrap');
+        var iframeModal = document.getElementById('digesto-modal-iframe');
+        var semPreview = document.getElementById('digesto-modal-sem-preview');
+        var modalTitulo = document.getElementById('digesto-modal-arquivo-titulo');
+        var modalDownload = document.getElementById('digesto-modal-download');
+        var previewUrl = {!! json_encode($arquivo['url'] ?? '') !!};
+        var previewBlob = null;
+        var podePreview = {!! !empty($arquivo['previsivel']) ? 'true' : 'false' !!};
+
+        function extensaoArquivo(nome) {
+            var partes = (nome || '').toLowerCase().split('.');
+            return partes.length > 1 ? partes.pop() : '';
+        }
+
+        function ehPdf(nome) {
+            return extensaoArquivo(nome) === 'pdf';
+        }
+
+        function definirPreview(url, nome, previsivel) {
+            previewUrl = url || '';
+            podePreview = !!previsivel;
+            if (modalTitulo) modalTitulo.textContent = nome || 'Arquivo';
+            if (visualizar) visualizar.disabled = !previewUrl && !podePreview;
+            if (iframeWrap) iframeWrap.style.display = podePreview ? '' : 'none';
+            if (iframePagina) iframePagina.src = podePreview ? previewUrl : '';
+            if (modalDownload) modalDownload.href = previewUrl && String(previewUrl).indexOf('blob:') !== 0 ? previewUrl : '#';
+        }
+
+        function abrirModalArquivo() {
+            if (!previewUrl) return;
+            if (iframeModal) iframeModal.src = podePreview ? previewUrl : '';
+            if (iframeModal) iframeModal.style.display = podePreview ? 'block' : 'none';
+            if (semPreview) semPreview.style.display = podePreview ? 'none' : '';
+            if (modalDownload) {
+                modalDownload.href = previewUrl;
+                modalDownload.style.display = String(previewUrl).indexOf('blob:') === 0 ? 'none' : '';
+            }
+            var $modal = window.jQuery ? window.jQuery('#digesto-modal-arquivo') : null;
+            if ($modal && typeof $modal.modal === 'function') {
+                $modal.modal('show');
+                return;
+            }
+            var el = document.getElementById('digesto-modal-arquivo');
+            if (el && window.bootstrap && window.bootstrap.Modal) {
+                window.bootstrap.Modal.getOrCreateInstance(el).show();
+            }
+        }
+
+        if (visualizar) {
+            visualizar.addEventListener('click', abrirModalArquivo);
+        }
+
         if (escolher && arquivoInput) {
             escolher.addEventListener('click', function () {
                 arquivoInput.click();
@@ -274,11 +363,30 @@
             arquivoInput.addEventListener('change', function () {
                 if (this.files && this.files[0]) {
                     temArquivo = true;
-                    document.getElementById('digesto-file-name').textContent = this.files[0].name;
+                    var arquivo = this.files[0];
+                    document.getElementById('digesto-file-name').textContent = arquivo.name;
                     document.getElementById('digesto-file-meta').textContent =
-                        Math.max(1, Math.round(this.files[0].size / 1024)) + ' KB';
+                        Math.max(1, Math.round(arquivo.size / 1024)) + ' KB';
+                    if (previewBlob) {
+                        URL.revokeObjectURL(previewBlob);
+                        previewBlob = null;
+                    }
+                    if (ehPdf(arquivo.name)) {
+                        previewBlob = URL.createObjectURL(arquivo);
+                        definirPreview(previewBlob, arquivo.name, true);
+                    } else {
+                        definirPreview('', arquivo.name, false);
+                        if (visualizar) visualizar.disabled = true;
+                    }
                     atualizarChecklist();
                 }
+            });
+        }
+
+        var $modalArquivo = window.jQuery ? window.jQuery('#digesto-modal-arquivo') : null;
+        if ($modalArquivo) {
+            $modalArquivo.on('hidden.bs.modal', function () {
+                if (iframeModal) iframeModal.src = '';
             });
         }
 

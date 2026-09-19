@@ -21,7 +21,7 @@
                         <div class="digesto-completude">
                             <div class="n">{{ $incompletos }}</div>
                             <div class="t">
-                                de {{ $total }} documentos estão sem <b>Tipo</b>, <b>Nº do documento</b> ou <b>Comissão</b>
+                                de {{ $total }} documentos estão sem <b>Tipo</b> ou <b>Nº do documento</b>
                                 preenchidos — eles aparecem incompletos na busca pública do Digesto.
                             </div>
                             <button type="button" class="btn" id="digesto-ver-incompletos">Ver incompletos</button>
