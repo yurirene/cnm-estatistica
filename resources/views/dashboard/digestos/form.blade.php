@@ -180,7 +180,7 @@
 </div>
 
 <div class="modal fade" id="digesto-modal-arquivo" tabindex="-1" role="dialog" aria-labelledby="digesto-modal-arquivo-titulo" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-dialog digesto-modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="digesto-modal-arquivo-titulo">{{ $arquivo['nome'] ?: 'Arquivo' }}</h5>
