@@ -21,6 +21,7 @@ class DigestoService
     public const TIPO_PROPOSTA = 'proposta';
     public const TIPO_CONSULTA = 'consulta';
     public const TIPO_RELATORIO_COMISSAO = 'relatorio_comissao';
+    public const TIPO_OUTRO = 'outro';
 
     private const SNIPPET_TAMANHO = 180;
     private const SNIPPET_CONTEXTO = 40;
@@ -79,6 +80,7 @@ class DigestoService
             self::TIPO_RELATORIO_COMISSAO => 'Relatório de Comissão',
             self::TIPO_PROPOSTA => 'Proposta',
             self::TIPO_CONSULTA => 'Consulta',
+            self::TIPO_OUTRO => 'Outro',
         ];
     }
 
@@ -93,6 +95,7 @@ class DigestoService
             self::TIPO_RELATORIO_COMISSAO => 'Comissão',
             self::TIPO_PROPOSTA => 'Proposta',
             self::TIPO_CONSULTA => 'Consulta',
+            self::TIPO_OUTRO => 'Outro',
         ];
 
         if ($curto) {
