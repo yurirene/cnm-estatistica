@@ -669,6 +669,10 @@ Route::group(
 
             Route::get('comissao-executiva/{reuniao}/sincronizar-inscritos', [ComissaoExecutivaController::class, 'sincronizarInscritos'])
                 ->name('comissao-executiva.sincronizar-inscritos');
+            Route::get('comissao-executiva/{reuniao}/download-documentos', [ComissaoExecutivaController::class, 'downloadDocumentos'])
+                ->name('comissao-executiva.download-documentos');
+            Route::get('comissao-executiva/{reuniao}/download-credenciais', [ComissaoExecutivaController::class, 'downloadCredenciais'])
+                ->name('comissao-executiva.download-credenciais');
             Route::get('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
                 ->name('comissao-executiva.delete');
             Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])

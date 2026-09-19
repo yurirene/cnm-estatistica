@@ -6,13 +6,18 @@ use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\ComissaoExecutiva\DocumentoRecebido;
 use App\Models\ComissaoExecutiva\DocumentosAutomaticos;
 use App\Models\ComissaoExecutiva\Reuniao;
+use App\Models\Sinodal;
+use App\Models\User;
 use App\Services\Formularios\FormularioSinodalService;
 use App\Services\Gamificacao\GamificacaoHook;
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use ZipArchive;
 
 class ComissaoExecutivaService
 {
@@ -377,6 +382,237 @@ class ComissaoExecutivaService
         }
 
         return (bool) $reuniao->relatorio_estatistico;
+    }
+
+    /**
+     * Gera ZIP com os documentos da reunião (exceto credenciais).
+     *
+     * @return array{path: string, downloadName: string}
+     */
+    public static function gerarZipDocumentos(Reuniao $reuniao): array
+    {
+        $documentos = self::aplicarFiltroPerfil(
+            DocumentoRecebido::with(['sinodal.regiao'])
+                ->where('reuniao_id', $reuniao->id)
+                ->where('tipo', '!=', DocumentoRecebido::TIPO_CREDENCIAL_SINODAL)
+        )->get();
+
+        $entradas = [];
+        $nomesUsados = [];
+
+        foreach ($documentos as $documento) {
+            $rawPath = $documento->getRawOriginal('path');
+            if (!$rawPath || !Storage::exists($rawPath)) {
+                continue;
+            }
+
+            $regiaoNome = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
+            $siglaUnidade = $documento->sinodal?->sigla ?? 'sem_sigla';
+            $titulo = $documento->titulo ?? 'sem_titulo';
+            $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+            $base = 'doc_' . self::slugParaArquivo($regiaoNome)
+                . '_' . self::slugParaArquivo($siglaUnidade)
+                . '_' . self::slugParaArquivo($titulo);
+            $nomeArquivo = self::nomeUnicoNoZip($base . ($ext !== '' ? '.' . $ext : ''), $nomesUsados);
+
+            $entradas[] = [
+                'path' => Storage::path($rawPath),
+                'nome' => $nomeArquivo,
+            ];
+        }
+
+        return self::gerarZipReuniao(
+            $reuniao,
+            $entradas,
+            'documentos-ce',
+            'Nenhum documento encontrado para esta reunião.'
+        );
+    }
+
+    /**
+     * Gera ZIP com as credenciais da reunião (delegados e documentos do tipo credencial).
+     *
+     * @return array{path: string, downloadName: string}
+     */
+    public static function gerarZipCredenciais(Reuniao $reuniao): array
+    {
+        $delegados = self::aplicarFiltroPerfil(
+            DelegadoComissaoExecutiva::with(['sinodal.regiao'])
+                ->where('reuniao_id', $reuniao->id)
+                ->whereNotNull('path_credencial')
+        )->get();
+
+        $documentosCredencial = self::aplicarFiltroPerfil(
+            DocumentoRecebido::with(['sinodal.regiao'])
+                ->where('reuniao_id', $reuniao->id)
+                ->where('tipo', DocumentoRecebido::TIPO_CREDENCIAL_SINODAL)
+        )->get();
+
+        $entradas = [];
+        $nomesUsados = [];
+
+        foreach ($delegados as $delegado) {
+            $rawPath = $delegado->getRawOriginal('path_credencial');
+            if (!$rawPath || !Storage::exists($rawPath)) {
+                continue;
+            }
+
+            $regiaoNome = $delegado->sinodal?->regiao?->nome ?? 'sem_regiao';
+            $siglaUnidade = $delegado->sinodal?->sigla ?? 'sem_sigla';
+            $nomeDelegado = $delegado->nome ?? 'sem_nome';
+            $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+            $sufixo = $delegado->suplente ? 'suplente' : 'delegado';
+            $base = 'credencial_' . self::slugParaArquivo($regiaoNome)
+                . '_' . self::slugParaArquivo($siglaUnidade)
+                . '_' . self::slugParaArquivo($nomeDelegado)
+                . '_' . $sufixo;
+            $nomeArquivo = self::nomeUnicoNoZip($base . ($ext !== '' ? '.' . $ext : ''), $nomesUsados);
+
+            $entradas[] = [
+                'path' => Storage::path($rawPath),
+                'nome' => $nomeArquivo,
+            ];
+        }
+
+        foreach ($documentosCredencial as $documento) {
+            $rawPath = $documento->getRawOriginal('path');
+            if (!$rawPath || !Storage::exists($rawPath)) {
+                continue;
+            }
+
+            $regiaoNome = $documento->sinodal?->regiao?->nome ?? 'sem_regiao';
+            $siglaUnidade = $documento->sinodal?->sigla ?? 'sem_sigla';
+            $titulo = $documento->titulo ?? 'sem_titulo';
+            $ext = pathinfo($rawPath, PATHINFO_EXTENSION);
+            $base = 'credencial_' . self::slugParaArquivo($regiaoNome)
+                . '_' . self::slugParaArquivo($siglaUnidade)
+                . '_' . self::slugParaArquivo($titulo);
+            $nomeArquivo = self::nomeUnicoNoZip($base . ($ext !== '' ? '.' . $ext : ''), $nomesUsados);
+
+            $entradas[] = [
+                'path' => Storage::path($rawPath),
+                'nome' => $nomeArquivo,
+            ];
+        }
+
+        return self::gerarZipReuniao(
+            $reuniao,
+            $entradas,
+            'credenciais-ce',
+            'Nenhuma credencial encontrada para esta reunião.'
+        );
+    }
+
+    /**
+     * Converte texto para uso em nome de arquivo: sem acentuação, snake_case.
+     */
+    public static function slugParaArquivo(?string $texto): string
+    {
+        if ($texto === null || trim($texto) === '') {
+            return 'sem_nome';
+        }
+
+        return Str::slug($texto, '_');
+    }
+
+    /**
+     * Garante nome único dentro do ZIP (evita sobrescrever).
+     */
+    public static function nomeUnicoNoZip(string $nomeArquivo, array &$nomesUsados): string
+    {
+        $nome = $nomeArquivo;
+        $cont = 0;
+        while (isset($nomesUsados[$nome])) {
+            $cont++;
+            $info = pathinfo($nomeArquivo);
+            $nome = ($info['filename'] ?? $nomeArquivo)
+                . '_' . $cont
+                . (isset($info['extension']) ? '.' . $info['extension'] : '');
+        }
+        $nomesUsados[$nome] = true;
+
+        return $nome;
+    }
+
+    /**
+     * Monta o arquivo ZIP a partir das entradas e retorna a quantidade incluída.
+     *
+     * @param array<int, array{path: string, nome: string}> $entradas
+     */
+    public static function montarZip(string $zipPath, array $entradas): int
+    {
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new Exception('Não foi possível criar o arquivo ZIP.');
+        }
+
+        $totalArquivos = 0;
+        foreach ($entradas as $entrada) {
+            if (empty($entrada['path']) || empty($entrada['nome']) || !is_file($entrada['path'])) {
+                continue;
+            }
+            $zip->addFile($entrada['path'], $entrada['nome']);
+            $zip->setCompressionName($entrada['nome'], ZipArchive::CM_DEFLATE, 9);
+            $totalArquivos++;
+        }
+
+        $zip->close();
+
+        return $totalArquivos;
+    }
+
+    /**
+     * @param array<int, array{path: string, nome: string}> $entradas
+     * @return array{path: string, downloadName: string}
+     */
+    private static function gerarZipReuniao(
+        Reuniao $reuniao,
+        array $entradas,
+        string $prefixoArquivo,
+        string $mensagemVazio
+    ): array {
+        $dir = storage_path('app/temp');
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $zipPath = $dir . '/' . $prefixoArquivo . '-' . $reuniao->id . '.zip';
+        $totalArquivos = self::montarZip($zipPath, $entradas);
+
+        if ($totalArquivos === 0) {
+            @unlink($zipPath);
+            throw new Exception($mensagemVazio);
+        }
+
+        $nomeDownload = $prefixoArquivo
+            . '-' . self::slugParaArquivo($reuniao->local)
+            . '-' . $reuniao->ano
+            . '.zip';
+
+        return [
+            'path' => $zipPath,
+            'downloadName' => $nomeDownload,
+        ];
+    }
+
+    private static function aplicarFiltroPerfil(Builder $query): Builder
+    {
+        $user = auth()->user();
+        if (!$user || !$user->role) {
+            return $query;
+        }
+
+        if ($user->role->name === User::ROLE_DIRETORIA) {
+            $sinodais = Sinodal::where('regiao_id', $user->regiao_id)->pluck('id');
+
+            return $query->whereIn('sinodal_id', $sinodais);
+        }
+
+        if (!in_array($user->role->name, [User::ROLE_SEC_EXECUTIVA, User::ROLE_DIRETORIA], true)) {
+            return $query->where('sinodal_id', $user->sinodal_id);
+        }
+
+        return $query;
     }
 
     public static function notificarRelatorioEstatistico(): void

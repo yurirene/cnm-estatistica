@@ -32,6 +32,8 @@ class PermissionsSeeder extends Seeder
                 'meta-atingida' => 'Meta atingida',
                 'destroy' => 'Remover',
                 'painel' => 'Painel',
+                'download-documentos' => 'Baixar documentos',
+                'download-credenciais' => 'Baixar credenciais',
             ];
 
             $routes = collect(Route::getRoutes())->filter(function ($route) {
