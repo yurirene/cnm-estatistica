@@ -1,5 +1,41 @@
 @extends('layouts.app')
 
+@push('css')
+<style>
+    #digesto-modal-arquivo .digesto-modal-arquivo-dialog {
+        width: 800px !important;
+        max-width: 800px !important;
+        height: 800px !important;
+        margin: 1.75rem auto !important;
+    }
+
+    #digesto-modal-arquivo .modal-content {
+        width: 800px !important;
+        height: 800px !important;
+        max-height: 800px !important;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #digesto-modal-arquivo .modal-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: calc(800px - 56px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    #digesto-modal-iframe {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 740px !important;
+        border: 0;
+        display: block;
+    }
+</style>
+@endpush
+
 @section('content')
 
 @include('dashboard.partes.head', [
@@ -180,7 +216,7 @@
 </div>
 
 <div class="modal fade" id="digesto-modal-arquivo" tabindex="-1" role="dialog" aria-labelledby="digesto-modal-arquivo-titulo" aria-hidden="true">
-    <div class="modal-dialog digesto-modal-fullscreen" role="document">
+    <div class="modal-dialog digesto-modal-arquivo-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="digesto-modal-arquivo-titulo">{{ $arquivo['nome'] ?: 'Arquivo' }}</h5>
