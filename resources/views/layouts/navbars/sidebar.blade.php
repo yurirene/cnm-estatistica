@@ -287,6 +287,22 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.adote-missionario.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.adote-missionario.index') }}">
+                        <i class="fas fa-hands-helping"></i> Adote um Missionário
+                    </a>
+                </li>
+                @else
+                @can('rota-permitida', ['dashboard.adote-missionario.escolher'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.adote-missionario.escolher') }}">
+                        <i class="fas fa-hands-helping"></i> Adote um Missionário
+                    </a>
+                </li>
+                @endcan
+                @endcan
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.formularios-locais.index'])
                 <li class="nav-item">

@@ -52,6 +52,7 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'comissao-executiva',
                     'arquivos',
+                    'adote-missionario',
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -98,6 +99,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.transferencias.index',
                     'dashboard.transferencias.transferir-ump',
                     'dashboard.game-cnm.painel',
+                    'dashboard.adote-missionario.escolher',
+                    'dashboard.adote-missionario.adotar',
                 ]
             ],
             'federacao' => [
@@ -125,6 +128,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.update',
                     'dashboard.cn.federacao.delegado.delete',
                     'dashboard.game-cnm.painel',
+                    'dashboard.adote-missionario.escolher',
+                    'dashboard.adote-missionario.adotar',
                 ]
             ],
             'local' => [
@@ -199,6 +204,7 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'helpdesk',
                     'arquivos',
+                    'adote-missionario',
                 ],
                 'permissions' => [                ]
             ]
