@@ -18,6 +18,7 @@ use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DelegadoComissaoExecutivaController;
 use App\Http\Controllers\DetalhamentoController;
 use App\Http\Controllers\DigestoController;
+use App\Http\Controllers\AdoteMissionarioController;
 use App\Http\Controllers\TransferenciasController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
@@ -457,6 +458,29 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->names('digestos')->except('destroy');
         Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])
             ->name('digestos.delete');
+    });
+});
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'adote-missionario'], function () {
+        Route::get('/adote-missionario/escolher', [AdoteMissionarioController::class, 'escolher'])
+            ->name('adote-missionario.escolher');
+        Route::get('/adote-missionario/sincronizar-jmn', [AdoteMissionarioController::class, 'sincronizarJmn'])
+            ->name('adote-missionario.sincronizar-jmn');
+        Route::get('/adote-missionario/sincronizar-apmt', [AdoteMissionarioController::class, 'sincronizarApmt'])
+            ->name('adote-missionario.sincronizar-apmt');
+        Route::get('/adote-missionario/remover-vinculos', [AdoteMissionarioController::class, 'removerVinculos'])
+            ->name('adote-missionario.remover-vinculos');
+        Route::get('/adote-missionario/{missionario}/adotar', [AdoteMissionarioController::class, 'adotar'])
+            ->name('adote-missionario.adotar');
+        Route::get('/adote-missionario/{missionario}/desfazer', [AdoteMissionarioController::class, 'desfazer'])
+            ->name('adote-missionario.desfazer');
+        Route::get('/adote-missionario/{missionario}/delete', [AdoteMissionarioController::class, 'delete'])
+            ->name('adote-missionario.delete');
+        Route::resource('adote-missionario', AdoteMissionarioController::class)
+            ->parameters(['adote-missionario' => 'missionario'])
+            ->names('adote-missionario')
+            ->except(['destroy', 'show']);
     });
 });
 
