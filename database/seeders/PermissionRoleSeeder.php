@@ -28,7 +28,8 @@ class PermissionRoleSeeder extends Seeder
                     'acesso-apps',
                     'avisos',
                     'helpdesk',
-                    'secretaria-executiva'
+                    'secretaria-executiva',
+                    'auxilio-pmf',
                 ]
             ],
             'presidente' => [
@@ -52,6 +53,7 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'comissao-executiva',
                     'arquivos',
+                    'auxilio-pmf',
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -98,6 +100,11 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.transferencias.index',
                     'dashboard.transferencias.transferir-ump',
                     'dashboard.game-cnm.painel',
+                    'dashboard.auxilio-pmf.index',
+                    'dashboard.auxilio-pmf.proposta.store',
+                    'dashboard.auxilio-pmf.proposta.destroy',
+                    'dashboard.auxilio-pmf.relatorio.store',
+                    'dashboard.auxilio-pmf.relatorio.destroy',
                 ]
             ],
             'federacao' => [
@@ -158,6 +165,7 @@ class PermissionRoleSeeder extends Seeder
                     'secretaria-executiva',
                     'tarefas',
                     'arquivos',
+                    'auxilio-pmf',
                 ],
                 'permissions' => [
                     'dashboard.cn.executiva.index',
@@ -199,6 +207,7 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'helpdesk',
                     'arquivos',
+                    'auxilio-pmf',
                 ],
                 'permissions' => [                ]
             ]

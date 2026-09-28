@@ -39,6 +39,7 @@ use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\AuxilioPmfController;
 use App\Http\Controllers\ResolucaoController;
 use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TutorialController;
@@ -353,6 +354,37 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('comprovante-aci.status');
         Route::get('/comprovante-aci/{comprovante}/meta-atingida', [ComprovanteACIController::class, 'metaAtingida'])
             ->name('comprovante-aci.meta-atingida');
+    });
+});
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'auxilio-pmf'], function () {
+        Route::get('/auxilio-pmf', [AuxilioPmfController::class, 'index'])
+            ->name('auxilio-pmf.index');
+        Route::get('/auxilio-pmf/create', [AuxilioPmfController::class, 'create'])
+            ->name('auxilio-pmf.create');
+        Route::get('/auxilio-pmf/propostas-datatable', [AuxilioPmfController::class, 'propostasDatatable'])
+            ->name('auxilio-pmf.propostas-datatable');
+        Route::post('/auxilio-pmf', [AuxilioPmfController::class, 'store'])
+            ->name('auxilio-pmf.store');
+        Route::get('/auxilio-pmf/{edital}/edit', [AuxilioPmfController::class, 'edit'])
+            ->name('auxilio-pmf.edit');
+        Route::put('/auxilio-pmf/{edital}', [AuxilioPmfController::class, 'update'])
+            ->name('auxilio-pmf.update');
+        Route::get('/auxilio-pmf/{edital}/encerrar', [AuxilioPmfController::class, 'encerrar'])
+            ->name('auxilio-pmf.encerrar');
+        Route::post('/auxilio-pmf/{edital}/proposta', [AuxilioPmfController::class, 'storeProposta'])
+            ->name('auxilio-pmf.proposta.store');
+        Route::delete('/auxilio-pmf/proposta/{proposta}', [AuxilioPmfController::class, 'destroyProposta'])
+            ->name('auxilio-pmf.proposta.destroy');
+        Route::post('/auxilio-pmf/proposta/{proposta}/relatorio', [AuxilioPmfController::class, 'storeRelatorio'])
+            ->name('auxilio-pmf.relatorio.store');
+        Route::delete('/auxilio-pmf/proposta/{proposta}/relatorio', [AuxilioPmfController::class, 'destroyRelatorio'])
+            ->name('auxilio-pmf.relatorio.destroy');
+        Route::get('/auxilio-pmf/proposta/{proposta}/aprovar', [AuxilioPmfController::class, 'aprovar'])
+            ->name('auxilio-pmf.proposta.aprovar');
+        Route::get('/auxilio-pmf/proposta/{proposta}/rejeitar', [AuxilioPmfController::class, 'rejeitar'])
+            ->name('auxilio-pmf.proposta.rejeitar');
     });
 });
 

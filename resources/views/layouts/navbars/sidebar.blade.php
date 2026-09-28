@@ -144,6 +144,14 @@
                 @endcan
                 @endcannot
 
+                @can('rota-permitida', ['dashboard.auxilio-pmf.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.auxilio-pmf.index') }}">
+                        <i class="fas fa-hand-holding-heart"></i> Auxílio PMF
+                    </a>
+                </li>
+                @endcan
+
                 @can('rota-permitida', ['dashboard.formulario-complementar-sinodal.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formulario-complementar-sinodal.index') }}">
