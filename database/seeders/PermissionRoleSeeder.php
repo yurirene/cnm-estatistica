@@ -54,6 +54,7 @@ class PermissionRoleSeeder extends Seeder
                     'comissao-executiva',
                     'arquivos',
                     'auxilio-pmf',
+                    'adote-missionario',
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -105,6 +106,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.auxilio-pmf.proposta.destroy',
                     'dashboard.auxilio-pmf.relatorio.store',
                     'dashboard.auxilio-pmf.relatorio.destroy',
+                    'dashboard.adote-missionario.escolher',
+                    'dashboard.adote-missionario.adotar',
                 ]
             ],
             'federacao' => [
@@ -132,6 +135,8 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.update',
                     'dashboard.cn.federacao.delegado.delete',
                     'dashboard.game-cnm.painel',
+                    'dashboard.adote-missionario.escolher',
+                    'dashboard.adote-missionario.adotar',
                 ]
             ],
             'local' => [
@@ -208,6 +213,7 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'arquivos',
                     'auxilio-pmf',
+                    'adote-missionario',
                 ],
                 'permissions' => [                ]
             ]
