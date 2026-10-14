@@ -184,6 +184,20 @@ button.bg-default:focus {
     background-color: var(--color-bad);
 }
 
+.badge-secondary,
+.badge.bg-secondary {
+    color: var(--color-ink);
+    background-color: var(--color-line-strong);
+}
+
+.badge-secondary[href]:hover,
+.badge-secondary[href]:focus,
+.badge.bg-secondary[href]:hover,
+.badge.bg-secondary[href]:focus {
+    color: var(--color-ink);
+    background-color: #c9cee3;
+}
+
 .bg-active {
     background: var(--color-primary);
     color: #fff !important;
