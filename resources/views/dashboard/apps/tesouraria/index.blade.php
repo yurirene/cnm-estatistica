@@ -147,6 +147,42 @@
     .tesouraria-panorama {
         padding-bottom: 5rem;
     }
+
+    .panorama-ano {
+        appearance: none;
+        -webkit-appearance: none;
+        height: 31px;
+        margin: 0;
+        border: 1px solid #fff;
+        border-radius: 0.25rem 0 0 0.25rem;
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%2332325d' stroke-width='1.5' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.55rem center;
+        color: #32325d;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.5;
+        padding: 0 1.75rem 0 0.75rem;
+        cursor: pointer;
+    }
+
+    .panorama-ano.inativo {
+        background-color: transparent;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='1.5' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .panorama-ano option {
+        color: #32325d;
+        background-color: #fff;
+    }
+
+    .panorama-ano:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.4);
+    }
 </style>
 @endpush
 
@@ -165,12 +201,11 @@ $('#table-categorias').DataTable({
     const table = $('#lancamento-table');
     const panoramaDados = $('#panorama-dados');
     const conjuntosPanorama = {
-        geral: panoramaDados.data('geral'),
         mes: panoramaDados.data('mes')
     };
+    const anosPanorama = panoramaDados.data('anos') || {};
 
-    function aplicarPanorama(escopo) {
-        const dados = conjuntosPanorama[escopo];
+    function aplicarPanorama(dados) {
         if (!dados) {
             return;
         }
@@ -187,10 +222,16 @@ $('#table-categorias').DataTable({
             .addClass(dados.saldoAtualClasse || '');
     }
 
-    $('#panorama-escopo button').on('click', function () {
+    $('#panorama-ano').on('focus change', function () {
         $('#panorama-escopo button').removeClass('btn-white').addClass('btn-outline-white');
-        $(this).removeClass('btn-outline-white').addClass('btn-white');
-        aplicarPanorama($(this).data('escopo'));
+        $(this).removeClass('inativo');
+        aplicarPanorama(anosPanorama[$(this).val()]);
+    });
+
+    $('#panorama-escopo button').on('click', function () {
+        $('#panorama-escopo button').removeClass('btn-outline-white').addClass('btn-white');
+        $('#panorama-ano').addClass('inativo');
+        aplicarPanorama(conjuntosPanorama.mes);
     });
 
     table.on('preXhr.dt', function(e, settings, data){

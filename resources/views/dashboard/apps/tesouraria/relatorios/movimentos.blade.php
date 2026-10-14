@@ -93,11 +93,13 @@
             @endif
         </div>
 
-        @include('dashboard.apps.tesouraria.relatorios.partes.rodape', [
-            'pagina' => $indicePagina + 1,
-            'paginas' => $totalPaginas,
-        ])
-        @if($indicePagina < $totalPaginas - 1)
+        @if($indicePagina === $totalPaginas - 1)
+            @include('dashboard.apps.tesouraria.relatorios.partes.rodape', [
+                'pagina' => $totalPaginas,
+                'paginas' => $totalPaginas,
+            ])
+        @else
+            </div>
             <div class="quebra"></div>
         @endif
     @endforeach

@@ -7,7 +7,11 @@
                 </div>
                 <div class="col-auto ml-auto">
                     <div class="btn-group btn-group-sm" id="panorama-escopo" role="group" aria-label="Escopo do panorama">
-                        <button type="button" class="btn btn-white" data-escopo="geral">Visão geral</button>
+                        <select id="panorama-ano" class="panorama-ano" aria-label="Visão geral por ano">
+                            @foreach($panorama['anos'] as $ano => $escopo)
+                                <option value="{{ $ano }}" @selected((string) $ano === (string) $panorama['ano'])>{{ $ano }}</option>
+                            @endforeach
+                        </select>
                         <button type="button" class="btn btn-outline-white" data-escopo="mes">Mês atual</button>
                     </div>
                 </div>
@@ -18,6 +22,7 @@
                 class="d-none"
                 data-geral='@json($panorama['geral'])'
                 data-mes='@json($panorama['mes'])'
+                data-anos='@json($panorama['anos'])'
             ></div>
 
             <div class="row">

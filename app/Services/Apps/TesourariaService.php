@@ -308,7 +308,8 @@ class TesourariaService
     }
 
     /**
-     * Panorama do topo: visão geral, mês corrente e data do último lançamento.
+     * Panorama do topo: anos com lançamento, mês corrente e data do último lançamento.
+     * O saldo inicial de cada ano é o saldo acumulado até o ano anterior.
      *
      * @return array
      */
@@ -331,6 +332,8 @@ class TesourariaService
             return [
                 'geral' => $zerado,
                 'mes' => $zerado,
+                'anos' => [],
+                'ano' => null,
                 'faixa' => $faixaVazia,
                 'atualizadoAte' => null,
             ];
@@ -339,12 +342,15 @@ class TesourariaService
         $corte = Carbon::parse($ultimaData)->startOfDay();
         $inicioMes = Carbon::now()->startOfMonth();
         $fimMes = Carbon::now()->endOfMonth();
-
-        $geral = self::somarMovimento(null, $corte->toDateString());
-        $saldoGeral = $geral['entradas'] - $geral['saidas'];
+        $anos = self::escoposPorAno();
+        $anoCorrente = Carbon::now()->format('Y');
+        $anoSelecionado = $anos === []
+            ? null
+            : (array_key_exists($anoCorrente, $anos) ? $anoCorrente : (string) array_key_first($anos));
 
         if ($corte->lt($inicioMes)) {
-            $saldoAnterior = $saldoGeral;
+            $ateCorte = self::somarMovimento(null, $corte->toDateString());
+            $saldoAnterior = $ateCorte['entradas'] - $ateCorte['saidas'];
             $movimentoMes = ['entradas' => 0.0, 'saidas' => 0.0];
         } else {
             $anterior = self::somarMovimento(null, $inicioMes->copy()->subDay()->toDateString());
@@ -356,13 +362,15 @@ class TesourariaService
         $saldoMes = $movimentoMes['entradas'] - $movimentoMes['saidas'];
 
         return [
-            'geral' => self::montarEscopo(0, $geral['entradas'], $geral['saidas'], $saldoGeral),
+            'geral' => $anoSelecionado ? $anos[$anoSelecionado] : self::montarEscopo(0, 0, 0, 0),
             'mes' => self::montarEscopo(
                 $saldoAnterior,
                 $movimentoMes['entradas'],
                 $movimentoMes['saidas'],
                 $saldoAnterior + $saldoMes
             ),
+            'anos' => $anos,
+            'ano' => $anoSelecionado,
             'faixa' => [
                 'rotulo' => self::rotuloMes($mesAtual, true),
                 'valor' => $mesAtual,
@@ -471,6 +479,45 @@ class TesourariaService
             'saldoAtual' => self::formatarMoeda($saldoAtual),
             'saldoAtualClasse' => $saldoAtual < 0 ? 'text-danger' : '',
         ];
+    }
+
+    /**
+     * Um escopo por ano com lançamento, do mais recente ao mais antigo.
+     * O saldo inicial de cada ano é o saldo acumulado dos anos anteriores.
+     *
+     * @return array<string, array>
+     */
+    private static function escoposPorAno(): array
+    {
+        $movimentos = Lancamento::query()
+            ->selectRaw(
+                'YEAR(data_lancamento) as ano,
+                COALESCE(SUM(CASE WHEN tipo = ? THEN valor ELSE 0 END), 0) as entradas,
+                COALESCE(SUM(CASE WHEN tipo = ? THEN valor ELSE 0 END), 0) as saidas',
+                [Lancamento::TIPO_ENTRADA, Lancamento::TIPO_SAIDA]
+            )
+            ->groupBy(DB::raw('YEAR(data_lancamento)'))
+            ->orderBy('ano')
+            ->get();
+
+        $saldo = 0.0;
+        $anos = [];
+
+        foreach ($movimentos as $movimento) {
+            $entradas = (float) $movimento->entradas;
+            $saidas = (float) $movimento->saidas;
+            $anos[(string) $movimento->ano] = self::montarEscopo(
+                $saldo,
+                $entradas,
+                $saidas,
+                $saldo + $entradas - $saidas
+            );
+            $saldo += $entradas - $saidas;
+        }
+
+        krsort($anos, SORT_NUMERIC);
+
+        return $anos;
     }
 
     /**

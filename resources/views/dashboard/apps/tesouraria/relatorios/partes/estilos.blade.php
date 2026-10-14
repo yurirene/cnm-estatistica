@@ -34,7 +34,7 @@
     .pilula-saida { background: #FCEBDD; color: #8F3F10; }
     .chip { border: 1px solid #DDE2EA; padding: 1px 8px; font-size: 10px; color: #5B6577; }
     .aviso { background: #FFF6E5; border: 1px solid #F0D49A; padding: 8px 10px; color: #5C3A00; font-size: 11px; }
-    table.assinaturas { width: 100%; border-collapse: separate; border-spacing: 28px 0; margin-top: 100px; margin-left: -28px; }
+    table.assinaturas { width: 100%; border-collapse: separate; border-spacing: 28px 0; margin-top: 60px; margin-left: -28px; }
     table.assinaturas td { border-top: 1px solid #14213D; padding-top: 4px; }
     table.rodape { width: 100%; border-collapse: collapse; margin-top: 12px; border-top: 1px solid #DDE2EA; }
     table.rodape td { padding-top: 6px; font-size: 9px; color: #5B6577; }
