@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Apps\Tesouraria\Lancamento;
 use App\Services\Apps\TesourariaService;
 use App\Services\LogErroService;
-use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Excel as ExcelExcel;
@@ -29,8 +29,7 @@ class TesourariaController extends Controller
     {
         return $dataTable->render('dashboard.apps.tesouraria.index', [
             'categorias' => TesourariaService::categoriaToSelect(),
-            'totalizadores' => TesourariaService::totalizadores(),
-            'mesPassado' => Carbon::now()->subMonth()->format('m/Y'),
+            'panorama' => TesourariaService::panorama(),
             'tipos' => TesourariaService::getTipos(),
             'anos' => TesourariaService::getAnosTesouraria()
         ]);
@@ -188,13 +187,30 @@ class TesourariaController extends Controller
      */
     public function gerarRelatorio(Request $request)
     {
-        return Excel::download(
-            new TesourariaExport(
-                $request->get('ano'),
-                $request->get('comprovante') == 'S'
-            ),
-            'relatorio.xls',
-            ExcelExcel::XLS
-        );
+        $modelo = $request->get('modelo', TesourariaService::MODELO_PLANILHA);
+        $ano = (int) $request->get('ano');
+
+        if ($modelo === TesourariaService::MODELO_PLANILHA || $modelo === '' || $modelo === null) {
+            return Excel::download(
+                new TesourariaExport(
+                    $ano,
+                    $request->get('comprovante') == 'S'
+                ),
+                'relatorio.xls',
+                ExcelExcel::XLS
+            );
+        }
+
+        $views = [
+            TesourariaService::MODELO_MOVIMENTOS => 'dashboard.apps.tesouraria.relatorios.movimentos',
+            TesourariaService::MODELO_ENTRADA_SAIDA => 'dashboard.apps.tesouraria.relatorios.entrada-saida',
+            TesourariaService::MODELO_CATEGORIAS => 'dashboard.apps.tesouraria.relatorios.categorias',
+        ];
+
+        abort_unless(isset($views[$modelo]) && $ano > 0, 422);
+
+        return Pdf::loadView($views[$modelo], TesourariaService::relatorio($modelo, $ano))
+            ->setPaper('a4', 'portrait')
+            ->download('relatorio-' . $modelo . '-' . $ano . '.pdf');
     }
 }

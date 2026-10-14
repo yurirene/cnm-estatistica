@@ -137,7 +137,7 @@
 
     </script>
     @stack('css')
-    <link rel="stylesheet" href="/css/theme.css?v=20260913-digesto-admin">
+    <link rel="stylesheet" href="/css/theme.css?v=20261014-badge-secondary">
 </head>
 
 <body class="{{ $class ?? '' }}">

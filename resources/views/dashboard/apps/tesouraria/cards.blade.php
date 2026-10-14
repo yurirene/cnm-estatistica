@@ -1,137 +1,88 @@
-<div class="header bg-gradient-primary pb-8">
+<div class="header bg-gradient-primary pt-2 tesouraria-panorama">
     <div class="container-fluid">
         <div class="header-body">
-            <!-- Card stats -->
+            <div class="row align-items-center mb-3">
+                <div class="col-auto">
+                    <h5 class="text-white mb-0">Panorama financeiro</h5>
+                </div>
+                <div class="col-auto ml-auto">
+                    <div class="btn-group btn-group-sm" id="panorama-escopo" role="group" aria-label="Escopo do panorama">
+                        <button type="button" class="btn btn-white" data-escopo="geral">Visão geral</button>
+                        <button type="button" class="btn btn-outline-white" data-escopo="mes">Mês atual</button>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                id="panorama-dados"
+                class="d-none"
+                data-geral='@json($panorama['geral'])'
+                data-mes='@json($panorama['mes'])'
+            ></div>
+
             <div class="row">
                 <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5
-                                        class="card-title text-uppercase text-muted mb-0"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Refente ao mês {{ $mesPassado }}"
-                                    >
-                                        Saldo Inicial
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        R${{ $totalizadores['saldoInicial'] ?? 0  }}
-                                    </span>
-                                </div>
-                            </div>
+                    <div class="exec-hero-card h-100">
+                        <div class="l">Saldo inicial</div>
+                        <div class="exec-trend-num">
+                            <span id="val-saldo-inicial" class="n {{ $panorama['geral']['saldoInicialClasse'] }}">
+                                {{ $panorama['geral']['saldoInicial'] }}
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5
-                                        class="card-title text-uppercase text-muted mb-0"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Refente ao mês {{ date('m/Y') }}"
-                                    >
-                                        Entradas
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
-                                        <i class="fas fa-arrow-down"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        R${{ $totalizadores['entradas'] ?? 0  }}
-                                    </span>
-                                </div>
-                            </div>
+                    <div class="exec-hero-card h-100">
+                        <div class="l">Entradas</div>
+                        <div class="exec-trend-num">
+                            <span id="val-entradas" class="n text-success">
+                                {{ $panorama['geral']['entradas'] }}
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5
-                                        class="card-title text-uppercase text-muted mb-0"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Refente ao mês {{ date('m/Y') }}"
-                                    >
-                                        Saídas
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
-                                        <i class="fas fa-arrow-up"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        R${{ $totalizadores['saidas'] ?? 0  }}
-                                    </span>
-                                </div>
-                            </div>
+                    <div class="exec-hero-card h-100">
+                        <div class="l">Saídas</div>
+                        <div class="exec-trend-num">
+                            <span id="val-saidas" class="n text-danger">
+                                {{ $panorama['geral']['saidas'] }}
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5
-                                        class="card-title text-uppercase text-muted mb-0"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Refente ao mês {{ date('m/Y') }}"
-                                    >
-                                        Saldo Final
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-info text-white rounded-circle shadow">
-                                        <i class="fas fa-dollar-sign"></i>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="exec-hero-card h-100">
+                        <div class="l">Saldo atual</div>
+                        <div class="exec-trend-num">
+                            <span id="val-saldo-atual" class="n {{ $panorama['geral']['saldoAtualClasse'] }}">
+                                {{ $panorama['geral']['saldoAtual'] }}
+                            </span>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        R${{ $totalizadores['saldoFinal'] ?? 0  }}
-                                    </span>
-                                </div>
-                            </div>
+                        <div class="exec-hero-note">
+                            @if($panorama['atualizadoAte'])
+                                Atualizado até <b>{{ $panorama['atualizadoAte'] }}</b>, data do último lançamento
+                            @else
+                                Nenhum lançamento registrado
+                            @endif
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="exec-hero-card mt-3">
+                <div class="d-flex flex-wrap align-items-center">
+                    <span class="font-weight-bold text-primary mr-4 mb-2 mb-md-0">{{ $panorama['faixa']['rotulo'] }}</span>
+                    <span class="mr-4 mb-2 mb-md-0">Entradas <b class="text-success">{{ $panorama['faixa']['entradas'] }}</b></span>
+                    <span class="mr-4 mb-2 mb-md-0">Saídas <b class="text-danger">{{ $panorama['faixa']['saidas'] }}</b></span>
+                    <span class="mr-4 mb-2 mb-md-0">Saldo do mês <b class="{{ $panorama['faixa']['saldoClasse'] }}">{{ $panorama['faixa']['saldo'] }}</b></span>
+                    <a
+                        href="#lancamentos-filtros"
+                        class="ml-md-auto font-weight-bold"
+                        id="filtrar-mes-corrente"
+                        data-mes="{{ $panorama['faixa']['valor'] }}"
+                    >Ver lançamentos deste mês →</a>
+                </div>
             </div>
         </div>
     </div>
