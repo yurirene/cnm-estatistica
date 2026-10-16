@@ -241,6 +241,22 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.gmail.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.gmail.index') }}">
+                        <i class="fas fa-envelope"></i> E-mails
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.meet.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.meet.index') }}">
+                        <i class="fas fa-video"></i> Sala Meet
+                    </a>
+                </li>
+                @endcan
+
                 @cannot('isAdmin')
                 @can('rota-permitida', ['dashboard.ce-sinodal.index'])
                 <li class="nav-item">

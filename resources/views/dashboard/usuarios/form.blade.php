@@ -66,6 +66,9 @@
                     @if(isset($usuario) && in_array($usuario->role->name, \App\Models\User::ROLES_ARQUIVOS))
                     @include('dashboard.usuarios.partials.google-drive')
                     @endif
+                    @if(isset($usuario) && in_array($usuario->role->name, \App\Models\User::ROLES_GMAIL))
+                    @include('dashboard.usuarios.partials.gmail')
+                    @endif
                     @endcan
 
                     <button class="btn btn-priamary"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>

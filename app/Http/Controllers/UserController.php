@@ -6,6 +6,7 @@ use App\DataTables\UserDataTable;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class UserController extends Controller
@@ -64,6 +65,8 @@ class UserController extends Controller
                     'texto' => 'Operação realizada com Sucesso!'
                 ]
             ]);
+        } catch (ValidationException $th) {
+            throw $th;
         } catch (Throwable $th) {
             return redirect()->back()->with([
                 'mensagem' => [

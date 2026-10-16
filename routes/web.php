@@ -40,6 +40,8 @@ use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\GmailController;
+use App\Http\Controllers\MeetController;
 use App\Http\Controllers\AuxilioPmfController;
 use App\Http\Controllers\ResolucaoController;
 use App\Http\Controllers\TarefaController;
@@ -902,6 +904,29 @@ Route::group([
             ->name('arquivos.renomear');
         Route::post('/arquivos/excluir', [ArquivoController::class, 'excluir'])
             ->name('arquivos.excluir');
+    });
+
+    Route::group(['modulo' => 'gmail'], function () {
+        Route::get('/gmail', [GmailController::class, 'index'])
+            ->name('gmail.index');
+        Route::get('/gmail/mensagens', [GmailController::class, 'mensagens'])
+            ->name('gmail.mensagens');
+        Route::get('/gmail/{mensagem}/anexos/{anexo}', [GmailController::class, 'anexo'])
+            ->where('mensagem', '[A-Za-z0-9_-]+')
+            ->where('anexo', '[0-9]+')
+            ->name('gmail.anexo');
+        Route::get('/gmail/{mensagem}', [GmailController::class, 'show'])
+            ->where('mensagem', '[A-Za-z0-9_-]+')
+            ->name('gmail.show');
+    });
+
+    Route::group(['modulo' => 'meet'], function () {
+        Route::get('/meet', [MeetController::class, 'index'])
+            ->name('meet.index');
+        Route::post('/meet', [MeetController::class, 'store'])
+            ->name('meet.store');
+        Route::get('/meet/calendario', [MeetController::class, 'calendario'])
+            ->name('meet.calendario');
     });
 });
 
