@@ -1,0 +1,42 @@
+:root {
+    --color-primary: #2E43A0;
+    --color-primary-hover: #26388a;
+    --color-accent: #3D57C4;
+    --color-accent-hover: #3249a8;
+    --color-banner-from: #1B2A63;
+    --color-banner-to: #2E43A0;
+    --color-ink: #20243A;
+    --color-muted: #767B94;
+    --color-line: #E7E7EE;
+    --color-pale: #EEF0FB;
+    --color-line-strong: #DEE2F5;
+    --color-surface: #fff;
+    --color-good: #3F8358;
+    --color-good-bg: #E6F2EA;
+    --color-warn: #B9862F;
+    --color-warn-bg: #FBF0DC;
+    --color-bad: #B0483A;
+    --color-bad-bg: #FBE9E5;
+    --color-radius: 10px;
+    --color-shadow: 0 1px 2px rgba(20, 30, 60, .04), 0 6px 16px rgba(20, 30, 60, .06);
+    --color-gold: #D8A526;
+    --color-gold-bg: #FBF1DC;
+    --color-silver: #8A94A6;
+    --color-silver-bg: #EEF0F4;
+    --color-bronze: #B9793B;
+    --color-bronze-bg: #F5E9DC;
+    --color-cyan: #2F80ED;
+    --color-teal: #1FA99A;
+    --color-orange: #F2994A;
+
+    --primary: var(--color-primary);
+    --blue: var(--color-primary);
+    --bs-primary: var(--color-primary);
+    --bs-primary-rgb: 46, 67, 160;
+    --success: var(--color-good);
+    --warning: var(--color-warn);
+    --danger: var(--color-bad);
+    --bs-success: var(--color-good);
+    --bs-warning: var(--color-warn);
+    --bs-danger: var(--color-bad);
+}

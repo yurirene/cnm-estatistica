@@ -17,14 +17,14 @@ class Digesto extends Model
 
     public function getTipoFormatadoAttribute()
     {
-        return $this->tipo->nome;
+        return $this->tipo->nome ?? '';
     }
 
     public function getTextoSelecionadoAttribute()
     {
         if (request()->filled('chave')) {
-            $inicio = strpos($this->texto, request()->chave);
-            return substr($this->texto, $inicio, 40);
+            $inicio = mb_stripos($this->texto ?? '', request()->chave);
+            return $inicio !== false ? mb_substr($this->texto, $inicio, 40) : '';
         }
         return '';
     }

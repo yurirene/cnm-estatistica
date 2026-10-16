@@ -144,6 +144,14 @@
                 @endcan
                 @endcannot
 
+                @can('rota-permitida', ['dashboard.auxilio-pmf.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.auxilio-pmf.index') }}">
+                        <i class="fas fa-hand-holding-heart"></i> Auxílio PMF
+                    </a>
+                </li>
+                @endcan
+
                 @can('rota-permitida', ['dashboard.formulario-complementar-sinodal.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.formulario-complementar-sinodal.index') }}">
@@ -179,6 +187,28 @@
                 </li>
                 @endcan
 
+                @can('rota-permitida', ['dashboard.game-cnm.painel'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.game-cnm.painel') }}">
+                        <i class="fas fa-trophy"></i> Game CNM
+                    </a>
+                </li>
+                @elsecan('rota-permitida', ['dashboard.game-cnm.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.game-cnm.index') }}">
+                        <i class="fas fa-trophy"></i> Game CNM
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.game-cnm.eventos.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.game-cnm.eventos.index') }}">
+                        <i class="fas fa-calendar-check"></i> Eventos
+                    </a>
+                </li>
+                @endcan
+
                 @can('rota-permitida', ['dashboard.comissao-executiva.index'])
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.comissao-executiva.index') }}">
@@ -207,6 +237,22 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('dashboard.arquivos.index') }}">
                         <i class="fab fa-google-drive"></i> Arquivos
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.gmail.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.gmail.index') }}">
+                        <i class="fas fa-envelope"></i> E-mails
+                    </a>
+                </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.meet.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.meet.index') }}">
+                        <i class="fas fa-video"></i> Sala Meet
                     </a>
                 </li>
                 @endcan
@@ -263,6 +309,22 @@
                         <i class="fas fa-file-alt"></i> Digestos
                     </a>
                 </li>
+                @endcan
+
+                @can('rota-permitida', ['dashboard.adote-missionario.index'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.adote-missionario.index') }}">
+                        <i class="fas fa-hands-helping"></i> Adote um Missionário
+                    </a>
+                </li>
+                @else
+                @can('rota-permitida', ['dashboard.adote-missionario.escolher'])
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('dashboard.adote-missionario.escolher') }}">
+                        <i class="fas fa-hands-helping"></i> Adote um Missionário
+                    </a>
+                </li>
+                @endcan
                 @endcan
 
                 @cannot('isAdmin')

@@ -18,6 +18,10 @@ class DateCast implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes)
     {
+        if (blank($value)) {
+            return null;
+        }
+
         return Carbon::parse($value)->format('d/m/Y');
     }
 
@@ -32,6 +36,10 @@ class DateCast implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes)
     {
+        if (blank($value)) {
+            return null;
+        }
+
         return Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
     }
 }

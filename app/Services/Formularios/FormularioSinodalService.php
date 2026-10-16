@@ -7,8 +7,11 @@ use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioSinodal;
 use App\Models\Parametro;
+use App\Models\ValorAciAno;
 use App\Services\ComprovanteAciService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Gamificacao\GamificacaoHook;
+use App\Services\EstatisticaInteligente\EstatisticaInteligenteHook;
 use App\Services\Formularios\Totalizadores\TotalizadorFormularioSinodalService;
 use App\Services\LogErroService;
 use Exception;
@@ -50,13 +53,14 @@ class FormularioSinodalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+            $organizacao = CamposFormularioService::mapearInteiros($request->organizacao);
             $estrutura = array_map(function($item) {
                 return intval($item);
             }, $request->estrutura);
 
             $totalizador = TotalizadorFormularioSinodalService::totalizador($request->sinodal_id);
 
-            FormularioSinodal::updateOrCreate(
+            $formulario = FormularioSinodal::updateOrCreate(
                 [
                     'ano_referencia' => $anoReferencia,
                     'sinodal_id' => $request->sinodal_id
@@ -70,6 +74,8 @@ class FormularioSinodalService
                     'programacoes_federacoes' => $totalizador['programacoes_federacao'],
                     'programacoes_locais' => $totalizador['programacoes_locais'],
                     'programacoes' => $programacoes,
+                    'discipulado' => $totalizador['discipulado'],
+                    'organizacao' => $organizacao,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
                     'sinodal_id' => $request->sinodal_id,
@@ -79,7 +85,13 @@ class FormularioSinodalService
                 ]
             );
 
+            if (!$apenasSalvar) {
+                self::registrarEnvio($formulario);
+            }
+
             EstatisticaService::atualizarRelatorioGeral();
+            GamificacaoHook::aposFormularioSinodal($request->sinodal_id);
+            EstatisticaInteligenteHook::aposFormularioSinodal($request->sinodal_id);
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -103,6 +115,19 @@ class FormularioSinodalService
             throw new Exception("Erro ao Atualizar");
 
         }
+    }
+
+    /**
+     * Grava enviado_em somente na ação do botão Enviar/Atualizar.
+     */
+    private static function registrarEnvio(FormularioSinodal $formulario): void
+    {
+        if (!is_null($formulario->enviado_em)) {
+            return;
+        }
+
+        $formulario->enviado_em = now();
+        $formulario->save();
     }
 
     public static function verificarColeta()
@@ -289,7 +314,8 @@ class FormularioSinodalService
                     'evangelistica' => 0,
                     'espiritual' => 0,
                     'recreativo' => 0,
-                ]
+                ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
             ];
 
             foreach ($formularios as $formulario) {
@@ -311,7 +337,7 @@ class FormularioSinodalService
             }
 
             $totalSocios = $totalizadorAtivas['perfil']['ativos'];
-            $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+            $paramValorAci = ValorAciAno::valorPara((int) EstatisticaService::getAnoReferencia());
             $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
             $aciNecessaria = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
             $totalizador['aci_necessaria'] = $aciNecessaria;
@@ -377,14 +403,18 @@ class FormularioSinodalService
         $totalizador['programacoes_locais']['evangelistica'] += (isset($formulario->programacoes_locais['evangelistica']) ? intval($formulario->programacoes_locais['evangelistica']) : 0);
         $totalizador['programacoes_locais']['espiritual'] += (isset($formulario->programacoes_locais['espiritual']) ? intval($formulario->programacoes_locais['espiritual']) : 0);
         $totalizador['programacoes_locais']['recreativo'] += (isset($formulario->programacoes_locais['recreativo']) ? intval($formulario->programacoes_locais['recreativo']) : 0);
+        $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+            $totalizador['discipulado'],
+            $formulario
+        );
 
         return $totalizador;
     }
 
-    public static function getFormularioDaSinodal($sinodal) : ?FormularioSinodal
+    public static function getFormularioDaSinodal($sinodal, ?int $ano = null) : ?FormularioSinodal
     {
         return FormularioSinodal::where('sinodal_id', $sinodal)
-            ->where('ano_referencia', EstatisticaService::getAnoReferencia())
+            ->where('ano_referencia', $ano ?: EstatisticaService::getAnoReferencia())
             ->first();
     }
 

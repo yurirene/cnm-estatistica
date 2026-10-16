@@ -13,7 +13,11 @@ class DigestoController extends Controller
     public function index(DigestoDataTable $dataTable)
     {
         try {
-            return $dataTable->render('dashboard.digestos.index');
+            return $dataTable->render('dashboard.digestos.index', [
+                'tipos' => DigestoService::getTipos(),
+                'anos' => DigestoService::getAnos(),
+                'completude' => DigestoService::contagemCompletude(),
+            ]);
         } catch (\Throwable $th) {
             return redirect()->route('dashboard.home')->with([
                 'mensagem' => [
@@ -29,6 +33,8 @@ class DigestoController extends Controller
         try {
             return view('dashboard.digestos.form', [
                 'tipos' => DigestoService::getTipos(),
+                'tiposDocumento' => DigestoService::getTiposDocumento(),
+                'comissoes' => DigestoService::getComissoes(),
             ]);
         } catch (\Throwable $th) {
             return redirect()->route('dashboard.home')->with([
@@ -67,7 +73,10 @@ class DigestoController extends Controller
         try {
             return view('dashboard.digestos.form', [
                 'tipos' => DigestoService::getTipos(),
-                'digesto' => $digesto
+                'tiposDocumento' => DigestoService::getTiposDocumento(),
+                'comissoes' => DigestoService::getComissoes(),
+                'arquivo' => DigestoService::dadosArquivo($digesto),
+                'digesto' => $digesto,
             ]);
         } catch (\Throwable $th) {
             return redirect()->route('dashboard.home')->with([
@@ -123,11 +132,19 @@ class DigestoController extends Controller
 
     public function digesto()
     {
-        $dados = DigestoService::buscarItem();
-        return view('digesto.index', [
+        return view('digesto.index', array_merge(DigestoService::buscar(), [
             'tipos' => DigestoService::getTipos(),
-            'dados' => $dados
-        ]);
+            'tiposDocumento' => DigestoService::getTiposDocumento(),
+        ]));
+    }
+
+    public function exportar()
+    {
+        if (! DigestoService::temFiltrosAtivos()) {
+            return redirect()->route('digesto');
+        }
+
+        return DigestoService::exportarCsv();
     }
 
     public function exibir(string $path)

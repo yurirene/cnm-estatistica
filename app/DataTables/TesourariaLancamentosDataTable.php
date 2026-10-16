@@ -2,11 +2,10 @@
 
 namespace App\DataTables;
 
-use App\Helpers\FormHelper;
 use App\Helpers\BootstrapHelper;
+use App\Helpers\FormHelper;
 use App\Models\Apps\Tesouraria\Lancamento;
-use App\Models\User;
-use App\Services\UserService;
+use App\Services\Apps\TesourariaService;
 use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -22,6 +21,8 @@ class TesourariaLancamentosDataTable extends DataTable
      */
     public function dataTable($query)
     {
+        $saldos = $this->saldosAcumulados();
+
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function($sql) {
@@ -38,12 +39,23 @@ class TesourariaLancamentosDataTable extends DataTable
                 return Carbon::parse($sql->data_lancamento)->format('d/m/Y');
             })
             ->editColumn('categoria_id', function ($sql) {
-                if (!is_null($sql->categoria_id)) {
-                    return BootstrapHelper::badge('primary', $sql->categoria->nome, true);
-                }
-                return BootstrapHelper::badge('info', 'Sem Categoria', true);
+                return $this->badgeCategoria($sql);
             })
-            ->rawColumns(['action', 'tipo', 'categoria_id']);
+            ->editColumn('valor', function ($sql) {
+                $valor = (float) $sql->getRawOriginal('valor');
+                $entrada = (int) $sql->tipo === Lancamento::TIPO_ENTRADA;
+
+                return $entrada
+                    ? '<span class="text-success font-weight-bold">' . TesourariaService::formatarMoeda($valor, true) . '</span>'
+                    : '<span class="text-danger font-weight-bold">' . TesourariaService::formatarMoeda($valor * -1) . '</span>';
+            })
+            ->addColumn('saldo_acumulado', function ($sql) use ($saldos) {
+                $saldo = $saldos[$sql->id] ?? 0;
+                $classe = $saldo < 0 ? 'text-danger' : 'text-muted';
+
+                return '<span class="' . $classe . '">' . TesourariaService::formatarMoeda($saldo) . '</span>';
+            })
+            ->rawColumns(['action', 'tipo', 'categoria_id', 'valor', 'saldo_acumulado']);
     }
 
     /**
@@ -55,18 +67,43 @@ class TesourariaLancamentosDataTable extends DataTable
     public function query(Lancamento $model)
     {
         return $model->newQuery()
+            ->with('categoria')
             ->daMinhaInstancia()
             ->when(request()->filled('dt_lancamento'), function ($sql) {
-                $dataLancamento = request()->get('dt_lancamento');
-                $datas = explode(' - ', $dataLancamento);
-                $periodo[0] = Carbon::createFromFormat('d/m/Y', $datas[0]);
-                $periodo[1] = Carbon::createFromFormat('d/m/Y', $datas[1]);
+                $datas = explode(' - ', request()->get('dt_lancamento'));
+                if (count($datas) !== 2) {
+                    return $sql;
+                }
+
+                $periodo[0] = Carbon::createFromFormat('d/m/Y', trim($datas[0]));
+                $periodo[1] = Carbon::createFromFormat('d/m/Y', trim($datas[1]));
                 return $sql->whereBetween('data_lancamento', $periodo);
             })
+            ->when(
+                request()->filled('mes') && !request()->filled('dt_lancamento'),
+                function ($sql) {
+                    $mes = request()->get('mes');
+                    if (!is_string($mes) || !preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $mes)) {
+                        return $sql;
+                    }
+
+                    $inicio = Carbon::createFromFormat('!Y-m', $mes)->startOfMonth();
+                    $fim = $inicio->copy()->endOfMonth();
+
+                    return $sql->whereBetween('data_lancamento', [
+                        $inicio->toDateString(),
+                        $fim->toDateString(),
+                    ]);
+                }
+            )
             ->when(request()->filled('tipo'), function ($sql) {
                 return $sql->where('tipo', request()->get('tipo'));
             })
             ->when(request()->filled('categoria'), function ($sql) {
+                if (request()->get('categoria') === 'sem') {
+                    return $sql->whereNull('categoria_id');
+                }
+
                 return $sql->where('categoria_id', request()->get('categoria'));
             });
     }
@@ -113,9 +150,56 @@ class TesourariaLancamentosDataTable extends DataTable
             Column::make('data_lancamento')->title('Data Lançamento'),
             Column::make('tipo')->title('Tipo'),
             Column::make('descricao')->title('Descrição'),
-            Column::make('valor')->title('Valor'),
             Column::make('categoria_id')->title('Categoria'),
+            Column::make('valor')->title('Valor'),
+            Column::computed('saldo_acumulado')
+                ->title('Saldo acumulado')
+                ->orderable(false)
+                ->searchable(false),
         ];
+    }
+
+    /**
+     * Saldo da conta depois de cada lançamento, independente do filtro da página.
+     *
+     * @return array<string, float>
+     */
+    private function saldosAcumulados(): array
+    {
+        $acumulado = 0.0;
+        $mapa = [];
+
+        Lancamento::query()
+            ->orderBy('data_lancamento')
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->get(['id', 'valor', 'tipo'])
+            ->each(function ($lancamento) use (&$acumulado, &$mapa) {
+                $valor = (float) $lancamento->getRawOriginal('valor');
+
+                if ((int) $lancamento->tipo === Lancamento::TIPO_SAIDA) {
+                    $valor *= -1;
+                }
+
+                $acumulado += $valor;
+                $mapa[$lancamento->id] = $acumulado;
+            });
+
+        return $mapa;
+    }
+
+    /**
+     * @param Lancamento $lancamento
+     *
+     * @return string
+     */
+    private function badgeCategoria(Lancamento $lancamento): string
+    {
+        if (is_null($lancamento->categoria_id) || is_null($lancamento->categoria)) {
+            return BootstrapHelper::badge('secondary', 'Sem categoria', true);
+        }
+
+        return BootstrapHelper::badge('primary', e($lancamento->categoria->nome), true);
     }
 
     /**

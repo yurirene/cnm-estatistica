@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Gamificacao\Placar;
 use App\Models\User;
+use App\Policies\PlacarPolicy;
 use App\Services\UserService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -16,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        Placar::class => PlacarPolicy::class,
     ];
 
     /**

@@ -7,6 +7,7 @@ use App\Models\ComprovanteACI;
 use App\Models\Parametro;
 use App\Services\ComprovanteAciService;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Gamificacao\GamificacaoHook;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -45,6 +46,29 @@ class ComprovanteACIController extends Controller
     {
         try {
             ComprovanteAciService::alterarStatus($comprovante);
+            GamificacaoHook::aposAci((string) $comprovante->sinodal_id);
+            return redirect()->route('dashboard.comprovante-aci.index')->with([
+                'mensagem' => [
+                    'status' => true,
+                    'texto' => 'Operação realizada com Sucesso!'
+                ]
+                ]);
+        } catch (Throwable $th) {
+            return redirect()->back()->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Algo deu Errado!'
+                ]
+            ])
+            ->withInput();
+        }
+    }
+
+    public function metaAtingida(ComprovanteACI $comprovante)
+    {
+        try {
+            ComprovanteAciService::marcarMetaAtingida($comprovante);
+            GamificacaoHook::aposAci((string) $comprovante->sinodal_id);
             return redirect()->route('dashboard.comprovante-aci.index')->with([
                 'mensagem' => [
                     'status' => true,

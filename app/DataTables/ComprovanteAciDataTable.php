@@ -2,11 +2,10 @@
 
 namespace App\DataTables;
 
-use App\Helpers\FormHelper;
+use App\Helpers\BootstrapHelper;
 use App\Models\AcessoExterno;
 use App\Models\ComprovanteACI;
 use App\Models\FormularioSinodal;
-use App\Models\Parametro;
 use App\Models\User;
 use App\Services\ComprovanteAciService;
 use Carbon\Carbon;
@@ -27,17 +26,24 @@ class ComprovanteAciDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->addColumn('action', function($sql) {
+                $tesouraria = auth()->user()->role->name == 'tesouraria';
+
                 return view('includes.actions', [
                     'route' => 'dashboard.comprovante-aci',
                     'id' => $sql->id,
-                    'status' => auth()->user()->role->name == 'tesouraria',
+                    'status' => $tesouraria,
+                    'metaAtingida' => $tesouraria,
+                    'jaMetaAtingida' => (int) $sql->status === ComprovanteACI::STATUS_META_ATINGIDA,
                     'edit' => false,
                     'delete' => false,
                     'abrir' => $sql->path
                 ]);
             })
             ->editColumn('status', function($sql) {
-                return FormHelper::statusFormatado($sql->status, 'Confirmado', 'Pendente');
+                $status = (int) $sql->status;
+                $label = ComprovanteACI::STATUS_LABELS[$status] ?? ComprovanteACI::STATUS_LABELS[ComprovanteACI::STATUS_PENDENTE];
+
+                return BootstrapHelper::badge($label['cor'], $label['texto']);
             })
             ->editColumn('sinodal_id', function($sql) {
                 return $sql->sinodal->sigla;
@@ -52,10 +58,22 @@ class ComprovanteAciDataTable extends DataTable
                 return $this->valorPrevisto($sql);
             })
             ->addColumn('valor_necessario', function ($sql) {
-                $result = ComprovanteAciService::totalizadorAciNecessaria($sql->sinodal_id);
-                $span = "{$result['valor']}<span data-toggle='tooltip' data-placement='top' title='Referente a: {$result['total_socios']} sócios'>
-                    <i class='fas fa-info-circle'></i></span>";
-                return $span;
+                $result = ComprovanteAciService::totalizadorAciNecessaria($sql->sinodal_id, (int) $sql->ano);
+                $titulo = htmlspecialchars(
+                    'Referente a: ' . ($result['total_socios'] ?? 0) . ' sócios',
+                    ENT_QUOTES,
+                    'UTF-8'
+                );
+
+                return $result['valor']
+                    . ' <span class="comprovante-aci-hint"'
+                    . ' data-toggle="tooltip" data-bs-toggle="tooltip"'
+                    . ' data-placement="top" data-bs-placement="top"'
+                    . ' data-container="body" data-bs-container="body"'
+                    . ' title="' . $titulo . '"'
+                    . ' style="cursor:pointer;display:inline-block;padding:0 4px">'
+                    . '<i class="fas fa-info-circle"></i>'
+                    . '</span>';
             })
             ->rawColumns(['status', 'valor_necessario']);
     }
@@ -74,19 +92,7 @@ class ComprovanteAciDataTable extends DataTable
 
     public function valorPrevisto($sql)
     {
-        $formulario = FormularioSinodal::where('sinodal_id', $sql->sinodal_id)
-            ->where('ano_referencia', $sql->ano)
-            ->first();
-
-        if (is_null($formulario)) {
-            return 'Formulário não respondido';
-        }
-
-        $totalSocios = intval($formulario['perfil']['ativos']); // + intval($formulario['perfil']['cooperadores']);
-        $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
-        $valorPrevisto = $totalSocios * $paramValorAci * ComprovanteAciService::PORCENTAGEM_SINODAL;
-
-        return 'R$' . number_format($valorPrevisto, 2, ',', '.');
+        return ComprovanteAciService::valorPrevisto($sql->sinodal_id, (int) $sql->ano);
     }
 
     /**
@@ -109,7 +115,14 @@ class ComprovanteAciDataTable extends DataTable
                 return $sql->whereBetween('created_at', $periodo);
             })
             ->when(!empty($filtro['status']) && $filtro['status'] != 'T', function($sql) use ($filtro) {
-                return $sql->where('status', $filtro['status'] == 'C');
+                if ($filtro['status'] == 'C') {
+                    return $sql->where('status', ComprovanteACI::STATUS_APROVADO);
+                }
+                if ($filtro['status'] == 'M') {
+                    return $sql->where('status', ComprovanteACI::STATUS_META_ATINGIDA);
+                }
+
+                return $sql->where('status', ComprovanteACI::STATUS_PENDENTE);
             });
     }
 
@@ -131,8 +144,8 @@ class ComprovanteAciDataTable extends DataTable
                     "url" => "/vendor/datatables/portugues.json"
                 ],
                 'buttons' => [],
-                'responsive' => true
-
+                'responsive' => true,
+                'drawCallback' => 'function() { if (window.initComprovanteAciTooltips) { window.initComprovanteAciTooltips(); } }',
             ]);
     }
 
@@ -184,7 +197,8 @@ class ComprovanteAciDataTable extends DataTable
         $status = [
             'T' => 'Todos',
             'P' => 'Pendentes',
-            'C' => 'Confirmados'
+            'C' => 'Confirmados',
+            'M' => 'Meta atingida',
         ];
         $anosCadastrados = ComprovanteAciService::getAnosCadastrados();
         return [

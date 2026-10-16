@@ -1,42 +1,49 @@
+@php
+    $cards = [
+        [
+            'label' => 'Total de Sócios',
+            'value' => $totalizadores['total_socios'] ?? 0,
+            'icon' => 'fas fa-users',
+            'icon_bg' => 'bg-info',
+        ],
+        [
+            'label' => 'Total de UMPs Locais',
+            'value' => $totalizadores['total_umps'] ?? 0,
+            'icon' => 'fas fa-users',
+            'icon_bg' => 'bg-warning',
+        ],
+        [
+            'label' => 'UMPs Locais Organizadas',
+            'value' => $totalizadores['total_umps_organizadas'] ?? 0,
+            'icon' => 'fas fa-check',
+            'icon_bg' => 'bg-success',
+        ],
+        [
+            'label' => 'Não utilizam o Modelo de Sociedades Internas',
+            'value' => $totalizadores['total_n_sociedades_internas'] ?? 0,
+            'icon' => 'fas fa-times',
+            'icon_bg' => 'bg-danger',
+            'alert' => ($totalizadores['total_n_sociedades_internas'] ?? 0) > 0,
+        ],
+    ];
+@endphp
 <div class="header bg-gradient-primary pb-8">
     <div class="container-fluid">
         <div class="header-body">
-            <!-- Card stats -->
             <div class="row">
+                @foreach($cards as $card)
                 <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">Total de Sócios</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores['total_socios'] }}</span>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
+                    <div class="card kpi-card mb-4 mb-xl-0 h-100 {{ !empty($card['alert']) ? 'alert' : '' }}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="k-label">{{ $card['label'] }}</div>
+                            <div class="icon icon-shape {{ $card['icon_bg'] }} text-white rounded-circle shadow">
+                                <i class="{{ $card['icon'] }}"></i>
                             </div>
                         </div>
+                        <div class="k-value">{{ $card['value'] }}</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">Total de UMPs Locais</h5>
-                                    <span class="h2 font-weight-bold mb-0">{{ $totalizadores['total_umps'] }}</span>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

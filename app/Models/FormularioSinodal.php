@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FormularioSinodal extends Model
 {
     protected $table = 'formularios_sinodal_v1';
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $guarded = ['id', 'created_at', 'updated_at', 'enviado_em'];
     protected $casts = [
         'perfil' => 'array',
         'deficiencias' => 'array',
@@ -18,7 +18,10 @@ class FormularioSinodal extends Model
         'programacoes_federacoes' => 'array',
         'programacoes_locais' => 'array',
         'programacoes' => 'array',
-        'estrutura' => 'array'
+        'discipulado' => 'array',
+        'organizacao' => 'array',
+        'estrutura' => 'array',
+        'enviado_em' => 'datetime'
     ];
 
     public function sinodal()

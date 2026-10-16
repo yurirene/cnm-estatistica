@@ -7,8 +7,10 @@ use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Pesquisas\Pesquisa;
+use App\Models\ValorAciAno;
 use App\Models\Sinodal;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Instancias\DashboardExecutivoService;
 use App\Services\Instancias\DiretoriaService;
 use App\Services\Instancias\PresidenciaService;
 use Illuminate\Support\Facades\Gate;
@@ -182,7 +184,11 @@ class DatatableAjaxService
             }
             if ($instancia == 'Sinodal') {
                 if (Gate::check(['presidente'])) {
-                    $query = Sinodal::query();
+                    $regiaoId = self::resolverRegiaoId();
+                    $query = Sinodal::query()
+                        ->when($regiaoId, function ($sql) use ($regiaoId) {
+                            return $sql->where('regiao_id', $regiaoId);
+                        });
                 } else {
                     $query = Sinodal::when($id, function ($sql) use ($id) {
                         return $sql->where('regiao_id', $id);
@@ -198,11 +204,14 @@ class DatatableAjaxService
                         return $sql->where('federacao_id', auth()->user()->federacao_id);
                     });
             }
-            $formulariosEntregues = $query
-                ->where('status', true)
+            $anoReferencia = self::resolverAnoReferencia();
+            $queryBase = $query->where('status', true);
+            if ($instancia == 'Sinodal') {
+                $queryBase->with(['diretoria', 'regiao']);
+            }
+            $formulariosEntregues = $queryBase
                 ->get()
-                ->map(function ($item) use ($instancia){
-                    $anoReferencia = EstatisticaService::getAnoReferencia();
+                ->map(function ($item) use ($instancia, $anoReferencia){
                     $relatorioDoAno = $item->relatorios()
                         ->where('ano_referencia', $anoReferencia)
                         ->when($instancia != 'Local', function ($sql) {
@@ -212,7 +221,8 @@ class DatatableAjaxService
                     $retorno = [
                         'id' => $item->id,
                         'nome' => $item->nome,
-                        'entregue' => $relatorioDoAno->count()
+                        'entregue' => $relatorioDoAno->count(),
+                        'impacto' => $relatorioDoAno->count() ? '' : 'Estatística em risco',
                     ];
 
                     if ($instancia == 'Sinodal') {
@@ -243,13 +253,36 @@ class DatatableAjaxService
                                         }
                                     })->count();
                             })->count();
-                        $valorACI = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+                        $valorACI = ValorAciAno::valorPara((int) $anoReferencia);
                         $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
                         $total = $totalSocios * $valorACI * ComprovanteAciService::PORCENTAGEM_SINODAL * $valorMinimoACI;
                         $retorno['aci_necessaria'] = "R$" . number_format($total, 2, ',', '.');
                         $retorno['aci_repassada'] = "R$" . ($relatorioDoAno->isNotEmpty() ? $relatorioDoAno->first()->aci['valor_repassado'] : 0);
                         $retorno['federacoes'] = "{$totalRelatoriosFederacoes}/{$totalFederacoes}"; 
-                        $retorno['locais'] = "{$totalRelatoriosLocais}/{$totalLocais}"; 
+                        $retorno['locais'] = "{$totalRelatoriosLocais}/{$totalLocais}";
+                        $retorno['zero_resposta'] = $totalLocais > 0 && $totalRelatoriosLocais === 0;
+
+                        if ($relatorioDoAno->count() && $totalFederacoes === $totalRelatoriosFederacoes && $totalLocais > 0 && $totalRelatoriosLocais === $totalLocais) {
+                            $retorno['status'] = 'completo';
+                        } elseif ($relatorioDoAno->count() || $totalRelatoriosFederacoes > 0 || $totalRelatoriosLocais > 0) {
+                            $retorno['status'] = 'parcial';
+                        } else {
+                            $retorno['status'] = 'pendente';
+                        }
+
+                        $semRepasse = DashboardExecutivoService::parseValorAci(
+                            $relatorioDoAno->isNotEmpty() ? ($relatorioDoAno->first()->aci['valor_repassado'] ?? 0) : 0
+                        ) <= 0;
+                        $semLider = empty(optional($item->diretoria)->presidente)
+                            && empty(optional($item->diretoria)->secretario_executivo);
+
+                        $retorno['whatsapp'] = $retorno['status'] === 'completo'
+                            ? null
+                            : DashboardExecutivoService::whatsappSinodal($item, $anoReferencia, [
+                                'zero_resposta' => $retorno['zero_resposta'],
+                                'sem_repasse' => $semRepasse,
+                                'sem_lider' => $semLider,
+                            ]);
                         
                         if (Gate::check(['presidente'])) {
                             $retorno['progresso'] = PresidenciaService::porcentagem($totalLocais, $totalRelatoriosLocais);
@@ -270,6 +303,23 @@ class DatatableAjaxService
         }
    }
 
+    private static function resolverAnoReferencia(): int
+    {
+        $ano = (int) request()->input('ano_referencia');
+
+        if ($ano >= 2000 && $ano <= ((int) date('Y') + 1)) {
+            return $ano;
+        }
+
+        return (int) EstatisticaService::getAnoReferencia();
+    }
+
+    private static function resolverRegiaoId(): ?int
+    {
+        $regiaoId = (int) request()->input('regiao_id');
+
+        return $regiaoId > 0 ? $regiaoId : null;
+    }
 
     /**
      * Retorna lista das sinodais informando se entregaram os formulários

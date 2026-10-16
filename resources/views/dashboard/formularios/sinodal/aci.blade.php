@@ -1,103 +1,44 @@
-<div class="row">
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('aci[ump_repassaram]') ? ' has-error' : '' }}">
-        {!! Form::label(
-            'aci[ump_repassaram]',
-            'Quantidade de UMPs que fizeram o repasse da ACI para as Federações'
-        ) !!}
-        {!! Form::text(
-            'aci[ump_repassaram]',
-            isset($formulario) && !empty($formulario->aci)
-                ? null
-                : $estrutura_sinodal['quantidade_ump_repasse'],
-            [
-                'readonly' => true,
-                'id' => 'aci[ump_repassaram]',
-                'class' => 'form-control',
-                'required' => 'required'
-            ]
-        ) !!}
-        <small class="text-danger">{{ $errors->first('aci[ump_repassaram]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('aci[ump_nao_repassaram]') ? ' has-error' : '' }}">
-        {!! Form::label(
-            'aci[ump_nao_repassaram]',
-            'Quantidade de UMPs que não fizeram o repasse da ACI para as Federações'
-        ) !!}
-        {!! Form::text(
-            'aci[ump_nao_repassaram]',
-            isset($formulario) && !empty($formulario->aci)
-                ? null
-                : $estrutura_sinodal['quantidade_ump_sem_repasse'],
-            ['readonly' => true,'class' => 'form-control', 'required' => 'required']
-        ) !!}
-        <small class="text-danger">{{ $errors->first('aci[ump_nao_repassaram]') }}</small>
-        </div>
-    </div>
-
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('aci[federacao_repassaram]') ? ' has-error' : '' }}">
-        {!! Form::label(
-            'aci[federacao_repassaram]', 'Quantidade de Federações que fizeram o repasse da ACI para a Sinodal'
-            ) !!}
-        {!! Form::text(
-            'aci[federacao_repassaram]',
-            isset($formulario) && !empty($formulario->aci)
-                ? null
-                : $estrutura_sinodal['federacao_nro_repasse'],
-            ['id' => 'aci[federacao_repassaram]', 'class' => 'form-control', 'required' => 'required']
-        ) !!}
-        <small class="text-danger">{{ $errors->first('aci[federacao_repassaram]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('aci[federacao_nao_repassaram]') ? ' has-error' : '' }}">
-        {!! Form::label(
-            'aci[federacao_nao_repassaram]',
-            'Quantidade de Federações que não fizeram o repasse da ACI para a Sinodal'
-        ) !!}
-        {!! Form::text(
-            'aci[federacao_nao_repassaram]',
-            isset($formulario) && !empty($formulario->aci)
-                ? null
-                : $estrutura_sinodal['federacao_nro_sem_repasse'],
-            ['class' => 'form-control', 'required' => 'required']
-        ) !!}
-        <small class="text-danger">{{ $errors->first('aci[federacao_nao_repassaram]') }}</small>
-        </div>
-    </div>
+<div class="fe-field-grid">
+    <x-formulario.campo-numero
+        name="aci[ump_repassaram]"
+        label="UMPs que fizeram o repasse da ACI"
+        :value="isset($formulario) && !empty($formulario->aci) ? null : $estrutura_sinodal['quantidade_ump_repasse']"
+        :readonly="true"
+        lock-note="calculado automaticamente"
+        input-id="aci[ump_repassaram]"
+    />
+    <x-formulario.campo-numero
+        name="aci[ump_nao_repassaram]"
+        label="UMPs que não fizeram o repasse da ACI"
+        :value="isset($formulario) && !empty($formulario->aci) ? null : $estrutura_sinodal['quantidade_ump_sem_repasse']"
+        :readonly="true"
+        lock-note="calculado automaticamente"
+    />
+    <x-formulario.campo-numero
+        name="aci[federacao_repassaram]"
+        label="Federações que fizeram o repasse da ACI"
+        :value="isset($formulario) && !empty($formulario->aci) ? null : $estrutura_sinodal['federacao_nro_repasse']"
+        input-id="aci[federacao_repassaram]"
+    />
+    <x-formulario.campo-numero
+        name="aci[federacao_nao_repassaram]"
+        label="Federações que não fizeram o repasse da ACI"
+        :value="isset($formulario) && !empty($formulario->aci) ? null : $estrutura_sinodal['federacao_nro_sem_repasse']"
+    />
 </div>
-<div class="row">
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('aci[repasse_sinodal]') ? ' has-error' : '' }}">
-            {!! Form::label(
-                'aci[repasse]',
-                'A Sinodal fez o repasse da ACI para a CNM?'
-            ) !!}
-            {!! Form::select(
-                'aci[repasse]',
-                ['N' => 'Não', 'S' => 'Sim'],
-                isset($formulario) ? null : 'N',
-                ['id' => 'aci[repasse]', 'class' => 'form-control', 'required' => 'required']
-            ) !!}
-            <small class="text-danger">{{ $errors->first('aci[repasse]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('aci[valor_repassado]') ? ' has-error' : '' }}">
-        {!! Form::label(
-            'aci[valor_repassado]', 'Valor do repasse da ACI para a CNM'
-            ) !!}
-        {!! Form::text(
-            'aci[valor_repassado]',
-            isset($formulario) && !empty($formulario->aci)
-                ? null
-                : 0,
-            ['class' => 'form-control isMoney', 'required' => 'required']
-        ) !!}
-        <small class="text-danger">{{ $errors->first('aci[valor_repassado]') }}</small>
-        </div>
-    </div>
+<div class="fe-divider"></div>
+<div class="fe-field-grid fe-cols-2">
+    <x-formulario.campo-select
+        name="aci[repasse]"
+        label="A Sinodal fez o repasse da ACI para a CNM?"
+        :options="['N' => 'Não', 'S' => 'Sim']"
+        :value="isset($formulario) ? null : 'N'"
+        input-id="aci[repasse]"
+    />
+    <x-formulario.campo-texto
+        name="aci[valor_repassado]"
+        label="Valor do repasse da ACI para a CNM"
+        :value="isset($formulario) && !empty($formulario->aci) ? null : 0"
+        :money="true"
+    />
 </div>

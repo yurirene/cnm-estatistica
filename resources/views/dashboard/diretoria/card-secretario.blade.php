@@ -11,7 +11,7 @@
                         <span class="text-nowrap">{{ $secretario['contato'] }}</span>
                     </p>
                     <button
-                        class="btn btn-sm btn-warning mt-2"
+                        class="btn btn-sm btn-primary mt-2"
                         data-toggle="modal"
                         data-target="#modal-edicao-secretario"
                         data-nome="{{ $secretario['nome'] }}"

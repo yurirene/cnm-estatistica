@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     {!! Form::hidden('nome_usuario', 'Federação') !!}
-                    <button class="btn btn-success" id="submit-button"><i class='fas fa-save'></i> {{(isset($federacao) ? 'Atualizar' : 'Cadastrar')}}</button>
+                    <button class="btn btn-primary" id="submit-button"><i class='fas fa-save'></i> {{(isset($federacao) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.federacoes.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                 </div>

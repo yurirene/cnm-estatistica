@@ -7,6 +7,7 @@ use App\Models\FormularioFederacao;
 use App\Models\Local;
 use App\Models\Parametro;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Formularios\CamposFormularioService;
 use App\Services\LogErroService;
 use Exception;
 
@@ -80,7 +81,8 @@ class TotalizadorFormularioSinodalService
                     'evangelistica' => 0,
                     'espiritual' => 0,
                     'recreativo' => 0,
-                ]
+                ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
             ];
 
             foreach ($formularios as $formulario) {
@@ -300,6 +302,10 @@ class TotalizadorFormularioSinodalService
                     isset($formulario->programacoes_locais['recreativo'])
                     ? intval($formulario->programacoes_locais['recreativo'])
                     : 0
+                );
+                $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+                    $totalizador['discipulado'],
+                    $formulario
                 );
             }
             $totalizador['estrutura']['federacao_organizada'] = Federacao::where('sinodal_id', $id)

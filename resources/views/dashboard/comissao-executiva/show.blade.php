@@ -38,6 +38,14 @@
                     </ul>
                 </div>
                 <div class="card-body">
+                    <div class="mb-3 d-flex flex-wrap" style="gap: .5rem;">
+                        <a href="{{ route('dashboard.comissao-executiva.download-documentos', $reuniao->id) }}" class="btn btn-primary">
+                            <i class="fas fa-file-archive"></i> Baixar documentos
+                        </a>
+                        <a href="{{ route('dashboard.comissao-executiva.download-credenciais', $reuniao->id) }}" class="btn btn-primary">
+                            <i class="fas fa-file-archive"></i> Baixar credenciais
+                        </a>
+                    </div>
                     <div class="tab-content" id="ce-tabContent">
                         <div class="tab-pane fade {{ !session()->has('aba') || session()->get('aba') == 0 ? 'active show' : ''}}" id="ce-documentos" role="tabpanel" aria-labelledby="ce-documentos-tab">
                             <div class="table-responsive">

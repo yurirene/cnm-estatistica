@@ -37,7 +37,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return redirect()->back()->with([
                 'mensagem' => [
@@ -68,7 +69,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             throw $th;
         }
@@ -94,7 +96,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return redirect()->route('meusite.evento', $sigla)->with([
                 'status' => false,
@@ -119,7 +122,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return response()->json([
                 'mensagem' => 'Erro ao atualizar!',
@@ -149,7 +153,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return redirect()->back()->with([
                 'mensagem' => [
@@ -180,7 +185,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return response()->json([
                 'mensagem' => 'Erro ao atualizar!',
@@ -211,7 +217,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return redirect()->route('dashboard.apps.sites.index')->with([
                 'mensagem' => [
@@ -246,7 +253,8 @@ class EventoController extends Controller
             LogErroService::registrar([
                 'message' => $th->getMessage(),
                 'line' => $th->getLine(),
-                'file' => $th->getFile()
+                'file' => $th->getFile(),
+                'trace' => $th->getTraceAsString()
             ]);
             return redirect()->route('dashboard.apps.sites.index')->with([
                 'mensagem' => [

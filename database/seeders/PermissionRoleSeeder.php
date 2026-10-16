@@ -28,7 +28,8 @@ class PermissionRoleSeeder extends Seeder
                     'acesso-apps',
                     'avisos',
                     'helpdesk',
-                    'secretaria-executiva'
+                    'secretaria-executiva',
+                    'auxilio-pmf',
                 ]
             ],
             'presidente' => [
@@ -36,6 +37,8 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'detalhamento',
                     'arquivos',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.sinodais.index',
@@ -52,6 +55,10 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'comissao-executiva',
                     'arquivos',
+                    'auxilio-pmf',
+                    'adote-missionario',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -96,7 +103,15 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.sinodal.documento.store',
                     'dashboard.cn.sinodal.documento.delete',
                     'dashboard.transferencias.index',
-                    'dashboard.transferencias.transferir-ump'
+                    'dashboard.transferencias.transferir-ump',
+                    'dashboard.game-cnm.painel',
+                    'dashboard.auxilio-pmf.index',
+                    'dashboard.auxilio-pmf.proposta.store',
+                    'dashboard.auxilio-pmf.proposta.destroy',
+                    'dashboard.auxilio-pmf.relatorio.store',
+                    'dashboard.auxilio-pmf.relatorio.destroy',
+                    'dashboard.adote-missionario.escolher',
+                    'dashboard.adote-missionario.adotar',
                 ]
             ],
             'federacao' => [
@@ -123,6 +138,9 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.store',
                     'dashboard.cn.federacao.delegado.update',
                     'dashboard.cn.federacao.delegado.delete',
+                    'dashboard.game-cnm.painel',
+                    'dashboard.adote-missionario.escolher',
+                    'dashboard.adote-missionario.adotar',
                 ]
             ],
             'local' => [
@@ -143,7 +161,8 @@ class PermissionRoleSeeder extends Seeder
             'tesouraria' => [
                 'resources' => [
                     'comprovante-aci',
-                    'helpdesk'
+                    'helpdesk',
+                    'gmail',
                 ],
                 'permissions' => [
                 ]
@@ -156,6 +175,9 @@ class PermissionRoleSeeder extends Seeder
                     'secretaria-executiva',
                     'tarefas',
                     'arquivos',
+                    'auxilio-pmf',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.cn.executiva.index',
@@ -177,7 +199,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'secretaria-produtos',
                     'pedidos',
-                    'helpdesk'
+                    'helpdesk',
+                    'meet',
                 ],
                 'permissions' => []
             ],
@@ -185,7 +208,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'secretaria-estatistica',
                     'avisos',
-                    'helpdesk'
+                    'helpdesk',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.datatables.estatistica.formularios-sinodais',
@@ -197,6 +221,10 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'helpdesk',
                     'arquivos',
+                    'auxilio-pmf',
+                    'adote-missionario',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [                ]
             ]

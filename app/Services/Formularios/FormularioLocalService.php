@@ -9,6 +9,8 @@ use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Gamificacao\GamificacaoHook;
+use App\Services\EstatisticaInteligente\EstatisticaInteligenteHook;
 use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;
@@ -43,6 +45,8 @@ class FormularioLocalService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+            $discipulado = CamposFormularioService::mapearInteiros($request->discipulado);
+            $organizacao = CamposFormularioService::mapearInteiros($request->organizacao);
 
             $anoReferencia = EstatisticaService::getAnoReferencia();
             $formulario = FormularioLocal::updateOrCreate(
@@ -56,6 +60,8 @@ class FormularioLocalService
                     'escolaridade' => $escolaridade,
                     'deficiencias' => $deficiencias,
                     'programacoes' => $programacoes,
+                    'discipulado' => $discipulado,
+                    'organizacao' => $organizacao,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
                     'local_id' => $request->local_id,
@@ -69,9 +75,12 @@ class FormularioLocalService
                     )
                 ]
             );
+            self::registrarEnvio($formulario);
             EstatisticaService::atualizarRelatorioGeral();
             AtualizarAutomaticamenteFormulariosService::atualizarFederacao($formulario);
             DB::commit();
+            GamificacaoHook::aposFormularioLocal($request->local_id);
+            EstatisticaInteligenteHook::aposFormularioLocal($request->local_id);
         } catch (\Throwable $th) {
             DB::rollBack();
             LogErroService::registrar([
@@ -96,6 +105,20 @@ class FormularioLocalService
             throw new Exception("Erro ao Atualizar");
 
         }
+    }
+
+    /**
+     * Grava enviado_em somente na ação do botão Enviar.
+     * A atualização automática da federação/sinodal não deve alterar este campo.
+     */
+    private static function registrarEnvio(FormularioLocal $formulario): void
+    {
+        if (!is_null($formulario->enviado_em)) {
+            return;
+        }
+
+        $formulario->enviado_em = now();
+        $formulario->save();
     }
 
     public static function verificarColeta()

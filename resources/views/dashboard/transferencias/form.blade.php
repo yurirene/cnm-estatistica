@@ -78,7 +78,7 @@
                         </div>
                         @endif
                     </div>
-                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($sinodal) ? 'Atualizar' : 'Cadastrar')}}</button>
+                    <button class="btn btn-primary"><i class='fas fa-save'></i> {{(isset($sinodal) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.sinodais.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                 </div>

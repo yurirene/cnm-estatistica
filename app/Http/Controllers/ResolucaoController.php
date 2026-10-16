@@ -28,6 +28,7 @@ class ResolucaoController extends Controller
                 'origens' => $opcoes['origens'],
                 'status' => $opcoes['status'],
                 'prioridades' => $opcoes['prioridades'],
+                'responsaveis' => ResolucaoService::responsaveisParaFiltro(),
                 'usuario' => auth()->user(),
             ]);
         } catch (Throwable $th) {

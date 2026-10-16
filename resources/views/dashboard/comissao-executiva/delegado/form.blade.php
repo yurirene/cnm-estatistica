@@ -91,7 +91,7 @@
 <div class="row mt-3">
     <div class="col-md-6">
         <div class="form-group">
-            <button class="btn btn-success">
+            <button class="btn btn-primary">
                 {{ !empty($delegado) ? 'Atualizar Delegado' : 'Cadastrar Delegado' }}
             </button>
         </div>

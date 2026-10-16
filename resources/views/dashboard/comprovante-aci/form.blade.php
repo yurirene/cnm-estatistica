@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col-md-3">
         <div class="form-group">
-            <button class="btn btn-success">Enviar</button>
+            <button class="btn btn-primary">Enviar</button>
         </div>
     </div>
 </div>

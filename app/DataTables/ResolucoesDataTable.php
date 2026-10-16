@@ -2,6 +2,8 @@
 
 namespace App\DataTables;
 
+use App\Enums\ResolucaoOrigem;
+use App\Enums\ResolucaoPrioridade;
 use App\Enums\ResolucaoStatus;
 use App\Models\Resolucao;
 use App\Services\ResolucaoService;
@@ -78,7 +80,27 @@ class ResolucoesDataTable extends DataTable
 
     public function query(Resolucao $model)
     {
-        return ResolucaoService::queryParaUsuario()->latest();
+        $origens = array_map(fn ($origem) => $origem->value, ResolucaoOrigem::cases());
+        $status = array_map(fn ($item) => $item->value, ResolucaoStatus::cases());
+        $prioridades = array_map(fn ($item) => $item->value, ResolucaoPrioridade::cases());
+
+        return ResolucaoService::queryParaUsuario()
+            ->when(
+                request()->filled('origem') && in_array(request('origem'), $origens, true),
+                fn ($query) => $query->where('origem', request('origem'))
+            )
+            ->when(
+                request()->filled('status') && in_array(request('status'), $status, true),
+                fn ($query) => $query->where('status', request('status'))
+            )
+            ->when(
+                request()->filled('prioridade') && in_array(request('prioridade'), $prioridades, true),
+                fn ($query) => $query->where('prioridade', request('prioridade'))
+            )
+            ->when(
+                request()->filled('responsavel_id'),
+                fn ($query) => $query->where('responsavel_id', request('responsavel_id'))
+            );
     }
 
     public function html()
@@ -86,12 +108,27 @@ class ResolucoesDataTable extends DataTable
         return $this->builder()
             ->setTableId('resolucoes-table')
             ->columns($this->getColumns())
-            ->minifiedAjax()
-            ->dom('Bfrtip')
+            ->minifiedAjax('', null, [
+                'origem' => '$("#filtro-origem").val()',
+                'responsavel_id' => '$("#filtro-responsavel").val()',
+                'status' => '$("#filtro-status").val()',
+                'prioridade' => '$("#filtro-prioridade").val()',
+            ])
+            ->dom('Blfrtip')
+            ->lengthMenu([
+                [10, 20, 50, 100, 200],
+                [10, 20, 50, 100, 200],
+            ])
             ->pageLength(20)
             ->orderBy(1, 'desc')
             ->parameters([
-                'buttons' => [],
+                'buttons' => [
+                    [
+                        'extend' => 'csv',
+                        'text' => 'Exportar para CSV',
+                        'className' => 'btn btn-primary',
+                    ],
+                ],
                 'language' => [
                     'url' => '/vendor/datatables/portugues.json',
                 ],
@@ -114,6 +151,9 @@ class ResolucoesDataTable extends DataTable
             Column::make('prioridade')->title('Prioridade'),
             Column::make('prazo_final')->title('Prazo final'),
             Column::make('responsavel.name')->title('Responsável'),
+            Column::make('descricao')->title('Descrição')
+                ->exportable(true)
+                ->printable(false)
         ];
     }
 

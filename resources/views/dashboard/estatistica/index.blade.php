@@ -124,5 +124,60 @@
             });
         });
     })
+    function inicializarTabelaValorAciAno() {
+        let tabela = $('#valores-aci-ano-table');
+        if (!tabela.length || $.fn.DataTable.isDataTable(tabela)) {
+            if ($.fn.DataTable.isDataTable(tabela)) {
+                tabela.DataTable().columns.adjust();
+            }
+            return;
+        }
+        tabela.DataTable({
+            order: [[0, 'desc']],
+            paging: false,
+            info: false,
+            columnDefs: [
+                { type: 'num', targets: 0 },
+                { orderable: false, targets: [1, 2] }
+            ]
+        });
+    }
+    function salvarValorAciAno(ano, valor) {
+        let token = $('#token').val();
+        let route = "{{ route('dashboard.estatistica.atualizarValorAciAno')}}";
+        $.ajax({
+            url: route,
+            type: 'POST',
+            data: {
+                _token: token,
+                ano: ano,
+                valor: valor
+            }
+        }).done((response) => {
+            iziToast.show({
+                title: 'Sucesso!',
+                message: response.mensagem,
+                position: 'topRight',
+            });
+            window.location.reload();
+        }).catch((error) => {
+            iziToast.error({
+                title: 'Erro!',
+                message: (error.responseJSON && error.responseJSON.mensagem) ? error.responseJSON.mensagem : 'Erro ao atualizar valor da ACI',
+                position: 'topRight',
+            });
+        });
+    }
+    $('#valores-aci-ano-table').on('click', '.btn-valor-aci-ano', function() {
+        let linha = $(this).closest('tr');
+        salvarValorAciAno($(this).data('ano'), linha.find('.valor-aci-ano').val());
+    });
+    $('.btn-novo-valor-aci-ano').on('click', function() {
+        salvarValorAciAno($('#novo-ano-aci').val(), $('#novo-valor-aci').val());
+    });
+    $('button[data-bs-target="#primeiro"]').on('shown.bs.tab', function () {
+        inicializarTabelaValorAciAno();
+    });
+    inicializarTabelaValorAciAno();
 </script>
 @endpush

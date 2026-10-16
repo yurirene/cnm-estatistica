@@ -1,218 +1,71 @@
+@php
+    $cards = [
+        [
+            'label' => 'Total de Presbitérios',
+            'value' => $totalizador['total_presbiterios'] ?? 0,
+            'icon' => 'fas fa-layer-group',
+            'icon_bg' => 'bg-warning',
+            'url' => route('dashboard.detalhamento.index', 'presbiterio'),
+        ],
+        [
+            'label' => 'Total de Igrejas',
+            'value' => $totalizador['total_igrejas'] ?? 0,
+            'icon' => 'fas fa-church',
+            'icon_bg' => 'bg-warning',
+            'url' => route('dashboard.detalhamento.index', 'igrejas'),
+        ],
+        [
+            'label' => 'Não utilizam o Modelo de Sociedades Internas',
+            'value' => $totalizador['total_n_sociedades_internas'] ?? 0,
+            'icon' => 'fas fa-times',
+            'icon_bg' => 'bg-danger',
+            'url' => route('dashboard.detalhamento.index', 'sem_sociedades'),
+            'alert' => ($totalizador['total_n_sociedades_internas'] ?? 0) > 0,
+        ],
+        [
+            'label' => 'Total de Sócios',
+            'value' => $totalizador['total_socios'] ?? 0,
+            'icon' => 'fas fa-users',
+            'icon_bg' => 'bg-info',
+        ],
+        [
+            'label' => 'Total de Federações Organizadas',
+            'value' => $totalizador['total_federacoes'] ?? 0,
+            'icon' => 'fas fa-sitemap',
+            'icon_bg' => 'bg-success',
+            'url' => route('dashboard.detalhamento.index', 'presbiterio') . '?organizadas=1',
+        ],
+        [
+            'label' => 'Total de UMPs Locais Organizadas',
+            'value' => $totalizador['total_umps'] ?? 0,
+            'icon' => 'fas fa-check',
+            'icon_bg' => 'bg-success',
+            'url' => route('dashboard.detalhamento.index', 'igrejas') . '?organizadas=1',
+        ],
+    ];
+@endphp
 <div class="header bg-gradient-primary pb-8 pt-2">
     <div class="container-fluid">
         <div class="header-body">
-            <!-- Card stats -->
             <div class="row">
+                @foreach($cards as $card)
                 <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">
-                                        Total de Presbitérios
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                                        <i class="fas fa-layer-group"></i>
-                                    </div>
-                                </div>
+                    <div class="card kpi-card mb-4 mb-xl-0 h-100 {{ !empty($card['alert']) ? 'is-alert' : '' }}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="k-label">{{ $card['label'] }}</div>
+                            <div class="icon icon-shape {{ $card['icon_bg'] }} text-white rounded-circle shadow">
+                                <i class="{{ $card['icon'] }}"></i>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        {{ $totalizador['total_presbiterios'] }}
-                                    </span>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{route('dashboard.detalhamento.index', 'presbiterio')}}"
-                                        class="btn btn-sm btn-link detalhe" data-tipo="total_sinodos"
-                                    >
-                                        <i class="fas fa-plus"></i> Ver Mais
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="k-value">{{ $card['value'] }}</div>
+                        @if(!empty($card['url']))
+                            <a href="{{ $card['url'] }}" class="k-link" style="font-size:11px;font-weight:700">
+                                <i class="fas fa-plus"></i> Ver mais
+                            </a>
+                        @endif
                     </div>
                 </div>
-
-                <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">
-                                        Total de Igrejas
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                                        <i class="fas fa-church"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        {{ $totalizador['total_igrejas'] }}
-                                    </span>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{route('dashboard.detalhamento.index', 'igrejas')}}"
-                                        class="btn btn-sm btn-link detalhe" data-tipo="total_sinodos"
-                                    >
-                                        <i class="fas fa-plus"></i> Ver Mais
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">
-                                        Não Utilizam o Modelo de Sociedades Internas
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
-                                        <i class="fas fa-times"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        {{ $totalizador['total_n_sociedades_internas'] }}
-                                    </span>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{ route('dashboard.detalhamento.index', 'sem_sociedades') }}"
-                                        class="btn btn-sm btn-link detalhe" data-tipo="total_sinodos"
-                                    >
-                                        <i class="fas fa-plus"></i> Ver Mais
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">
-                                        Total de Sócios
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-info text-white rounded-circle shadow">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        {!! $totalizador['total_socios'] !!}
-                                    </span>
-                                </div>
-                                {{-- <div class="col-6">
-                                    <a href="{{ route('dashboard.detalhamento.index', 'sem_sociedades') }}"
-                                        class="btn btn-sm btn-link detalhe" data-tipo="total_sinodos"
-                                    >
-                                        <i class="fas fa-plus"></i> Ver Mais
-                                    </a>
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">
-                                        Total de Federações Organizadas
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        {!! $totalizador['total_federacoes'] !!}
-                                    </span>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{ route('dashboard.detalhamento.index', 'presbiterio') }}?organizadas=1"
-                                        class="btn btn-sm btn-link detalhe" data-tipo="total_sinodos"
-                                    >
-                                        <i class="fas fa-plus"></i> Ver Mais
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-lg-6 mt-3">
-                    <div class="card card-stats mb-4 mb-xl-0 h-100">
-                        <div class="card-header h-100">
-                            <div class="row  d-flex align-items-center">
-                                <div class="col-8">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">
-                                        Total de UMPs Locais Organizadas
-                                    </h5>
-                                </div>
-                                <div class="col-4 text-center">
-                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <span class="h2 font-weight-bold mb-0">
-                                        {!! $totalizador['total_umps'] !!}
-                                    </span>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{ route('dashboard.detalhamento.index', 'igrejas') }}?organizadas=1"
-                                        class="btn btn-sm btn-link detalhe" data-tipo="total_sinodos"
-                                    >
-                                        <i class="fas fa-plus"></i> Ver Mais
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

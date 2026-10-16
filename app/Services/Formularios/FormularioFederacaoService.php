@@ -12,6 +12,8 @@ use App\Models\Parametro;
 use App\Models\Sinodal;
 use App\Models\User;
 use App\Services\Estatistica\EstatisticaService;
+use App\Services\Gamificacao\GamificacaoHook;
+use App\Services\EstatisticaInteligente\EstatisticaInteligenteHook;
 use App\Services\LogErroService;
 use Carbon\Carbon;
 use Exception;
@@ -60,6 +62,7 @@ class FormularioFederacaoService
             $programacoes = array_map(function($item) {
                 return intval($item);
             }, $request->programacoes);
+            $organizacao = CamposFormularioService::mapearInteiros($request->organizacao);
             $estrutura = array_map(function($item) {
                 return intval($item);
             }, $request->estrutura);
@@ -75,6 +78,8 @@ class FormularioFederacaoService
                     'deficiencias' => $totalizador['deficiencias'],
                     'programacoes_locais' => $totalizador['programacoes'],
                     'programacoes' => $programacoes,
+                    'discipulado' => $totalizador['discipulado'],
+                    'organizacao' => $organizacao,
                     'aci' => $request->aci,
                     'ano_referencia' => $anoReferencia,
                     'federacao_id' => $request->federacao_id,
@@ -89,9 +94,15 @@ class FormularioFederacaoService
                     ),
                 ]
             );
+
+            if (!$apenasSalvar) {
+                self::registrarEnvio($formulario);
+            }
             EstatisticaService::atualizarRelatorioGeral();
             AtualizarAutomaticamenteFormulariosService::atualizarSinodal($formulario);
             DB::commit();
+            GamificacaoHook::aposFormularioFederacao($request->federacao_id);
+            EstatisticaInteligenteHook::aposFormularioFederacao($request->federacao_id);
         } catch (\Throwable $th) {
             DB::rollBack();
             LogErroService::registrar([
@@ -116,6 +127,20 @@ class FormularioFederacaoService
             throw new Exception("Erro ao Atualizar");
 
         }
+    }
+
+    /**
+     * Grava enviado_em somente na ação do botão Enviar.
+     * A atualização automática da sinodal não deve alterar este campo.
+     */
+    private static function registrarEnvio(FormularioFederacao $formulario): void
+    {
+        if (!is_null($formulario->enviado_em)) {
+            return;
+        }
+
+        $formulario->enviado_em = now();
+        $formulario->save();
     }
 
     public static function showFormulario($id)
@@ -213,6 +238,7 @@ class FormularioFederacaoService
                     'espiritual' => 0,
                     'recreativo' => 0,
                 ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
                 "estrutura" => [
                     "ump_organizada" => 0,
                     "ump_nao_organizada" => 0,
@@ -392,6 +418,10 @@ class FormularioFederacaoService
                     isset($formulario->programacoes['recreativo'])
                     ? intval($formulario->programacoes['recreativo'])
                     : 0
+                );
+                $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+                    $totalizador['discipulado'],
+                    $formulario
                 );
             }
 

@@ -6,8 +6,9 @@ use App\Models\ComprovanteACI;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\Parametro;
+use App\Models\ValorAciAno;
 use App\Services\Estatistica\EstatisticaService;
-use App\Services\Formularios\FormularioSinodalService;
+use App\Services\Gamificacao\GamificacaoHook;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,8 @@ class ComprovanteAciService
                 ]);
             }
 
+            GamificacaoHook::aposAci((string) $comprovante->sinodal_id);
+
             return $comprovante;
         } catch (Throwable $th) {
             LogErroService::registrar([
@@ -62,7 +65,27 @@ class ComprovanteAciService
     {
         try {
             $comprovante->update([
-                'status' => !$comprovante->status
+                'status' => $comprovante->status == ComprovanteACI::STATUS_PENDENTE
+                    ? ComprovanteACI::STATUS_APROVADO
+                    : ComprovanteACI::STATUS_PENDENTE,
+            ]);
+        } catch (Throwable $th) {
+            LogErroService::registrar([
+                'message' => $th->getMessage(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile()
+            ]);
+            throw $th;
+        }
+    }
+
+    public static function marcarMetaAtingida(ComprovanteACI $comprovante): void
+    {
+        try {
+            $comprovante->update([
+                'status' => $comprovante->status == ComprovanteACI::STATUS_META_ATINGIDA
+                    ? ComprovanteACI::STATUS_APROVADO
+                    : ComprovanteACI::STATUS_META_ATINGIDA,
             ]);
         } catch (Throwable $th) {
             LogErroService::registrar([
@@ -88,29 +111,12 @@ class ComprovanteAciService
             ->toArray();
     }
 
-    public static function totalizadorAciNecessaria($id)
+    public static function totalizadorAciNecessaria($id, ?int $ano = null)
     {
         try {
-            $federacoesAtivas = Federacao::where('sinodal_id', $id)
-                ->where('status', true)
-                ->get()
-                ->pluck('id');
-            $formulariosFederacoesAtivas = FormularioFederacao::whereIn('federacao_id', $federacoesAtivas)
-                ->where('ano_referencia', EstatisticaService::getAnoReferencia())
-                ->get();
-
-            $totalizadorAtivas['perfil']['ativos'] = 0;
-            
-            foreach ($formulariosFederacoesAtivas as $formularioFederacaoAtiva) {
-                $totalizadorAtivas = FormularioSinodalService::somarCampos(
-                    $formularioFederacaoAtiva,
-                    $totalizadorAtivas,
-                    true
-                );
-            }
-            
-            $totalSocios = $totalizadorAtivas['perfil']['ativos'];
-            $paramValorAci = floatval(Parametro::where('nome', 'valor_aci')->first()->valor);
+            $ano ??= (int) EstatisticaService::getAnoReferencia();
+            $totalSocios = self::totalSociosAtivosFederacoesAtivas($id, $ano);
+            $paramValorAci = ValorAciAno::valorPara($ano);
             $valorMinimoACI = floatval(Parametro::where('nome', 'min_aci')->first()->valor)/100;
             $aciNecessaria = $totalSocios * $paramValorAci * self::PORCENTAGEM_SINODAL * $valorMinimoACI;
             
@@ -126,5 +132,25 @@ class ComprovanteAciService
             ]);
             throw new Exception("Erro no Totalizador", 1);
         }
+    }
+
+    public static function valorPrevisto(string $sinodalId, int $ano): string
+    {
+        $totalSocios = self::totalSociosAtivosFederacoesAtivas($sinodalId, $ano);
+        $valorPrevisto = $totalSocios * ValorAciAno::valorPara($ano) * self::PORCENTAGEM_SINODAL;
+
+        return 'R$' . number_format($valorPrevisto, 2, ',', '.');
+    }
+
+    public static function totalSociosAtivosFederacoesAtivas(string $sinodalId, int $ano): int
+    {
+        $federacoesAtivasIds = Federacao::where('sinodal_id', $sinodalId)
+            ->where('status', true)
+            ->pluck('id');
+
+        return FormularioFederacao::whereIn('federacao_id', $federacoesAtivasIds)
+            ->where('ano_referencia', $ano)
+            ->get()
+            ->sum(fn (FormularioFederacao $formulario) => intval($formulario->perfil['ativos'] ?? 0));
     }
 }

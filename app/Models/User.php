@@ -31,6 +31,8 @@ class User extends Authenticatable
         'regiao_id',
         'telegram_chat_id',
         'google_drive_folder',
+        'gmail_alias',
+        'gmail_label',
     ];
 
     protected $hidden = [
@@ -69,6 +71,23 @@ class User extends Authenticatable
         self::ROLE_DIRETORIA,
         self::ROLE_SEC_EXECUTIVA,
         self::ROLE_PRESIDENTE,
+    ];
+
+    public const ROLES_GMAIL = [
+        self::ROLE_SEC_EXECUTIVA,
+        self::ROLE_SECRETARIADO_COMUM,
+        self::ROLE_DIRETORIA,
+        self::ROLE_PRESIDENTE,
+        self::ROLE_TESOURARIA,
+    ];
+
+    public const ROLES_MEET = [
+        self::ROLE_DIRETORIA,
+        self::ROLE_PRESIDENTE,
+        self::ROLE_SEC_EXECUTIVA,
+        self::ROLE_SECRETARIADO_COMUM,
+        'secreatria_produtos',
+        'secretaria_estatistica',
     ];
 
     public function regiao(): BelongsTo

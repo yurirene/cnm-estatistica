@@ -99,7 +99,7 @@
                     </div>
                     <div class="col">
                         <br>
-                        <button class="btn btn-warning mt-2" id="limpar_filtro">Limpar</button>
+                        <button class="btn btn-secondary mt-2" id="limpar_filtro">Limpar</button>
                     </div>
                 </div>
             </div>

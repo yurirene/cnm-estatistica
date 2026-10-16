@@ -159,12 +159,18 @@ class FederacaoService
             if (!$formulario) {
                 return [
                     'total_socios' => 'Resposta Pendente',
+                    'total_socios_ativos' => 0,
                     'total_umps' => $federacao->locais->count() ?? 0,
+                    'total_umps_organizadas' => $federacao->locais->where('status', true)->count(),
+                    'total_n_sociedades_internas' => $federacao->locais->where('outro_modelo', true)->count(),
                 ];
             }
             return [
                 'total_umps' => $federacao->locais->count() ?? 0,
-                'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores'])
+                'total_umps_organizadas' => $federacao->locais->where('status', true)->count(),
+                'total_n_sociedades_internas' => $federacao->locais->where('outro_modelo', true)->count(),
+                'total_socios' => intval($formulario->perfil['ativos']) + intval($formulario->perfil['cooperadores']),
+                'total_socios_ativos' => intval($formulario->perfil['ativos'] ?? 0),
             ];
         } catch (\Throwable $th) {
             LogErroService::registrar([

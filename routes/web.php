@@ -13,14 +13,18 @@ use App\Http\Controllers\Congresso\CongressoNacionalController;
 use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GamificacaoPainelController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DelegadoComissaoExecutivaController;
 use App\Http\Controllers\DetalhamentoController;
 use App\Http\Controllers\DigestoController;
+use App\Http\Controllers\AdoteMissionarioController;
 use App\Http\Controllers\TransferenciasController;
 use App\Http\Controllers\Diretorias\DiretoriasLocalController;
 use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
+use App\Http\Controllers\Estatistica\GamificacaoConfiguracaoController;
+use App\Http\Controllers\Estatistica\GamificacaoEventoController;
 use App\Http\Controllers\Formularios\FormularioComplementarFederacaoController;
 use App\Http\Controllers\Formularios\FormularioComplementarSinodalController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
@@ -36,6 +40,9 @@ use App\Http\Controllers\Instancias\SinodalController;
 use App\Http\Controllers\Produtos\FluxoCaixaController;
 use App\Http\Controllers\Produtos\PedidoController;
 use App\Http\Controllers\ArquivoController;
+use App\Http\Controllers\GmailController;
+use App\Http\Controllers\MeetController;
+use App\Http\Controllers\AuxilioPmfController;
 use App\Http\Controllers\ResolucaoController;
 use App\Http\Controllers\TarefaController;
 use App\Http\Controllers\TutorialController;
@@ -63,6 +70,8 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])
     ->name('home');
 Route::get('/digesto', [DigestoController::class, 'digesto'])
     ->name('digesto');
+Route::get('/digesto/exportar', [DigestoController::class, 'exportar'])
+    ->name('digesto.exportar');
 Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
     ->name('digesto.exibir');
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])
@@ -100,6 +109,13 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         ->name('home');
     Route::post('/trocar-senha', [DashboardController::class, 'trocarSenha'])
         ->name('trocar-senha');
+});
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'game-cnm-painel'], function () {
+        Route::get('/game-cnm/painel', [GamificacaoPainelController::class, 'index'])
+            ->name('game-cnm.painel');
+    });
 });
 
 
@@ -339,6 +355,39 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('comprovante-aci.store');
         Route::get('/comprovante-aci/{comprovante}/status', [ComprovanteACIController::class, 'status'])
             ->name('comprovante-aci.status');
+        Route::get('/comprovante-aci/{comprovante}/meta-atingida', [ComprovanteACIController::class, 'metaAtingida'])
+            ->name('comprovante-aci.meta-atingida');
+    });
+});
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'auxilio-pmf'], function () {
+        Route::get('/auxilio-pmf', [AuxilioPmfController::class, 'index'])
+            ->name('auxilio-pmf.index');
+        Route::get('/auxilio-pmf/create', [AuxilioPmfController::class, 'create'])
+            ->name('auxilio-pmf.create');
+        Route::get('/auxilio-pmf/propostas-datatable', [AuxilioPmfController::class, 'propostasDatatable'])
+            ->name('auxilio-pmf.propostas-datatable');
+        Route::post('/auxilio-pmf', [AuxilioPmfController::class, 'store'])
+            ->name('auxilio-pmf.store');
+        Route::get('/auxilio-pmf/{edital}/edit', [AuxilioPmfController::class, 'edit'])
+            ->name('auxilio-pmf.edit');
+        Route::put('/auxilio-pmf/{edital}', [AuxilioPmfController::class, 'update'])
+            ->name('auxilio-pmf.update');
+        Route::get('/auxilio-pmf/{edital}/encerrar', [AuxilioPmfController::class, 'encerrar'])
+            ->name('auxilio-pmf.encerrar');
+        Route::post('/auxilio-pmf/{edital}/proposta', [AuxilioPmfController::class, 'storeProposta'])
+            ->name('auxilio-pmf.proposta.store');
+        Route::delete('/auxilio-pmf/proposta/{proposta}', [AuxilioPmfController::class, 'destroyProposta'])
+            ->name('auxilio-pmf.proposta.destroy');
+        Route::post('/auxilio-pmf/proposta/{proposta}/relatorio', [AuxilioPmfController::class, 'storeRelatorio'])
+            ->name('auxilio-pmf.relatorio.store');
+        Route::delete('/auxilio-pmf/proposta/{proposta}/relatorio', [AuxilioPmfController::class, 'destroyRelatorio'])
+            ->name('auxilio-pmf.relatorio.destroy');
+        Route::get('/auxilio-pmf/proposta/{proposta}/aprovar', [AuxilioPmfController::class, 'aprovar'])
+            ->name('auxilio-pmf.proposta.aprovar');
+        Route::get('/auxilio-pmf/proposta/{proposta}/rejeitar', [AuxilioPmfController::class, 'rejeitar'])
+            ->name('auxilio-pmf.proposta.rejeitar');
     });
 });
 
@@ -349,12 +398,26 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('estatistica.index');
         Route::post('/estatistica/atualizarParametro', [EstatisticaController::class, 'atualizarParametro'])
             ->name('estatistica.atualizarParametro');
+        Route::post('/estatistica/atualizarValorAciAno', [EstatisticaController::class, 'atualizarValorAciAno'])
+            ->name('estatistica.atualizarValorAciAno');
         Route::post('/estatistica/exportarExcel', [EstatisticaController::class, 'exportarExcel'])
             ->name('estatistica.exportarExcel');
         Route::get('/estatistica/atualizar-ranking', [EstatisticaController::class, 'atualizarRanking'])
             ->name('estatistica.atualizar-ranking');
         Route::get('/estatistica/atualizar-tudo', [EstatisticaController::class, 'atualizarTodosOsDados'])
             ->name('estatistica.atualizar-tudo');
+        Route::get('/game-cnm', [GamificacaoConfiguracaoController::class, 'index'])
+            ->name('game-cnm.index');
+        Route::post('/game-cnm', [GamificacaoConfiguracaoController::class, 'update'])
+            ->name('game-cnm.update');
+        Route::post('/game-cnm/recalcular', [GamificacaoConfiguracaoController::class, 'recalcular'])
+            ->name('game-cnm.recalcular');
+        Route::get('/game-cnm/eventos', [GamificacaoEventoController::class, 'index'])
+            ->name('game-cnm.eventos.index');
+        Route::post('/game-cnm/eventos', [GamificacaoEventoController::class, 'store'])
+            ->name('game-cnm.eventos.store');
+        Route::delete('/game-cnm/eventos/{conquista}', [GamificacaoEventoController::class, 'destroy'])
+            ->name('game-cnm.eventos.destroy');
     });
 });
 
@@ -429,6 +492,29 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->names('digestos')->except('destroy');
         Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])
             ->name('digestos.delete');
+    });
+});
+
+Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+    Route::group(['modulo' => 'adote-missionario'], function () {
+        Route::get('/adote-missionario/escolher', [AdoteMissionarioController::class, 'escolher'])
+            ->name('adote-missionario.escolher');
+        Route::get('/adote-missionario/sincronizar-jmn', [AdoteMissionarioController::class, 'sincronizarJmn'])
+            ->name('adote-missionario.sincronizar-jmn');
+        Route::get('/adote-missionario/sincronizar-apmt', [AdoteMissionarioController::class, 'sincronizarApmt'])
+            ->name('adote-missionario.sincronizar-apmt');
+        Route::get('/adote-missionario/remover-vinculos', [AdoteMissionarioController::class, 'removerVinculos'])
+            ->name('adote-missionario.remover-vinculos');
+        Route::get('/adote-missionario/{missionario}/adotar', [AdoteMissionarioController::class, 'adotar'])
+            ->name('adote-missionario.adotar');
+        Route::get('/adote-missionario/{missionario}/desfazer', [AdoteMissionarioController::class, 'desfazer'])
+            ->name('adote-missionario.desfazer');
+        Route::get('/adote-missionario/{missionario}/delete', [AdoteMissionarioController::class, 'delete'])
+            ->name('adote-missionario.delete');
+        Route::resource('adote-missionario', AdoteMissionarioController::class)
+            ->parameters(['adote-missionario' => 'missionario'])
+            ->names('adote-missionario')
+            ->except(['destroy', 'show']);
     });
 });
 
@@ -641,6 +727,10 @@ Route::group(
 
             Route::get('comissao-executiva/{reuniao}/sincronizar-inscritos', [ComissaoExecutivaController::class, 'sincronizarInscritos'])
                 ->name('comissao-executiva.sincronizar-inscritos');
+            Route::get('comissao-executiva/{reuniao}/download-documentos', [ComissaoExecutivaController::class, 'downloadDocumentos'])
+                ->name('comissao-executiva.download-documentos');
+            Route::get('comissao-executiva/{reuniao}/download-credenciais', [ComissaoExecutivaController::class, 'downloadCredenciais'])
+                ->name('comissao-executiva.download-credenciais');
             Route::get('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
                 ->name('comissao-executiva.delete');
             Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])
@@ -814,6 +904,29 @@ Route::group([
             ->name('arquivos.renomear');
         Route::post('/arquivos/excluir', [ArquivoController::class, 'excluir'])
             ->name('arquivos.excluir');
+    });
+
+    Route::group(['modulo' => 'gmail'], function () {
+        Route::get('/gmail', [GmailController::class, 'index'])
+            ->name('gmail.index');
+        Route::get('/gmail/mensagens', [GmailController::class, 'mensagens'])
+            ->name('gmail.mensagens');
+        Route::get('/gmail/{mensagem}/anexos/{anexo}', [GmailController::class, 'anexo'])
+            ->where('mensagem', '[A-Za-z0-9_-]+')
+            ->where('anexo', '[0-9]+')
+            ->name('gmail.anexo');
+        Route::get('/gmail/{mensagem}', [GmailController::class, 'show'])
+            ->where('mensagem', '[A-Za-z0-9_-]+')
+            ->name('gmail.show');
+    });
+
+    Route::group(['modulo' => 'meet'], function () {
+        Route::get('/meet', [MeetController::class, 'index'])
+            ->name('meet.index');
+        Route::post('/meet', [MeetController::class, 'store'])
+            ->name('meet.store');
+        Route::get('/meet/calendario', [MeetController::class, 'calendario'])
+            ->name('meet.calendario');
     });
 });
 

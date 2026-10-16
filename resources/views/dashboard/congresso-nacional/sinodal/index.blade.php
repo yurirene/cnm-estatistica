@@ -55,7 +55,7 @@
                                             Você já possui {{ $totalDelegados ?? 0 }} delegado(s) cadastrado(s). O limite máximo é de 1 delegado por sinodal.
                                         </small>
                                     @else
-                                        <a href="{{ route('dashboard.cn.sinodal.delegado.create') }}" class="btn btn-success">
+                                        <a href="{{ route('dashboard.cn.sinodal.delegado.create') }}" class="btn btn-primary">
                                             <i class="fas fa-plus"></i> Cadastrar Delegado
                                         </a>
                                         @if(isset($totalDelegados))

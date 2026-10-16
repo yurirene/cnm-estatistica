@@ -1,18 +1,14 @@
 @if(!is_null($formularioComplementarSinodal) && $formularioComplementarSinodal->formulario != null)
-<h3>Formulário Complementar Sinodal</h3>
-<div class="row">
-    <div class="col">
-        <div id="formulario-renderizado-sinodal"></div>
-    </div>
+<h4 class="fe-section-title">Formulário Complementar Sinodal</h4>
+<div class="fe-complementar">
+    <div id="formulario-renderizado-sinodal"></div>
 </div>
 @endif
 
 @if(!is_null($formularioComplementarFederacao) && $formularioComplementarFederacao->formulario != null)
-<h3>Formulário Complementar Federação</h3>
-<div class="row">
-    <div class="col">
-        <div id="formulario-renderizado-federacao"></div>
-    </div>
+<h4 class="fe-section-title">Formulário Complementar Federação</h4>
+<div class="fe-complementar">
+    <div id="formulario-renderizado-federacao"></div>
 </div>
 @endif
 

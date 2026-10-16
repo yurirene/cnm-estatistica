@@ -38,6 +38,7 @@ class AtualizarAutomaticamenteFormulariosService
                 'escolaridade' => $totalizador['escolaridade'],
                 'deficiencias' => $totalizador['deficiencias'],
                 'programacoes_locais' => $totalizador['programacoes'],
+                'discipulado' => $totalizador['discipulado'],
                 'estrutura' => $totalizador['estrutura'],
             ]);
 
@@ -80,6 +81,7 @@ class AtualizarAutomaticamenteFormulariosService
                 'deficiencias' => $totalizador['deficiencias'],
                 'programacoes_federacoes' => $totalizador['programacoes_federacao'],
                 'programacoes_locais' => $totalizador['programacoes_locais'],
+                'discipulado' => $totalizador['discipulado'],
                 'estrutura' => $totalizador['estrutura'],
             ]);
 

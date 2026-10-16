@@ -67,6 +67,40 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3 mb-2">
+                            <select id="filtro-origem" class="form-control form-control-sm">
+                                <option value="">Origem: todas</option>
+                                @foreach($origens as $valor => $label)
+                                    <option value="{{ $valor }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <select id="filtro-responsavel" class="form-control form-control-sm">
+                                <option value="">Responsável: todos</option>
+                                @foreach($responsaveis ?? [] as $id => $nome)
+                                    <option value="{{ $id }}">{{ $nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <select id="filtro-status" class="form-control form-control-sm">
+                                <option value="">Status: todos</option>
+                                @foreach($status as $valor => $label)
+                                    <option value="{{ $valor }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <select id="filtro-prioridade" class="form-control form-control-sm">
+                                <option value="">Prioridade: todas</option>
+                                @foreach($prioridades as $valor => $label)
+                                    <option value="{{ $valor }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         {!! $dataTable->table() !!}
                     </div>
@@ -85,4 +119,11 @@
 @push('js')
 {!! $dataTable->scripts() !!}
 @include('dashboard.secretaria-executiva.resolucoes.scripts')
+<script>
+    $(function () {
+        $('#filtro-origem, #filtro-responsavel, #filtro-status, #filtro-prioridade').on('change', function () {
+            $('#resolucoes-table').DataTable().ajax.reload();
+        });
+    });
+</script>
 @endpush

@@ -107,7 +107,7 @@
 
                     <div class="row mt-3">
                         <div class="col">
-                            <button class="btn btn-success" type="submit">
+                            <button class="btn btn-primary" type="submit">
                                 <i class="fas fa-save"></i>
                                 Salvar
                             </button>

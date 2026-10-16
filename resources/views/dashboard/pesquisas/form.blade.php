@@ -44,7 +44,7 @@
                     <div id="fb-rendered-form" style="display: none;">
                         
                         {!! Form::hidden('formulario') !!}
-                        <button class="btn btn-success" type="submit">Enviar</button>
+                        <button class="btn btn-primary" type="submit">Enviar</button>
                     </div>
                     {!! Form::close() !!}
                 </div>

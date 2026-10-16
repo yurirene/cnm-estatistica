@@ -1,0 +1,61 @@
+{
+    "titulo": "Panorama estatístico 2026",
+    "resumo": "Observa-se crescimento expressivo de 20% em membros ativos. A posição relativa está acima da mediana das organizações de porte semelhante. A qualidade dos dados neste ciclo é alta (score 90).",
+    "destaques": [
+        {
+            "titulo": "Crescimento",
+            "descricao": "Observa-se crescimento expressivo de 20% em membros ativos.",
+            "tipo": "positivo"
+        },
+        {
+            "titulo": "Crescimento",
+            "descricao": "Após retração em 2025, houve recuperação em 2026.",
+            "tipo": "positivo"
+        },
+        {
+            "titulo": "Demografia",
+            "descricao": "O índice de renovação geracional está em 62,5%, o que sugere alta renovação.",
+            "tipo": "positivo"
+        },
+        {
+            "titulo": "Atividades",
+            "descricao": "Foram registradas atividades em 5 categorias, o que sugere alta diversidade.",
+            "tipo": "positivo"
+        },
+        {
+            "titulo": "Atividades",
+            "descricao": "O total de atividades avançou 30% em relação ao ano anterior.",
+            "tipo": "positivo"
+        },
+        {
+            "titulo": "Comparação",
+            "descricao": "A posição relativa está acima da mediana das organizações de porte semelhante.",
+            "tipo": "positivo"
+        },
+        {
+            "titulo": "Qualidade",
+            "descricao": "A qualidade dos dados neste ciclo é alta (score 90).",
+            "tipo": "positivo"
+        }
+    ],
+    "pontos_atencao": [
+        {
+            "titulo": "Anomalia",
+            "descricao": "Foi identificada variação relevante em relação ao histórico, o que pode representar mudança real ou diferença no preenchimento.",
+            "tipo": "atencao"
+        }
+    ],
+    "tendencias": [],
+    "comparacoes": [
+        {
+            "titulo": "Comparação",
+            "descricao": "A posição relativa está acima da mediana das organizações de porte semelhante.",
+            "tipo": "positivo"
+        }
+    ],
+    "perguntas_estrategicas": [
+        "A recuperação de 2026 se repete em outras UMPs da Federação?",
+        "Quais características possuem as UMPs que tiveram alta renovação geracional no mesmo período?",
+        "A distribuição das atividades mudou em relação aos anos anteriores?"
+    ]
+}

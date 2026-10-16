@@ -96,8 +96,8 @@
                 text: "Essa ação deve ser feita se for o primeiro registro da diretoria ou se iniciou uma nova gestão",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3D57C4',
+                cancelButtonColor: '#767B94',
                 confirmButtonText: 'Sim!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {

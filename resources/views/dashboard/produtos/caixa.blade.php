@@ -34,7 +34,7 @@
                             <tr>
                                 <td>
                                     @if(!$pedido['status'])
-                                    <button class="btn btn-sm btn-success" onclick="pagar('{{$pedido['id']}}', {{ $pedido['forma_pagamento'] }})">
+                                    <button class="btn btn-sm btn-primary" onclick="pagar('{{$pedido['id']}}', {{ $pedido['forma_pagamento'] }})">
                                         <i class="fas fa-check"></i>
                                         Pagar
                                     </button>
@@ -116,6 +116,8 @@
             inputValue: forma,
             showCancelButton: true,
             textCancelButton: 'Cancelar',
+            confirmButtonColor: '#3D57C4',
+            cancelButtonColor: '#767B94',
             confirmButtonText: 'Pagar',
             animation: 'slide-from-top',
             inputPlaceholder: 'Selecione a forma de pagamento'

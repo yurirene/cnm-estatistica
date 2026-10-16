@@ -1,94 +1,63 @@
-<div class="row">
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[ativos]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[ativos]', 'Sócios Ativos') !!}
-        {!! Form::number('perfil[ativos]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['ativos'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[ativos]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[cooperadores]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[cooperadores]', 'Sócios Cooperadores') !!}
-        {!! Form::number('perfil[cooperadores]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['cooperadores'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[cooperadores]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[menor19]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[menor19]', 'Sócios menores de 19 anos') !!}
-        {!! Form::number('perfil[menor19]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['menor19'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[menor19]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[de19a23]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[de19a23]', 'Sócios entre 19-23 anos') !!}
-        {!! Form::number('perfil[de19a23]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['de19a23'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[de19a23]') }}</small>
-        </div>
-    </div>
-</div>
-<div class="row">
-
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[de24a29]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[de24a29]', 'Sócios entre 24-29 anos') !!}
-        {!! Form::number('perfil[de24a29]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['de24a29'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[de24a29]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[de30a35]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[de30a35]', 'Sócios entre 30-35 anos') !!}
-        {!! Form::number('perfil[de30a35]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['de30a35'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[de30a35]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[homens]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[homens]', 'Sócios - Homens') !!}
-        {!! Form::number('perfil[homens]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['homens'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[homens]') }}</small>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mt-3">
-        <div class="form-group{{ $errors->has('perfil[mulheres]') ? ' has-error' : '' }}">
-        {!! Form::label('perfil[mulheres]', 'Sócios - Mulheres') !!}
-        {!! Form::number('perfil[mulheres]', isset($formulario) ? null : 0,
-            ['class' => 'form-control', 'required' => 'required']) !!}
-        @if (!empty($coletorDados))
-            <small class="text-muted">Informação do coletor de dados: {{ $coletorDados['perfil']['mulheres'] }}</small>
-        @endif
-        <small class="text-danger">{{ $errors->first('perfil[mulheres]') }}</small>
-        </div>
-    </div>
+<h4 class="fe-subsection">Tipo</h4>
+<div class="fe-field-grid">
+    <x-formulario.campo-numero
+        name="perfil[ativos]"
+        label="Sócios ativos"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['ativos'] ?? null) : null"
+    />
+    <x-formulario.campo-numero
+        name="perfil[cooperadores]"
+        label="Sócios cooperadores"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['cooperadores'] ?? null) : null"
+    />
 </div>
 
+<div class="fe-divider"></div>
+<h4 class="fe-subsection">Faixa etária</h4>
+<div class="fe-field-grid">
+    <x-formulario.campo-numero
+        name="perfil[menor19]"
+        label="Menores de 19"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['menor19'] ?? null) : null"
+    />
+    <x-formulario.campo-numero
+        name="perfil[de19a23]"
+        label="19–23 anos"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['de19a23'] ?? null) : null"
+    />
+    <x-formulario.campo-numero
+        name="perfil[de24a29]"
+        label="24–29 anos"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['de24a29'] ?? null) : null"
+    />
+    <x-formulario.campo-numero
+        name="perfil[de30a35]"
+        label="30–35 anos"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['de30a35'] ?? null) : null"
+    />
+</div>
+<x-formulario.consistencia id="fe-consist-idade" text="Total por faixa etária será conferido com o total de sócios." />
+
+<div class="fe-divider"></div>
+<h4 class="fe-subsection">Gênero</h4>
+<div class="fe-field-grid">
+    <x-formulario.campo-numero
+        name="perfil[homens]"
+        label="Homens"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['homens'] ?? null) : null"
+    />
+    <x-formulario.campo-numero
+        name="perfil[mulheres]"
+        label="Mulheres"
+        :value="isset($formulario) ? null : 0"
+        :coletor="!empty($coletorDados) ? ($coletorDados['perfil']['mulheres'] ?? null) : null"
+    />
+</div>
+<x-formulario.consistencia id="fe-consist-genero" text="Total por gênero será conferido com o total de sócios." />

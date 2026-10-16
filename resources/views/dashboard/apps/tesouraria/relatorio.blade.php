@@ -10,6 +10,15 @@
         ) !!}
         <div class="row mb-2">
             <div class="col-lg-3 col-md-6">
+                <label>Modelo</label>
+                {!! Form::select(
+                    'modelo',
+                    \App\Services\Apps\TesourariaService::MODELOS_RELATORIO,
+                    \App\Services\Apps\TesourariaService::MODELO_PLANILHA,
+                    ['class' => 'form-control', 'id' => 'modelo_relatorio']
+                ) !!}
+            </div>
+            <div class="col-lg-3 col-md-6">
                 <label>Período</label>
                 {!! Form::select(
                     'ano',
@@ -18,7 +27,7 @@
                     ['class' => 'form-control','id' => 'ano']
                 ) !!}
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-3 col-md-6" id="campo-comprovante">
                 <label>Listar Comprovante?</label>
                 {!! Form::select(
                     'comprovante',
@@ -34,3 +43,16 @@
         {!! Form::close() !!}
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modelo = document.getElementById('modelo_relatorio');
+        var campo = document.getElementById('campo-comprovante');
+
+        function alternarComprovante() {
+            campo.style.display = modelo.value === 'planilha' ? '' : 'none';
+        }
+
+        modelo.addEventListener('change', alternarComprovante);
+        alternarComprovante();
+    });
+</script>

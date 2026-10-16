@@ -66,6 +66,9 @@
                     @if(isset($usuario) && in_array($usuario->role->name, \App\Models\User::ROLES_ARQUIVOS))
                     @include('dashboard.usuarios.partials.google-drive')
                     @endif
+                    @if(isset($usuario) && in_array($usuario->role->name, \App\Models\User::ROLES_GMAIL))
+                    @include('dashboard.usuarios.partials.gmail')
+                    @endif
                     @endcan
 
                     <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
@@ -74,7 +77,7 @@
                     @if (isset($usuario))
                     {!! Form::open(['method' => 'POST', 'url' => route("dashboard.usuarios.reset-senha", $usuario->id), "class" => 'mt-5']) !!}
                     <div class="btn-group pull-right">
-                    {!! Form::submit('Resetar Senha', ['class' => 'btn btn-warning']) !!}
+                    {!! Form::submit('Resetar Senha', ['class' => 'btn btn-secondary']) !!}
                     </div>
                     {!! Form::close() !!}
                     @endif

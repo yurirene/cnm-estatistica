@@ -216,6 +216,24 @@ class ResolucaoService
             ]);
     }
 
+    public static function responsaveisParaFiltro(?User $user = null): array
+    {
+        $ids = self::queryBaseUsuario($user)
+            ->whereNotNull('responsavel_id')
+            ->distinct()
+            ->pluck('responsavel_id');
+
+        if ($ids->isEmpty()) {
+            return [];
+        }
+
+        return User::query()
+            ->whereIn('id', $ids)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->all();
+    }
+
     public static function opcoesEnums(): array
     {
         return [

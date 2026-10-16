@@ -12,7 +12,9 @@ use App\Models\Local;
 use App\Models\Parametro;
 use App\Models\Estatistica\Ranking;
 use App\Models\Sinodal;
+use App\Models\ValorAciAno;
 use App\Services\Formularios\AtualizarAutomaticamenteFormulariosService;
+use App\Services\Formularios\CamposFormularioService;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -34,9 +36,55 @@ class EstatisticaService
             $parametro->update([
                 'valor' => $valor
             ]);
+            self::sincronizarValorAciAno($parametro->nome, $valor);
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public static function atualizarValorAciAno(array $request): void
+    {
+        $ano = (int) ($request['ano'] ?? 0);
+        if ($ano < 2000) {
+            throw new \InvalidArgumentException('Ano inválido');
+        }
+
+        ValorAciAno::sincronizar($ano, $request['valor'] ?? 0);
+        self::espelharValorAciCorrente($ano, ValorAciAno::parseValor($request['valor'] ?? 0));
+    }
+
+    private static function sincronizarValorAciAno(string $nome, mixed $valor): void
+    {
+        if ($nome === 'valor_aci') {
+            $ano = (int) self::getAnoReferencia();
+            if ($ano > 0) {
+                ValorAciAno::sincronizar($ano, $valor);
+            }
+
+            return;
+        }
+
+        if ($nome === 'ano_referencia') {
+            $ano = (int) $valor;
+            $valorAci = Parametro::where('nome', 'valor_aci')->first()?->valor;
+            if ($ano > 0 && $valorAci !== null) {
+                ValorAciAno::firstOrCreate(
+                    ['ano' => $ano],
+                    ['valor' => ValorAciAno::parseValor($valorAci)]
+                );
+            }
+        }
+    }
+
+    private static function espelharValorAciCorrente(int $ano, float $valor): void
+    {
+        if ($ano !== (int) self::getAnoReferencia()) {
+            return;
+        }
+
+        Parametro::where('nome', 'valor_aci')->update([
+            'valor' => number_format($valor, 2, ',', '.'),
+        ]);
     }
 
     public static function getParametros() : Collection
@@ -336,6 +384,7 @@ class EstatisticaService
                 'estado_civil' => $totalizador['estado_civil'],
                 'escolaridade' => $totalizador['escolaridade'],
                 'deficiencias' => $totalizador['deficiencias'],
+                'discipulado' => $totalizador['discipulado'],
                 'programacoes_locais' => $totalizador['programacoes']['locais'],
                 'programacoes_federacoes' => $totalizador['programacoes']['federacoes'],
                 'programacoes_sinodais' => $totalizador['programacoes']['sinodais'],
@@ -411,6 +460,7 @@ class EstatisticaService
                     'neurologico' => 0,
                     'intelectual' => 0,
                 ],
+                'discipulado' => CamposFormularioService::discipuladoZerado(),
                 'programacoes' => [
                     'sinodais' => [
                         'social' => 0,
@@ -606,6 +656,10 @@ class EstatisticaService
                         ? intval($formulario->programacoes['recreativo'])
                         : 0
                 );
+                $totalizador['discipulado'] = CamposFormularioService::somarDiscipulado(
+                    $totalizador['discipulado'],
+                    $formulario
+                );
             }
 
             $formularios_federacoes = FormularioFederacao::where('ano_referencia', $anoReferencia)
@@ -732,9 +786,9 @@ class EstatisticaService
                 'total' => $totalizador['estrutura']['umps_organizadas']
             ];
 
-            $totalizador['qualidade'] = (
-                ($formularios_locais->count() * 100) / $totalizador['estrutura']['umps_organizadas']
-            );
+            $totalizador['qualidade'] = $totalizador['estrutura']['umps_organizadas'] > 0
+                ? (($formularios_locais->count() * 100) / $totalizador['estrutura']['umps_organizadas'])
+                : 0;
 
             return $totalizador;
         } catch (\Throwable $th) {

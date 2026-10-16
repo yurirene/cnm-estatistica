@@ -1,4 +1,7 @@
-<div class="card bg-gradient-default shadow h-100">
+@php
+    $game = $game ?? DashboardHelper::getGamificacao();
+@endphp
+<div class="card avisos-card shadow h-100">
     <div class="card-header bg-transparent">
         <div class="row align-items-center">
             <div class="col">
@@ -6,82 +9,60 @@
             </div>
         </div>
     </div>
-    <div class="card-body">
-        @if(!DashboardHelper::entregouRelatorio())
-        <div class="row">
-            <div class="col">
-                <div class="card card-stats mb-4 mb-xl-0">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-auto">
-                                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
-                                    <i class="fas fa-exclamation"></i>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h4 class="card-title text-uppercase text-muted mb-0">Formulários Estatísticos</h4>
-                                <span class="h5 font-weight-bold mb-0">Não deixe para a última hora</span>
-                            </div>
-
-                        </div>
+    <div class="card-body avisos-lista">
+        @if($game)
+            @foreach($game->avisosPontos as $avisoGame)
+                <div class="aviso-item {{ $avisoGame['tipo'] === 'aviso' ? 'warn' : '' }}">
+                    <div class="aviso-dot">
+                        <i class="fas {{ $avisoGame['tipo'] === 'aviso' ? 'fa-info' : 'fa-exclamation' }}"></i>
+                    </div>
+                    <div>
+                        <b style="display:block;font-size:12.5px;margin-bottom:2px">{{ $avisoGame['titulo'] }}</b>
+                        <span style="font-size:11.5px;color:#B7C1E0;line-height:1.4">{{ $avisoGame['texto'] }}</span>
+                        <span style="font-size:10.5px;color:#FFD8A8;font-weight:700;margin-top:4px;display:block">
+                            {{ $avisoGame['pts'] }} pts em risco
+                        </span>
                     </div>
                 </div>
+            @endforeach
+        @endif
+        @if(!DashboardHelper::entregouRelatorio())
+        <div class="aviso-item">
+            <div class="aviso-dot"><i class="fas fa-exclamation"></i></div>
+            <div>
+                <b style="display:block;font-size:12.5px;margin-bottom:2px">Formulários Estatísticos</b>
+                <span style="font-size:11.5px;color:#B7C1E0">Não deixe para a última hora</span>
             </div>
         </div>
         @endif
         @can('rota-permitida', ['dashboard.federacoes.index'])
         @if(!DashboardHelper::entregouComprovante())
-        <div class="row mt-3">
-            <div class="col">
-                <div class="card card-stats mb-4 mb-xl-0">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-auto">
-                                <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
-                                    <i class="fas fa-exclamation"></i>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h4 class="card-title text-uppercase text-muted mb-0">Atenção</h4>
-                                <span class="h5 font-weight-bold mb-0">Anexe seu comprovante de ACI</span>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+        <div class="aviso-item">
+            <div class="aviso-dot"><i class="fas fa-exclamation"></i></div>
+            <div>
+                <b style="display:block;font-size:12.5px;margin-bottom:2px">Anexe seu comprovante de ACI</b>
+                <span style="font-size:11.5px;color:#B7C1E0">Necessário para pontuar no pilar Anuidade.</span>
             </div>
         </div>
         @endif
         @endCan
         @foreach(DashboardHelper::getAvisosUsuario() as $aviso)
-        <div class="row mt-3">
-            <div class="col">
-                <div class="card card-stats mb-4 mb-xl-0">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-auto">
-                                <div class="icon icon-shape bg-primary text-white rounded-circle shadow">
-                                    <i class="fas fa-bullhorn"></i>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <h4 class="card-title text-uppercase text-muted mb-0">{{$aviso['titulo']}}</h4>
-                                {!! Str::limit($aviso['texto'], 50) !!}
-                                <button type="button" class="btn btn-link p-0 abrir_aviso"
-                                    data-dados="{{json_encode($aviso)}}"
-                                >
-                                    Ver mais
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+        <div class="aviso-item warn">
+            <div class="aviso-dot"><i class="fas fa-bullhorn"></i></div>
+            <div>
+                <b style="display:block;font-size:12.5px;margin-bottom:2px">{{ $aviso['titulo'] }}</b>
+                <span style="font-size:11.5px;color:#B7C1E0">{!! Str::limit($aviso['texto'], 50) !!}</span>
+                <button type="button" class="btn btn-link p-0 abrir_aviso text-white"
+                    data-dados="{{ json_encode($aviso) }}"
+                >
+                    Ver mais
+                </button>
             </div>
         </div>
         @endforeach
     </div>
 </div>
+
 
 @php
     $aviso = DashboardHelper::getAvisosUsuarioModal();
