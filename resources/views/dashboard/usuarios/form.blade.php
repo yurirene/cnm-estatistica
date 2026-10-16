@@ -71,7 +71,7 @@
                     @endif
                     @endcan
 
-                    <button class="btn btn-priamary"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
+                    <button class="btn btn-success"><i class='fas fa-save'></i> {{(isset($usuario) ? 'Atualizar' : 'Cadastrar')}}</button>
                     <a href="{{ route('dashboard.usuarios.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
                     {!! Form::close() !!}
                     @if (isset($usuario))
