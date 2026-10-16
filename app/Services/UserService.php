@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UserService
 {
@@ -112,10 +113,14 @@ class UserService
             $usuario->update($data);
 
             if (Gate::allows('isAdmin')) {
-                self::atualizarPastaGoogleDrive($usuario->fresh(), $request);
+                $usuario = $usuario->fresh();
+                self::atualizarPastaGoogleDrive($usuario, $request);
+                self::atualizarConfiguracaoGmail($usuario->fresh(), $request);
             }
 
             return $usuario->fresh();
+        } catch (ValidationException $th) {
+            throw $th;
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -297,6 +302,43 @@ class UserService
             ]);
             throw new Exception('Não foi possível configurar a pasta do Google Drive para este usuário.');
         }
+    }
+
+    public static function atualizarConfiguracaoGmail(User $usuario, Request $request): void
+    {
+        if (! Gate::allows('isAdmin')) {
+            return;
+        }
+
+        $roleName = $usuario->role->name;
+
+        if (! in_array($roleName, User::ROLES_GMAIL, true)) {
+            if ($usuario->gmail_alias || $usuario->gmail_label) {
+                $usuario->update(GmailService::dadosParaGravar($roleName, null, null));
+            }
+
+            return;
+        }
+
+        if (! $request->has('gmail_alias') && ! $request->has('gmail_label')) {
+            return;
+        }
+
+        $request->merge([
+            'gmail_alias' => trim((string) $request->input('gmail_alias')) ?: null,
+            'gmail_label' => trim((string) $request->input('gmail_label')) ?: null,
+        ]);
+
+        $request->validate([
+            'gmail_alias' => ['nullable', 'email', 'max:255'],
+            'gmail_label' => ['nullable', 'string', 'max:100', 'regex:/^[^"\r\n]*$/'],
+        ]);
+
+        $usuario->update(GmailService::dadosParaGravar(
+            $roleName,
+            $request->input('gmail_alias'),
+            $request->input('gmail_label')
+        ));
     }
 
 }

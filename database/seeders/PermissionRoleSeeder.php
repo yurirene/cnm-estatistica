@@ -37,6 +37,8 @@ class PermissionRoleSeeder extends Seeder
                     'helpdesk',
                     'detalhamento',
                     'arquivos',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.sinodais.index',
@@ -55,6 +57,8 @@ class PermissionRoleSeeder extends Seeder
                     'arquivos',
                     'auxilio-pmf',
                     'adote-missionario',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.datatables.informacao-federacoes',
@@ -157,7 +161,8 @@ class PermissionRoleSeeder extends Seeder
             'tesouraria' => [
                 'resources' => [
                     'comprovante-aci',
-                    'helpdesk'
+                    'helpdesk',
+                    'gmail',
                 ],
                 'permissions' => [
                 ]
@@ -171,6 +176,8 @@ class PermissionRoleSeeder extends Seeder
                     'tarefas',
                     'arquivos',
                     'auxilio-pmf',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.cn.executiva.index',
@@ -192,7 +199,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'secretaria-produtos',
                     'pedidos',
-                    'helpdesk'
+                    'helpdesk',
+                    'meet',
                 ],
                 'permissions' => []
             ],
@@ -200,7 +208,8 @@ class PermissionRoleSeeder extends Seeder
                 'resources' => [
                     'secretaria-estatistica',
                     'avisos',
-                    'helpdesk'
+                    'helpdesk',
+                    'meet',
                 ],
                 'permissions' => [
                     'dashboard.datatables.estatistica.formularios-sinodais',
@@ -214,6 +223,8 @@ class PermissionRoleSeeder extends Seeder
                     'arquivos',
                     'auxilio-pmf',
                     'adote-missionario',
+                    'gmail',
+                    'meet',
                 ],
                 'permissions' => [                ]
             ]
