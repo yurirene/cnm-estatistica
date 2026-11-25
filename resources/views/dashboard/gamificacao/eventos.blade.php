@@ -3,8 +3,8 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Eventos Game CNM',
-    'subtitulo' => 'Participação em PMF, DJP, Treinamentos, Resgate e Bônus Missionário'
+    'titulo' => 'Eventos Game UMP',
+    'subtitulo' => 'Participação em PMF, DJP, treinamentos e Conexão Missionária'
 ])
 
 <div class="container-fluid mt--7 pb-5">
@@ -12,12 +12,12 @@
         <div class="card-header bg-transparent">
             <h3 class="mb-1">Lançar participação</h3>
             <p class="mb-0" style="font-size:13px;color:var(--color-muted)">
-                PMF, DJP, Resgate e Bônus Missionário só podem ser lançados uma vez por instância no mesmo ano.
+                PMF, DJP, Conexão Missionária só podem ser lançados uma vez por instância no mesmo ano.
                 Eventos esporádicos podem se repetir.
             </p>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('dashboard.game-cnm.eventos.store') }}" id="form-evento">
+            <form method="POST" action="{{ route('dashboard.game-ump.eventos.store') }}" id="form-evento">
                 @csrf
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -93,7 +93,7 @@
     <div class="card shadow">
         <div class="card-header bg-transparent d-flex align-items-center justify-content-between flex-wrap" style="gap:12px">
             <h3 class="mb-0">Lançamentos de {{ $ano }}</h3>
-            <form method="GET" action="{{ route('dashboard.game-cnm.eventos.index') }}" class="d-flex align-items-center" style="gap:8px">
+            <form method="GET" action="{{ route('dashboard.game-ump.eventos.index') }}" class="d-flex align-items-center" style="gap:8px">
                 <select name="ano" class="form-control form-control-sm" onchange="this.form.submit()">
                     @foreach($anos as $anoOpcao)
                         <option value="{{ $anoOpcao }}" @selected($ano === $anoOpcao)>{{ $anoOpcao }}</option>
@@ -138,7 +138,7 @@
                                         <td>{{ optional($conquista->concedido_em)->format('d/m/Y H:i') }}</td>
                                         <td class="text-right">
                                             <form method="POST"
-                                                  action="{{ route('dashboard.game-cnm.eventos.destroy', $conquista) }}"
+                                                  action="{{ route('dashboard.game-ump.eventos.destroy', $conquista) }}"
                                                   onsubmit="return confirm('Remover esta participação?');">
                                                 @csrf
                                                 @method('DELETE')

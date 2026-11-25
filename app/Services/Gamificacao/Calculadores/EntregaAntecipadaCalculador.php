@@ -9,7 +9,7 @@ use App\Services\Gamificacao\Enums\StatusPilar;
 use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 use App\Services\Gamificacao\Regras\CalendarioGamificacao;
 
-class SpeedRunCalculador implements CalculadorDePilar
+class EntregaAntecipadaCalculador implements CalculadorDePilar
 {
     public function __construct(private readonly CalendarioGamificacao $calendario)
     {
@@ -17,10 +17,10 @@ class SpeedRunCalculador implements CalculadorDePilar
 
     public function calcular(ContextoInstancia $contexto): ResultadoPilar
     {
-        $pilar = Pilar::SpeedRun;
+        $pilar = Pilar::EntregaAntecipada;
         $minimo = GamificacaoConfiguracaoService::getInt('pilares.estatistica.minimo_percentual', 80);
         $estatisticaOk = $contexto->percentualEstatistica >= $minimo;
-        $limite = $this->calendario->prazoSpeedRun($contexto->ano);
+        $limite = $this->calendario->prazoEntregaAntecipada($contexto->ano);
         $noPrazo = $contexto->dataEntregaEstatistica !== null
             && $contexto->dataEntregaEstatistica->lessThanOrEqualTo($limite);
         $pontos = ($estatisticaOk && $noPrazo) ? $pilar->maximo() : 0;
@@ -42,7 +42,7 @@ class SpeedRunCalculador implements CalculadorDePilar
             progresso: $pontos > 0 ? 100 : 0,
             status: $status,
             rotuloStatus: $rotulo,
-            rodape: 'Entrega antecipada até ' . $limite->format('d/m/Y') . ' · exige os 25 pts da Estatística.',
+            rodape: '80% das UMPs com Formulário preenchido até ' . $limite->format('d/m/Y') . '.',
             ctaLabel: 'Enviar formulário',
             ctaRota: 'dashboard.formularios-federacoes.index',
             detalhes: [

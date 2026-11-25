@@ -6,19 +6,20 @@ use App\Helpers\FormHelper;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\ComissaoExecutiva\Reuniao;
 use App\Models\ComprovanteACI;
-use App\Models\Federacao;
 use App\Models\FormularioFederacao;
 use App\Models\FormularioLocal;
 use App\Models\FormularioSinodal;
 use App\Models\Gamificacao\Conquista;
 use App\Models\Local;
 use App\Models\Sinodal;
+use App\Models\Federacao;
 use App\Models\ValorAciAno;
 use App\Services\Estatistica\EstatisticaService;
 use App\Services\Gamificacao\DTOs\ContextoInstancia;
 use App\Services\Gamificacao\Enums\NaturezaInstancia;
 use App\Services\Gamificacao\Enums\TipoConquista;
 use App\Services\Gamificacao\Regras\CalendarioGamificacao;
+use App\Services\Gamificacao\Regras\JurisdicaoExercicioResolver;
 use App\Services\Gamificacao\Regras\PontuadorEventos;
 use Carbon\Carbon;
 
@@ -27,6 +28,7 @@ class MontadorContexto
     public function __construct(
         private readonly CalendarioGamificacao $calendario,
         private readonly PontuadorEventos $pontuadorEventos,
+        private readonly JurisdicaoExercicioResolver $jurisdicao,
     ) {
     }
 
@@ -34,22 +36,23 @@ class MontadorContexto
     {
         $ano ??= EstatisticaService::getAnoReferencia();
         $sinodal = Sinodal::findOrFail($sinodalId);
-        $federacoes = Federacao::where('sinodal_id', $sinodalId)->where('status', true)->get();
-        $federacaoIds = $federacoes->pluck('id');
+        $locais = $this->jurisdicao->locaisDaSinodal($sinodalId, $ano);
+        $localIds = $locais->pluck('id');
 
-        $entregues = FormularioFederacao::whereIn('federacao_id', $federacaoIds)
+        $entregues = FormularioLocal::whereIn('local_id', $localIds)
             ->where('ano_referencia', $ano)
-            ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
             ->get();
 
-        $totalFilhos = $federacoes->count();
+        $totalFilhos = $locais->count();
         $filhosEntregaram = $entregues->count();
         $percentual = $totalFilhos > 0 ? ($filhosEntregaram * 100) / $totalFilhos : 0;
 
-        $sociosAtivos = $entregues->sum(fn (FormularioFederacao $form) => (int) data_get($form->perfil, 'ativos', 0));
-
-        $locais = Local::where('sinodal_id', $sinodalId)->where('status', true)->get();
-        $evangelismo = $this->contarProgramacoes($locais->pluck('id'), $ano);
+        $sociosAtivos = $this->sociosAtivosSinodal($ano, $locais);
+        $sociosParaLiga = $this->sociosAtivosSinodal(
+            $ano - 1,
+            $this->jurisdicao->locaisDaSinodal($sinodalId, $ano - 1)
+        );
+        $evangelismo = $this->contarProgramacoes($localIds, $ano);
 
         $formularioSinodal = FormularioSinodal::where('sinodal_id', $sinodalId)
             ->where('ano_referencia', $ano)
@@ -86,6 +89,7 @@ class MontadorContexto
             ano: $ano,
             ciclo: $this->calendario->ciclo(),
             sociosAtivos: $sociosAtivos,
+            sociosParaLiga: $sociosParaLiga,
             totalFilhos: $totalFilhos,
             filhosEntregaram: $filhosEntregaram,
             percentualEstatistica: $percentual,
@@ -97,9 +101,8 @@ class MontadorContexto
             umpsComProgramacao: $evangelismo['com_programacao'],
             percentualEvangelismo: $evangelismo['percentual'],
             ceConfirmada: $ceConfirmada,
-            temBonusMissionario: $conquistas['bonus'],
-            temResgate: false,
-            dataEntregaEstatistica: $formularioSinodal?->enviado_em,
+            temConexaoMissionaria: $conquistas['conexao'],
+            dataEntregaEstatistica: $this->dataMaioriaEntrega($entregues, $totalFilhos),
             pontosEventosPorTipo: [],
             aciMetaAtingida: $metaAtingida,
             instanciaNome: $sinodal->nome,
@@ -110,7 +113,7 @@ class MontadorContexto
     {
         $ano ??= EstatisticaService::getAnoReferencia();
         $federacao = Federacao::findOrFail($federacaoId);
-        $locais = Local::where('federacao_id', $federacaoId)->where('status', true)->get();
+        $locais = $this->jurisdicao->locaisDaFederacao($federacaoId, $ano);
         $localIds = $locais->pluck('id');
 
         $entregues = FormularioLocal::whereIn('local_id', $localIds)
@@ -127,6 +130,7 @@ class MontadorContexto
             ->first();
 
         $sociosAtivos = (int) data_get($formulario?->perfil, 'ativos', 0);
+        $sociosParaLiga = $this->sociosAtivosFederacao($federacaoId, $ano - 1);
         $evangelismo = $this->contarProgramacoes($localIds, $ano);
         $aci = $this->extrairAci($formulario?->aci, 'valor');
         $previsto = $this->valorPrevistoAci($sociosAtivos, false, $ano);
@@ -139,6 +143,7 @@ class MontadorContexto
             ano: $ano,
             ciclo: $this->calendario->ciclo(),
             sociosAtivos: $sociosAtivos,
+            sociosParaLiga: $sociosParaLiga,
             totalFilhos: $totalFilhos,
             filhosEntregaram: $filhosEntregaram,
             percentualEstatistica: $percentual,
@@ -150,12 +155,78 @@ class MontadorContexto
             umpsComProgramacao: $evangelismo['com_programacao'],
             percentualEvangelismo: $evangelismo['percentual'],
             ceConfirmada: false,
-            temBonusMissionario: false,
-            temResgate: $conquistas['resgate'],
-            dataEntregaEstatistica: $formulario?->enviado_em,
+            temConexaoMissionaria: false,
+            dataEntregaEstatistica: $this->dataLimite80Percent($entregues, $totalFilhos),
             pontosEventosPorTipo: $conquistas['eventos'],
             instanciaNome: $federacao->nome,
         );
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, Local>  $locaisDoExercicio
+     */
+    private function sociosAtivosSinodal(int $ano, $locaisDoExercicio): int
+    {
+        $federacaoIds = $locaisDoExercicio
+            ->map(fn (Local $local) => $this->jurisdicao->vinculoDoLocal($local, $ano)['federacao_id'])
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($federacaoIds->isEmpty()) {
+            return 0;
+        }
+
+        return (int) FormularioFederacao::whereIn('federacao_id', $federacaoIds)
+            ->where('ano_referencia', $ano)
+            ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+            ->get()
+            ->sum(fn (FormularioFederacao $form) => (int) data_get($form->perfil, 'ativos', 0));
+    }
+
+    private function sociosAtivosFederacao(string $federacaoId, int $ano): int
+    {
+        $formulario = FormularioFederacao::where('federacao_id', $federacaoId)
+            ->where('ano_referencia', $ano)
+            ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+            ->first();
+
+        return (int) data_get($formulario?->perfil, 'ativos', 0);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, FormularioLocal>  $entregues
+     */
+    private function dataLimite80Percent($entregues, int $totalFilhos): ?Carbon
+    {
+        if ($totalFilhos <= 0) {
+            return null;
+        }
+
+        $minimo = (int) ceil($totalFilhos * 0.8);
+        $ordenadas = $entregues
+            ->map(function (FormularioLocal $form) {
+                $data = $form->enviado_em ?? $form->updated_at ?? $form->created_at;
+
+                return $data instanceof Carbon ? $data : ($data ? Carbon::parse($data) : null);
+            })
+            ->filter()
+            ->sort()
+            ->values();
+
+        if ($ordenadas->count() < $minimo) {
+            return null;
+        }
+
+        return $ordenadas->get($minimo - 1);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, FormularioLocal>  $entregues
+     */
+    private function dataMaioriaEntrega($entregues, int $totalFilhos): ?Carbon
+    {
+        return $this->dataLimite80Percent($entregues, $totalFilhos);
     }
 
     /** @param  \Illuminate\Support\Collection<int, string>|array<int, string>  $localIds */
@@ -208,7 +279,7 @@ class MontadorContexto
         return $sociosAtivos * ValorAciAno::valorPara($ano) * $fator;
     }
 
-    /** @return array{bonus: bool, resgate: bool, eventos: array<string, int>} */
+    /** @return array{conexao: bool, eventos: array<string, int>} */
     private function conquistas(
         NaturezaInstancia $natureza,
         ?string $sinodalId,
@@ -228,8 +299,7 @@ class MontadorContexto
         $itens = $query->get();
 
         return [
-            'bonus' => $itens->contains(fn (Conquista $c) => $c->tipo === TipoConquista::BonusMissionario),
-            'resgate' => $itens->contains(fn (Conquista $c) => $c->tipo === TipoConquista::Resgate),
+            'conexao' => $itens->contains(fn (Conquista $c) => $c->tipo === TipoConquista::ConexaoMissionaria),
             'eventos' => $this->pontuadorEventos->agregarPorTipo($itens),
         ];
     }

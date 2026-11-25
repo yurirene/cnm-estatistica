@@ -187,23 +187,23 @@
                 </li>
                 @endcan
 
-                @can('rota-permitida', ['dashboard.game-cnm.painel'])
+                @can('rota-permitida', ['dashboard.game-ump.painel'])
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.game-cnm.painel') }}">
-                        <i class="fas fa-trophy"></i> Game CNM
+                    <a class="nav-link" href="{{ route('dashboard.game-ump.painel') }}">
+                        <i class="fas fa-trophy"></i> Game UMP
                     </a>
                 </li>
-                @elsecan('rota-permitida', ['dashboard.game-cnm.index'])
+                @elsecan('rota-permitida', ['dashboard.game-ump.index'])
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.game-cnm.index') }}">
-                        <i class="fas fa-trophy"></i> Game CNM
+                    <a class="nav-link" href="{{ route('dashboard.game-ump.index') }}">
+                        <i class="fas fa-trophy"></i> Game UMP
                     </a>
                 </li>
                 @endcan
 
-                @can('rota-permitida', ['dashboard.game-cnm.eventos.index'])
+                @can('rota-permitida', ['dashboard.game-ump.eventos.index'])
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard.game-cnm.eventos.index') }}">
+                    <a class="nav-link" href="{{ route('dashboard.game-ump.eventos.index') }}">
                         <i class="fas fa-calendar-check"></i> Eventos
                     </a>
                 </li>

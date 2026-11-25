@@ -24,7 +24,9 @@ class GamificacaoRankingService
             }
 
             $placares = $query->orderByDesc('pontos_ano')
-                ->orderByDesc('pontos_ciclo')
+                ->orderByDesc('percentual_aci')
+                ->orderByDesc('percentual_evangelismo')
+                ->orderByDesc('socios_ativos')
                 ->orderBy('id')
                 ->get();
 

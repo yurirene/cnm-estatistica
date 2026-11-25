@@ -14,7 +14,7 @@
         <div style="font-size:12px;color:var(--color-muted)">
             de {{ $game->totalNaLiga ?: '—' }} {{ $game->natureza === 'sinodal' ? 'sinodais' : 'federações' }}
         </div>
-        <div class="chip {{ $game->liga === 'ouro' ? 'ok' : ($game->liga === 'prata' ? 'pendente' : 'indisponivel') }} mt-2">
+        <div class="chip {{ $game->liga === 'simonton' ? 'ok' : ($game->liga === 'blackford' ? 'pendente' : 'indisponivel') }} mt-2">
             {{ $game->ligaLabel }}
         </div>
         <div class="mt-3 pt-3" style="border-top:1px solid var(--color-line);font-size:11.5px;color:var(--color-muted)">

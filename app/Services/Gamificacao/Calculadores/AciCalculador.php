@@ -19,7 +19,7 @@ class AciCalculador implements CalculadorDePilar
     public function calcular(ContextoInstancia $contexto): ResultadoPilar
     {
         $pilar = Pilar::Aci;
-        $minimo = GamificacaoConfiguracaoService::getInt('pilares.aci.minimo_percentual', 60);
+        $minimo = GamificacaoConfiguracaoService::getInt('pilares.aci.minimo_percentual', 80);
         $percentualPago = $contexto->aciValorPrevisto > 0
             ? ($contexto->aciValorRepassado / $contexto->aciValorPrevisto) * 100
             : 0;

@@ -40,9 +40,13 @@ class GamificacaoConquistaService
         $federacaoIds = array_values(array_unique(array_filter($federacaoIds)));
         $sinodalIds = array_values(array_unique(array_filter($sinodalIds)));
 
+        if ($tipo->ehSelo()) {
+            throw new GamificacaoException('Selos são concedidos automaticamente pela pontuação, não podem ser lançados manualmente.');
+        }
+
         if ($natureza === NaturezaInstancia::Sinodal) {
             if ($federacaoIds !== []) {
-                throw new GamificacaoException('Bônus Missionário é lançado para sinodais, não para federações.');
+                throw new GamificacaoException('Conexão Missionária é lançada para sinodais, não para federações.');
             }
             $ids = $sinodalIds;
         } else {

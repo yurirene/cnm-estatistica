@@ -5,6 +5,7 @@ namespace App\Services\Gamificacao\Regras;
 use App\Models\Gamificacao\Conquista;
 use App\Services\Gamificacao\Enums\Pilar;
 use App\Services\Gamificacao\Enums\TipoConquista;
+use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 
 class PontuadorEventos
 {
@@ -31,6 +32,17 @@ class PontuadorEventos
             $porTipo[$tipo->value] = ($porTipo[$tipo->value] ?? 0) + $pontos;
         }
 
+        if (isset($porTipo[TipoConquista::Esporadico->value])) {
+            $maxEsporadico = GamificacaoConfiguracaoService::getInt(
+                'pilares.eventos.esporadico_maximo_pontos',
+                4
+            );
+            $porTipo[TipoConquista::Esporadico->value] = min(
+                $porTipo[TipoConquista::Esporadico->value],
+                $maxEsporadico
+            );
+        }
+
         return $porTipo;
     }
 
@@ -50,6 +62,12 @@ class PontuadorEventos
             $valor = max(0, (int) $pontos);
             if ($tipo->unicoNoAno()) {
                 $valor = min($valor, $tipo->pontos());
+            } elseif ($tipo === TipoConquista::Esporadico) {
+                $maxEsporadico = GamificacaoConfiguracaoService::getInt(
+                    'pilares.eventos.esporadico_maximo_pontos',
+                    4
+                );
+                $valor = min($valor, $maxEsporadico);
             }
 
             $soma += $valor;

@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Game CNM',
+    'titulo' => 'Game UMP',
     'subtitulo' => 'Pontuação do Planejamento Estratégico',
     'game' => $game,
 ])

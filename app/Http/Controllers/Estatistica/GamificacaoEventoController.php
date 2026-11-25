@@ -47,6 +47,7 @@ class GamificacaoEventoController extends Controller
             ->pluck('nome', 'id');
 
         $tipos = collect(TipoConquista::cases())
+            ->filter(fn (TipoConquista $tipo) => $tipo->ehLancavelManual())
             ->sortBy(fn (TipoConquista $tipo) => $tipo->natureza() === NaturezaInstancia::Sinodal ? 1 : 0)
             ->mapWithKeys(fn (TipoConquista $tipo) => [
                 $tipo->value => [
@@ -69,7 +70,10 @@ class GamificacaoEventoController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $tipos = array_column(TipoConquista::cases(), 'value');
+        $tipos = collect(TipoConquista::cases())
+            ->filter(fn (TipoConquista $tipo) => $tipo->ehLancavelManual())
+            ->map(fn (TipoConquista $tipo) => $tipo->value)
+            ->all();
         $dados = $request->validate([
             'tipo' => ['required', Rule::in($tipos)],
             'referencia' => ['nullable', 'string', 'max:255'],
@@ -90,7 +94,7 @@ class GamificacaoEventoController extends Controller
             );
 
             return redirect()
-                ->route('dashboard.game-cnm.eventos.index', ['ano' => $dados['ano']])
+                ->route('dashboard.game-ump.eventos.index', ['ano' => $dados['ano']])
                 ->with([
                     'mensagem' => [
                         'status' => true,
@@ -131,7 +135,7 @@ class GamificacaoEventoController extends Controller
             $this->conquistas->revogar($registro);
 
             return redirect()
-                ->route('dashboard.game-cnm.eventos.index', ['ano' => $ano])
+                ->route('dashboard.game-ump.eventos.index', ['ano' => $ano])
                 ->with([
                     'mensagem' => [
                         'status' => true,

@@ -15,6 +15,8 @@ class ResultadoPlacar
         public readonly Liga $liga,
         public readonly string $faixaLiga,
         public readonly int $sociosAtivos,
+        public readonly float $percentualAci,
+        public readonly float $percentualEvangelismo,
         public readonly int $pontosAno,
         public readonly int $tetoAno,
         public readonly int $pontosCiclo,

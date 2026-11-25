@@ -3,6 +3,7 @@
 namespace App\Services\Gamificacao\Calculadores;
 
 use App\Services\Gamificacao\Enums\NaturezaInstancia;
+use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 
 class CalculadorFactory
 {
@@ -11,23 +12,30 @@ class CalculadorFactory
         private readonly AciCalculador $aci,
         private readonly EvangelismoCalculador $evangelismo,
         private readonly ComissaoExecutivaCalculador $comissaoExecutiva,
-        private readonly BonusMissionarioCalculador $bonusMissionario,
-        private readonly SpeedRunCalculador $speedRun,
+        private readonly ConexaoMissionariaCalculador $conexaoMissionaria,
+        private readonly EntregaAntecipadaCalculador $entregaAntecipada,
         private readonly EventosCalculador $eventos,
-        private readonly ResgateCalculador $resgate,
     ) {
     }
 
     /** @return CalculadorDePilar[] */
-    public function para(NaturezaInstancia $natureza): array
+    public function para(NaturezaInstancia $natureza, ?int $ano = null): array
     {
+        $inicio = GamificacaoConfiguracaoService::getInt('ciclo_inicio', 2026);
+        if ($ano !== null && $ano === $inicio) {
+            return [
+                $this->estatistica,
+                $this->aci,
+            ];
+        }
+
         if ($natureza === NaturezaInstancia::Sinodal) {
             return [
                 $this->estatistica,
                 $this->aci,
                 $this->evangelismo,
                 $this->comissaoExecutiva,
-                $this->bonusMissionario,
+                $this->conexaoMissionaria,
             ];
         }
 
@@ -35,9 +43,8 @@ class CalculadorFactory
             $this->estatistica,
             $this->aci,
             $this->evangelismo,
-            $this->speedRun,
+            $this->entregaAntecipada,
             $this->eventos,
-            $this->resgate,
         ];
     }
 }

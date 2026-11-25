@@ -30,6 +30,8 @@ class Placar extends Model
         'desconto_projetado',
         'liga',
         'socios_ativos',
+        'percentual_aci',
+        'percentual_evangelismo',
         'fechado_em',
         'calculado_em',
     ];
@@ -38,6 +40,8 @@ class Placar extends Model
         'liga' => Liga::class,
         'ano_referencia' => 'integer',
         'socios_ativos' => 'integer',
+        'percentual_aci' => 'float',
+        'percentual_evangelismo' => 'float',
         'pontos_ano' => 'integer',
         'pontos_ciclo' => 'integer',
         'posicao_liga' => 'integer',

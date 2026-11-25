@@ -4,16 +4,16 @@ namespace App\Services\Gamificacao\Enums;
 
 enum Liga: string
 {
-    case Ouro = 'ouro';
-    case Prata = 'prata';
-    case Bronze = 'bronze';
+    case Simonton = 'simonton';
+    case Blackford = 'blackford';
+    case Conceicao = 'conceicao';
 
     public function label(): string
     {
         return match ($this) {
-            self::Ouro => 'Liga Ouro',
-            self::Prata => 'Liga Prata',
-            self::Bronze => 'Liga Bronze',
+            self::Simonton => 'Liga Simonton',
+            self::Blackford => 'Liga Blackford',
+            self::Conceicao => 'Liga Conceição (JMC)',
         };
     }
 }

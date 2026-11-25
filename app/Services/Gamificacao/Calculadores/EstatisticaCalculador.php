@@ -22,7 +22,6 @@ class EstatisticaCalculador implements CalculadorDePilar
         $atingiu = $contexto->percentualEstatistica >= $minimo;
         $pontos = $atingiu ? $pilar->maximo() : 0;
         $prazo = $this->calendario->prazoEstatistica($contexto->ano)->format('d/m/Y');
-        $unidade = $contexto->natureza->value === 'sinodal' ? 'federações' : 'UMPs';
         $percentual = round($contexto->percentualEstatistica);
         $rota = $contexto->natureza->value === 'sinodal'
             ? 'dashboard.formularios-sinodais.index'
@@ -35,7 +34,7 @@ class EstatisticaCalculador implements CalculadorDePilar
             progresso: min(100, $percentual),
             status: $atingiu ? StatusPilar::Ok : StatusPilar::Risco,
             rotuloStatus: $atingiu ? 'Concluído' : 'Em risco',
-            rodape: "{$contexto->filhosEntregaram} de {$contexto->totalFilhos} {$unidade} reportaram ({$percentual}%) · mínimo {$minimo}% para pontuar. Prazo {$prazo}.",
+            rodape: "{$contexto->filhosEntregaram} de {$contexto->totalFilhos} UMPs reportaram ({$percentual}%) · mínimo {$minimo}% para pontuar. Prazo {$prazo}.",
             ctaLabel: $atingiu ? 'Ver formulário' : 'Ver formulário',
             ctaRota: $rota,
             detalhes: [

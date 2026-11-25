@@ -16,9 +16,9 @@ class EventosCalculador implements CalculadorDePilar
         $pilar = Pilar::Eventos;
         $pontos = (new PontuadorEventos())->total($contexto->pontosEventosPorTipo, $pilar->maximo());
         $semDados = $pontos === 0;
-        $pmfOficial = GamificacaoConfiguracaoService::getInt('conquistas.pmf_oficial.pontos', 5);
-        $pmfParceria = GamificacaoConfiguracaoService::getInt('conquistas.pmf_parceria.pontos', 5);
-        $djp = GamificacaoConfiguracaoService::getInt('conquistas.djp.pontos', 5);
+        $pmfOficial = GamificacaoConfiguracaoService::getInt('conquistas.pmf_oficial.pontos', 2);
+        $pmfParceria = GamificacaoConfiguracaoService::getInt('conquistas.pmf_parceria.pontos', 2);
+        $djp = GamificacaoConfiguracaoService::getInt('conquistas.djp.pontos', 2);
         $esporadico = GamificacaoConfiguracaoService::getInt('conquistas.esporadico.pontos', 2);
 
         return new ResultadoPilar(

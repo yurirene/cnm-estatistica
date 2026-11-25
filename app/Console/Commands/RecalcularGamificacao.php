@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 class RecalcularGamificacao extends Command
 {
-    protected $signature = 'gamificacao:recalcular {ano?} {--natureza=} {--forcar}';
+    protected $signature = 'gamificacao:recalcular {ano?} {--natureza=} {--forcar} {--reabrir}';
 
     protected $description = 'Recalcula os placares da gamificação do ciclo PE 2026–2030';
 
@@ -18,8 +18,13 @@ class RecalcularGamificacao extends Command
         $naturezaOpcao = $this->option('natureza');
         $natureza = $naturezaOpcao ? NaturezaInstancia::from($naturezaOpcao) : null;
         $forcar = (bool) $this->option('forcar');
+        $reabrir = (bool) $this->option('reabrir');
 
-        $total = $service->recalcularTodos($ano, $natureza, $forcar);
+        if ($reabrir && ! $forcar) {
+            $this->warn('A flag --reabrir implica recálculo de exercício fechado; use também --forcar se desejar forçar o lote.');
+        }
+
+        $total = $service->recalcularTodos($ano, $natureza, $forcar || $reabrir, $reabrir);
         $this->info("Placares recalculados: {$total}");
 
         return self::SUCCESS;
