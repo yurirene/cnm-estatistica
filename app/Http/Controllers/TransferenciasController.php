@@ -10,6 +10,7 @@ use App\Models\Federacao;
 use App\Models\Local;
 use App\Models\Sinodal;
 use App\Models\TransferenciaUnidade;
+use App\Services\Gamificacao\GamificacaoAtualizacaoService;
 use App\Services\LogErroService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -45,14 +46,17 @@ class TransferenciasController extends Controller
         DB::beginTransaction();
         try {
             $federacao = Federacao::findOrFail($request->instancia_id);
+            $sinodalOrigemId = $federacao->sinodal_id;
+            $sinodalDestinoId = $request->sinodal_destino_id;
+
             TransferenciaUnidade::create([
                 'federacao_id' => $federacao->id,
-                'sinodal_origem_id' => $federacao->sinodal_id,
-                'sinodal_destino_id' => $request->sinodal_destino_id,
+                'sinodal_origem_id' => $sinodalOrigemId,
+                'sinodal_destino_id' => $sinodalDestinoId,
                 'user_id' => auth()->user()->id,
             ]);
             $federacao->updateOrFail([
-                'sinodal_id' => $request->sinodal_destino_id,
+                'sinodal_id' => $sinodalDestinoId,
             ]);
             $umps = Local::where('federacao_id', $federacao->id)->get();
 
@@ -60,17 +64,21 @@ class TransferenciasController extends Controller
                 TransferenciaUnidade::create([
                     'local_id' => $ump->id,
                     'sinodal_origem_id' => $ump->sinodal_id,
-                    'sinodal_destino_id' => $request->sinodal_destino_id,
+                    'sinodal_destino_id' => $sinodalDestinoId,
                     'user_id' => auth()->user()->id,
                 ]);
                 $ump->updateOrFail([
-                    'sinodal_id' => $request->sinodal_destino_id,
+                    'sinodal_id' => $sinodalDestinoId,
                 ]);
             }
 
             DB::commit();
 
             Artisan::call('cache:clear');
+            app(GamificacaoAtualizacaoService::class)->recalcularAposTransferencia(
+                [$sinodalOrigemId, $sinodalDestinoId],
+                [$federacao->id]
+            );
 
             return redirect()->route('dashboard.transferencias.index')->with([
                 'mensagem' => [
@@ -100,24 +108,31 @@ class TransferenciasController extends Controller
         try {
             $ump = Local::findOrFail($request->instancia_id);
             $federacaoDestino = Federacao::findOrFail($request->federacao_destino_id);
-            
+            $federacaoOrigemId = $ump->federacao_id;
+            $sinodalOrigemId = $ump->sinodal_id;
+            $sinodalDestinoId = $federacaoDestino->sinodal_id;
+
             TransferenciaUnidade::create([
                 'local_id' => $ump->id,
-                'federacao_origem_id' => $ump->federacao_id,
+                'federacao_origem_id' => $federacaoOrigemId,
                 'federacao_destino_id' => $federacaoDestino->id,
-                'sinodal_origem_id' => $ump->sinodal_id,
-                'sinodal_destino_id' => $federacaoDestino->sinodal_id,
+                'sinodal_origem_id' => $sinodalOrigemId,
+                'sinodal_destino_id' => $sinodalDestinoId,
                 'user_id' => auth()->user()->id,
             ]);
 
             $ump->updateOrFail([
                 'federacao_id' => $federacaoDestino->id,
-                'sinodal_id' => $federacaoDestino->sinodal_id,
+                'sinodal_id' => $sinodalDestinoId,
             ]);
 
             DB::commit();
 
             Artisan::call('cache:clear');
+            app(GamificacaoAtualizacaoService::class)->recalcularAposTransferencia(
+                [$sinodalOrigemId, $sinodalDestinoId],
+                [$federacaoOrigemId, $federacaoDestino->id]
+            );
 
             return redirect()->route('dashboard.transferencias.index', ['ump' => true])->with([
                 'mensagem' => [
@@ -127,7 +142,6 @@ class TransferenciasController extends Controller
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             LogErroService::registrar([
                 'msg' => $th->getMessage(),
                 'file' => $th->getFile(),

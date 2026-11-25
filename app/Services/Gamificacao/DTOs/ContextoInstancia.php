@@ -18,6 +18,7 @@ class ContextoInstancia
         public readonly int $ano,
         public readonly string $ciclo,
         public readonly int $sociosAtivos,
+        public readonly int $sociosParaLiga,
         public readonly int $totalFilhos,
         public readonly int $filhosEntregaram,
         public readonly float $percentualEstatistica,
@@ -29,8 +30,7 @@ class ContextoInstancia
         public readonly int $umpsComProgramacao,
         public readonly float $percentualEvangelismo,
         public readonly bool $ceConfirmada,
-        public readonly bool $temBonusMissionario,
-        public readonly bool $temResgate,
+        public readonly bool $temConexaoMissionaria,
         public readonly ?Carbon $dataEntregaEstatistica,
         public readonly array $pontosEventosPorTipo,
         public readonly bool $aciMetaAtingida = false,
@@ -50,11 +50,19 @@ class ContextoInstancia
         return array_sum($this->pontosEventosPorTipo);
     }
 
+    public function percentualAci(): float
+    {
+        if ($this->aciValorPrevisto <= 0) {
+            return 0.0;
+        }
+
+        return ($this->aciValorRepassado / $this->aciValorPrevisto) * 100;
+    }
+
     public function temConquista(TipoConquista $tipo): bool
     {
         return match ($tipo) {
-            TipoConquista::BonusMissionario => $this->temBonusMissionario,
-            TipoConquista::Resgate => $this->temResgate,
+            TipoConquista::ConexaoMissionaria => $this->temConexaoMissionaria,
             default => ($this->pontosEventosPorTipo[$tipo->value] ?? 0) > 0,
         };
     }

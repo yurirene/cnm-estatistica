@@ -6,12 +6,13 @@ use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 
 enum TipoConquista: string
 {
-    case BonusMissionario = 'bonus_missionario';
+    case ConexaoMissionaria = 'conexao_missionaria';
     case PmfOficial = 'pmf_oficial';
     case PmfParceria = 'pmf_parceria';
     case Djp = 'djp';
     case Esporadico = 'esporadico';
-    case Resgate = 'resgate';
+    case SeloEntregaAntecipada = 'selo_entrega_antecipada';
+    case SeloEngajamento100 = 'selo_engajamento_100';
 
     public function natureza(): NaturezaInstancia
     {
@@ -40,15 +41,29 @@ enum TipoConquista: string
         ], true);
     }
 
+    public function ehSelo(): bool
+    {
+        return in_array($this, [
+            self::SeloEntregaAntecipada,
+            self::SeloEngajamento100,
+        ], true);
+    }
+
+    public function ehLancavelManual(): bool
+    {
+        return ! $this->ehSelo();
+    }
+
     public function label(): string
     {
         return match ($this) {
-            self::BonusMissionario => 'Bônus Missionário',
+            self::ConexaoMissionaria => 'Conexão Missionária',
             self::PmfOficial => 'PMF Oficial',
-            self::PmfParceria => 'PMF Parceria',
+            self::PmfParceria => 'PMF em Parceria',
             self::Djp => 'DJP',
             self::Esporadico => 'Evento esporádico',
-            self::Resgate => 'Resgate (último trimestre)',
+            self::SeloEntregaAntecipada => 'Selo Entrega Antecipada',
+            self::SeloEngajamento100 => 'Selo 100% de Engajamento',
         };
     }
 }

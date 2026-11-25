@@ -104,7 +104,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.sinodal.documento.delete',
                     'dashboard.transferencias.index',
                     'dashboard.transferencias.transferir-ump',
-                    'dashboard.game-cnm.painel',
+                    'dashboard.game-ump.painel',
                     'dashboard.auxilio-pmf.index',
                     'dashboard.auxilio-pmf.proposta.store',
                     'dashboard.auxilio-pmf.proposta.destroy',
@@ -138,7 +138,7 @@ class PermissionRoleSeeder extends Seeder
                     'dashboard.cn.federacao.delegado.store',
                     'dashboard.cn.federacao.delegado.update',
                     'dashboard.cn.federacao.delegado.delete',
-                    'dashboard.game-cnm.painel',
+                    'dashboard.game-ump.painel',
                     'dashboard.adote-missionario.escolher',
                     'dashboard.adote-missionario.adotar',
                 ]

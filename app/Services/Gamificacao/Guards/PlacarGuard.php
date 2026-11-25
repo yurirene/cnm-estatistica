@@ -37,15 +37,19 @@ class PlacarGuard
         }
     }
 
-    public function assertAnoAberto(Placar $placar, bool $forcar = false): void
+    public function assertAnoAberto(Placar $placar, bool $forcar = false, bool $reabrir = false): void
     {
-        if ($forcar) {
+        if (! $placar->estaFechado()) {
             return;
         }
 
-        if ($placar->estaFechado()) {
-            throw new GamificacaoException('O ano da gamificação está fechado e não pode ser alterado.');
+        if ($reabrir) {
+            return;
         }
+
+        throw new GamificacaoException(
+            'O exercício está fechado e não pode ser alterado. Use a reabertura explícita (--reabrir) se necessário.'
+        );
     }
 
     public function assertPilarDaNatureza(NaturezaInstancia $natureza, Pilar $pilar): void

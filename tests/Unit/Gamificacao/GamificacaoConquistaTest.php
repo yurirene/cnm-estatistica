@@ -21,7 +21,7 @@ class GamificacaoConquistaTest extends TestCase
         $this->expectExceptionMessage('Conquistas só podem ser gravadas pelo serviço de atualização.');
 
         $conquista = new Conquista();
-        $conquista->tipo = TipoConquista::Resgate;
+        $conquista->tipo = TipoConquista::Djp;
         $conquista->save();
     }
 
@@ -29,7 +29,7 @@ class GamificacaoConquistaTest extends TestCase
     {
         $this->expectException(GamificacaoException::class);
         (new ConquistaGuard())->validar(
-            TipoConquista::BonusMissionario,
+            TipoConquista::ConexaoMissionaria,
             NaturezaInstancia::Federacao,
             null,
             'fed-1',
@@ -51,13 +51,13 @@ class GamificacaoConquistaTest extends TestCase
         );
     }
 
-    public function test_servico_recusa_bonus_com_federacao(): void
+    public function test_servico_recusa_conexao_com_federacao(): void
     {
         $this->expectException(GamificacaoException::class);
-        $this->expectExceptionMessage('Bônus Missionário é lançado para sinodais, não para federações.');
+        $this->expectExceptionMessage('Conexão Missionária é lançada para sinodais, não para federações.');
 
         $this->servico()->conceder(
-            TipoConquista::BonusMissionario,
+            TipoConquista::ConexaoMissionaria,
             ['fed-1'],
             [],
             'Conexão Missionária',
@@ -85,10 +85,24 @@ class GamificacaoConquistaTest extends TestCase
         $this->expectExceptionMessage('Selecione ao menos uma instância.');
 
         $this->servico()->conceder(
-            TipoConquista::Resgate,
+            TipoConquista::Djp,
             [],
             [],
-            'Resgate',
+            'DJP',
+            2026
+        );
+    }
+
+    public function test_servico_recusa_selo_manual(): void
+    {
+        $this->expectException(GamificacaoException::class);
+        $this->expectExceptionMessage('Selos são concedidos automaticamente');
+
+        $this->servico()->conceder(
+            TipoConquista::SeloEngajamento100,
+            [],
+            ['sin-1'],
+            'Selo',
             2026
         );
     }
@@ -112,9 +126,10 @@ class GamificacaoConquistaTest extends TestCase
         $this->assertTrue(TipoConquista::PmfOficial->unicoNoAno());
         $this->assertTrue(TipoConquista::PmfParceria->unicoNoAno());
         $this->assertTrue(TipoConquista::Djp->unicoNoAno());
-        $this->assertTrue(TipoConquista::Resgate->unicoNoAno());
-        $this->assertTrue(TipoConquista::BonusMissionario->unicoNoAno());
+        $this->assertTrue(TipoConquista::ConexaoMissionaria->unicoNoAno());
+        $this->assertTrue(TipoConquista::SeloEntregaAntecipada->ehSelo());
         $this->assertFalse(TipoConquista::Esporadico->unicoNoAno());
+        $this->assertFalse(TipoConquista::SeloEngajamento100->ehLancavelManual());
     }
 
     public function test_escritor_libera_gravacao(): void

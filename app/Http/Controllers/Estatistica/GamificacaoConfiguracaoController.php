@@ -25,14 +25,14 @@ class GamificacaoConfiguracaoController extends Controller
             'grupos' => $this->configuracao->formulario(),
             'ligas' => [
                 'sinodal' => [
-                    'ouro' => $this->configuracao->valor('ligas.sinodal.ouro.faixa'),
-                    'prata' => $this->configuracao->valor('ligas.sinodal.prata.faixa'),
-                    'bronze' => $this->configuracao->valor('ligas.sinodal.bronze.faixa'),
+                    'simonton' => $this->configuracao->valor('ligas.sinodal.simonton.faixa'),
+                    'blackford' => $this->configuracao->valor('ligas.sinodal.blackford.faixa'),
+                    'conceicao' => $this->configuracao->valor('ligas.sinodal.conceicao.faixa'),
                 ],
                 'federacao' => [
-                    'ouro' => $this->configuracao->valor('ligas.federacao.ouro.faixa'),
-                    'prata' => $this->configuracao->valor('ligas.federacao.prata.faixa'),
-                    'bronze' => $this->configuracao->valor('ligas.federacao.bronze.faixa'),
+                    'simonton' => $this->configuracao->valor('ligas.federacao.simonton.faixa'),
+                    'blackford' => $this->configuracao->valor('ligas.federacao.blackford.faixa'),
+                    'conceicao' => $this->configuracao->valor('ligas.federacao.conceicao.faixa'),
                 ],
             ],
         ]);
@@ -44,11 +44,11 @@ class GamificacaoConfiguracaoController extends Controller
             $this->configuracao->atualizar($request->input('valores', []));
 
             return redirect()
-                ->route('dashboard.game-cnm.index')
+                ->route('dashboard.game-ump.index')
                 ->with([
                     'mensagem' => [
                         'status' => true,
-                        'texto' => 'Configurações do Game CNM atualizadas.',
+                        'texto' => 'Configurações do Game UMP atualizadas.',
                     ],
                 ]);
         } catch (GamificacaoException $exception) {
@@ -80,7 +80,7 @@ class GamificacaoConfiguracaoController extends Controller
             $total = $this->atualizacao->recalcularTodos(null, null, true);
 
             return redirect()
-                ->route('dashboard.game-cnm.index')
+                ->route('dashboard.game-ump.index')
                 ->with([
                     'mensagem' => [
                         'status' => true,

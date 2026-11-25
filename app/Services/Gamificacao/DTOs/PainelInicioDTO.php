@@ -2,6 +2,7 @@
 
 namespace App\Services\Gamificacao\DTOs;
 
+use App\Services\Gamificacao\Enums\Liga;
 use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 
 class PainelInicioDTO
@@ -10,6 +11,7 @@ class PainelInicioDTO
      * @param  array<int, array<string, mixed>>  $pilares
      * @param  array<int, array<string, mixed>>  $segmentos
      * @param  array<int, array<string, mixed>>  $avisosPontos
+     * @param  array<int, array<string, mixed>>  $selos
      */
     public function __construct(
         public readonly string $ciclo,
@@ -32,6 +34,7 @@ class PainelInicioDTO
         public readonly array $segmentos,
         public readonly array $pilares,
         public readonly array $avisosPontos,
+        public readonly array $selos,
         public readonly float $percentualEntrega,
         public readonly int $totalFilhos,
         public readonly int $filhosEntregaram,
@@ -42,15 +45,15 @@ class PainelInicioDTO
     public static function vazio(string $natureza): self
     {
         $tetoAno = GamificacaoConfiguracaoService::getInt("tetos.{$natureza}", 110);
-        $tetoCiclo = GamificacaoConfiguracaoService::getInt("tetos.ciclo_{$natureza}", 440);
+        $tetoCiclo = GamificacaoConfiguracaoService::getInt("tetos.ciclo_{$natureza}", 380);
 
         return new self(
             ciclo: (string) GamificacaoConfiguracaoService::get('ciclo', '2026-2030'),
             ano: (int) date('Y'),
             anoGamificacao: 1,
             natureza: $natureza,
-            liga: 'bronze',
-            ligaLabel: 'Liga Bronze',
+            liga: Liga::Conceicao->value,
+            ligaLabel: Liga::Conceicao->label(),
             faixaLiga: '',
             sociosAtivos: 0,
             posicao: 0,
@@ -65,6 +68,7 @@ class PainelInicioDTO
             segmentos: [],
             pilares: [],
             avisosPontos: [],
+            selos: [],
             percentualEntrega: 0,
             totalFilhos: 0,
             filhosEntregaram: 0,

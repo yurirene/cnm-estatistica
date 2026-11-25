@@ -2,6 +2,7 @@
 
 namespace App\Services\Gamificacao;
 
+use App\Models\Gamificacao\Conquista;
 use App\Models\Gamificacao\Placar;
 use App\Models\User;
 use App\Services\Estatistica\EstatisticaService;
@@ -11,8 +12,10 @@ use App\Services\Gamificacao\Enums\NaturezaInstancia;
 use App\Services\Gamificacao\Enums\OrigemAuditoria;
 use App\Services\Gamificacao\Enums\Pilar;
 use App\Services\Gamificacao\Enums\StatusPilar;
+use App\Services\Gamificacao\Enums\TipoConquista;
 use App\Services\Gamificacao\GamificacaoConfiguracaoService;
 use App\Services\Gamificacao\Regras\CalendarioGamificacao;
+use App\Services\Gamificacao\Regras\DescontoResolver;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Gate;
 
@@ -141,9 +144,10 @@ class GamificacaoConsultaService
 
         $estatistica = collect($pilares)->firstWhere('pilar', Pilar::Estatistica->value);
         $tendencia = $this->tendencia($placar, $pilares);
-        $tetoAno = $natureza->tetoAnual();
+        $tetoAno = $natureza->tetoAnual($placar->ano_referencia);
         $tetoCiclo = $natureza->tetoCiclo();
         $faixa = (string) GamificacaoConfiguracaoService::get("ligas.{$natureza->value}.{$placar->liga->value}.faixa", '');
+        $selos = $this->selosDoPlacar($natureza, $placar);
 
         return new PainelInicioDTO(
             ciclo: $placar->ciclo,
@@ -161,19 +165,46 @@ class GamificacaoConsultaService
             pontosCiclo: $placar->pontos_ciclo,
             tetoCiclo: $tetoCiclo,
             descontoProjetado: $placar->desconto_projetado,
-            pontosParaProximoDesconto: max(
-                0,
-                GamificacaoConfiguracaoService::getInt("descontos.{$natureza->value}.50") - $placar->pontos_ciclo
+            pontosParaProximoDesconto: (new DescontoResolver())->pontosParaProximo(
+                $natureza,
+                $placar->pontos_ciclo
             ),
             tendenciaRanking: $tendencia,
             segmentos: $segmentos,
             pilares: $pilares,
             avisosPontos: $avisos,
+            selos: $selos,
             percentualEntrega: (float) data_get($estatistica, 'detalhes.percentual', $estatistica['progresso'] ?? 0),
             totalFilhos: (int) data_get($estatistica, 'detalhes.total', 0),
             filhosEntregaram: (int) data_get($estatistica, 'detalhes.entregues', 0),
             metaEntrega: GamificacaoConfiguracaoService::getInt('pilares.estatistica.minimo_percentual', 80),
         );
+    }
+
+    /** @return array<int, array{tipo: string, label: string}> */
+    private function selosDoPlacar(NaturezaInstancia $natureza, Placar $placar): array
+    {
+        $tiposSelo = [
+            TipoConquista::SeloEntregaAntecipada->value,
+            TipoConquista::SeloEngajamento100->value,
+        ];
+
+        return Conquista::withoutGlobalScopes()
+            ->where('ciclo', $placar->ciclo)
+            ->where('ano_referencia', $placar->ano_referencia)
+            ->whereIn('tipo', $tiposSelo)
+            ->when(
+                $natureza === NaturezaInstancia::Sinodal,
+                fn ($q) => $q->where('sinodal_id', $placar->sinodal_id),
+                fn ($q) => $q->where('federacao_id', $placar->federacao_id)
+            )
+            ->get()
+            ->map(fn (Conquista $selo) => [
+                'tipo' => $selo->tipo->value,
+                'label' => $selo->tipo->label(),
+            ])
+            ->values()
+            ->all();
     }
 
     private function tendencia(Placar $placar, array $pilares): string

@@ -3,7 +3,7 @@
 @section('content')
 
 @include('dashboard.partes.head', [
-    'titulo' => 'Game CNM',
+    'titulo' => 'Game UMP',
     'subtitulo' => 'Regras de pontuação do Planejamento Estratégico'
 ])
 
@@ -15,7 +15,7 @@
                     <p class="mb-0" style="font-size:13px;color:var(--color-muted);max-width:640px">
                         Alterações valem nos próximos cálculos. Para atualizar placares já gravados, use o recálculo em lote.
                     </p>
-                    <form method="POST" action="{{ route('dashboard.game-cnm.recalcular') }}"
+                    <form method="POST" action="{{ route('dashboard.game-ump.recalcular') }}"
                           onsubmit="return confirm('Recalcular todos os placares do ano de referência?');">
                         @csrf
                         <button type="submit" class="btn btn-outline-primary">
@@ -34,7 +34,7 @@
                 <p class="mb-0" style="font-size:13px;color:var(--color-muted)">{{ $grupo['descricao'] }}</p>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('dashboard.game-cnm.update') }}">
+                <form method="POST" action="{{ route('dashboard.game-ump.update') }}">
                     @csrf
                     <div class="row">
                         @foreach($grupo['campos'] as $campo)
@@ -67,16 +67,16 @@
 
                     @if($grupo['grupo'] === 'Ligas — Sinodal')
                         <p class="mb-3" style="font-size:12.5px;color:var(--color-muted)">
-                            Faixas atuais: Ouro {{ $ligas['sinodal']['ouro'] }} ·
-                            Prata {{ $ligas['sinodal']['prata'] }} ·
-                            Bronze {{ $ligas['sinodal']['bronze'] }}
+                            Faixas atuais: Simonton {{ $ligas['sinodal']['simonton'] }} ·
+                            Blackford {{ $ligas['sinodal']['blackford'] }} ·
+                            Conceição {{ $ligas['sinodal']['conceicao'] }}
                         </p>
                     @endif
                     @if($grupo['grupo'] === 'Ligas — Federação')
                         <p class="mb-3" style="font-size:12.5px;color:var(--color-muted)">
-                            Faixas atuais: Ouro {{ $ligas['federacao']['ouro'] }} ·
-                            Prata {{ $ligas['federacao']['prata'] }} ·
-                            Bronze {{ $ligas['federacao']['bronze'] }}
+                            Faixas atuais: Simonton {{ $ligas['federacao']['simonton'] }} ·
+                            Blackford {{ $ligas['federacao']['blackford'] }} ·
+                            Conceição {{ $ligas['federacao']['conceicao'] }}
                         </p>
                     @endif
 

@@ -22,6 +22,7 @@ class PlacarGuardTest extends TestCase
             'ano' => 2026,
             'ciclo' => '2026-2030',
             'sociosAtivos' => 10,
+            'sociosParaLiga' => 10,
             'totalFilhos' => 1,
             'filhosEntregaram' => 1,
             'percentualEstatistica' => 100,
@@ -33,8 +34,7 @@ class PlacarGuardTest extends TestCase
             'umpsComProgramacao' => 1,
             'percentualEvangelismo' => 100,
             'ceConfirmada' => false,
-            'temBonusMissionario' => false,
-            'temResgate' => false,
+            'temConexaoMissionaria' => false,
             'dataEntregaEstatistica' => null,
             'pontosEventosPorTipo' => [],
         ];

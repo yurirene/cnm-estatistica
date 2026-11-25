@@ -10,10 +10,9 @@ enum Pilar: string
     case Aci = 'aci';
     case Evangelismo = 'evangelismo';
     case ComissaoExecutiva = 'comissao_executiva';
-    case BonusMissionario = 'bonus_missionario';
-    case SpeedRun = 'speed_run';
+    case ConexaoMissionaria = 'conexao_missionaria';
+    case EntregaAntecipada = 'entrega_antecipada';
     case Eventos = 'eventos';
-    case Resgate = 'resgate';
 
     public function label(): string
     {
@@ -33,12 +32,12 @@ enum Pilar: string
 
     public function exclusivoSinodal(): bool
     {
-        return in_array($this, [self::ComissaoExecutiva, self::BonusMissionario], true);
+        return in_array($this, [self::ComissaoExecutiva, self::ConexaoMissionaria], true);
     }
 
     public function exclusivoFederacao(): bool
     {
-        return in_array($this, [self::SpeedRun, self::Eventos, self::Resgate], true);
+        return in_array($this, [self::EntregaAntecipada, self::Eventos], true);
     }
 
     public function cor(): string
@@ -47,9 +46,8 @@ enum Pilar: string
             self::Estatistica => 'cyan',
             self::Aci => 'teal',
             self::Evangelismo => 'green',
-            self::ComissaoExecutiva, self::SpeedRun => 'orange',
-            self::BonusMissionario, self::Eventos => 'gold',
-            self::Resgate => 'warn',
+            self::ComissaoExecutiva, self::EntregaAntecipada => 'orange',
+            self::ConexaoMissionaria, self::Eventos => 'gold',
         };
     }
 }

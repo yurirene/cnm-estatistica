@@ -21,8 +21,8 @@ class ValoresLegaisPilar
         return $pontos;
     }
 
-    public function limitarTeto(NaturezaInstancia $natureza, int $pontosAno): int
+    public function limitarTeto(NaturezaInstancia $natureza, int $pontosAno, ?int $ano = null): int
     {
-        return min($pontosAno, $natureza->tetoAnual());
+        return min($pontosAno, $natureza->tetoAnual($ano));
     }
 }

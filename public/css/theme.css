@@ -516,17 +516,17 @@ a:hover {
     color: var(--color-primary);
 }
 
-.league-medal.ouro {
+.league-medal.simonton {
     background: var(--color-gold-bg);
     color: var(--color-gold);
 }
 
-.league-medal.prata {
+.league-medal.blackford {
     background: var(--color-silver-bg);
     color: var(--color-silver);
 }
 
-.league-medal.bronze {
+.league-medal.conceicao {
     background: var(--color-bronze-bg);
     color: var(--color-bronze);
 }

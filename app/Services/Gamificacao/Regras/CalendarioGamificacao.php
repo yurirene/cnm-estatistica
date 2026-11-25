@@ -27,9 +27,9 @@ class CalendarioGamificacao
         return Carbon::create($anoReferencia + 1, (int) $prazo['mes'], (int) $prazo['dia'])->startOfDay();
     }
 
-    public function prazoSpeedRun(int $anoReferencia): Carbon
+    public function prazoEntregaAntecipada(int $anoReferencia): Carbon
     {
-        $prazo = GamificacaoConfiguracaoService::get('prazo_speed_run', ['mes' => 1, 'dia' => 10]);
+        $prazo = GamificacaoConfiguracaoService::get('prazo_entrega_antecipada', ['mes' => 1, 'dia' => 10]);
 
         return Carbon::create($anoReferencia + 1, (int) $prazo['mes'], (int) $prazo['dia'])->endOfDay();
     }

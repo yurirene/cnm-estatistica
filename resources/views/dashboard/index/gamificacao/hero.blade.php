@@ -14,6 +14,13 @@
                 <div>
                     <div class="league-name">{{ $game->ligaLabel }}</div>
                     <div class="league-sub">{{ $game->sociosAtivos }} sócios ativos · {{ $game->faixaLiga }}</div>
+                    @if(!empty($game->selos))
+                        <div class="league-sub mt-1">
+                            @foreach($game->selos as $selo)
+                                <span class="chip ok" style="margin-right:6px">{{ $selo['label'] }}</span>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="rank-chip text-end">
@@ -48,17 +55,22 @@
             <h3 class="mb-0" style="font-size:13px;font-weight:700;color:#fff">Desconto projetado — Congresso Nacional 2030</h3>
             <span style="font-size:12px;color:#FFD8A8;font-weight:700">{{ $game->descontoProjetado }}% no ritmo atual</span>
         </div>
+        @php
+            $faixa50 = (int) ($faixas[50] ?? ($game->natureza === 'sinodal' ? 209 : 193));
+            $faixa75 = (int) ($faixas[75] ?? ($game->natureza === 'sinodal' ? 266 : 245));
+            $faixa100 = (int) ($faixas[100] ?? ($game->natureza === 'sinodal' ? 323 : 298));
+        @endphp
         <div class="ladder">
-            <div style="flex:{{ $faixas[50] ?? 220 }};background:rgba(255,255,255,.14);"></div>
-            <div style="flex:{{ ($faixas[75] ?? 300) - ($faixas[50] ?? 220) }};background:rgba(184,148,60,.55);"></div>
-            <div style="flex:{{ ($faixas[100] ?? 374) - ($faixas[75] ?? 300) }};background:rgba(120,150,220,.6);"></div>
-            <div style="flex:{{ max(1, $tetoCiclo - ($faixas[100] ?? 374)) }};background:rgba(90,200,140,.65);"></div>
+            <div style="flex:{{ $faixa50 }};background:rgba(255,255,255,.14);"></div>
+            <div style="flex:{{ max(1, $faixa75 - $faixa50) }};background:rgba(184,148,60,.55);"></div>
+            <div style="flex:{{ max(1, $faixa100 - $faixa75) }};background:rgba(120,150,220,.6);"></div>
+            <div style="flex:{{ max(1, $tetoCiclo - $faixa100) }};background:rgba(90,200,140,.65);"></div>
         </div>
         <div class="ladder-labels">
             <span>0</span>
-            <span>{{ $faixas[50] ?? 220 }} · 50%</span>
-            <span>{{ $faixas[75] ?? 300 }} · 75%</span>
-            <span>{{ $faixas[100] ?? 374 }} · 100%</span>
+            <span>{{ $faixa50 }} · 50%</span>
+            <span>{{ $faixa75 }} · 75%</span>
+            <span>{{ $faixa100 }} · 100%</span>
             <span>{{ $tetoCiclo }}</span>
         </div>
         <div class="mt-3" style="font-size:12px;color:#C9D2EA;line-height:1.5">

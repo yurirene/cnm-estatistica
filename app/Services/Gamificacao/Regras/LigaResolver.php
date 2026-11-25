@@ -12,18 +12,18 @@ class LigaResolver
     {
         $regras = GamificacaoConfiguracaoService::get("ligas.{$natureza->value}", []);
 
-        $ouroMin = (int) ($regras['ouro']['min'] ?? PHP_INT_MAX);
-        $prataMin = (int) ($regras['prata']['min'] ?? PHP_INT_MAX);
+        $simontonMin = (int) ($regras['simonton']['min'] ?? PHP_INT_MAX);
+        $blackfordMin = (int) ($regras['blackford']['min'] ?? PHP_INT_MAX);
 
-        if ($sociosAtivos >= $ouroMin) {
-            return Liga::Ouro;
+        if ($sociosAtivos >= $simontonMin) {
+            return Liga::Simonton;
         }
 
-        if ($sociosAtivos >= $prataMin) {
-            return Liga::Prata;
+        if ($sociosAtivos >= $blackfordMin) {
+            return Liga::Blackford;
         }
 
-        return Liga::Bronze;
+        return Liga::Conceicao;
     }
 
     public function faixa(NaturezaInstancia $natureza, Liga $liga): string

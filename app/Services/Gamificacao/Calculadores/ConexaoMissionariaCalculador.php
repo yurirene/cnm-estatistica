@@ -7,12 +7,12 @@ use App\Services\Gamificacao\DTOs\ResultadoPilar;
 use App\Services\Gamificacao\Enums\Pilar;
 use App\Services\Gamificacao\Enums\StatusPilar;
 
-class BonusMissionarioCalculador implements CalculadorDePilar
+class ConexaoMissionariaCalculador implements CalculadorDePilar
 {
     public function calcular(ContextoInstancia $contexto): ResultadoPilar
     {
-        $pilar = Pilar::BonusMissionario;
-        $pontos = $contexto->temBonusMissionario ? $pilar->maximo() : 0;
+        $pilar = Pilar::ConexaoMissionaria;
+        $pontos = $contexto->temConexaoMissionaria ? $pilar->maximo() : 0;
 
         return new ResultadoPilar(
             pilar: $pilar,
@@ -21,10 +21,10 @@ class BonusMissionarioCalculador implements CalculadorDePilar
             progresso: $pontos > 0 ? 100 : 0,
             status: $pontos > 0 ? StatusPilar::Ok : StatusPilar::Disponivel,
             rotuloStatus: $pontos > 0 ? 'Concedido' : 'Disponível',
-            rodape: 'Faça o projeto "Conexão Missionária" · concedido 1x por ano. Fale com a Secretaria de Missões.',
+            rodape: 'Realize o projeto "Conexão Missionária" e envie o relatório até 1º de março · 1x por exercício.',
             ctaLabel: 'Saiba como implementar',
             ctaRota: null,
-            detalhes: ['concedido' => $contexto->temBonusMissionario],
+            detalhes: ['concedido' => $contexto->temConexaoMissionaria],
         );
     }
 }

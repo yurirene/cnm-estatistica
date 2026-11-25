@@ -38,14 +38,15 @@ class GamificacaoConfiguracaoService
                     ['nome' => 'prazo_estatistica.dia', 'label' => 'Estatística — dia', 'tipo' => 'number'],
                     ['nome' => 'prazo_aci.mes', 'label' => 'ACI — mês', 'tipo' => 'number'],
                     ['nome' => 'prazo_aci.dia', 'label' => 'ACI — dia', 'tipo' => 'number'],
-                    ['nome' => 'prazo_speed_run.mes', 'label' => 'Speed Run — mês', 'tipo' => 'number'],
-                    ['nome' => 'prazo_speed_run.dia', 'label' => 'Speed Run — dia', 'tipo' => 'number'],
+                    ['nome' => 'prazo_entrega_antecipada.mes', 'label' => 'Entrega antecipada — mês', 'tipo' => 'number'],
+                    ['nome' => 'prazo_entrega_antecipada.dia', 'label' => 'Entrega antecipada — dia', 'tipo' => 'number'],
                 ],
             ],
             [
                 'grupo' => 'Tetos de pontuação',
                 'descricao' => 'Máximo de pontos que uma instância pode acumular no ano e no ciclo.',
                 'campos' => [
+                    ['nome' => 'tetos.ano_inicial', 'label' => 'Teto anual — primeiro exercício (só Estatística + ACI)', 'tipo' => 'number'],
                     ['nome' => 'tetos.sinodal', 'label' => 'Teto anual — Sinodal', 'tipo' => 'number'],
                     ['nome' => 'tetos.federacao', 'label' => 'Teto anual — Federação', 'tipo' => 'number'],
                     ['nome' => 'tetos.ciclo_sinodal', 'label' => 'Teto do ciclo — Sinodal', 'tipo' => 'number'],
@@ -54,23 +55,23 @@ class GamificacaoConfiguracaoService
             ],
             [
                 'grupo' => 'Ligas — Sinodal',
-                'descricao' => 'Faixas por quantidade de sócios ativos. A prata e o bronze são calculados a partir destes mínimos.',
+                'descricao' => 'Faixas por quantidade de sócios ativos. Blackford e Conceição são derivados destes mínimos.',
                 'campos' => [
-                    ['nome' => 'ligas.sinodal.ouro.min', 'label' => 'Mínimo Liga Ouro', 'tipo' => 'number'],
-                    ['nome' => 'ligas.sinodal.prata.min', 'label' => 'Mínimo Liga Prata', 'tipo' => 'number'],
+                    ['nome' => 'ligas.sinodal.simonton.min', 'label' => 'Mínimo Liga Simonton', 'tipo' => 'number'],
+                    ['nome' => 'ligas.sinodal.blackford.min', 'label' => 'Mínimo Liga Blackford', 'tipo' => 'number'],
                 ],
             ],
             [
                 'grupo' => 'Ligas — Federação',
-                'descricao' => 'Faixas por quantidade de sócios ativos. A prata e o bronze são calculados a partir destes mínimos.',
+                'descricao' => 'Faixas por quantidade de sócios ativos. Blackford e Conceição são derivados destes mínimos.',
                 'campos' => [
-                    ['nome' => 'ligas.federacao.ouro.min', 'label' => 'Mínimo Liga Ouro', 'tipo' => 'number'],
-                    ['nome' => 'ligas.federacao.prata.min', 'label' => 'Mínimo Liga Prata', 'tipo' => 'number'],
+                    ['nome' => 'ligas.federacao.simonton.min', 'label' => 'Mínimo Liga Simonton', 'tipo' => 'number'],
+                    ['nome' => 'ligas.federacao.blackford.min', 'label' => 'Mínimo Liga Blackford', 'tipo' => 'number'],
                 ],
             ],
             [
                 'grupo' => 'Descontos de inscrição',
-                'descricao' => 'Pontos de ciclo necessários para 50%, 75% e 100% de desconto.',
+                'descricao' => 'Pontos de ciclo necessários para 50%, 75% e 100% de desconto no CN 2030.',
                 'campos' => [
                     ['nome' => 'descontos.sinodal.50', 'label' => 'Sinodal — 50%', 'tipo' => 'number'],
                     ['nome' => 'descontos.sinodal.75', 'label' => 'Sinodal — 75%', 'tipo' => 'number'],
@@ -90,11 +91,10 @@ class GamificacaoConfiguracaoService
                     ['nome' => 'pilares.aci.minimo_percentual', 'label' => 'ACI — % mínima do previsto', 'tipo' => 'number'],
                     ['nome' => 'pilares.evangelismo.max', 'label' => 'Evangelismo — máximo', 'tipo' => 'number', 'ajuda' => 'Deve coincidir com a faixa de 100%.'],
                     ['nome' => 'pilares.comissao_executiva.max', 'label' => 'Comissão Executiva — máximo', 'tipo' => 'number'],
-                    ['nome' => 'pilares.bonus_missionario.max', 'label' => 'Bônus Missionário — máximo', 'tipo' => 'number'],
-                    ['nome' => 'pilares.speed_run.max', 'label' => 'Speed Run — máximo', 'tipo' => 'number'],
-                    ['nome' => 'pilares.eventos.max', 'label' => 'Eventos — teto', 'tipo' => 'number', 'ajuda' => 'Teto do pilar. PMF Oficial, PMF Parceria e DJP valem 1x no ano; esporádico pode repetir. Padrão: 17 (5+5+5+2).'],
-                    ['nome' => 'pilares.resgate.max', 'label' => 'Resgate — máximo', 'tipo' => 'number'],
-                    ['nome' => 'pilares.resgate.maximo_percentual_evangelismo', 'label' => 'Resgate — % máxima de evangelismo para valer', 'tipo' => 'number', 'ajuda' => 'Se as UMPs locais atingirem este percentual, o resgate zera. Padrão: 60% (mínimo de Evangelismo).'],
+                    ['nome' => 'pilares.conexao_missionaria.max', 'label' => 'Conexão Missionária — máximo', 'tipo' => 'number'],
+                    ['nome' => 'pilares.entrega_antecipada.max', 'label' => 'Entrega Antecipada — máximo', 'tipo' => 'number'],
+                    ['nome' => 'pilares.eventos.max', 'label' => 'Eventos — teto', 'tipo' => 'number', 'ajuda' => 'Teto do pilar. PMF Oficial, PMF Parceria e DJP valem 1x no ano; esporádico até 2 eventos (4 pts). Padrão: 10.'],
+                    ['nome' => 'pilares.eventos.esporadico_maximo_pontos', 'label' => 'Eventos esporádicos — teto de pontos', 'tipo' => 'number'],
                 ],
             ],
             [
@@ -108,12 +108,11 @@ class GamificacaoConfiguracaoService
             ],
             [
                 'grupo' => 'Conquistas (eventos e bônus)',
-                'descricao' => 'Pontos concedidos por conquista cadastrada. Bônus e resgate espelham o máximo do pilar correspondente.',
+                'descricao' => 'Pontos concedidos por conquista cadastrada. Conexão Missionária espelha o máximo do pilar correspondente.',
                 'campos' => [
-                    ['nome' => 'conquistas.bonus_missionario.pontos', 'label' => 'Bônus Missionário', 'tipo' => 'number'],
-                    ['nome' => 'conquistas.resgate.pontos', 'label' => 'Resgate', 'tipo' => 'number'],
+                    ['nome' => 'conquistas.conexao_missionaria.pontos', 'label' => 'Conexão Missionária', 'tipo' => 'number'],
                     ['nome' => 'conquistas.pmf_oficial.pontos', 'label' => 'PMF Oficial', 'tipo' => 'number'],
-                    ['nome' => 'conquistas.pmf_parceria.pontos', 'label' => 'PMF Parceria', 'tipo' => 'number'],
+                    ['nome' => 'conquistas.pmf_parceria.pontos', 'label' => 'PMF em Parceria', 'tipo' => 'number'],
                     ['nome' => 'conquistas.djp.pontos', 'label' => 'DJP', 'tipo' => 'number'],
                     ['nome' => 'conquistas.esporadico.pontos', 'label' => 'Evento esporádico', 'tipo' => 'number'],
                 ],
@@ -276,16 +275,19 @@ class GamificacaoConfiguracaoService
         data_set($this->resolvido, 'anos_ciclo', max(1, $fim - $inicio + 1));
 
         foreach (['sinodal', 'federacao'] as $natureza) {
-            $ouroMin = (int) data_get($this->resolvido, "ligas.{$natureza}.ouro.min", 0);
-            $prataMin = (int) data_get($this->resolvido, "ligas.{$natureza}.prata.min", 0);
-            $prataMax = max(0, $ouroMin - 1);
-            $bronzeMax = max(0, $prataMin - 1);
+            $simontonMin = (int) data_get($this->resolvido, "ligas.{$natureza}.simonton.min", 0);
+            $blackfordMin = (int) data_get($this->resolvido, "ligas.{$natureza}.blackford.min", 0);
+            $blackfordMax = max(0, $simontonMin - 1);
+            $conceicaoMax = max(0, $blackfordMin - 1);
 
-            data_set($this->resolvido, "ligas.{$natureza}.prata.max", $prataMax);
-            data_set($this->resolvido, "ligas.{$natureza}.bronze.max", $bronzeMax);
-            data_set($this->resolvido, "ligas.{$natureza}.ouro.faixa", $ouroMin . '+ sócios ativos');
-            data_set($this->resolvido, "ligas.{$natureza}.prata.faixa", "faixa {$prataMin}–{$prataMax}");
-            data_set($this->resolvido, "ligas.{$natureza}.bronze.faixa", "até {$bronzeMax} sócios ativos");
+            data_set($this->resolvido, "ligas.{$natureza}.blackford.max", $blackfordMax);
+            data_set($this->resolvido, "ligas.{$natureza}.conceicao.max", $conceicaoMax);
+            data_set($this->resolvido, "ligas.{$natureza}.simonton.faixa", $simontonMin . '+ sócios ativos');
+            data_set($this->resolvido, "ligas.{$natureza}.blackford.faixa", "faixa {$blackfordMin}–{$blackfordMax}");
+            data_set($this->resolvido, "ligas.{$natureza}.conceicao.faixa", "até {$conceicaoMax} sócios ativos");
+            data_set($this->resolvido, "ligas.{$natureza}.simonton.label", 'Liga Simonton');
+            data_set($this->resolvido, "ligas.{$natureza}.blackford.label", 'Liga Blackford');
+            data_set($this->resolvido, "ligas.{$natureza}.conceicao.label", 'Liga Conceição (JMC)');
         }
 
         $faixasEvangelismo = data_get($this->resolvido, 'pilares.evangelismo.faixas', []);
@@ -378,10 +380,8 @@ class GamificacaoConfiguracaoService
     private function espelharPilarEConquista(string $nome, int|string $valor): void
     {
         $pares = [
-            'pilares.bonus_missionario.max' => 'conquistas.bonus_missionario.pontos',
-            'conquistas.bonus_missionario.pontos' => 'pilares.bonus_missionario.max',
-            'pilares.resgate.max' => 'conquistas.resgate.pontos',
-            'conquistas.resgate.pontos' => 'pilares.resgate.max',
+            'pilares.conexao_missionaria.max' => 'conquistas.conexao_missionaria.pontos',
+            'conquistas.conexao_missionaria.pontos' => 'pilares.conexao_missionaria.max',
         ];
 
         if (! isset($pares[$nome]) || ! is_numeric($valor)) {
@@ -407,11 +407,11 @@ class GamificacaoConfiguracaoService
     private function validarLigas(): void
     {
         foreach (['sinodal' => 'Sinodal', 'federacao' => 'Federação'] as $natureza => $rotulo) {
-            $ouro = (int) $this->valor("ligas.{$natureza}.ouro.min");
-            $prata = (int) $this->valor("ligas.{$natureza}.prata.min");
-            if ($ouro <= $prata) {
+            $simonton = (int) $this->valor("ligas.{$natureza}.simonton.min");
+            $blackford = (int) $this->valor("ligas.{$natureza}.blackford.min");
+            if ($simonton <= $blackford) {
                 throw new GamificacaoException(
-                    "Na {$rotulo}, o mínimo da Liga Ouro deve ser maior que o da Liga Prata."
+                    "Na {$rotulo}, o mínimo da Liga Simonton deve ser maior que o da Liga Blackford."
                 );
             }
         }
