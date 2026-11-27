@@ -32,6 +32,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link nav-link-icon" target="_blank" href="{{ route('planejamento-estrategico') }}">
+                        <i class="ni ni-bullet-list-67"></i>
+                        <span class="nav-link-inner--text">Metas do Quinquênio</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link nav-link-icon" href="{{ route('digesto') }}">
                         <i class="ni ni-collection"></i>
                         <span class="nav-link-inner--text">Digesto</span>
