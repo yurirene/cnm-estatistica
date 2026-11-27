@@ -2736,7 +2736,6 @@ body:has(.digesto-busca) .header.bg-gradient-primary {
         height: 90px;
     }
 }
-
 .painel-planejamento .pe-pilares-mini {
     display: flex;
     flex-wrap: wrap;
