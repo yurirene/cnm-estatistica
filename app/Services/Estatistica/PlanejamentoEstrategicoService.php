@@ -2,6 +2,7 @@
 
 namespace App\Services\Estatistica;
 
+use App\Helpers\FormHelper;
 use App\Models\ComissaoExecutiva\DelegadoComissaoExecutiva;
 use App\Models\Federacao;
 use App\Models\FormularioFederacao;
@@ -10,6 +11,8 @@ use App\Models\FormularioSinodal;
 use App\Models\Local;
 use App\Models\Regiao;
 use App\Models\Sinodal;
+use App\Models\ValorAciAno;
+use App\Services\ComprovanteAciService;
 use Illuminate\Support\Collection;
 
 class PlanejamentoEstrategicoService
@@ -252,7 +255,13 @@ class PlanejamentoEstrategicoService
         $sinodais = $this->querySinodais()->get(['id']);
         $total = $sinodais->count();
         if ($total === 0) {
-            return ['valor' => 0.0, 'numerador' => 0, 'denominador' => 0, 'detalhe' => '0 de 0 sinodais'];
+            return [
+                'valor' => 0.0,
+                'numerador' => 0,
+                'denominador' => 0,
+                'detalhe' => '0 de 0 sinodais',
+                'pilares' => [],
+            ];
         }
 
         $ids = $sinodais->pluck('id');
@@ -263,20 +272,44 @@ class PlanejamentoEstrategicoService
             ->keyBy('sinodal_id');
 
         $cePorSinodal = $this->sinodaisComCe($ano);
+        $sociosPorSinodal = $this->sociosAtivosPorSinodal($ano, $ids);
+        $labels = config('planejamento_estrategico.gtsi.pilares_sinodal', []);
+        $contagemPilares = [
+            'aci' => 0,
+            'estatistica' => 0,
+            'comissao_executiva' => 0,
+        ];
         $ok = 0;
 
         foreach ($sinodais as $sinodal) {
             $form = $formularios->get($sinodal->id);
             $checks = [];
+            $sid = (string) $sinodal->id;
 
             if (in_array('estatistica', $pilares, true)) {
-                $checks[] = $form !== null;
+                $entregou = $form !== null;
+                $checks[] = $entregou;
+                if ($entregou) {
+                    $contagemPilares['estatistica']++;
+                }
             }
             if (in_array('aci', $pilares, true)) {
-                $checks[] = data_get($form?->aci, 'repasse') === 'S';
+                $aciOk = $this->sinodalAciNoValorProposto(
+                    $form?->aci,
+                    (int) ($sociosPorSinodal[$sid] ?? 0),
+                    $ano
+                );
+                $checks[] = $aciOk;
+                if ($aciOk) {
+                    $contagemPilares['aci']++;
+                }
             }
             if (in_array('comissao_executiva', $pilares, true)) {
-                $checks[] = isset($cePorSinodal[(string) $sinodal->id]);
+                $ceOk = isset($cePorSinodal[$sid]);
+                $checks[] = $ceOk;
+                if ($ceOk) {
+                    $contagemPilares['comissao_executiva']++;
+                }
             }
 
             if ($checks !== [] && ! in_array(false, $checks, true)) {
@@ -284,11 +317,27 @@ class PlanejamentoEstrategicoService
             }
         }
 
+        $pilaresResumo = [];
+        foreach ($pilares as $pilar) {
+            $pilaresResumo[] = [
+                'chave' => $pilar,
+                'label' => $labels[$pilar] ?? $pilar,
+                'ok' => $contagemPilares[$pilar] ?? 0,
+                'total' => $total,
+                'percentual' => $total > 0
+                    ? round((($contagemPilares[$pilar] ?? 0) * 100) / $total, 1)
+                    : 0.0,
+            ];
+        }
+
+        $minAci = (int) config('planejamento_estrategico.gtsi.aci_minimo_percentual', 80);
+
         return [
             'valor' => round(($ok * 100) / $total, 1),
             'numerador' => $ok,
             'denominador' => $total,
-            'detalhe' => $ok . ' de ' . $total . ' sinodais',
+            'detalhe' => $ok . ' de ' . $total . ' sinodais (ACI ≥' . $minAci . '% do proposto + estatística + CE)',
+            'pilares' => $pilaresResumo,
         ];
     }
 
@@ -297,7 +346,13 @@ class PlanejamentoEstrategicoService
         $federacoes = $this->queryFederacoes()->get(['id']);
         $total = $federacoes->count();
         if ($total === 0) {
-            return ['valor' => 0.0, 'numerador' => 0, 'denominador' => 0, 'detalhe' => '0 de 0 federações'];
+            return [
+                'valor' => 0.0,
+                'numerador' => 0,
+                'denominador' => 0,
+                'detalhe' => '0 de 0 federações',
+                'pilares' => [],
+            ];
         }
 
         $ids = $federacoes->pluck('id');
@@ -308,16 +363,27 @@ class PlanejamentoEstrategicoService
             ->get()
             ->keyBy('federacao_id');
 
+        $labels = config('planejamento_estrategico.gtsi.pilares_inferiores', []);
+        $contagemPilares = ['aci' => 0, 'estatistica' => 0];
         $ok = 0;
+
         foreach ($federacoes as $federacao) {
             $form = $formularios->get($federacao->id);
             $checks = [];
 
             if (in_array('estatistica', $pilares, true)) {
-                $checks[] = $form !== null;
+                $entregou = $form !== null;
+                $checks[] = $entregou;
+                if ($entregou) {
+                    $contagemPilares['estatistica']++;
+                }
             }
             if (in_array('aci', $pilares, true)) {
-                $checks[] = data_get($form?->aci, 'repasse') === 'S';
+                $aciOk = data_get($form?->aci, 'repasse') === 'S';
+                $checks[] = $aciOk;
+                if ($aciOk) {
+                    $contagemPilares['aci']++;
+                }
             }
 
             if ($checks !== [] && ! in_array(false, $checks, true)) {
@@ -325,11 +391,25 @@ class PlanejamentoEstrategicoService
             }
         }
 
+        $pilaresResumo = [];
+        foreach ($pilares as $pilar) {
+            $pilaresResumo[] = [
+                'chave' => $pilar,
+                'label' => $labels[$pilar] ?? $pilar,
+                'ok' => $contagemPilares[$pilar] ?? 0,
+                'total' => $total,
+                'percentual' => $total > 0
+                    ? round((($contagemPilares[$pilar] ?? 0) * 100) / $total, 1)
+                    : 0.0,
+            ];
+        }
+
         return [
             'valor' => round(($ok * 100) / $total, 1),
             'numerador' => $ok,
             'denominador' => $total,
-            'detalhe' => $ok . ' de ' . $total . ' federações',
+            'detalhe' => $ok . ' de ' . $total . ' federações (ACI + estatística)',
+            'pilares' => $pilaresResumo,
         ];
     }
 
@@ -337,19 +417,38 @@ class PlanejamentoEstrategicoService
     {
         $total = $this->queryLocais()->count();
         if ($total === 0) {
-            return ['valor' => 0.0, 'numerador' => 0, 'denominador' => 0, 'detalhe' => '0 de 0 UMPs'];
+            return [
+                'valor' => 0.0,
+                'numerador' => 0,
+                'denominador' => 0,
+                'detalhe' => '0 de 0 UMPs',
+                'pilares' => [],
+            ];
         }
 
-        $formularios = $this->formulariosLocais($ano);
+        $formularios = $this->formulariosLocais($ano)->keyBy('local_id');
+        $labels = config('planejamento_estrategico.gtsi.pilares_inferiores', []);
+        $contagemPilares = ['aci' => 0, 'estatistica' => 0];
         $ok = 0;
-        foreach ($formularios as $form) {
+
+        $locais = $this->queryLocais()->get(['id']);
+        foreach ($locais as $local) {
+            $form = $formularios->get($local->id);
             $checks = [];
 
             if (in_array('estatistica', $pilares, true)) {
-                $checks[] = true;
+                $entregou = $form !== null;
+                $checks[] = $entregou;
+                if ($entregou) {
+                    $contagemPilares['estatistica']++;
+                }
             }
             if (in_array('aci', $pilares, true)) {
-                $checks[] = data_get($form->aci, 'repasse') === 'S';
+                $aciOk = data_get($form?->aci, 'repasse') === 'S';
+                $checks[] = $aciOk;
+                if ($aciOk) {
+                    $contagemPilares['aci']++;
+                }
             }
 
             if ($checks !== [] && ! in_array(false, $checks, true)) {
@@ -357,12 +456,115 @@ class PlanejamentoEstrategicoService
             }
         }
 
+        $pilaresResumo = [];
+        foreach ($pilares as $pilar) {
+            $pilaresResumo[] = [
+                'chave' => $pilar,
+                'label' => $labels[$pilar] ?? $pilar,
+                'ok' => $contagemPilares[$pilar] ?? 0,
+                'total' => $total,
+                'percentual' => $total > 0
+                    ? round((($contagemPilares[$pilar] ?? 0) * 100) / $total, 1)
+                    : 0.0,
+            ];
+        }
+
         return [
             'valor' => round(($ok * 100) / $total, 1),
             'numerador' => $ok,
             'denominador' => $total,
-            'detalhe' => $ok . ' de ' . $total . ' UMPs',
+            'detalhe' => $ok . ' de ' . $total . ' UMPs (ACI + estatística)',
+            'pilares' => $pilaresResumo,
         ];
+    }
+
+    /**
+     * ACI da sinodal no valor proposto:
+     * socios_ativos × valor_unitário × fator_sinodal × (aci_minimo_percentual / 100)
+     */
+    private function sinodalAciNoValorProposto(?array $aci, int $sociosAtivos, int $ano): bool
+    {
+        if (data_get($aci, 'repasse') !== 'S') {
+            return false;
+        }
+
+        $valorRepassado = $this->extrairValorAci($aci, 'valor_repassado');
+        if ($valorRepassado <= 0) {
+            $valorRepassado = $this->extrairValorAci($aci, 'valor');
+        }
+
+        $minimoPercentual = (float) config('planejamento_estrategico.gtsi.aci_minimo_percentual', 80);
+        $fator = (float) config(
+            'planejamento_estrategico.gtsi.aci_fator_sinodal',
+            ComprovanteAciService::PORCENTAGEM_SINODAL
+        );
+        $previsto = $sociosAtivos * ValorAciAno::valorPara($ano) * $fator;
+        $minimo = $previsto * ($minimoPercentual / 100);
+
+        if ($minimo <= 0) {
+            return $valorRepassado > 0;
+        }
+
+        return $valorRepassado >= $minimo;
+    }
+
+    private function extrairValorAci(?array $aci, string $campo): float
+    {
+        if (! is_array($aci)) {
+            return 0.0;
+        }
+
+        $raw = $aci[$campo] ?? 0;
+        if (is_numeric($raw)) {
+            return (float) $raw;
+        }
+        if (is_string($raw) && $raw !== '') {
+            return FormHelper::converterParaFloat($raw);
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * @param  Collection<int, string>  $sinodalIds
+     * @return array<string, int>
+     */
+    private function sociosAtivosPorSinodal(int $ano, Collection $sinodalIds): array
+    {
+        if ($sinodalIds->isEmpty()) {
+            return [];
+        }
+
+        $federacoes = Federacao::query()
+            ->where('status', true)
+            ->whereIn('sinodal_id', $sinodalIds)
+            ->get(['id', 'sinodal_id']);
+
+        if ($federacoes->isEmpty()) {
+            return [];
+        }
+
+        $fedToSinodal = $federacoes->mapWithKeys(
+            fn (Federacao $f) => [(string) $f->id => (string) $f->sinodal_id]
+        );
+        $totais = array_fill_keys($sinodalIds->map(fn ($id) => (string) $id)->all(), 0);
+
+        $formularios = FormularioFederacao::query()
+            ->where('ano_referencia', $ano)
+            ->where('status', EstatisticaService::FORMULARIO_ENTREGUE)
+            ->whereIn('federacao_id', $federacoes->pluck('id'))
+            ->get(['federacao_id', 'perfil']);
+
+        foreach ($formularios as $formulario) {
+            $sinodalId = $fedToSinodal[(string) $formulario->federacao_id] ?? null;
+            if ($sinodalId === null) {
+                continue;
+            }
+            $totais[$sinodalId] = ($totais[$sinodalId] ?? 0)
+                + (int) data_get($formulario->perfil, 'ativos', 0);
+        }
+
+        return $totais;
     }
 
     private function percentualSinodaisCe(int $ano): array

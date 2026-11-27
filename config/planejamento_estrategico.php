@@ -43,6 +43,34 @@ return [
         'risco' => ['min' => 0, 'label' => 'Risco', 'classe' => 'off-track'],
     ],
 
+    /**
+     * Regras do Objetivo 3 (GTSI / Desenvolvimento Organizacional).
+     *
+     * Sinodal (pilar principal):
+     * - Entrega da ACI no valor proposto (mínimo % configurável sobre sócios ativos)
+     * - Entrega do relatório estatístico
+     * - Participação na Comissão Executiva
+     *
+     * Federações e UMPs Locais:
+     * - Entrega da ACI
+     * - Entrega do relatório estatístico
+     */
+    'gtsi' => [
+        // % mínimo do valor previsto de ACI para a sinodal ser considerada em dia
+        'aci_minimo_percentual' => 80,
+        // Fator da ACI sinodal sobre (sócios ativos × valor unitário do ano)
+        'aci_fator_sinodal' => 0.25,
+        'pilares_sinodal' => [
+            'aci' => 'Entrega da ACI da Sinodal (valor proposto)',
+            'estatistica' => 'Entrega dos Relatórios Estatísticos',
+            'comissao_executiva' => 'Participação na CE',
+        ],
+        'pilares_inferiores' => [
+            'aci' => 'Entrega da ACI',
+            'estatistica' => 'Entrega do Relatório Estatístico',
+        ],
+    ],
+
     'objetivos' => [
         [
             'id' => 1,
@@ -165,19 +193,20 @@ return [
         [
             'id' => 3,
             'titulo' => 'Aprimorar o Desenvolvimento Organizacional',
-            'meta_cnm' => '80% das Sinodais cumprindo compromissos do GTSI (Anuidade, Estatística e Representatividade)',
+            'meta_cnm' => '80% das Sinodais cumprindo ACI (valor proposto), Estatística e participação na CE',
             'cor' => 'warn',
             'indicadores' => [
                 [
                     'chave' => 'sinodais_gtsi',
                     'label' => 'Sinodais cumprindo GTSI',
-                    'descricao' => 'Percentual de sinodais com Anuidade, Estatística e participação na CE',
+                    'descricao' => 'ACI no valor proposto (≥ % configurável dos sócios ativos), relatório estatístico e participação na CE',
                     'unidade' => '%',
                     'principal' => true,
                     'tipo' => 'percentual_instancias_gtsi',
                     'parametros' => [
                         'nivel' => 'sinodal',
-                        'pilares' => ['estatistica', 'aci', 'comissao_executiva'],
+                        // Pilar principal: ACI (valor), Estatística e CE
+                        'pilares' => ['aci', 'estatistica', 'comissao_executiva'],
                     ],
                     'baseline' => 0,
                     'metas_anuais' => [
@@ -191,13 +220,13 @@ return [
                 [
                     'chave' => 'federacoes_gtsi',
                     'label' => 'Federações cumprindo GTSI',
-                    'descricao' => 'Percentual de federações com Anuidade e Estatística entregues',
+                    'descricao' => 'Entrega da ACI e do relatório estatístico (sem exigência de CE)',
                     'unidade' => '%',
                     'principal' => false,
                     'tipo' => 'percentual_instancias_gtsi',
                     'parametros' => [
                         'nivel' => 'federacao',
-                        'pilares' => ['estatistica', 'aci'],
+                        'pilares' => ['aci', 'estatistica'],
                     ],
                     'baseline' => 0,
                     'metas_anuais' => [
@@ -211,13 +240,13 @@ return [
                 [
                     'chave' => 'umps_gtsi',
                     'label' => 'UMPs Locais cumprindo GTSI',
-                    'descricao' => 'Percentual de UMPs Locais com Anuidade e Estatística entregues',
+                    'descricao' => 'Entrega da ACI e do relatório estatístico (sem exigência de CE)',
                     'unidade' => '%',
                     'principal' => false,
                     'tipo' => 'percentual_instancias_gtsi',
                     'parametros' => [
                         'nivel' => 'local',
-                        'pilares' => ['estatistica', 'aci'],
+                        'pilares' => ['aci', 'estatistica'],
                     ],
                     'baseline' => 0,
                     'metas_anuais' => [

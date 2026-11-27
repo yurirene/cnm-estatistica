@@ -2736,3 +2736,19 @@ body:has(.digesto-busca) .header.bg-gradient-primary {
         height: 90px;
     }
 }
+.painel-planejamento .pe-pilares-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-left: 0;
+}
+
+.painel-planejamento .pe-pilar-chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-muted);
+    background: var(--color-pale);
+    border-radius: 999px;
+    padding: 3px 8px;
+}
