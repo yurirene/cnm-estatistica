@@ -25,6 +25,7 @@ use App\Http\Controllers\Diretorias\DiretoriasSinodalController;
 use App\Http\Controllers\Estatistica\EstatisticaController;
 use App\Http\Controllers\Estatistica\GamificacaoConfiguracaoController;
 use App\Http\Controllers\Estatistica\GamificacaoEventoController;
+use App\Http\Controllers\Estatistica\PlanejamentoEstrategicoController;
 use App\Http\Controllers\Formularios\FormularioComplementarFederacaoController;
 use App\Http\Controllers\Formularios\FormularioComplementarSinodalController;
 use App\Http\Controllers\Produtos\EstoqueProdutoController;
@@ -76,6 +77,10 @@ Route::get('/digesto/exibir/{path}', [DigestoController::class, 'exibir'])
     ->name('digesto.exibir');
 Route::get('/estatistica', [EstatisticaController::class, 'externo'])
     ->name('estatistica');
+Route::get('/planejamento-estrategico', [PlanejamentoEstrategicoController::class, 'externo'])
+    ->name('planejamento-estrategico');
+Route::get('/planejamento-estrategico/dados', [PlanejamentoEstrategicoController::class, 'dados'])
+    ->name('planejamento-estrategico.dados');
 Route::get('/congresso', [App\Http\Controllers\HomeController::class, 'congresso'])
     ->name('congresso');
 

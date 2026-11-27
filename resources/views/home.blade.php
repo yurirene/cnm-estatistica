@@ -87,6 +87,9 @@
         <div class="buttons">
             <a href="{{ route('estatistica') }}" class="btn">Painel de Estatística</a>
         </div>
+        <div class="buttons">
+            <a href="{{ route('planejamento-estrategico') }}" class="btn">Metas do Quinquênio</a>
+        </div>
         
         <div class="buttons">
             <a href="{{ route('digesto') }}" class="btn">Digesto</a>

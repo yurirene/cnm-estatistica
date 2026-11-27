@@ -140,7 +140,7 @@
             height: 44px !important;
         }
     </style>
-    <link rel="stylesheet" href="/css/theme.css?v=20261014-badge-secondary">
+    <link rel="stylesheet" href="/css/theme.css?v=20261127-planejamento">
 </head>
 
 <body class="{{ $class ?? '' }}">
