@@ -90,6 +90,9 @@
         <div class="buttons">
             <a href="{{ route('planejamento-estrategico') }}" class="btn">Metas do Quinquênio</a>
         </div>
+        <div class="buttons">
+            <a href="{{ route('game-ump.acompanhamento') }}" class="btn">Game UMP</a>
+        </div>
         
         <div class="buttons">
             <a href="{{ route('digesto') }}" class="btn">Digesto</a>

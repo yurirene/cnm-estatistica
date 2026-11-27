@@ -13,6 +13,7 @@ use App\Http\Controllers\Congresso\CongressoNacionalController;
 use App\Http\Controllers\Diretorias\DiretoriasFederacaoController;
 use App\Http\Controllers\Produtos\ConsignacaoProdutoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GamificacaoAcompanhamentoController;
 use App\Http\Controllers\GamificacaoPainelController;
 use App\Http\Controllers\DatatableAjaxController;
 use App\Http\Controllers\DelegadoComissaoExecutivaController;
@@ -81,6 +82,10 @@ Route::get('/planejamento-estrategico', [PlanejamentoEstrategicoController::clas
     ->name('planejamento-estrategico');
 Route::get('/planejamento-estrategico/dados', [PlanejamentoEstrategicoController::class, 'dados'])
     ->name('planejamento-estrategico.dados');
+Route::get('/game-ump', [GamificacaoAcompanhamentoController::class, 'externo'])
+    ->name('game-ump.acompanhamento');
+Route::get('/game-ump/dados', [GamificacaoAcompanhamentoController::class, 'dados'])
+    ->name('game-ump.acompanhamento.dados');
 Route::get('/congresso', [App\Http\Controllers\HomeController::class, 'congresso'])
     ->name('congresso');
 

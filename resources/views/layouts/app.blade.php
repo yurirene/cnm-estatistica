@@ -137,7 +137,7 @@
 
     </script>
     @stack('css')
-    <link rel="stylesheet" href="/css/theme.css?v=20261127-planejamento-gtsi">
+    <link rel="stylesheet" href="/css/theme.css?v=20261127-game-ump">
 </head>
 
 <body class="{{ $class ?? '' }}">

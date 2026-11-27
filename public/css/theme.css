@@ -2542,19 +2542,19 @@ body:has(.digesto-busca) .header.bg-gradient-primary {
 .painel-planejamento .pe-objective-header {
     color: #fff;
     padding: 20px 22px;
-    background: linear-gradient(135deg, var(--color-banner-from) 0%, var(--color-primary) 100%);
+    background: var(--color-primary);
 }
 
 .painel-planejamento .pe-objective-header.pe-cor-teal {
-    background: linear-gradient(135deg, #1A6B63 0%, var(--color-teal) 100%);
+    background: var(--color-teal);
 }
 
 .painel-planejamento .pe-objective-header.pe-cor-primary {
-    background: linear-gradient(135deg, var(--color-banner-from) 0%, var(--color-primary) 100%);
+    background: var(--color-primary);
 }
 
 .painel-planejamento .pe-objective-header.pe-cor-warn {
-    background: linear-gradient(135deg, #8A5A18 0%, var(--color-warn) 100%);
+    background: var(--color-warn);
 }
 
 .painel-planejamento .pe-objective-number {
@@ -2751,4 +2751,536 @@ body:has(.digesto-busca) .header.bg-gradient-primary {
     background: var(--color-pale);
     border-radius: 999px;
     padding: 3px 8px;
+}
+
+/* —— Game UMP acompanhamento público —— */
+.painel-game-ump.is-loading {
+    opacity: .72;
+    pointer-events: none;
+}
+
+.painel-game-ump .game-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.painel-game-ump .game-segmentos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    background: var(--color-pale, #f4f6fb);
+    border: 1px solid rgba(50, 50, 93, .08);
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.painel-game-ump .game-segmentos .btn {
+    border: 0;
+    background: transparent;
+    color: var(--color-ink, #32325d);
+    font-weight: 600;
+    min-height: 36px;
+    padding: 6px 14px;
+    border-radius: 7px;
+}
+
+.painel-game-ump .game-segmentos .btn:hover {
+    background: rgba(46, 67, 160, .08);
+}
+
+.painel-game-ump .game-segmentos .btn[aria-pressed="true"] {
+    background: var(--color-primary, #2e43a0);
+    color: #fff;
+}
+
+.painel-game-ump .game-situacao {
+    background: linear-gradient(135deg, var(--color-banner-from, #1b2a5a) 0%, var(--color-primary, #2e43a0) 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 18px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+.painel-game-ump .game-situacao dl {
+    margin: 0;
+}
+
+.painel-game-ump .game-situacao dt {
+    font-size: .85rem;
+    color: #bccbe8;
+}
+
+.painel-game-ump .game-situacao dd {
+    margin: 2px 0 0;
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.painel-game-ump .game-situacao dd small {
+    display: block;
+    font-size: .85rem;
+    font-weight: 400;
+    color: #dbe4f5;
+    margin-top: 4px;
+}
+
+.painel-game-ump .game-situacao .destaque dd {
+    color: #f2b705;
+}
+
+.painel-game-ump .game-pista {
+    overflow-x: auto;
+}
+
+.painel-game-ump .game-pista-grade {
+    min-width: 640px;
+}
+
+.painel-game-ump .game-raia {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    align-items: center;
+    border-top: 1px solid rgba(50, 50, 93, .08);
+}
+
+.painel-game-ump .game-raia-nome strong {
+    display: block;
+    font-size: .95rem;
+}
+
+.painel-game-ump .game-raia.liga-simonton .game-raia-nome strong { color: var(--color-gold, #b8943c); }
+.painel-game-ump .game-raia.liga-blackford .game-raia-nome strong { color: var(--color-silver, #6c7a91); }
+.painel-game-ump .game-raia.liga-conceicao .game-raia-nome strong { color: var(--color-bronze, #8a5a3b); }
+
+.painel-game-ump .game-raia-nome span {
+    font-size: .8rem;
+    color: var(--color-muted, #8898aa);
+}
+
+.painel-game-ump .game-trilho {
+    position: relative;
+    margin: 0 14px;
+    min-height: 66px;
+}
+
+.painel-game-ump .game-trilho > i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed #c5cee0;
+}
+
+.painel-game-ump .game-trilho > i.zona {
+    border-left: 2px solid #f2b705;
+    background: rgba(242, 183, 5, .08);
+}
+
+.painel-game-ump .game-marca {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    margin: 0 0 0 -9px;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: var(--color-primary, #2e43a0);
+    cursor: pointer;
+}
+
+.painel-game-ump .liga-simonton .game-marca { background: var(--color-gold, #b8943c); }
+.painel-game-ump .liga-blackford .game-marca { background: var(--color-silver, #6c7a91); }
+.painel-game-ump .liga-conceicao .game-marca { background: var(--color-bronze, #8a5a3b); }
+
+.painel-game-ump .game-marca:hover,
+.painel-game-ump .game-marca:focus-visible {
+    background: #f2b705;
+    z-index: 2;
+    transform: scale(1.35);
+}
+
+.painel-game-ump .game-eixo {
+    margin-left: 150px;
+    position: relative;
+    height: 38px;
+}
+
+.painel-game-ump .game-eixo > div {
+    position: relative;
+    margin: 0 14px;
+    height: 100%;
+}
+
+.painel-game-ump .game-eixo span {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: .78rem;
+    color: var(--color-muted, #8898aa);
+    white-space: nowrap;
+    top: 4px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.painel-game-ump .game-adesao {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.painel-game-ump .game-adesao button {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(130px, 220px) minmax(60px, 1fr) 90px;
+    gap: 14px;
+    align-items: center;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: left;
+}
+
+.painel-game-ump .game-adesao button:hover {
+    background: rgba(46, 67, 160, .06);
+}
+
+.painel-game-ump .game-adesao button[aria-pressed="true"] {
+    border-color: var(--color-primary, #2e43a0);
+    background: rgba(46, 67, 160, .08);
+}
+
+.painel-game-ump .game-adesao small {
+    display: block;
+    color: var(--color-muted, #8898aa);
+}
+
+.painel-game-ump .game-barra {
+    display: flex;
+    height: 12px;
+    background: #e6eaf3;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.painel-game-ump .game-barra b {
+    background: var(--color-primary, #2e43a0);
+}
+
+.painel-game-ump .game-barra em {
+    background: repeating-linear-gradient(135deg, var(--color-primary, #2e43a0) 0 3px, #a9c0ee 3px 6px);
+}
+
+.painel-game-ump .game-numero {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.painel-game-ump .game-prazos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.painel-game-ump .game-prazos li {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(50, 50, 93, .08);
+}
+
+.painel-game-ump .game-prazos time {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.painel-game-ump .game-prazos small {
+    display: block;
+    color: var(--color-muted, #8898aa);
+}
+
+.painel-game-ump .game-prazos .passou {
+    opacity: .7;
+}
+
+.painel-game-ump .game-prazos .proximo time {
+    background: #f2b705;
+    border-radius: 6px;
+    padding: 0 6px;
+    align-self: start;
+    justify-self: start;
+}
+
+.painel-game-ump .game-ferramentas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.painel-game-ump .game-ferramentas .form-control {
+    min-width: 160px;
+    max-width: 220px;
+}
+
+.painel-game-ump .game-filtro-ativo {
+    background: rgba(46, 67, 160, .08);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+
+.painel-game-ump .game-tabela {
+    font-variant-numeric: tabular-nums;
+}
+
+.painel-game-ump .game-tabela th,
+.painel-game-ump .game-tabela td {
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.painel-game-ump .game-tabela .text-left {
+    text-align: left;
+}
+
+.painel-game-ump .game-grupo th {
+    text-align: left;
+    background: #f4f6fb;
+    font-weight: 800;
+}
+
+.painel-game-ump .game-grupo.liga-simonton th { color: var(--color-gold, #b8943c); }
+.painel-game-ump .game-grupo.liga-blackford th { color: var(--color-silver, #6c7a91); }
+.painel-game-ump .game-grupo.liga-conceicao th { color: var(--color-bronze, #8a5a3b); }
+
+.painel-game-ump .game-grupo span {
+    font-weight: 400;
+    font-size: .85rem;
+    color: var(--color-muted, #8898aa);
+    margin-left: 8px;
+}
+
+.painel-game-ump .game-nome {
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--color-primary, #2e43a0);
+    font-weight: 700;
+    text-align: left;
+}
+
+.painel-game-ump .game-nome:hover {
+    text-decoration: underline;
+}
+
+.painel-game-ump .game-ponto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 26px;
+    border-radius: 13px;
+    font-weight: 700;
+    font-size: .9rem;
+    border: 2px solid transparent;
+}
+
+.painel-game-ump .game-ponto.atingido {
+    background: #14704f;
+    color: #fff;
+}
+
+.painel-game-ump .game-ponto.parcial {
+    border-color: #14704f;
+    color: #14704f;
+}
+
+.painel-game-ump .game-ponto.pendente {
+    border: 2px dashed #8592ac;
+    color: var(--color-muted, #8898aa);
+}
+
+.painel-game-ump .game-ponto.perdido {
+    background: #fbe9ec;
+    color: #a32c3d;
+}
+
+.painel-game-ump .game-total {
+    font-weight: 800;
+    font-size: 1.05rem;
+}
+
+.painel-game-ump .game-selo {
+    display: inline-block;
+    background: #fff0bd;
+    border: 1px solid #d79f00;
+    border-radius: 4px;
+    padding: 0 6px;
+    font-size: .78rem;
+    font-weight: 700;
+    margin: 1px;
+}
+
+.painel-game-ump .game-legenda {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 0;
+    margin: 14px 0 0;
+    font-size: .9rem;
+    color: var(--color-muted, #8898aa);
+}
+
+.game-detalhe {
+    margin: 0 0 0 auto;
+    height: 100dvh;
+    max-height: 100dvh;
+    width: min(560px, 100%);
+    max-width: 100%;
+    border: 0;
+    padding: 0;
+    background: #fff;
+    color: var(--color-ink, #32325d);
+    box-shadow: -18px 0 48px rgba(19, 38, 74, .25);
+}
+
+.game-detalhe::backdrop {
+    background: rgba(19, 38, 74, .45);
+}
+
+.game-detalhe .game-d-topo {
+    background: linear-gradient(135deg, var(--color-banner-from, #1b2a5a) 0%, var(--color-primary, #2e43a0) 100%);
+    color: #fff;
+    padding: 22px 26px;
+}
+
+.game-detalhe .game-d-topo h2 {
+    font-size: 1.35rem;
+    margin: 0;
+    color: #fff;
+}
+
+.game-detalhe .game-d-topo p {
+    color: #cbd8f0;
+    margin: 4px 0 0;
+}
+
+.game-detalhe .game-d-total {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #f2b705;
+    margin-top: 16px;
+    line-height: 1;
+}
+
+.game-detalhe .game-d-total small {
+    display: block;
+    font-size: .9rem;
+    font-weight: 400;
+    color: #dbe4f5;
+    margin-top: 8px;
+}
+
+.game-detalhe .game-d-corpo {
+    padding: 20px 26px 32px;
+    display: grid;
+    gap: 22px;
+}
+
+.game-detalhe .game-criterio {
+    border-top: 1px solid rgba(50, 50, 93, .08);
+    padding: 12px 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 14px;
+}
+
+.game-detalhe .game-criterio h3 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.game-detalhe .game-criterio p {
+    grid-column: 1 / -1;
+    font-size: .92rem;
+    margin: 0;
+}
+
+.game-detalhe .game-criterio .game-barra {
+    grid-column: 1 / -1;
+    height: 8px;
+}
+
+.game-detalhe .game-regua {
+    position: relative;
+    height: 22px;
+    background: #e6eaf3;
+    border-radius: 6px;
+    margin: 34px 0 30px;
+}
+
+.game-detalhe .game-regua .garantido {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--color-primary, #2e43a0);
+    border-radius: 6px 0 0 6px;
+}
+
+.game-detalhe .game-regua i {
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    width: 2px;
+    background: #b98900;
+}
+
+.game-detalhe .game-regua i span {
+    position: absolute;
+    bottom: 100%;
+    transform: translateX(-50%);
+    font-size: .75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.game-detalhe .game-regua i em {
+    position: absolute;
+    top: 100%;
+    transform: translateX(-50%);
+    font-style: normal;
+    font-size: .75rem;
+    color: var(--color-muted, #8898aa);
+    white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+    .painel-game-ump .game-adesao button {
+        grid-template-columns: minmax(0, 1fr) 80px;
+    }
+
+    .painel-game-ump .game-adesao .game-barra {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .game-detalhe[open] {
+        animation: game-detalhe-entrar .22s ease-out;
+    }
+
+    @keyframes game-detalhe-entrar {
+        from { transform: translateX(40px); opacity: 0; }
+    }
 }

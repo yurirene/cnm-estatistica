@@ -38,6 +38,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link nav-link-icon" target="_blank" href="{{ route('game-ump.acompanhamento') }}">
+                        <i class="fas fa-trophy"></i>
+                        <span class="nav-link-inner--text">Game UMP</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link nav-link-icon" href="{{ route('digesto') }}">
                         <i class="ni ni-collection"></i>
                         <span class="nav-link-inner--text">Digesto</span>
