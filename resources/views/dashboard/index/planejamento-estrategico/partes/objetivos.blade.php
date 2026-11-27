@@ -43,6 +43,21 @@
 
                         <span class="pe-status-badge {{ $status['classe'] }}">{{ $status['label'] }}</span>
 
+                        @if(!empty($atual['pilares']))
+                            <div class="pe-pilares mt-3">
+                                <div class="pe-chart-title mb-2">Pilares avaliados</div>
+                                @foreach($atual['pilares'] as $pilar)
+                                    <div class="pe-subkpi-row">
+                                        <div class="pe-subkpi-label">{{ $pilar['label'] }}</div>
+                                        <div class="text-right">
+                                            <strong>{{ $pilar['ok'] }}/{{ $pilar['total'] }}</strong>
+                                            <div class="pe-detail text-muted">{{ number_format((float) $pilar['percentual'], 1, ',', '.') }}%</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
                         <div class="pe-mini-chart-wrap">
                             <div class="pe-chart-title">Evolução anual (realizado × meta)</div>
                             <div class="pe-mini-chart">
@@ -68,14 +83,16 @@
 
                     @if(count($objetivo['indicadores']) > 1)
                         <div class="pe-subkpis mt-3">
-                            <div class="pe-chart-title mb-2">Outros indicadores</div>
+                            <div class="pe-chart-title mb-2">
+                                {{ $objetivo['id'] === 3 ? 'Instâncias inferiores (ACI + Estatística)' : 'Outros indicadores' }}
+                            </div>
                             @foreach($objetivo['indicadores'] as $indicador)
                                 @continue($indicador['principal'])
                                 @php $indAtual = $indicador['atual'] ?? null; @endphp
                                 <div class="pe-subkpi-row">
                                     <div>
                                         <div class="pe-subkpi-label">{{ $indicador['label'] }}</div>
-                                        <div class="pe-detail text-muted">{{ $indAtual['detalhe'] ?? '' }}</div>
+                                        <div class="pe-detail text-muted">{{ $indAtual['detalhe'] ?? ($indicador['descricao'] ?? '') }}</div>
                                     </div>
                                     <div class="text-right">
                                         <strong>{{ number_format((float) ($indAtual['valor'] ?? 0), 1, ',', '.') }}{{ $indicador['unidade'] }}</strong>
@@ -84,6 +101,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if(!empty($indAtual['pilares']))
+                                    <div class="pe-pilares-mini mb-2">
+                                        @foreach($indAtual['pilares'] as $pilar)
+                                            <span class="pe-pilar-chip">
+                                                {{ $pilar['label'] }}: {{ $pilar['ok'] }}/{{ $pilar['total'] }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif
