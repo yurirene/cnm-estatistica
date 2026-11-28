@@ -54,17 +54,23 @@
         </ul>
     </div>
 </nav>
-<div class="modal fade" id="trocar-senha" tabindex="-1" aria-labelledby="trocar-senhaLabel" aria-hidden="true">
+<div class="modal fade" id="trocar-senha" tabindex="-1" aria-labelledby="trocar-senhaLabel" aria-hidden="true"
+    @if(auth()->user()?->must_change_password || session('forcar_troca_senha')) data-backdrop="static" data-keyboard="false" @endif>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="trocar-senhaLabel">Trocar Senha</h5>
+                @unless(auth()->user()?->must_change_password || session('forcar_troca_senha'))
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                @endunless
             </div>
             {!! Form::open(['method' => 'POST', 'route' => 'dashboard.trocar-senha', 'class' => 'form-horizontal']) !!}
             <div class="modal-body">
+                @if(auth()->user()?->must_change_password || session('forcar_troca_senha'))
+                    <p class="text-danger">É necessário definir uma nova senha para continuar usando o sistema.</p>
+                @endif
                 <div class="form-group{{ $errors->has('antiga_senha') ? ' has-error' : '' }}">
                     {!! Form::label('antiga_senha', 'Senha Antiga', ['class' => 'control-label']) !!}
                     {!! Form::password(
@@ -77,17 +83,26 @@
                 {!! Form::label('nova_senha', 'Nova Senha', ['class' => 'control-label']) !!}
                 {!! Form::password(
                     'nova_senha',
-                    ['class' => 'form-control', 'required' => 'required', 'autocomplete' => 'off']
+                    ['class' => 'form-control', 'required' => 'required', 'autocomplete' => 'off', 'minlength' => 8]
                 ) !!}
                 <small class="text-danger">{{ $errors->first('nova_senha') }}</small>
 
                 </div>
             </div>
             <div class="modal-footer">
+                @unless(auth()->user()?->must_change_password || session('forcar_troca_senha'))
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                @endunless
                 <button type="submit" class="btn btn-primary">Salvar</button>
             </div>
             {!! Form::close() !!}
         </div>
     </div>
 </div>
+@if(auth()->user()?->must_change_password || session('forcar_troca_senha'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#trocar-senha').modal('show');
+    });
+</script>
+@endif

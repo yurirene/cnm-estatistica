@@ -15,7 +15,7 @@ class DefaultPasswordTest extends TestCase
     use RefreshDatabase;
     use CreatesUsersAndRoles;
 
-    public function test_store_does_not_use_password_123(): void
+    public function test_store_uses_password_123_and_forces_change(): void
     {
         $role = $this->createRole(User::ROLE_LOCAL);
 
@@ -25,13 +25,12 @@ class DefaultPasswordTest extends TestCase
             'role_id' => $role->id,
         ]));
 
-        $this->assertFalse(Hash::check('123', $usuario->password));
-        $this->assertTrue($usuario->must_change_password);
-        $this->assertNotEmpty($usuario->temporary_plain_password);
-        $this->assertTrue(Hash::check($usuario->temporary_plain_password, $usuario->fresh()->password));
+        $this->assertTrue(Hash::check('123', $usuario->fresh()->password));
+        $this->assertTrue($usuario->fresh()->must_change_password);
+        $this->assertSame('123', $usuario->temporary_plain_password);
     }
 
-    public function test_reset_does_not_use_password_123(): void
+    public function test_reset_uses_password_123_and_forces_change(): void
     {
         $usuario = $this->createUserWithRole(User::ROLE_LOCAL, [
             'password' => Hash::make('antiga'),
@@ -39,10 +38,9 @@ class DefaultPasswordTest extends TestCase
 
         $senha = UserService::resetarSenha($usuario);
 
-        $this->assertNotSame('123', $senha);
-        $this->assertFalse(Hash::check('123', $usuario->fresh()->password));
+        $this->assertSame('123', $senha);
+        $this->assertTrue(Hash::check('123', $usuario->fresh()->password));
         $this->assertTrue($usuario->fresh()->must_change_password);
-        $this->assertTrue(Hash::check($senha, $usuario->fresh()->password));
     }
 
     public function test_get_reset_route_no_longer_exists(): void
@@ -52,5 +50,16 @@ class DefaultPasswordTest extends TestCase
         $this->actingAs($usuario)
             ->get('/dashboard/usuarios-senha-resetar/' . $usuario->id)
             ->assertStatus(404);
+    }
+
+    public function test_user_with_must_change_password_is_blocked_from_other_routes(): void
+    {
+        $usuario = $this->createUserWithRole(User::ROLE_LOCAL, [
+            'must_change_password' => true,
+        ], ['dashboard.locais.index']);
+
+        $this->actingAs($usuario)
+            ->get(route('dashboard.locais.index'))
+            ->assertRedirect(route('dashboard.home'));
     }
 }

@@ -20,6 +20,16 @@ class AuthSistema
             'dashboard.usuarios.check-usuario'
         ];
 
+        if (auth()->user()?->must_change_password && !in_array($route, $excpetions, true)) {
+            return redirect()->route('dashboard.home')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Por segurança, troque sua senha antes de continuar.'
+                ],
+                'forcar_troca_senha' => true,
+            ]);
+        }
+
         if (in_array($route, $excpetions)) {
             return $next($request);
         }

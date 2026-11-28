@@ -48,6 +48,15 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
+        if ($user->must_change_password) {
+            return redirect()->route('dashboard.home')->with([
+                'mensagem' => [
+                    'status' => false,
+                    'texto' => 'Por segurança, troque sua senha antes de continuar.'
+                ],
+                'forcar_troca_senha' => true,
+            ]);
+        }
     }
 
     public function logout()
