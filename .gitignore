@@ -18,4 +18,5 @@ yarn-error.log
 /develop
 .well-known/
 .htaccess
-composer.lock
+/storage/app/dumps/*
+!/storage/app/dumps/.gitignore

@@ -49,10 +49,18 @@ class EventoService
      * @param array $request
      * @return void
      */
+    public static function assertEventoOwnership(string $eventoId): Evento
+    {
+        $evento = Evento::findOrFail($eventoId);
+        SiteService::assertSinodalOwnership($evento->sinodal_id);
+
+        return $evento;
+    }
+
     public static function atualizarConfig(string $eventoId, array $request)
     {
         try {
-            $evento = Evento::find($eventoId);
+            $evento = self::assertEventoOwnership($eventoId);
             $pathArte1 = $evento->path_arte_1 ?? null;
 
             $pathArte1 = self::salvarArte($request, $pathArte1, 'arte_evento_principal', $evento->sinodal_id);
@@ -246,6 +254,8 @@ class EventoService
      */
     public static function removerInscrito(string $eventoId, int $inscritoId)
     {
+        self::assertEventoOwnership($eventoId);
+
         EventoInscrito::where('evento_id', $eventoId)
             ->where('id', $inscritoId)
             ->first()
@@ -254,6 +264,8 @@ class EventoService
 
     public static function limparLista(string $eventoId)
     {
+        self::assertEventoOwnership($eventoId);
+
         $inscritos = EventoInscrito::where('evento_id', $eventoId)->get();
         foreach ($inscritos as $inscrito) {
             $inscrito->delete();

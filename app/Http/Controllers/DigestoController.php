@@ -49,6 +49,9 @@ class DigestoController extends Controller
     public function store(Request $request)
     {
         try {
+            $request->validate([
+                'arquivo' => ['required', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            ]);
             DigestoService::store($request);
             return redirect()->route('dashboard.digestos.index')->with([
                 'mensagem' => [
@@ -91,6 +94,9 @@ class DigestoController extends Controller
     public function update(Digesto $digesto, Request $request)
     {
         try {
+            $request->validate([
+                'arquivo' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:10240'],
+            ]);
             DigestoService::update($digesto, $request);
             return redirect()->route('dashboard.digestos.index')->with([
                 'mensagem' => [

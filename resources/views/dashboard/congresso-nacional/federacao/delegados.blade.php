@@ -25,9 +25,9 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item text-danger" href="{{ route('dashboard.cn.federacao.delegado.delete', $delegado->id) }}">
+                                    <button type="button" class="dropdown-item text-danger" onclick="deleteRegistro('{{ route('dashboard.cn.federacao.delegado.delete', $delegado->id) }}')">
                                         <i class="fas fa-trash"></i> Excluir
-                                    </a>
+                                    </button>
                                 </li>
                             </ul>
                         </div>

@@ -33,6 +33,7 @@ class User extends Authenticatable
         'google_drive_folder',
         'gmail_alias',
         'gmail_label',
+        'must_change_password',
     ];
 
     protected $hidden = [
@@ -41,6 +42,7 @@ class User extends Authenticatable
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'must_change_password' => 'boolean',
     ];
 
     public const ROLES_SECRETARIOS = [

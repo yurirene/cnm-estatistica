@@ -311,7 +311,20 @@
 
 @push('js')
 <script>
-    const ROTA_RESET_SENHA = "{{ route('dashboard.usuarios.resetar-senha', ':id') }}";
+    const ROTA_RESET_SENHA = "{{ url('/dashboard/usuarios-senha-reset') }}/:id";
+    function resetarSenhaUsuario(usuarioId) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = ROTA_RESET_SENHA.replace(':id', usuarioId);
+        form.style.display = 'none';
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        form.appendChild(csrf);
+        document.body.appendChild(form);
+        form.submit();
+    }
     $(function() {
         var url = '{{ route("dashboard.datatables.informacao-federacoes", ":id") }}'
         $('#modal_informacoes_federacoes').on('show.bs.modal', function (event) {
@@ -326,7 +339,13 @@
 
             modal.find('#sigla_federacao').text(nome);
             modal.find('#usuario_federacao').text(usuario);
-            modal.find('#botao_modal_resetar_senha').attr('href', ROTA_RESET_SENHA.replace(':id', usuarioId))
+            modal.find('#botao_modal_resetar_senha')
+                .attr('href', '#')
+                .off('click')
+                .on('click', function (e) {
+                    e.preventDefault();
+                    resetarSenhaUsuario(usuarioId);
+                });
 
             carregarDatatable(rota);
 
@@ -379,11 +398,11 @@
                 {data: 'usuario_email'},
                 {
                     render: function (data, type, result) {
-                        return `<a href="${ROTA_RESET_SENHA.replace(':id', result.usuario_id)}"
+                        return `<button type="button" onclick="resetarSenhaUsuario('${result.usuario_id}')"
                             class="btn btn-danger btn-sm text-center"
                         >
                             <i class="fas fa-key"></i> Resetar
-                        </a>`;
+                        </button>`;
                     }
                 },
             ]

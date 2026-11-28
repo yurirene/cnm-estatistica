@@ -4,11 +4,10 @@
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-        <a href="{{ route($route.'.delete', $id) }}"
-            class="dropdown-item"
-        >
+        <button type="button" class="dropdown-item"
+            onclick="deleteRegistro('{{ route($route.'.delete', $id) }}')">
             Remover
-        </a>
+        </button>
 
         <button type="button" data-target="#modal-visualizados" data-id="{{ $id }}" data-toggle="modal"
             class="dropdown-item"

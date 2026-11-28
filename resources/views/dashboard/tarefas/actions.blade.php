@@ -26,11 +26,11 @@
             Concluir
         </a>
         @endif
-        <a href="{{ route('dashboard.tarefas.delete', $tarefa) }}"
+        <button type="button"
             class="dropdown-item text-danger"
-            onclick="return confirm('Deseja remover esta tarefa?');"
+            onclick="deleteRegistro('{{ route('dashboard.tarefas.delete', $tarefa) }}')"
         >
             Remover
-        </a>
+        </button>
     </div>
 </div>

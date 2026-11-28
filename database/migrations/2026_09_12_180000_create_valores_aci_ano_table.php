@@ -99,8 +99,8 @@ return new class extends Migration
         $permissao = Permission::updateOrCreate(
             ['slug' => 'dashboard.estatistica.atualizarValorAciAno'],
             [
-                'name' => 'Módulo Secretaria-estatistica - atualizarValorAciAno',
-                'resource' => 'secretaria-estatistica',
+                'name' => 'Atualizar valor ACI por ano',
+                'resource' => 'estatistica',
             ]
         );
 

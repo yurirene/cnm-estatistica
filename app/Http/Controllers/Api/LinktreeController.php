@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 class LinktreeController extends Controller
 {
     /**
-     * Valida e-mail e senha e confirma se o usuário pertence à diretoria.
+     * Valida e-mail e senha e emite token Sanctum para diretoria.
      */
     public function login(Request $request): JsonResponse
     {
@@ -41,14 +41,21 @@ class LinktreeController extends Controller
             ], 403);
         }
 
+        $user->tokens()->where('name', 'linktree')->delete();
+        $token = $user->createToken('linktree')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'message' => 'Login válido para diretoria.',
+            'token' => $token,
+            'token_type' => 'Bearer',
         ]);
     }
 
-    public function links()
+    public function links(Request $request): JsonResponse
     {
+        $this->ensureDiretoria($request->user());
+
         return response()->json([
             'success' => true,
             'message' => 'Links encontrados com sucesso.',
@@ -62,8 +69,10 @@ class LinktreeController extends Controller
         ]);
     }
 
-    public function addLink(Request $request)
+    public function addLink(Request $request): JsonResponse
     {
+        $this->ensureDiretoria($request->user());
+
         $validated = $request->validate([
             'name' => ['required', 'string'],
             'url' => ['required', 'string'],
@@ -78,11 +87,20 @@ class LinktreeController extends Controller
 
     public function removerLink(Request $request, LinkTree $link): JsonResponse
     {
+        $this->ensureDiretoria($request->user());
+
         $link->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Link removido com sucesso.',
         ]);
+    }
+
+    private function ensureDiretoria(?User $user): void
+    {
+        if ($user === null || $user->role->name !== User::ROLE_DIRETORIA) {
+            abort(403, 'Acesso permitido apenas para usuários da diretoria.');
+        }
     }
 }

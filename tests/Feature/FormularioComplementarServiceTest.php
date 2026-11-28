@@ -6,61 +6,89 @@ use App\Models\FormularioComplementarFederacao;
 use App\Models\FormularioComplementarSinodal;
 use App\Services\Formularios\FormularioComplementarService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesUsersAndRoles;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabaseState;
-
 
 class FormularioComplementarServiceTest extends TestCase
 {
-    public function test_get_formulario_complementar_federacao_exists()
+    use RefreshDatabase;
+    use CreatesUsersAndRoles;
+
+    public function test_get_formulario_complementar_federacao_exists(): void
     {
-        $instanciaId = '1';
+        $sinodal = $this->createSinodal();
+        $federacao = $this->createFederacao($sinodal);
+        $ano = (int) date('Y');
         $tipo = FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO;
 
         $formulario = FormularioComplementarFederacao::create([
-            'federacao_id' => $instanciaId
+            'federacao_id' => $federacao->id,
+            'ano' => $ano,
         ]);
 
-        $result = FormularioComplementarService::getFormularioComplementar($instanciaId, $tipo);
+        $result = FormularioComplementarService::getFormularioComplementar(
+            $federacao->id,
+            $tipo,
+            $ano
+        );
 
         $this->assertInstanceOf(FormularioComplementarFederacao::class, $result);
         $this->assertEquals($formulario->id, $result->id);
     }
 
-    public function test_get_formulario_complementar_federacao_not_exists()
+    public function test_get_formulario_complementar_federacao_not_exists(): void
     {
-        $instanciaId = '1';
+        $sinodal = $this->createSinodal();
+        $federacao = $this->createFederacao($sinodal);
+        $ano = (int) date('Y');
         $tipo = FormularioComplementarService::TIPO_FORMULARIO_FEDERACAO;
 
-        $result = FormularioComplementarService::getFormularioComplementar($instanciaId, $tipo);
+        $result = FormularioComplementarService::getFormularioComplementar(
+            $federacao->id,
+            $tipo,
+            $ano
+        );
 
         $this->assertInstanceOf(FormularioComplementarFederacao::class, $result);
-        $this->assertEquals($instanciaId, $result->federacao_id);
+        $this->assertEquals($federacao->id, $result->federacao_id);
+        $this->assertEquals($ano, $result->ano);
     }
 
-    public function test_get_formulario_complementar_sinodal_exists()
+    public function test_get_formulario_complementar_sinodal_exists(): void
     {
-        $instanciaId = '1';
+        $sinodal = $this->createSinodal();
+        $ano = (int) date('Y');
         $tipo = FormularioComplementarService::TIPO_FORMULARIO_SINODAL;
 
         $formulario = FormularioComplementarSinodal::create([
-            'sinodal_id' => $instanciaId
+            'sinodal_id' => $sinodal->id,
+            'ano' => $ano,
         ]);
 
-        $result = FormularioComplementarService::getFormularioComplementar($instanciaId, $tipo);
+        $result = FormularioComplementarService::getFormularioComplementar(
+            $sinodal->id,
+            $tipo,
+            $ano
+        );
 
         $this->assertInstanceOf(FormularioComplementarSinodal::class, $result);
         $this->assertEquals($formulario->id, $result->id);
     }
 
-    public function test_get_formulario_complementar_sinodal_not_exists()
+    public function test_get_formulario_complementar_sinodal_not_exists(): void
     {
-        $instanciaId = '1';
+        $sinodal = $this->createSinodal();
+        $ano = (int) date('Y');
         $tipo = FormularioComplementarService::TIPO_FORMULARIO_SINODAL;
 
-        $result = FormularioComplementarService::getFormularioComplementar($instanciaId, $tipo);
+        $result = FormularioComplementarService::getFormularioComplementar(
+            $sinodal->id,
+            $tipo,
+            $ano
+        );
 
         $this->assertInstanceOf(FormularioComplementarSinodal::class, $result);
-        $this->assertEquals($instanciaId, $result->sinodal_id);
+        $this->assertEquals($sinodal->id, $result->sinodal_id);
+        $this->assertEquals($ano, $result->ano);
     }
 }

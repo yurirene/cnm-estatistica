@@ -309,15 +309,52 @@ class DigestoService
      */
     public static function exibir(string $path)
     {
-        $posicaoDoc = strpos($path, '.doc');
-        if ($posicaoDoc) {
-            $novoNome = 'digesto_' . date('ymdhis') . substr($path, $posicaoDoc);
-            return response()->download(self::PATH_DIR . $path, $novoNome);
+        $caminhoSeguro = self::resolverCaminhoSeguro($path);
+
+        $posicaoDoc = strpos($caminhoSeguro, '.doc');
+        if ($posicaoDoc !== false) {
+            $novoNome = 'digesto_' . date('ymdhis') . substr($caminhoSeguro, $posicaoDoc);
+            return response()->download($caminhoSeguro, $novoNome);
         }
-        if (! file_exists(self::PATH_DIR.$path)) {
-            abort(404, 'Aquivo não encontrado!');
+
+        return response()->file($caminhoSeguro);
+    }
+
+    public static function resolverCaminhoSeguro(string $path): string
+    {
+        $path = ltrim(str_replace(['\\', "\0"], ['/', ''], $path), '/');
+
+        if ($path === '' || str_contains($path, '..')) {
+            abort(404, 'Arquivo não encontrado!');
         }
-        return response()->file(self::PATH_DIR . $path);
+
+        $base = realpath(base_path(rtrim(self::PATH_DIR, '/')));
+        if ($base === false) {
+            abort(404, 'Arquivo não encontrado!');
+        }
+
+        $candidato = realpath(base_path(self::PATH_DIR . $path))
+            ?: realpath($path);
+
+        // Aceita path relativo ao PATH_DIR ou path absoluto já sob o diretório base.
+        if ($candidato === false) {
+            $candidatoTentativo = base_path(self::PATH_DIR . $path);
+            if (!is_file($candidatoTentativo)) {
+                abort(404, 'Arquivo não encontrado!');
+            }
+            $candidato = realpath($candidatoTentativo) ?: $candidatoTentativo;
+        }
+
+        $prefixo = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (!str_starts_with($candidato, $prefixo) && $candidato !== $base) {
+            abort(404, 'Arquivo não encontrado!');
+        }
+
+        if (!is_file($candidato)) {
+            abort(404, 'Arquivo não encontrado!');
+        }
+
+        return $candidato;
     }
 
     /**

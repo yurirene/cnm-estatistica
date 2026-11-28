@@ -29,11 +29,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use ZipArchive;
+use App\Models\User;
 
 class CongressoNacionalController extends Controller
 {
@@ -120,11 +122,12 @@ class CongressoNacionalController extends Controller
     {
         try {
             $delegado = DelegadoCongressoNacional::findOrFail($delegado);
+            $this->assertDelegadoSinodalOwnership($delegado);
             return view('dashboard.congresso-nacional.sinodal.delegado', [
                 'delegado' => $delegado
             ]);
         } catch (\Throwable $th) {
-            return redirect()->route('dashboard.congresso-nacional.sinodal.index')->with([
+            return redirect()->route('dashboard.cn.sinodal.index')->with([
                 'mensagem' => [
                     'status' => false,
                     'texto' => 'Algo deu Errado!'
@@ -216,6 +219,7 @@ class CongressoNacionalController extends Controller
     {
         try {
             $delegado = DelegadoCongressoNacional::findOrFail($delegado);
+            $this->assertDelegadoFederacaoOwnership($delegado);
             return view('dashboard.congresso-nacional.federacao.delegado', [
                 'delegado' => $delegado
             ]);
@@ -382,6 +386,7 @@ class CongressoNacionalController extends Controller
     {
         try {
             $delegado = DelegadoCongressoNacional::findOrFail($delegado);
+            $this->assertDelegadoFederacaoOwnership($delegado);
             $delegado->delete();
 
             return redirect()->route('dashboard.cn.federacao.index')->with([
@@ -557,6 +562,7 @@ class CongressoNacionalController extends Controller
     {
         try {
             $delegado = DelegadoCongressoNacional::findOrFail($delegado);
+            $this->assertDelegadoSinodalOwnership($delegado);
             $delegado->delete();
 
             return redirect()->route('dashboard.cn.sinodal.index')->with([
@@ -565,6 +571,8 @@ class CongressoNacionalController extends Controller
                     'texto' => 'Delegado excluído com sucesso!'
                 ]
             ]);
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e) {
+            throw $e;
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),
@@ -1737,5 +1745,39 @@ class CongressoNacionalController extends Controller
         }
     }
 
-    
+    private function assertDelegadoSinodalOwnership(DelegadoCongressoNacional $delegado): void
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            abort(403);
+        }
+
+        if (Gate::allows('isAdmin') || in_array($user->role->name, [User::ROLE_DIRETORIA, User::ROLE_SEC_EXECUTIVA], true)) {
+            return;
+        }
+
+        $sinodal = UserService::getInstanciaUsuarioLogado();
+        if (!$sinodal || $delegado->sinodal_id !== $sinodal->id) {
+            abort(403, 'Você não tem permissão para acessar este delegado.');
+        }
+    }
+
+    private function assertDelegadoFederacaoOwnership(DelegadoCongressoNacional $delegado): void
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            abort(403);
+        }
+
+        if (Gate::allows('isAdmin') || in_array($user->role->name, [User::ROLE_DIRETORIA, User::ROLE_SEC_EXECUTIVA], true)) {
+            return;
+        }
+
+        $federacao = UserService::getInstanciaUsuarioLogado();
+        if (!$federacao || $delegado->federacao_id !== $federacao->id) {
+            abort(403, 'Você não tem permissão para acessar este delegado.');
+        }
+    }
 }

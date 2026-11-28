@@ -41,7 +41,10 @@ class ComprovanteAciService
                 unlink($complete_path);
             }
 
-            if ($request->has('arquivo')) {
+            if ($request->hasFile('arquivo')) {
+                $request->validate([
+                    'arquivo' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+                ]);
                 $path = $request->file('arquivo')->store('public/comprovante_aci');
                 $comprovante->update([
                     'path' => '/' . str_replace('public', 'storage', $path)

@@ -5,7 +5,9 @@ namespace App\Services\Apps;
 use App\Models\Apps\Site\ModeloSite;
 use App\Models\Apps\Site\Site;
 use App\Models\Sinodal;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -23,6 +25,22 @@ use Illuminate\Support\Facades\Storage;
  */
 class SiteService
 {
+    public static function assertSinodalOwnership(string $sinodalId): void
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            abort(403);
+        }
+
+        if (Gate::allows('isAdmin') || $user->role->name === User::ROLE_DIRETORIA) {
+            return;
+        }
+
+        if ($user->sinodal_id !== $sinodalId) {
+            abort(403, 'Você não tem permissão para alterar o site desta sinodal.');
+        }
+    }
 
     public static function criarSite(Sinodal $sinodal): ?Site
     {
@@ -43,6 +61,7 @@ class SiteService
     public static function atualizarConfig(string $id, array $request)
     {
         try {
+            self::assertSinodalOwnership($id);
             $sinodal = Sinodal::find($id);
             $site = $sinodal->site;
             $config = $site->configuracoes;
@@ -96,6 +115,10 @@ class SiteService
     public static function adicionarNaGaleria(string $sinodal_id, Request $request)
     {
         try {
+            self::assertSinodalOwnership($sinodal_id);
+            $request->validate([
+                'foto' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            ]);
             if (!$request->hasFile('foto')) {
                 return;
             }
@@ -114,6 +137,7 @@ class SiteService
     public static function removerDaGaleria(string $sinodal_id, int $galeria_id)
     {
         try {
+            self::assertSinodalOwnership($sinodal_id);
             $sinodal = Sinodal::find($sinodal_id);
             $foto = $sinodal->galeria()
             ->where('id', $galeria_id)
@@ -130,6 +154,10 @@ class SiteService
     public static function atualizarFotoDiretoria(string $sinodal_id, Request $request)
     {
         try {
+            self::assertSinodalOwnership($sinodal_id);
+            $request->validate([
+                'foto' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            ]);
             if (!$request->hasFile('foto')) {
                 return;
             }
@@ -166,6 +194,7 @@ class SiteService
     {
 
         try {
+            self::assertSinodalOwnership($sinodal_id);
 
             $sinodal = Sinodal::find($sinodal_id);
             $site = $sinodal->site;
@@ -216,6 +245,7 @@ class SiteService
     public static function removerSecretaria(string $sinodalId, int $config, int $chave)
     {
         try {
+            self::assertSinodalOwnership($sinodalId);
 
             $sinodal = Sinodal::find($sinodalId);
             $site = $sinodal->site;
