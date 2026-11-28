@@ -122,13 +122,17 @@
 
 <main>
   <header>
-    <div class="logo" aria-hidden="true">UMP</div>
+    <div class="logo" aria-hidden="true">
+        <img style="width: 100%; height: 100%; object-fit: contain;" src="{{ asset('img/logos/ump_branco.png') }}" alt="UMP">
+    </div>
     <h1>Sistemas UMP</h1>
     <p>Selecione o sistema que deseja acessar.</p>
   </header>
 
   <a class="card featured" href="{{ route('dashboard.home') }}">
-    <span class="icon c-primary"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+    <span class="icon c-primary">
+        <img style="width: 80%; height: 80%; object-fit: contain;" src="{{ asset('img/logos/logo_branco.png') }}" alt="UMP">
+    </span>
     <span class="info">
       <span class="name">Plataforma UMP</span>
       <span class="desc">Cadastro, Estatística, Tesouraria...</span>

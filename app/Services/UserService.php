@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -51,7 +50,7 @@ class UserService
 
     public static function gerarSenhaTemporaria(): string
     {
-        return Str::password(16, true, true, false, false);
+        return '123';
     }
 
     public static function store(Request $request)

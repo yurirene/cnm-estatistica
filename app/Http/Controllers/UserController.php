@@ -85,7 +85,7 @@ class UserController extends Controller
             return redirect()->route('dashboard.usuarios.edit', $usuario->id)->with([
                 'mensagem' => [
                     'status' => true,
-                    'texto' => 'Senha temporária gerada: ' . $senhaTemporaria . '. O usuário deverá trocá-la no próximo acesso.'
+                    'texto' => 'Senha redefinida para 123. O usuário deverá trocá-la no próximo acesso.'
                 ]
             ]);
         } catch (Throwable $th) {
