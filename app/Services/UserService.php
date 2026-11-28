@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -48,17 +49,26 @@ class UserService
         return Regiao::where('id', auth()->user()->regiao_id)->get();
     }
 
+    public static function gerarSenhaTemporaria(): string
+    {
+        return Str::password(16, true, true, false, false);
+    }
+
     public static function store(Request $request)
     {
         DB::beginTransaction();
 
         try {
+            $senhaTemporaria = self::gerarSenhaTemporaria();
+
             $usuario = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make('123'),
+                'password' => Hash::make($senhaTemporaria),
                 'role_id' => $request->role_id,
+                'must_change_password' => true,
             ]);
+            $usuario->temporary_plain_password = $senhaTemporaria;
 
             $data = [];
 
@@ -169,12 +179,16 @@ class UserService
         }
     }
 
-    public static function resetarSenha(User $usuario)
+    public static function resetarSenha(User $usuario): string
     {
         try {
+            $senhaTemporaria = self::gerarSenhaTemporaria();
             $usuario->update([
-                'password' => Hash::make('123')
+                'password' => Hash::make($senhaTemporaria),
+                'must_change_password' => true,
             ]);
+
+            return $senhaTemporaria;
         } catch (\Throwable $th) {
             LogErroService::registrar([
                 'message' => $th->getMessage(),

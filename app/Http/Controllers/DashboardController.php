@@ -31,8 +31,13 @@ class DashboardController extends Controller
             ]);
         }
         try {
+            $request->validate([
+                'nova_senha' => ['required', 'string', 'min:8'],
+            ]);
+
             $request->user()->fill([
-                'password' => Hash::make($request->nova_senha)
+                'password' => Hash::make($request->nova_senha),
+                'must_change_password' => false,
             ])->save();
 
             return redirect()->back()->with([

@@ -81,32 +81,11 @@ class UserController extends Controller
     public function resetSenha(Request $request, User $usuario)
     {
         try {
-            UserService::resetarSenha($usuario);
+            $senhaTemporaria = UserService::resetarSenha($usuario);
             return redirect()->route('dashboard.usuarios.edit', $usuario->id)->with([
                 'mensagem' => [
                     'status' => true,
-                    'texto' => 'Operação realizada com Sucesso!'
-                ]
-            ]);
-        } catch (Throwable $th) {
-            return redirect()->back()->with([
-                'mensagem' => [
-                    'status' => false,
-                    'texto' => 'Algo deu Errado!'
-                ]
-            ])
-            ->withInput();
-        }
-    }
-
-    public function resetarSenha(User $usuario)
-    {
-        try {
-            UserService::resetarSenha($usuario);
-            return redirect()->back()->with([
-                'mensagem' => [
-                    'status' => true,
-                    'texto' => 'Operação realizada com Sucesso!'
+                    'texto' => 'Senha temporária gerada: ' . $senhaTemporaria . '. O usuário deverá trocá-la no próximo acesso.'
                 ]
             ]);
         } catch (Throwable $th) {

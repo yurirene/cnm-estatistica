@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ColetorDadosDataTable;
 use App\Exceptions\ColetaDadosException;
+use App\Models\Local;
+use App\Models\User;
 use App\Services\ColetorDadosService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ColetorDadosController extends Controller
 {
@@ -120,7 +123,10 @@ class ColetorDadosController extends Controller
     public function restaurar(string $local)
     {
         try {
-            ColetorDadosService::restaurar($local);
+            $localModel = Local::query()->findOrFail($local);
+            $this->authorizeColetorRestaurar($localModel);
+
+            ColetorDadosService::restaurar($localModel->id);
 
             return redirect()->back()->with([
                 'mensagem' => [
@@ -128,6 +134,8 @@ class ColetorDadosController extends Controller
                     'texto' => 'Todos os formulários foram removidos com sucesso!'
                 ]
             ]);
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return redirect()->back()->with([
                 'mensagem' => [
@@ -136,5 +144,32 @@ class ColetorDadosController extends Controller
                 ]
             ]);
         }
+    }
+
+    private function authorizeColetorRestaurar(Local $local): void
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            abort(403);
+        }
+
+        if (Gate::allows('isAdmin') || $user->role->name === User::ROLE_DIRETORIA) {
+            return;
+        }
+
+        if ($user->local_id && $user->local_id === $local->id) {
+            return;
+        }
+
+        if ($user->federacao_id && $user->federacao_id === $local->federacao_id) {
+            return;
+        }
+
+        if ($user->sinodal_id && $user->sinodal_id === $local->sinodal_id) {
+            return;
+        }
+
+        abort(403, 'Você não tem permissão para restaurar os dados deste local.');
     }
 }

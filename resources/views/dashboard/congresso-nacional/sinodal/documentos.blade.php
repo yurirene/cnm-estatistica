@@ -35,9 +35,9 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('dashboard.cn.sinodal.documento.delete', $documento->id) }}" class="dropdown-item text-danger" onclick="return confirm('Tem certeza que deseja excluir este documento?')">
+                                            <button type="button" class="dropdown-item text-danger" onclick="deleteRegistro('{{ route('dashboard.cn.sinodal.documento.delete', $documento->id) }}')">
                                                 <i class="fas fa-trash"></i> Excluir
-                                            </a>
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>

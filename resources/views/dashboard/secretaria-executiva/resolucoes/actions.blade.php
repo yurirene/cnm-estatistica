@@ -24,12 +24,12 @@
             Editar
         </button>
         @if($podeGerenciar)
-        <a href="{{ route('dashboard.secretaria-executiva.resolucoes.delete', $resolucao) }}"
+        <button type="button"
             class="dropdown-item text-danger"
-            onclick="return confirm('Deseja remover esta resolução?');"
+            onclick="deleteRegistro('{{ route('dashboard.secretaria-executiva.resolucoes.delete', $resolucao) }}')"
         >
             Remover
-        </a>
+        </button>
         @endif
     </div>
 </div>

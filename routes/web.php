@@ -95,8 +95,6 @@ Route::get('/coletor-dados', [ColetorDadosController::class, 'externo'])
     ->name('coletor-dados.externo');
 Route::post('/coletor-dados/responder/{id}', [ColetorDadosController::class, 'responder'])
     ->name('coletor-dados.responder');
-Route::get('/coletor-dados/restaurar/{local}', [ColetorDadosController::class, 'restaurar'])
-    ->name('coletor-dados.restaurar');
 
 Route::group(['prefix' => 'site'], function () {
     Route::get('/{sigla}', [SiteController::class, 'show'])
@@ -135,9 +133,6 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->names('usuarios');
         Route::post('/usuarios-senha-reset/{usuario}', [UserController::class, 'resetSenha'])
             ->name('usuarios.reset-senha');
-
-        Route::get('/usuarios-senha-resetar/{usuario}', [UserController::class, 'resetarSenha'])
-            ->name('usuarios.resetar-senha');
         Route::post('/check-usuario', [UserController::class, 'checkUser'])
             ->name('usuarios.check-usuario');
     });
@@ -150,7 +145,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->parameters(['sinodais' => 'sinodal'])
             ->except('destroy')
             ->names('sinodais');
-        Route::get('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])
+        Route::delete('/sinodais/{sinodal}/delete', [SinodalController::class, 'delete'])
             ->name('sinodais.delete');
         Route::put('/sinodais/{sinodal}/update-info', [SinodalController::class, 'updateInfo'])
             ->name('sinodais.update-info');
@@ -165,7 +160,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('federacoes', FederacaoController::class)
             ->parameters(['federacoes' => 'federacao'])
             ->names('federacoes')->except('destroy');
-        Route::get('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])
+        Route::delete('/federacoes/{federacao}/delete', [FederacaoController::class, 'delete'])
             ->name('federacoes.delete');
         Route::put('/federacoes/{federacao}/update-info', [FederacaoController::class, 'updateInfo'])
             ->name('federacoes.update-info');
@@ -178,7 +173,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('umps-locais', LocalController::class)
             ->parameters(['umps-locais' => 'local'])
             ->names('locais')->except('destroy');
-        Route::get('/umps-locais/{local}/delete', [LocalController::class, 'delete'])
+        Route::delete('/umps-locais/{local}/delete', [LocalController::class, 'delete'])
             ->name('locais.delete');
         Route::put('/umps-locais/{local}/update-info', [LocalController::class, 'updateInfo'])
             ->name('locais.update-info');
@@ -192,8 +187,10 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('coletor-dados.index');
         Route::post('/coletor-dados', [ColetorDadosController::class, 'store'])
             ->name('coletor-dados.store');
-        Route::get('/coletor-dados/delete/{id}', [ColetorDadosController::class, 'delete'])
+        Route::delete('/coletor-dados/delete/{id}', [ColetorDadosController::class, 'delete'])
             ->name('coletor-dados.delete');
+        Route::post('/coletor-dados/restaurar/{local}', [ColetorDadosController::class, 'restaurar'])
+            ->name('coletor-dados.restaurar');
     });
 });
 
@@ -437,7 +434,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('produtos', ProdutoController::class)
             ->parameters(['produtos' => 'produto'])
                 ->names('produtos')->except(['destroy', 'show']);
-        Route::get('/produtos/{produto}/delete', [ProdutoController::class, 'delete'])
+        Route::delete('/produtos/{produto}/delete', [ProdutoController::class, 'delete'])
             ->name('produtos.delete');
         Route::get('/produtos-datatable/produtos', [ProdutoController::class, 'produtoDataTable'])
             ->name('produtos.datatable.produtos');
@@ -449,21 +446,21 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('estoque-produtos', EstoqueProdutoController::class)
             ->parameters(['estoque-produtos' => 'estoque'])
                 ->names('estoque-produtos')->except(['index', 'show', 'destroy']);
-        Route::get('/estoque-produtos/{estoque}/delete', [EstoqueProdutoController::class, 'delete'])
+        Route::delete('/estoque-produtos/{estoque}/delete', [EstoqueProdutoController::class, 'delete'])
             ->name('estoque-produtos.delete');
 
         Route::resource('consignacao-produtos', ConsignacaoProdutoController::class)
             ->parameters(['consignacao-produtos' => 'consignado'])
             ->names('consignacao-produtos')
             ->except(['index', 'show', 'destroy']);
-        Route::get('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])
+        Route::delete('/consignacao-produtos/{consignado}/delete', [ConsignacaoProdutoController::class, 'delete'])
             ->name('consignacao-produtos.delete');
 
         Route::resource('produtos/fluxo-caixa', FluxoCaixaController::class)
             ->parameters(['fluxo-caixa' => 'fluxo'])
             ->names('produtos.fluxo-caixa')
             ->except(['index', 'show', 'destroy']);
-        Route::get('/produtos/fluxo-caixa/{fluxo}/delete', [FluxoCaixaController::class, 'delete'])
+        Route::delete('/produtos/fluxo-caixa/{fluxo}/delete', [FluxoCaixaController::class, 'delete'])
             ->name('produtos.fluxo-caixa.delete');
         Route::get('/produtos-datatable/fluxo-caixa', [FluxoCaixaController::class, 'fluxoCaixaDataTable'])
             ->name('produtos.datatable.fluxo-caixa');
@@ -500,7 +497,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
         Route::resource('digestos', DigestoController::class)
             ->parameters(['digestos' => 'digesto'])
             ->names('digestos')->except('destroy');
-        Route::get('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])
+        Route::delete('/digestos/{digesto}/delete', [DigestoController::class, 'delete'])
             ->name('digestos.delete');
     });
 });
@@ -519,7 +516,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('adote-missionario.adotar');
         Route::get('/adote-missionario/{missionario}/desfazer', [AdoteMissionarioController::class, 'desfazer'])
             ->name('adote-missionario.desfazer');
-        Route::get('/adote-missionario/{missionario}/delete', [AdoteMissionarioController::class, 'delete'])
+        Route::delete('/adote-missionario/{missionario}/delete', [AdoteMissionarioController::class, 'delete'])
             ->name('adote-missionario.delete');
         Route::resource('adote-missionario', AdoteMissionarioController::class)
             ->parameters(['adote-missionario' => 'missionario'])
@@ -647,14 +644,14 @@ Route::group(
             Route::resource('/apps/tesouraria', TesourariaController::class)
                 ->names('apps.tesouraria')
                 ->except(['destroy']);
-            Route::get('/apps/tesouraria/remover/{lancamento}',[TesourariaController::class, 'delete'])
+            Route::delete('/apps/tesouraria/remover/{lancamento}',[TesourariaController::class, 'delete'])
                 ->name('apps.tesouraria.delete');
 
             Route::resource('/apps/tesouraria/categoria', CategoriaController::class)
                 ->names('apps.tesouraria.categoria')
                 ->except(['destroy', 'index']);
 
-            Route::get('/apps/tesouraria/remover-categoria/{categoria}',[CategoriaController::class, 'delete'])
+            Route::delete('/apps/tesouraria/remover-categoria/{categoria}',[CategoriaController::class, 'delete'])
                 ->name('apps.tesouraria.categoria.delete');
 
             Route::post('/apps/tesouraria/gerar-relatorio',[TesourariaController::class, 'gerarRelatorio'])
@@ -674,7 +671,7 @@ Route::group(['middleware' => ['auth', 'auth-sistema'], 'prefix' => 'dashboard',
             ->name('avisos.store');
         Route::get('/avisos/visualizado/{id}', [AvisoController::class, 'visualizado'])
             ->name('avisos.visualizado');
-        Route::get('/avisos/delete/{id}', [AvisoController::class, 'delete'])
+        Route::delete('/avisos/delete/{id}', [AvisoController::class, 'delete'])
             ->name('avisos.delete');
         Route::get('/avisos/get-usuarios', [AvisoController::class, 'getUsuarios'])
             ->name('avisos.get-usuarios');
@@ -741,7 +738,7 @@ Route::group(
                 ->name('comissao-executiva.download-documentos');
             Route::get('comissao-executiva/{reuniao}/download-credenciais', [ComissaoExecutivaController::class, 'downloadCredenciais'])
                 ->name('comissao-executiva.download-credenciais');
-            Route::get('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
+            Route::delete('comissao-executiva/{reuniao}/delete', [ComissaoExecutivaController::class, 'delete'])
                 ->name('comissao-executiva.delete');
             Route::get('comissao-executiva/{reuniao}/encerrar', [ComissaoExecutivaController::class, 'encerrar'])
                 ->name('comissao-executiva.encerrar');
@@ -806,7 +803,7 @@ Route::group(
                 ->name('cn.federacao.delegado.store');
             Route::put('congresso-nacional/federacao/delegado/{delegado}', [CongressoNacionalController::class, 'updateDelegadoFederacao'])
                 ->name('cn.federacao.delegado.update');
-            Route::get('congresso-nacional/federacao/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteFederacao'])
+            Route::delete('congresso-nacional/federacao/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteFederacao'])
                 ->name('cn.federacao.delegado.delete');
 
             Route::get('congresso-nacional/sinodal', [CongressoNacionalController::class, 'indexSinodal'])
@@ -819,13 +816,13 @@ Route::group(
                 ->name('cn.sinodal.delegado.store');
             Route::put('congresso-nacional/sinodal/delegado/{delegado}', [CongressoNacionalController::class, 'updateDelegadoSinodal'])
                 ->name('cn.sinodal.delegado.update');
-            Route::get('congresso-nacional/sinodal/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteSinodal'])
+            Route::delete('congresso-nacional/sinodal/delegado/{delegado}/delete', [CongressoNacionalController::class, 'deleteSinodal'])
                 ->name('cn.sinodal.delegado.delete');
 
             // Rotas para Documentos (apenas sinodal)
             Route::post('congresso-nacional/sinodal/documento', [CongressoNacionalController::class, 'storeDocumentoSinodal'])
                 ->name('cn.sinodal.documento.store');
-            Route::get('congresso-nacional/sinodal/documento/{documento}/delete', [CongressoNacionalController::class, 'deleteDocumentoSinodal'])
+            Route::delete('congresso-nacional/sinodal/documento/{documento}/delete', [CongressoNacionalController::class, 'deleteDocumentoSinodal'])
                 ->name('cn.sinodal.documento.delete');
 
             Route::get('congresso-nacional/executiva', [CongressoNacionalController::class, 'indexExecutiva'])
@@ -840,7 +837,7 @@ Route::group(
                 ->name('cn.executiva.delegado.update');
             Route::put('congresso-nacional/executiva/{documento}/documento', [CongressoNacionalController::class, 'updateStatusDocumento'])
                 ->name('cn.executiva.documento.update');
-            Route::get('congresso-nacional/executiva/{documento}/documento/delete', [CongressoNacionalController::class, 'deleteDocumento'])
+            Route::delete('congresso-nacional/executiva/{documento}/documento/delete', [CongressoNacionalController::class, 'deleteDocumento'])
                 ->name('cn.executiva.documento.delete');
                 
             Route::get('congresso-nacional/executiva/delegado/{delegado}/exportar-diretoria', [CongressoNacionalController::class, 'exportDiretoria'])
@@ -874,7 +871,7 @@ Route::group([
             ->name('secretaria-executiva.resolucoes.store');
         Route::put('/secretaria-executiva/resolucoes/{resolucao}', [ResolucaoController::class, 'update'])
             ->name('secretaria-executiva.resolucoes.update');
-        Route::get('/secretaria-executiva/resolucoes/{resolucao}/delete', [ResolucaoController::class, 'destroy'])
+        Route::delete('/secretaria-executiva/resolucoes/{resolucao}/delete', [ResolucaoController::class, 'destroy'])
             ->name('secretaria-executiva.resolucoes.delete');
         Route::post('/secretaria-executiva/resolucoes/importar', [ResolucaoController::class, 'importar'])
             ->name('secretaria-executiva.resolucoes.importar');
@@ -893,7 +890,7 @@ Route::group([
             ->name('tarefas.store');
         Route::put('/tarefas/{tarefa}', [TarefaController::class, 'update'])
             ->name('tarefas.update');
-        Route::get('/tarefas/{tarefa}/delete', [TarefaController::class, 'destroy'])
+        Route::delete('/tarefas/{tarefa}/delete', [TarefaController::class, 'destroy'])
             ->name('tarefas.delete');
         Route::get('/tarefas/{tarefa}/encerrar', [TarefaController::class, 'encerrar'])
             ->name('tarefas.encerrar');
